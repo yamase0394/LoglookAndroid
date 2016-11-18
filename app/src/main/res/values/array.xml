@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="title">
+        <item>ホーム</item>
+        <item>艦隊</item>
+        <item>遠征</item>
+        <item>入渠</item>
+        <item>戦況</item>
+        <item>設定</item>
+    </string-array>
+</resources>

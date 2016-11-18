@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">泥提督支援アプリ</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+
+    <string name="drawer_open">Drawer_open</string>
+    <string name="drawer_close">Drawer close</string>
+    <string name="title1">設定</string>
+    <string name="title2">艦隊</string>
+    <string name="title3">遠征</string>
+    <string name="title_activity_ship_detail">ShipDetailActivity</string>
+</resources>
