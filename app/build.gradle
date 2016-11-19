@@ -8,8 +8,8 @@ android {
         applicationId "jp.gr.java_conf.snake0394.loglook_android"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 8
-        versionName "1.0.6"
+        versionCode 10
+        versionName "1.0.7"
     }
     buildTypes {
         release {

@@ -262,7 +262,18 @@ public enum TacticalSituation implements Serializable {
                 hp -= enemyDamage.get(i);
                 enemyNowhps.set(i - 1, hp);
             }
+            switch (battle.getBattleType()) {
+                case COMBINED_EACH:
+                case COMBINED_EACH_WATER:
+                    for (int i = 1; i <= enemyShipId.size(); i++) {
+                        int hp = enemyNowhpsCombined.get(i - 1);
+                        hp -= enemyDamage.get(i + 6);
+                        enemyNowhpsCombined.set(i - 1, hp);
+                    }
+                    break;
+            }
         }
+
 
         //先制対潜
         switch (battle.getBattleType()) {
@@ -771,7 +782,7 @@ public enum TacticalSituation implements Serializable {
                 if (at != null) {
                     for (int i = 0; i < at.size(); i++) {
                         if (eflag.get(i) == 1) {
-                            if(df.get(i) >= 7){
+                            if (df.get(i) >= 7) {
                                 int hp = friendNowhpsCombined.get(df.get(i) - 7);
                                 hp -= damage.get(i);
                                 friendNowhpsCombined.set(df.get(i) - 7, hp);
@@ -781,7 +792,7 @@ public enum TacticalSituation implements Serializable {
                             hp -= damage.get(i);
                             friendNowhps.set(df.get(i) - 1, hp);
                         } else {
-                            if(df.get(i) >= 7){
+                            if (df.get(i) >= 7) {
                                 int hp = enemyNowhpsCombined.get(df.get(i) - 7);
                                 hp -= damage.get(i);
                                 enemyNowhpsCombined.set(df.get(i) - 7, hp);
@@ -822,7 +833,7 @@ public enum TacticalSituation implements Serializable {
                 if (at != null) {
                     for (int i = 0; i < at.size(); i++) {
                         if (eflag.get(i) == 1) {
-                            if(df.get(i) >= 7){
+                            if (df.get(i) >= 7) {
                                 int hp = friendNowhpsCombined.get(df.get(i) - 7);
                                 hp -= damage.get(i);
                                 friendNowhpsCombined.set(df.get(i) - 7, hp);
@@ -832,7 +843,7 @@ public enum TacticalSituation implements Serializable {
                             hp -= damage.get(i);
                             friendNowhps.set(df.get(i) - 1, hp);
                         } else {
-                            if(df.get(i) >= 7){
+                            if (df.get(i) >= 7) {
                                 int hp = enemyNowhpsCombined.get(df.get(i) - 7);
                                 hp -= damage.get(i);
                                 enemyNowhpsCombined.set(df.get(i) - 7, hp);
