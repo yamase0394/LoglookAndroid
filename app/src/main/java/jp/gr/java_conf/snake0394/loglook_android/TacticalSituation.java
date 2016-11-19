@@ -115,7 +115,7 @@ public enum TacticalSituation {
     }
 
     //第2艦隊情報
-    Deck deckCombined = null;
+    Deck deckCombined;
     if (battle.getNowhpsCombined() != null) {
       deckCombined = DeckManager.INSTANCE.getDeck(2);
       for (int shipId : deckCombined.getShipId()) {

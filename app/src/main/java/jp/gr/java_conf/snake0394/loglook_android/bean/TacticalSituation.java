@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.gr.java_conf.snake0394.loglook_android.BattleType;
-
 /**
  * Created by snake0394 on 2016/08/30.
  */
@@ -143,6 +141,8 @@ public enum TacticalSituation implements Serializable {
             case COMBINED_SP_MIDNIGHT:
             case COMBINED_AIRBATTLE:
             case COMBINED_LD_AIRBATTLE:
+            case COMBINED_EACH:
+            case COMBINED_EACH_WATER:
                 Deck deckCombined = DeckManager.INSTANCE.getDeck(2);
                 for (int shipId : deckCombined.getShipId()) {
                     if (shipId != -1 && MyShipManager.INSTANCE.contains(shipId)) {
@@ -150,7 +150,7 @@ public enum TacticalSituation implements Serializable {
                     }
                 }
                 for (int i = 1; i <= friendShipIdCombined.size(); i++) {
-                    friendHpBeforeBattleCombined.add(battle.getNowhps().get(i));
+                    friendHpBeforeBattleCombined.add(battle.getNowhpsCombined().get(i));
                     friendNowhpsCombined.add(battle.getNowhpsCombined().get(i));
                     friendMaxhpsCombined.add(battle.getMaxhpsCombined().get(i));
                 }
@@ -170,17 +170,20 @@ public enum TacticalSituation implements Serializable {
 
 
         //敵第二艦隊情報
-        if (battle.getBattleType() == BattleType.COMBINED_EC) {
-            for (int shipId : battle.geteShipCombined()) {
-                if (shipId != -1 && MstShipManager.INSTANCE.contains(shipId)) {
-                    enemyShipIdCombined.add(shipId);
+        switch (battle.getBattleType()) {
+            case COMBINED_EC:
+            case COMBINED_EACH:
+            case COMBINED_EACH_WATER:
+                for (int shipId : battle.geteShipCombined()) {
+                    if (shipId != -1 && MstShipManager.INSTANCE.contains(shipId)) {
+                        enemyShipIdCombined.add(shipId);
+                    }
                 }
-            }
-            for (int i = 7; i <= enemyShipIdCombined.size() + 6; i++) {
-                enemyHpBeforeBattleCombined.add(battle.getNowhpsCombined().get(i));
-                enemyNowhpsCombined.add(battle.getNowhpsCombined().get(i));
-                enemyMaxhpsCombined.add(battle.getMaxhpsCombined().get(i));
-            }
+                for (int i = 7; i <= enemyShipIdCombined.size() + 6; i++) {
+                    enemyHpBeforeBattleCombined.add(battle.getNowhpsCombined().get(i));
+                    enemyNowhpsCombined.add(battle.getNowhpsCombined().get(i));
+                    enemyMaxhpsCombined.add(battle.getMaxhpsCombined().get(i));
+                }
         }
 
 
@@ -244,6 +247,12 @@ public enum TacticalSituation implements Serializable {
                 enemyNowhpsCombined.set(i - 1, hp);
             }
         }
+
+        switch (battle.getBattleType()) {
+            case COMBINED_LD_AIRBATTLE:
+                return;
+        }
+
 
         //支援攻撃
         enemyDamage = battle.getSupportEnemyDamage();
@@ -322,6 +331,8 @@ public enum TacticalSituation implements Serializable {
                 }
                 break;
             case COMBINED_EC:
+            case COMBINED_EACH:
+            case COMBINED_EACH_WATER:
                 friendDamage = battle.getOpeningAttackFriendDamage();
                 if (friendDamage != null) {
                     for (int i = 1; i <= friendShipId.size(); i++) {
@@ -338,10 +349,10 @@ public enum TacticalSituation implements Serializable {
 
                 enemyDamage = battle.getOpeningAttackEnemyDamage();
                 if (enemyDamage != null) {
-                    for (int i = 1; i <= enemyShipId.size(); i++) {
-                        int hp = enemyNowhps.get(i - 1);
+                    for (int i = 1; i <= enemyShipIdCombined.size(); i++) {
+                        int hp = enemyNowhpsCombined.get(i - 1);
                         hp -= enemyDamage.get(i + 6);
-                        enemyNowhps.set(i - 1, hp);
+                        enemyNowhpsCombined.set(i - 1, hp);
                     }
                 }
                 break;
@@ -683,7 +694,205 @@ public enum TacticalSituation implements Serializable {
                     }
                 }
                 break;
+            case COMBINED_EACH:
+                //本隊1
+                eflag = battle.getHougekiAtEFlagList1();
+                at = battle.getHougekiAtList1();
+                df = battle.getHougekiDfList1();
+                damage = battle.getHougekiDamage1();
+                if (at != null) {
+                    for (int i = 0; i < at.size(); i++) {
+                        if (eflag.get(i) == 1) {
+                            int hp = friendNowhps.get(df.get(i) - 1);
+                            hp -= damage.get(i);
+                            friendNowhps.set(df.get(i) - 1, hp);
+                        } else {
+                            int hp = enemyNowhps.get(df.get(i) - 1);
+                            hp -= damage.get(i);
+                            enemyNowhps.set(df.get(i) - 1, hp);
+                        }
+                    }
+                }
 
+                //随伴艦
+                eflag = battle.getHougekiAtEFlagList2();
+                at = battle.getHougekiAtList2();
+                df = battle.getHougekiDfList2();
+                damage = battle.getHougekiDamage2();
+                if (at != null) {
+                    for (int i = 0; i < at.size(); i++) {
+                        if (eflag.get(i) == 1) {
+                            int hp = friendNowhpsCombined.get(df.get(i) - 7);
+                            hp -= damage.get(i);
+                            friendNowhpsCombined.set(df.get(i) - 7, hp);
+                        } else {
+                            int hp = enemyNowhpsCombined.get(df.get(i) - 7);
+                            hp -= damage.get(i);
+                            enemyNowhpsCombined.set(df.get(i) - 7, hp);
+                        }
+                    }
+                }
+
+                //随伴護衛艦隊 雷撃
+                friendDamage = battle.getRaigekiFriendDamage();
+                if (friendDamage != null) {
+                    for (int i = 1; i <= friendShipId.size(); i++) {
+                        int hp = friendNowhps.get(i - 1);
+                        hp -= friendDamage.get(i);
+                        friendNowhps.set(i - 1, hp);
+                    }
+                    for (int i = 1; i <= friendShipIdCombined.size(); i++) {
+                        int hp = friendNowhpsCombined.get(i - 1);
+                        hp -= friendDamage.get(i + 6);
+                        friendNowhpsCombined.set(i - 1, hp);
+                    }
+                }
+
+                enemyDamage = battle.getRaigekiEnemyDamage();
+                if (enemyDamage != null) {
+                    for (int i = 1; i <= enemyShipId.size(); i++) {
+                        int hp = enemyNowhps.get(i - 1);
+                        hp -= enemyDamage.get(i);
+                        enemyNowhps.set(i - 1, hp);
+                    }
+                    for (int i = 1; i <= enemyShipIdCombined.size(); i++) {
+                        int hp = enemyNowhpsCombined.get(i - 1);
+                        hp -= enemyDamage.get(i + 6);
+                        enemyNowhpsCombined.set(i - 1, hp);
+                    }
+                }
+
+
+                //本隊2巡目
+                eflag = battle.getHougekiAtEFlagList3();
+                at = battle.getHougekiAtList3();
+                df = battle.getHougekiDfList3();
+                damage = battle.getHougekiDamage3();
+                if (at != null) {
+                    for (int i = 0; i < at.size(); i++) {
+                        if (eflag.get(i) == 1) {
+                            if(df.get(i) >= 7){
+                                int hp = friendNowhpsCombined.get(df.get(i) - 7);
+                                hp -= damage.get(i);
+                                friendNowhpsCombined.set(df.get(i) - 7, hp);
+                                continue;
+                            }
+                            int hp = friendNowhps.get(df.get(i) - 1);
+                            hp -= damage.get(i);
+                            friendNowhps.set(df.get(i) - 1, hp);
+                        } else {
+                            if(df.get(i) >= 7){
+                                int hp = enemyNowhpsCombined.get(df.get(i) - 7);
+                                hp -= damage.get(i);
+                                enemyNowhpsCombined.set(df.get(i) - 7, hp);
+                                continue;
+                            }
+                            int hp = enemyNowhps.get(df.get(i) - 1);
+                            hp -= damage.get(i);
+                            enemyNowhps.set(df.get(i) - 1, hp);
+                        }
+                    }
+                }
+                break;
+            case COMBINED_EACH_WATER:
+                //第1艦隊砲撃(対本隊)
+                eflag = battle.getHougekiAtEFlagList1();
+                at = battle.getHougekiAtList1();
+                df = battle.getHougekiDfList1();
+                damage = battle.getHougekiDamage1();
+                if (at != null) {
+                    for (int i = 0; i < at.size(); i++) {
+                        if (eflag.get(i) == 1) {
+                            int hp = friendNowhps.get(df.get(i) - 1);
+                            hp -= damage.get(i);
+                            friendNowhps.set(df.get(i) - 1, hp);
+                        } else {
+                            int hp = enemyNowhps.get(df.get(i) - 1);
+                            hp -= damage.get(i);
+                            enemyNowhps.set(df.get(i) - 1, hp);
+                        }
+                    }
+                }
+
+                //第1艦隊砲撃(対全体)
+                eflag = battle.getHougekiAtEFlagList3();
+                at = battle.getHougekiAtList3();
+                df = battle.getHougekiDfList3();
+                damage = battle.getHougekiDamage3();
+                if (at != null) {
+                    for (int i = 0; i < at.size(); i++) {
+                        if (eflag.get(i) == 1) {
+                            if(df.get(i) >= 7){
+                                int hp = friendNowhpsCombined.get(df.get(i) - 7);
+                                hp -= damage.get(i);
+                                friendNowhpsCombined.set(df.get(i) - 7, hp);
+                                continue;
+                            }
+                            int hp = friendNowhps.get(df.get(i) - 1);
+                            hp -= damage.get(i);
+                            friendNowhps.set(df.get(i) - 1, hp);
+                        } else {
+                            if(df.get(i) >= 7){
+                                int hp = enemyNowhpsCombined.get(df.get(i) - 7);
+                                hp -= damage.get(i);
+                                enemyNowhpsCombined.set(df.get(i) - 7, hp);
+                                continue;
+                            }
+                            int hp = enemyNowhps.get(df.get(i) - 1);
+                            hp -= damage.get(i);
+                            enemyNowhps.set(df.get(i) - 1, hp);
+                        }
+                    }
+                }
+
+                //第2艦隊(対随伴艦)
+                eflag = battle.getHougekiAtEFlagList2();
+                at = battle.getHougekiAtList2();
+                df = battle.getHougekiDfList2();
+                damage = battle.getHougekiDamage2();
+                if (at != null) {
+                    for (int i = 0; i < at.size(); i++) {
+                        if (eflag.get(i) == 1) {
+                            int hp = friendNowhpsCombined.get(df.get(i) - 7);
+                            hp -= damage.get(i);
+                            friendNowhpsCombined.set(df.get(i) - 7, hp);
+                        } else {
+                            int hp = enemyNowhpsCombined.get(df.get(i) - 7);
+                            hp -= damage.get(i);
+                            enemyNowhpsCombined.set(df.get(i) - 7, hp);
+                        }
+                    }
+                }
+
+                //第2艦隊雷撃(対全体)
+                friendDamage = battle.getRaigekiFriendDamage();
+                if (friendDamage != null) {
+                    for (int i = 1; i <= friendShipId.size(); i++) {
+                        int hp = friendNowhps.get(i - 1);
+                        hp -= friendDamage.get(i);
+                        friendNowhps.set(i - 1, hp);
+                    }
+                    for (int i = 1; i <= friendShipIdCombined.size(); i++) {
+                        int hp = friendNowhpsCombined.get(i - 1);
+                        hp -= friendDamage.get(i + 6);
+                        friendNowhpsCombined.set(i - 1, hp);
+                    }
+                }
+
+                enemyDamage = battle.getRaigekiEnemyDamage();
+                if (enemyDamage != null) {
+                    for (int i = 1; i <= enemyShipId.size(); i++) {
+                        int hp = enemyNowhps.get(i - 1);
+                        hp -= enemyDamage.get(i);
+                        enemyNowhps.set(i - 1, hp);
+                    }
+                    for (int i = 1; i <= enemyShipIdCombined.size(); i++) {
+                        int hp = enemyNowhpsCombined.get(i - 1);
+                        hp -= enemyDamage.get(i + 6);
+                        enemyNowhpsCombined.set(i - 1, hp);
+                    }
+                }
+                break;
         }
 
         //航空戦2

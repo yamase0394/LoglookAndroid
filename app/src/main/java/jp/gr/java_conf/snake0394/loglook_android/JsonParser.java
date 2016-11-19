@@ -26,6 +26,8 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.Battle;
 import jp.gr.java_conf.snake0394.loglook_android.bean.CombinedAirbattle;
 import jp.gr.java_conf.snake0394.loglook_android.bean.CombinedBattle;
 import jp.gr.java_conf.snake0394.loglook_android.bean.CombinedEC;
+import jp.gr.java_conf.snake0394.loglook_android.bean.CombinedEach;
+import jp.gr.java_conf.snake0394.loglook_android.bean.CombinedEachWater;
 import jp.gr.java_conf.snake0394.loglook_android.bean.CombinedLdAirbattle;
 import jp.gr.java_conf.snake0394.loglook_android.bean.CombinedSpMidnight;
 import jp.gr.java_conf.snake0394.loglook_android.bean.CombinedWater;
@@ -745,33 +747,22 @@ public class JsonParser {
                     combinedEC.set(jsonStr);
                     BattleLogger.INSTANCE.setBattle(combinedEC);
                     TacticalSituation.INSTANCE.set(combinedEC);
+                    break;
 
-                    //SDカードのディレクトリパス
-                    File sdcard_path = new File(Environment.getExternalStorageDirectory().getPath() + "/泥提督支援アプリ/json/");
+                //連合VS連合(機動部隊)
+                case "api_req_combined_battle/each_battle":
+                    CombinedEach combinedEach = new CombinedEach();
+                    combinedEach.set(jsonStr);
+                    BattleLogger.INSTANCE.setBattle(combinedEach);
+                    TacticalSituation.INSTANCE.set(combinedEach);
+                    break;
 
-                    //パス区切り用セパレータ
-                    String Fs = File.separator;
-
-                    uri = uri.replaceAll("/", "=");
-
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-                    //テキストファイル保存先のファイルパス
-                    String filePath = sdcard_path + Fs + sdf.format(Calendar.getInstance().getTime()) + "-" + uri + ".txt";
-
-                    //フォルダがなければ作成
-                    if (!sdcard_path.exists()) {
-                        sdcard_path.mkdir();
-                    }
-
-                    try {
-                        PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath), "SJIS")));
-                        pw.write(jsonStr);
-                        pw.flush();
-                        pw.close();
-                    } catch (Exception e) {
-                    }
-
+                //連合VS連合(水上部隊)
+                case "api_req_combined_battle/each_battle_water":
+                    CombinedEachWater combinedEachWater = new CombinedEachWater();
+                    combinedEachWater.set(jsonStr);
+                    BattleLogger.INSTANCE.setBattle(combinedEachWater);
+                    TacticalSituation.INSTANCE.set(combinedEachWater);
                     break;
 
                 //連合艦隊戦闘終了時
