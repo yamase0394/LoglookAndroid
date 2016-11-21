@@ -4,9 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by snake0394 on 2016/08/30.
- */
+import jp.gr.java_conf.snake0394.loglook_android.BattleType;
+
 public enum TacticalSituation implements Serializable {
     INSTANCE;
 
@@ -121,7 +120,9 @@ public enum TacticalSituation implements Serializable {
         enemyNowhpsCombined = new ArrayList<>();
         enemyMaxhpsCombined = new ArrayList<>();
 
-        //第1艦隊情報
+        BattleType battleType = battle.getBattleType();
+
+        //出撃艦隊or第一艦隊情報
         Deck deck = DeckManager.INSTANCE.getDeck(battle.getDeckId());
         for (int shipId : deck.getShipId()) {
             if (shipId != -1 && MyShipManager.INSTANCE.contains(shipId)) {
@@ -134,8 +135,8 @@ public enum TacticalSituation implements Serializable {
             friendMaxhps.add(battle.getMaxhps().get(i));
         }
 
-        //第2艦隊情報
-        switch (battle.getBattleType()) {
+        //第ニ艦隊情報
+        switch (battleType) {
             case COMBINED_BATTLE:
             case COMBINED_WATER:
             case COMBINED_SP_MIDNIGHT:
@@ -170,7 +171,7 @@ public enum TacticalSituation implements Serializable {
 
 
         //敵第二艦隊情報
-        switch (battle.getBattleType()) {
+        switch (battleType) {
             case COMBINED_EC:
             case COMBINED_EACH:
             case COMBINED_EACH_WATER:
@@ -187,10 +188,10 @@ public enum TacticalSituation implements Serializable {
         }
 
 
-        //基地航空隊
+        /****基地航空隊****/
+        //敵本隊へのダメージ
         List<List<Integer>> baseEnemyDamage = battle.getBaseEnemyDamage();
         if (baseEnemyDamage != null) {
-            //敵第一艦隊
             for (List<Integer> damage : baseEnemyDamage) {
                 for (int i = 1; i <= enemyShipId.size(); i++) {
                     int hp = enemyNowhps.get(i - 1);
@@ -199,7 +200,7 @@ public enum TacticalSituation implements Serializable {
                 }
             }
         }
-        //敵第二艦隊
+        //敵随伴艦隊へのダメージ
         baseEnemyDamage = battle.getBaseEnemyDamageCombined();
         if (baseEnemyDamage != null) {
             for (List<Integer> damage : baseEnemyDamage) {
@@ -211,7 +212,8 @@ public enum TacticalSituation implements Serializable {
             }
         }
 
-        //航空戦
+        /****航空戦****/
+        //本隊へのダメージ
         List<Integer> friendDamage = battle.getKoukuFriendDamage();
         if (friendDamage != null) {
             for (int i = 1; i <= friendShipId.size(); i++) {
@@ -220,7 +222,7 @@ public enum TacticalSituation implements Serializable {
                 friendNowhps.set(i - 1, hp);
             }
         }
-
+        //随伴艦隊へのダメージ
         friendDamage = battle.getKoukuFriendDamageCombined();
         if (friendDamage != null) {
             for (int i = 1; i <= friendShipIdCombined.size(); i++) {
@@ -229,7 +231,7 @@ public enum TacticalSituation implements Serializable {
                 friendNowhpsCombined.set(i - 1, hp);
             }
         }
-
+        //敵本隊へのダメージ
         List<Integer> enemyDamage = battle.getKoukuEnemyDamage();
         if (enemyDamage != null) {
             for (int i = 1; i <= enemyShipId.size(); i++) {
@@ -238,7 +240,7 @@ public enum TacticalSituation implements Serializable {
                 enemyNowhps.set(i - 1, hp);
             }
         }
-
+        //敵随伴艦隊へのダメージ
         enemyDamage = battle.getKoukuEnemyDamageCombined();
         if (enemyDamage != null) {
             for (int i = 1; i <= enemyShipIdCombined.size(); i++) {
@@ -248,13 +250,14 @@ public enum TacticalSituation implements Serializable {
             }
         }
 
-        switch (battle.getBattleType()) {
+        //長距離空襲の場合はここまで
+        switch (battleType) {
             case COMBINED_LD_AIRBATTLE:
                 return;
         }
 
 
-        //支援攻撃
+        /****支援攻撃****/
         enemyDamage = battle.getSupportEnemyDamage();
         if (enemyDamage != null) {
             for (int i = 1; i <= enemyShipId.size(); i++) {
@@ -262,7 +265,7 @@ public enum TacticalSituation implements Serializable {
                 hp -= enemyDamage.get(i);
                 enemyNowhps.set(i - 1, hp);
             }
-            switch (battle.getBattleType()) {
+            switch (battleType) {
                 case COMBINED_EC:
                 case COMBINED_EACH:
                 case COMBINED_EACH_WATER:
@@ -275,9 +278,40 @@ public enum TacticalSituation implements Serializable {
             }
         }
 
+      /****航空戦2****/
+      switch (battleType) {
+        case AIRBATTLE:
+        case COMBINED_AIRBATTLE:
+          friendDamage = battle.getKouku2FriendDamage();
+          if (friendDamage != null) {
+            for (int i = 1; i <= friendShipId.size(); i++) {
+              int hp = friendNowhps.get(i - 1);
+              hp -= friendDamage.get(i);
+              friendNowhps.set(i - 1, hp);
+            }
+          }
+          friendDamage = battle.getKouku2FriendDamageCombined();
+          if (friendDamage != null) {
+            for (int i = 1; i <= friendShipIdCombined.size(); i++) {
+              int hp = friendNowhpsCombined.get(i - 1);
+              hp -= friendDamage.get(i);
+              friendNowhpsCombined.set(i - 1, hp);
+            }
+          }
+          enemyDamage = battle.getKouku2EnemyDamage();
+          if (enemyDamage != null) {
+            for (int i = 1; i <= enemyShipId.size(); i++) {
+              int hp = enemyNowhps.get(i - 1);
+              hp -= enemyDamage.get(i);
+              enemyNowhps.set(i - 1, hp);
+            }
+          }
+          return;
+      }
 
-        //先制対潜
-        switch (battle.getBattleType()) {
+
+        /****先制対潜****/
+        switch (battleType) {
             case BATTLE:
             case PRACTICE:
                 List<Integer> at = battle.getOpeningTaisenAtList();
@@ -308,18 +342,18 @@ public enum TacticalSituation implements Serializable {
                             int hp = friendNowhpsCombined.get(df.get(i) - 1);
                             hp -= damage.get(i);
                             friendNowhpsCombined.set(df.get(i) - 1, hp);
-                        } else {
-                            int hp = enemyNowhps.get(df.get(i) - 7);
-                            hp -= damage.get(i);
-                            enemyNowhps.set(df.get(i) - 7, hp);
+                            continue;
                         }
+                        int hp = enemyNowhps.get(df.get(i) - 7);
+                        hp -= damage.get(i);
+                        enemyNowhps.set(df.get(i) - 7, hp);
                     }
                 }
                 break;
         }
 
-        //先制雷撃
-        switch (battle.getBattleType()) {
+        /****先制雷撃****/
+        switch (battleType) {
             case BATTLE:
             case PRACTICE:
                 friendDamage = battle.getOpeningAttackFriendDamage();
@@ -369,7 +403,7 @@ public enum TacticalSituation implements Serializable {
                 }
                 break;
         }
-
+        //共通処理
         enemyDamage = battle.getOpeningAttackEnemyDamage();
         if (enemyDamage != null) {
             for (int i = 1; i <= enemyShipId.size(); i++) {
@@ -379,8 +413,8 @@ public enum TacticalSituation implements Serializable {
             }
         }
 
-        //砲雷撃戦
-        switch (battle.getBattleType()) {
+        /****砲雷撃戦****/
+        switch (battleType) {
             case BATTLE:
             case PRACTICE:
                 List<Integer> at = battle.getHougekiAtList1();
@@ -712,6 +746,7 @@ public enum TacticalSituation implements Serializable {
                     }
                 }
                 break;
+
             case COMBINED_EACH:
                 //本隊1
                 eflag = battle.getHougekiAtEFlagList1();
@@ -812,6 +847,7 @@ public enum TacticalSituation implements Serializable {
                     }
                 }
                 break;
+
             case COMBINED_EACH_WATER:
                 //第1艦隊砲撃(対本隊)
                 eflag = battle.getHougekiAtEFlagList1();
@@ -913,33 +949,6 @@ public enum TacticalSituation implements Serializable {
                 break;
         }
 
-        //航空戦2
-        friendDamage = battle.getKouku2FriendDamage();
-        if (friendDamage != null) {
-            for (int i = 1; i <= friendShipId.size(); i++) {
-                int hp = friendNowhps.get(i - 1);
-                hp -= friendDamage.get(i);
-                friendNowhps.set(i - 1, hp);
-            }
-        }
-
-        friendDamage = battle.getKouku2FriendDamageCombined();
-        if (friendDamage != null) {
-            for (int i = 1; i <= friendShipIdCombined.size(); i++) {
-                int hp = friendNowhpsCombined.get(i - 1);
-                hp -= friendDamage.get(i);
-                friendNowhpsCombined.set(i - 1, hp);
-            }
-        }
-
-        enemyDamage = battle.getKouku2EnemyDamage();
-        if (enemyDamage != null) {
-            for (int i = 1; i <= enemyShipId.size(); i++) {
-                int hp = enemyNowhps.get(i - 1);
-                hp -= enemyDamage.get(i);
-                enemyNowhps.set(i - 1, hp);
-            }
-        }
     }
 
     public AbstractBattle getBattle() {
