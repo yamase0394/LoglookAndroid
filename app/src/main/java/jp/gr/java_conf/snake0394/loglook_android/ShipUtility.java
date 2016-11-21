@@ -7,6 +7,7 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitemManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
+import jp.gr.java_conf.snake0394.loglook_android.view.EquipType;
 
 /**
  * Created by snake0394 on 2016/10/29.
@@ -35,7 +36,7 @@ public class ShipUtility {
             }
             MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(id);
 
-            //速吸
+            //速吸は艦攻を装備しているとき空母の計算式になる
             MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
             if (EquipType.toEquipType(mstSlotitem.getType().get(2)) == EquipType.艦上攻撃機) {
                 return getShellingBasicAttackPowerCV(myShip);

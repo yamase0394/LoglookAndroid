@@ -1,6 +1,7 @@
 package jp.gr.java_conf.snake0394.loglook_android;
 
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitem;
+import jp.gr.java_conf.snake0394.loglook_android.view.EquipType;
 
 /**
  * Created by snake0394 on 2016/10/29.
@@ -9,6 +10,10 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitem;
 public class SlotItemUtility {
     /**
      * 改修によって上昇した分の砲撃戦火力を返します
+     *
+     * @param mstSlotitem
+     * @param improvementLevel 改修度
+     * @return 改修で上昇する砲撃戦火力
      */
     public static float getShellingImprovementFirepower(MstSlotitem mstSlotitem,int improvementLevel) {
         //改修していない
@@ -40,6 +45,10 @@ public class SlotItemUtility {
 
     /**
      * 改修によって上昇した分の夜戦火力を返します
+     *
+     * @param mstSlotitem
+     * @param improvementLevel 改修度
+     * @return 改修で上昇する夜戦火力
      */
     public static float getNightBattleImprovementFirepower(MstSlotitem mstSlotitem,int improvementLevel) {
         //改修していない

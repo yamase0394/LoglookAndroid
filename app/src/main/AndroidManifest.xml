@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".ProxyServer"/>
+        <service android:name=".proxy.ProxyServerService"/>
 
         <receiver android:name=".Notifier"/>
 

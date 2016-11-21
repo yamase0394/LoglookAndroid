@@ -18,7 +18,7 @@ import android.widget.ToggleButton;
 import java.util.List;
 
 import jp.gr.java_conf.snake0394.loglook_android.SlantLauncher;
-import jp.gr.java_conf.snake0394.loglook_android.ProxyServer;
+import jp.gr.java_conf.snake0394.loglook_android.proxy.ProxyServerService;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 
 
@@ -98,7 +98,7 @@ public class HomeFragment extends Fragment {
                     boolean isMyServiceRunnning = false;
                     for (ActivityManager.RunningServiceInfo curr : listServiceInfo) {
                         // クラス名を比較
-                        if (curr.service.getClassName().equals(ProxyServer.class.getName())) {
+                        if (curr.service.getClassName().equals(ProxyServerService.class.getName())) {
                             // 実行中のサービスと一致
                             isProxyServerRunnning = true;
                         }
@@ -108,7 +108,7 @@ public class HomeFragment extends Fragment {
                         }
                     }
                     if (!isProxyServerRunnning || !isMyServiceRunnning) {
-                        Intent intent = new Intent(getActivity(), ProxyServer.class);
+                        Intent intent = new Intent(getActivity(), ProxyServerService.class);
                         getActivity().startService(intent);
                         intent = new Intent(getActivity(), SlantLauncher.class);
                         getActivity().startService(intent);
@@ -116,7 +116,7 @@ public class HomeFragment extends Fragment {
                         Toast.makeText(getActivity(), "起動 port:" + sp.getString("port", "8080"), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Intent intent = new Intent(getActivity(), ProxyServer.class);
+                    Intent intent = new Intent(getActivity(), ProxyServerService.class);
                     getActivity().stopService(intent);
                     intent = new Intent(getActivity(), SlantLauncher.class);
                     getActivity().stopService(intent);

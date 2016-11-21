@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 
 import jp.gr.java_conf.snake0394.loglook_android.DropboxAuthManager;
 import jp.gr.java_conf.snake0394.loglook_android.SlantLauncher;
-import jp.gr.java_conf.snake0394.loglook_android.ProxyServer;
+import jp.gr.java_conf.snake0394.loglook_android.proxy.ProxyServerService;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.DropboxAuthActivity;
 
@@ -317,11 +317,11 @@ public class ConfigFragment extends Fragment {
 
                 editor.commit();
 
-                Intent intent = new Intent(getActivity(), ProxyServer.class);
+                Intent intent = new Intent(getActivity(), ProxyServerService.class);
                 getActivity().stopService(intent);
                 intent = new Intent(getActivity(), SlantLauncher.class);
                 getActivity().stopService(intent);
-                intent = new Intent(getActivity(), ProxyServer.class);
+                intent = new Intent(getActivity(), ProxyServerService.class);
                 getActivity().startService(intent);
                 intent = new Intent(getActivity(), SlantLauncher.class);
                 getActivity().startService(intent);
