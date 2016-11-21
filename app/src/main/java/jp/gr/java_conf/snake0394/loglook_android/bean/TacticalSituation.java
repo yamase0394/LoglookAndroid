@@ -263,6 +263,7 @@ public enum TacticalSituation implements Serializable {
                 enemyNowhps.set(i - 1, hp);
             }
             switch (battle.getBattleType()) {
+                case COMBINED_EC:
                 case COMBINED_EACH:
                 case COMBINED_EACH_WATER:
                     for (int i = 1; i <= enemyShipId.size(); i++) {
@@ -624,7 +625,7 @@ public enum TacticalSituation implements Serializable {
                 break;
 
             case COMBINED_EC:
-                //随伴護衛艦隊
+                //砲撃戦(対随伴)
                 List<Integer> eflag = battle.getHougekiAtEFlagList1();
                 at = battle.getHougekiAtList1();
                 df = battle.getHougekiDfList1();
@@ -643,7 +644,7 @@ public enum TacticalSituation implements Serializable {
                     }
                 }
 
-                //随伴護衛艦隊 雷撃
+                //雷撃戦(対全体)
                 friendDamage = battle.getRaigekiFriendDamage();
                 if (friendDamage != null) {
                     for (int i = 1; i <= friendShipId.size(); i++) {
@@ -667,7 +668,7 @@ public enum TacticalSituation implements Serializable {
                     }
                 }
 
-                //本隊1巡目
+                //砲撃戦(対本隊)
                 eflag = battle.getHougekiAtEFlagList2();
                 at = battle.getHougekiAtList2();
                 df = battle.getHougekiDfList2();
@@ -686,7 +687,7 @@ public enum TacticalSituation implements Serializable {
                     }
                 }
 
-                //本隊2巡目
+                //砲撃戦(対全体)
                 eflag = battle.getHougekiAtEFlagList3();
                 at = battle.getHougekiAtList3();
                 df = battle.getHougekiDfList3();
@@ -698,6 +699,12 @@ public enum TacticalSituation implements Serializable {
                             hp -= damage.get(i);
                             friendNowhps.set(df.get(i) - 1, hp);
                         } else {
+                            if (df.get(i) >= 7) {
+                                int hp = enemyNowhpsCombined.get(df.get(i) - 7);
+                                hp -= damage.get(i);
+                                enemyNowhpsCombined.set(df.get(i) - 7, hp);
+                                continue;
+                            }
                             int hp = enemyNowhps.get(df.get(i) - 1);
                             hp -= damage.get(i);
                             enemyNowhps.set(df.get(i) - 1, hp);
