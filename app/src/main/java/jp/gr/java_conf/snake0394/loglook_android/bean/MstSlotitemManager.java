@@ -9,7 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 
-import jp.gr.java_conf.snake0394.loglook_android.ErrorLogger;
+import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
 
 /**
  * 装備品idと装備品データを対応させます

@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import jp.gr.java_conf.snake0394.loglook_android.ErrorLogger;
+import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
 
 /**
  * Created by snake0394 on 2016/08/22.

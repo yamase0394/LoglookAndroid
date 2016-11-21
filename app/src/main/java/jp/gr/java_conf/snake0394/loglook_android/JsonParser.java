@@ -54,6 +54,12 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.ShipMap;
 import jp.gr.java_conf.snake0394.loglook_android.bean.SortieBattleresult;
 import jp.gr.java_conf.snake0394.loglook_android.bean.SpMidnightBattle;
 import jp.gr.java_conf.snake0394.loglook_android.bean.TacticalSituation;
+import jp.gr.java_conf.snake0394.loglook_android.logger.BattleLogger;
+import jp.gr.java_conf.snake0394.loglook_android.logger.CreateItemLogger;
+import jp.gr.java_conf.snake0394.loglook_android.logger.CreateShipLogger;
+import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
+import jp.gr.java_conf.snake0394.loglook_android.logger.MaterialLogger;
+import jp.gr.java_conf.snake0394.loglook_android.logger.MissionLogger;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.HeavilyDamagedWarningActivity;
 
 /**

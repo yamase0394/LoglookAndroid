@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import jp.gr.java_conf.snake0394.loglook_android.BattleType;
-import jp.gr.java_conf.snake0394.loglook_android.ErrorLogger;
+import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
 
 /**
  * 戦闘(昼戦)
