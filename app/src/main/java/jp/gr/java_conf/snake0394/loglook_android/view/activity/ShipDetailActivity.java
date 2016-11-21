@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jp.gr.java_conf.snake0394.loglook_android.DockTimer;
-import jp.gr.java_conf.snake0394.loglook_android.EquipIconId;
+import jp.gr.java_conf.snake0394.loglook_android.view.EquipIconId;
 import jp.gr.java_conf.snake0394.loglook_android.Escape;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.ShipUtility;
@@ -29,8 +29,6 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
-
-import static android.R.attr.name;
 
 public class ShipDetailActivity extends AppCompatActivity {
 

@@ -7,7 +7,6 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitemManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
-import jp.gr.java_conf.snake0394.loglook_android.view.EquipType;
 
 /**
  * Created by snake0394 on 2016/10/29.

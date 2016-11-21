@@ -1,4 +1,4 @@
-package jp.gr.java_conf.snake0394.loglook_android.view;
+package jp.gr.java_conf.snake0394.loglook_android;
 
 import java.util.HashMap;
 import java.util.Map;

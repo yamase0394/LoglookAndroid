@@ -21,7 +21,7 @@ import java.util.List;
 import jp.gr.java_conf.snake0394.loglook_android.App;
 import jp.gr.java_conf.snake0394.loglook_android.DeckUtility;
 import jp.gr.java_conf.snake0394.loglook_android.DockTimer;
-import jp.gr.java_conf.snake0394.loglook_android.EquipIconId;
+import jp.gr.java_conf.snake0394.loglook_android.view.EquipIconId;
 import jp.gr.java_conf.snake0394.loglook_android.ErrorLogger;
 import jp.gr.java_conf.snake0394.loglook_android.Escape;
 import jp.gr.java_conf.snake0394.loglook_android.R;

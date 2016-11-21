@@ -54,7 +54,6 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.ShipMap;
 import jp.gr.java_conf.snake0394.loglook_android.bean.SortieBattleresult;
 import jp.gr.java_conf.snake0394.loglook_android.bean.SpMidnightBattle;
 import jp.gr.java_conf.snake0394.loglook_android.bean.TacticalSituation;
-import jp.gr.java_conf.snake0394.loglook_android.view.EquipType;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.HeavilyDamagedWarningActivity;
 
 /**
