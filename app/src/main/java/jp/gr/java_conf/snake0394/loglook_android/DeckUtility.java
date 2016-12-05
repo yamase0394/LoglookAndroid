@@ -15,12 +15,14 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
 
+import static jp.gr.java_conf.snake0394.loglook_android.SlotItemUtility.getjukurenSeiku;
+
 /**
  * Created by snake0394 on 2016/08/29.
  */
 public class DeckUtility {
     /**
-     * 艦隊の索敵能力を求める
+     * @return 艦隊の制空値
      */
     public static int getSeiku(Deck deck) {
         List<Integer> shipId = deck.getShipId();
@@ -60,68 +62,7 @@ public class DeckUtility {
     }
 
     /**
-     * 装備の熟練度によって上昇した制空値を求める
-     */
-    private static int getjukurenSeiku(MySlotItem mySlotItem) {
-        MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-        switch (EquipType.toEquipType(mstSlotitem.getType().get(2))) {
-            case 艦上戦闘機:
-            case 水上戦闘機:
-                switch (mySlotItem.getAlv()) {
-                    case 1:
-                        return 1;
-                    case 2:
-                        return 3;
-                    case 3:
-                        return 7;
-                    case 4:
-                        return 11;
-                    case 5:
-                        return 16;
-                    case 6:
-                        return 17;
-                    case 7:
-                        return 25;
-                }
-                break;
-            case 艦上爆撃機:
-            case 艦上攻撃機:
-                switch (mySlotItem.getAlv()) {
-                    case 1:
-                    case 2:
-                        return 1;
-                    case 3:
-                    case 4:
-                    case 5:
-                        return 2;
-                    case 6:
-                    case 7:
-                        return 3;
-                }
-                break;
-            case 水上爆撃機:
-                switch (mySlotItem.getAlv()) {
-                    case 1:
-                        return 1;
-                    case 2:
-                        return 2;
-                    case 3:
-                    case 4:
-                        return 3;
-                    case 5:
-                        return 5;
-                    case 6:
-                        return 6;
-                    case 7:
-                        return 9;
-                }
-                break;
-        }
-        return 0;
-    }
-
-    /**
-     * 艦隊の触接開始率を求める
+     * @return 艦隊の触接開始率
      */
     public static int getTouchStartRate(Deck deck) {
         List<Integer> shipId = deck.getShipId();
@@ -155,7 +96,7 @@ public class DeckUtility {
 
 
     /**
-     * 艦隊の判定式(33)の索敵値を求める
+     * @return 艦隊の判定式(33)の索敵値
      */
     public static float getSakuteki33(Deck deck) {
         float sakuteki = 0;
@@ -228,7 +169,7 @@ public class DeckUtility {
     }
 
     /**
-     * 2-5式(秋)の索敵を求める
+     * @return 2-5式(秋)の索敵値
      */
     public static float getSakuteki25(Deck deck) {
         double sakuteki = 0;
@@ -329,5 +270,45 @@ public class DeckUtility {
         }
 
         return sum;
+    }
+
+    /**
+     * @return 艦隊防空値(単縦陣、梯形陣、単横陣)
+     */
+    public static float getAdjustedFleetAA(Deck deck, String formation) {
+        //艦隊防空値
+        int fleetAA = 0;
+
+        for (int shipId : deck.getShipId()) {
+            if (!MyShipManager.INSTANCE.contains(shipId) || shipId == -1) {
+                break;
+            }
+            MyShip myShip = MyShipManager.INSTANCE.getMyShip(shipId);
+
+            //各艦の艦隊対空ボーナス値
+            fleetAA += ShipUtility.getAdjustedFleetAA(myShip);
+        }
+
+        //陣形補正
+        float formationModifier = 1;
+        try {
+            switch (formation) {
+                case "単縦陣":
+                case "梯形陣":
+                case "単横陣":
+                    formationModifier = 1;
+                    break;
+                case "複縦陣":
+                    formationModifier = 1.2f;
+                    break;
+                case "輪形陣":
+                    formationModifier = 1.6f;
+                    break;
+            }
+        }catch (NullPointerException e){
+            //
+        }
+
+        return (float) (Math.floor(formationModifier * fleetAA) * 2 / 1.3);
     }
 }

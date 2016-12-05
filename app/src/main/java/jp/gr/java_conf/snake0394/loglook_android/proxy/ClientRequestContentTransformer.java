@@ -1,7 +1,5 @@
 package jp.gr.java_conf.snake0394.loglook_android.proxy;
 
-import android.util.Log;
-
 import org.eclipse.jetty.proxy.AsyncMiddleManServlet;
 
 import java.io.IOException;
@@ -35,19 +33,13 @@ public class ClientRequestContentTransformer implements AsyncMiddleManServlet.Co
         list.add(byteBuffer);
 
         if (b) {
-            new Thread() {
-                @Override
-                public void run() {
-                    onClientRequestComplete();
-                }
-            }.start();
+            onClientRequestComplete();
         }
     }
 
     private void onClientRequestComplete() {
         String requestBody = sb.toString();
-        Log.d("requestBody", requestBody);
-
+        //Log.d("requestBody", requestBody);
         RequestParser.parse(uri, requestBody);
     }
 }

@@ -1,7 +1,5 @@
 package jp.gr.java_conf.snake0394.loglook_android.proxy;
 
-import android.util.Log;
-
 import org.eclipse.jetty.proxy.AsyncMiddleManServlet;
 
 import java.io.IOException;
@@ -38,12 +36,7 @@ public class ServerResponseContentTransformer implements AsyncMiddleManServlet.C
 
         //サーバからのレスポンスが全て届いた
         if (b) {
-            new Thread() {
-                @Override
-                public void run() {
-                    onServerResponseComplete();
-                }
-            }.start();
+            onServerResponseComplete();
         }
     }
 
@@ -59,7 +52,7 @@ public class ServerResponseContentTransformer implements AsyncMiddleManServlet.C
             return;
         }
 
-        Log.d("loglook", uri);
+        //Log.d("loglook", uri);
 
         JsonParser.parse(uri, jsonStr);
     }

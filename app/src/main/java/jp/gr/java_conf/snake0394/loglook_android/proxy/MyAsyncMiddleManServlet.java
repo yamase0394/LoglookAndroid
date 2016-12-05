@@ -16,13 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public class MyAsyncMiddleManServlet extends AsyncMiddleManServlet {
 
-    /*
-    @Override
-    protected ContentTransformer newClientRequestContentTransformer(HttpServletRequest clientRequest, Request proxyRequest) {
-        return new ServerResponseContentTransformer();
-    }
-    */
-
     @Override
     protected void addProxyHeaders(HttpServletRequest clientRequest, Request proxyRequest) {
         //ヘッダーを空に

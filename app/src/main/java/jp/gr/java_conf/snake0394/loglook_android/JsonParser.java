@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -70,7 +69,7 @@ public class JsonParser {
     public static void parse(String uri, String jsonStr) {
         Context context = App.getInstance();
         try {
-            Log.d("JsonParser", uri);
+            //Log.d("JsonParser", uri);
             //uriでJSONの解析処理を切り替える
             switch (uri) {
                 //起動時にキャッシュがない場合
@@ -945,7 +944,7 @@ public class JsonParser {
 
             //フォルダがなければ作成
             if (!sdcard_path.exists()) {
-                sdcard_path.mkdir();
+                sdcard_path.mkdirs();
             }
 
             try {
@@ -957,7 +956,7 @@ public class JsonParser {
             }
         }
 
-        Log.d("JSON", jsonStr);
+        //Log.d("JSON", jsonStr);
     }
 
 }

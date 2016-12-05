@@ -36,13 +36,10 @@ public class ProxyServerService extends Service implements Runnable {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d("ProxyServerService", "onCreate");
     }
 
     @Override
     public int onStartCommand(Intent intent, final int flags, int startId) {
-        Log.d("ProxyServerService", "onStartCommand");
-
         //常駐するための通知
         //タップしたときMainActivityを起動
         intent = new Intent(this, MainActivity.class);
@@ -50,7 +47,6 @@ public class ProxyServerService extends Service implements Runnable {
         Notification builder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_stat_transparent).setTicker("start").setContentTitle("泥提督支援アプリ").setContentText("").setWhen(System.currentTimeMillis()).setContentIntent(pending).setPriority(Notification.PRIORITY_MIN).build();
         builder.flags = Notification.FLAG_ONGOING_EVENT;
         startForeground(R.string.app_name, builder);
-        //manager.notify(R.string.app_name, builder);
 
         //プロキシサーバーを起動
         Thread t = new Thread(this);
@@ -68,10 +64,7 @@ public class ProxyServerService extends Service implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        //mNotificationManager.cancel(R.string.app_name);
         stopForeground(true);
-        Log.d("ProxyServerService", "onDestroy");
     }
 
     @Override
@@ -80,7 +73,7 @@ public class ProxyServerService extends Service implements Runnable {
         ServerConnector serverConnector = new ServerConnector(server);
 
         // リクエストを待ち受けるポート番号を設定
-        serverConnector.setHost("localhost");
+        serverConnector.setHost("127.0.0.1");
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         Log.d("server", sp.getString("port", "8080"));
 
