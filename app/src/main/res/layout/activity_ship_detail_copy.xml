@@ -2,7 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_ship_detail"
+    android:mstId="@+mstId/activity_ship_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -24,7 +24,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/shipName"
+                android:mstId="@+mstId/shipName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TextView"
@@ -32,7 +32,7 @@
                 />
 
             <TextView
-                android:id="@+id/lv"
+                android:mstId="@+mstId/lv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -40,7 +40,7 @@
                 android:textSize="20sp"/>
 
             <TextView
-                android:id="@+id/state"
+                android:mstId="@+mstId/state"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -57,7 +57,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/hp"
+                android:mstId="@+mstId/hp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
@@ -77,14 +77,14 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/textView53"
+                        android:mstId="@+mstId/textView53"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="燃料:"
                         />
 
                     <TextView
-                        android:id="@+id/fuel"
+                        android:mstId="@+mstId/fuel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -98,14 +98,14 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/textView54"
+                        android:mstId="@+mstId/textView54"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="弾薬:"
                         />
 
                     <TextView
-                        android:id="@+id/bull"
+                        android:mstId="@+mstId/bull"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -116,7 +116,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/cond"
+                android:mstId="@+mstId/cond"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -138,7 +138,7 @@
                 >
 
                 <TextView
-                    android:id="@+id/space1"
+                    android:mstId="@+mstId/space1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1"
@@ -146,7 +146,7 @@
                     />
 
                 <TextView
-                    android:id="@+id/equipment1"
+                    android:mstId="@+mstId/equipment1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
@@ -156,7 +156,7 @@
                     />
 
                 <TextView
-                    android:id="@+id/alv1"
+                    android:mstId="@+mstId/alv1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="15dp"
@@ -164,7 +164,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/improvement1"
+                    android:mstId="@+mstId/improvement1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="★"
@@ -178,14 +178,14 @@
                 android:layout_marginTop="5dp">
 
                 <TextView
-                    android:id="@+id/space2"
+                    android:mstId="@+mstId/space2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1"
                     android:textSize="17sp"/>
 
                 <TextView
-                    android:id="@+id/equipment2"
+                    android:mstId="@+mstId/equipment2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
@@ -194,7 +194,7 @@
                     android:textSize="19sp"/>
 
                 <TextView
-                    android:id="@+id/alv2"
+                    android:mstId="@+mstId/alv2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="15dp"
@@ -202,7 +202,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/improvement2"
+                    android:mstId="@+mstId/improvement2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="★"
@@ -215,14 +215,14 @@
                 android:layout_marginTop="5dp">
 
                 <TextView
-                    android:id="@+id/space3"
+                    android:mstId="@+mstId/space3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1"
                     android:textSize="17sp"/>
 
                 <TextView
-                    android:id="@+id/equipment3"
+                    android:mstId="@+mstId/equipment3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
@@ -231,7 +231,7 @@
                     android:textSize="19sp"/>
 
                 <TextView
-                    android:id="@+id/alv3"
+                    android:mstId="@+mstId/alv3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="15dp"
@@ -239,7 +239,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/improvement3"
+                    android:mstId="@+mstId/improvement3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="★"
@@ -252,14 +252,14 @@
                 android:layout_marginTop="5dp">
 
                 <TextView
-                    android:id="@+id/space4"
+                    android:mstId="@+mstId/space4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1"
                     android:textSize="17sp"/>
 
                 <TextView
-                    android:id="@+id/equipment4"
+                    android:mstId="@+mstId/equipment4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
@@ -268,7 +268,7 @@
                     android:textSize="19sp"/>
 
                 <TextView
-                    android:id="@+id/alv4"
+                    android:mstId="@+mstId/alv4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="15dp"
@@ -276,7 +276,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/improvement4"
+                    android:mstId="@+mstId/improvement4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="★"
@@ -293,7 +293,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textView76"
+                android:mstId="@+mstId/textView76"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -301,7 +301,7 @@
                 android:textSize="20sp"/>
 
             <TextView
-                android:id="@+id/extraSlot"
+                android:mstId="@+mstId/extraSlot"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -320,7 +320,7 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/textView62"
+                    android:mstId="@+mstId/textView62"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -328,7 +328,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/hp2"
+                    android:mstId="@+mstId/hp2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -336,7 +336,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/textView65"
+                    android:mstId="@+mstId/textView65"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -344,7 +344,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/firepower"
+                    android:mstId="@+mstId/firepower"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -359,7 +359,7 @@
                 android:layout_marginTop="5dp">
 
                 <TextView
-                    android:id="@+id/textView66"
+                    android:mstId="@+mstId/textView66"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -367,7 +367,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/arnor"
+                    android:mstId="@+mstId/arnor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -375,7 +375,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/textView67"
+                    android:mstId="@+mstId/textView67"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -383,7 +383,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/torpedo"
+                    android:mstId="@+mstId/torpedo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -398,7 +398,7 @@
                 android:layout_marginTop="5dp">
 
                 <TextView
-                    android:id="@+id/textView68"
+                    android:mstId="@+mstId/textView68"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -406,7 +406,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/evasion"
+                    android:mstId="@+mstId/evasion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -414,7 +414,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/textView69"
+                    android:mstId="@+mstId/textView69"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -422,7 +422,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/aa"
+                    android:mstId="@+mstId/aa"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -437,7 +437,7 @@
                 android:layout_marginTop="5dp">
 
                 <TextView
-                    android:id="@+id/textView70"
+                    android:mstId="@+mstId/textView70"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -445,7 +445,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/aircraft"
+                    android:mstId="@+mstId/aircraft"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -453,7 +453,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/textView71"
+                    android:mstId="@+mstId/textView71"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -461,7 +461,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/asw"
+                    android:mstId="@+mstId/asw"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -476,7 +476,7 @@
                 android:layout_marginTop="5dp">
 
                 <TextView
-                    android:id="@+id/textView72"
+                    android:mstId="@+mstId/textView72"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -484,7 +484,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/speed"
+                    android:mstId="@+mstId/speed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -492,7 +492,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/textView73"
+                    android:mstId="@+mstId/textView73"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -500,7 +500,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/los"
+                    android:mstId="@+mstId/los"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -515,7 +515,7 @@
                 android:layout_marginTop="5dp">
 
                 <TextView
-                    android:id="@+id/textView74"
+                    android:mstId="@+mstId/textView74"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -523,7 +523,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/range"
+                    android:mstId="@+mstId/range"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -531,7 +531,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/textView75"
+                    android:mstId="@+mstId/textView75"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -539,7 +539,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/luck"
+                    android:mstId="@+mstId/luck"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

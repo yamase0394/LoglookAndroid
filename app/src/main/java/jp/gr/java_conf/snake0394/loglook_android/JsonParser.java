@@ -233,7 +233,7 @@ public class JsonParser {
                     for (int i = 0; i < shipArray.length(); i++) {
                         shipObj[i] = shipArray.getJSONObject(i);
                         MyShip myShip = new MyShip();
-                        myShip.setId(shipObj[i].getInt("api_id"));
+                        myShip.setMstId(shipObj[i].getInt("api_id"));
                         myShip.setSortno(shipObj[i].getInt("api_sortno"));
                         myShip.setShipId(shipObj[i].getInt("api_ship_id"));
                         myShip.setLv(shipObj[i].getInt("api_lv"));
@@ -332,9 +332,9 @@ public class JsonParser {
                             myShip.setSallyArea(shipObj[i].getInt("api_sally_area"));
                         } catch (Exception e) {
                         }
-                        list.add(myShip.getId());
-                        ShipMap.INSTANCE.put(myShip.getId(), MstShipManager.INSTANCE.getMstShip(myShip.getShipId()));
-                        MyShipManager.INSTANCE.put(myShip.getId(), myShip);
+                        list.add(myShip.getMstId());
+                        ShipMap.INSTANCE.put(myShip.getMstId(), MstShipManager.INSTANCE.getMstShip(myShip.getShipId()));
+                        MyShipManager.INSTANCE.put(myShip.getMstId(), myShip);
                     }
                     MyShipManager.INSTANCE.delete(list);
                     mstShip = new MstShip();
@@ -512,7 +512,7 @@ public class JsonParser {
                     for (int i = 0; i < shipArray.length(); i++) {
                         shipObj[i] = shipArray.getJSONObject(i);
                         MyShip myShip = new MyShip();
-                        myShip.setId(shipObj[i].getInt("api_id"));
+                        myShip.setMstId(shipObj[i].getInt("api_id"));
                         myShip.setSortno(shipObj[i].getInt("api_sortno"));
                         myShip.setShipId(shipObj[i].getInt("api_ship_id"));
                         myShip.setLv(shipObj[i].getInt("api_lv"));
@@ -611,9 +611,9 @@ public class JsonParser {
                             myShip.setSallyArea(shipObj[i].getInt("api_sally_area"));
                         } catch (Exception e) {
                         }
-                        list.add(myShip.getId());
-                        ShipMap.INSTANCE.put(myShip.getId(), MstShipManager.INSTANCE.getMstShip(myShip.getShipId()));
-                        MyShipManager.INSTANCE.put(myShip.getId(), myShip);
+                        list.add(myShip.getMstId());
+                        ShipMap.INSTANCE.put(myShip.getMstId(), MstShipManager.INSTANCE.getMstShip(myShip.getShipId()));
+                        MyShipManager.INSTANCE.put(myShip.getMstId(), myShip);
                     }
 
                     break;

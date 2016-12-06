@@ -66,10 +66,10 @@ public class ShipDetailActivity extends AppCompatActivity {
             text.setText("遠征");
             //インディゴ
             text.setBackgroundColor(Color.parseColor("#4e5a92"));
-        } else if (Escape.INSTANCE.isEscaped(myShip.getId())) {
+        } else if (Escape.INSTANCE.isEscaped(myShip.getMstId())) {
             text.setText("退避");
             text.setBackgroundColor(Color.LTGRAY);
-        } else if (DockTimer.INSTANCE.getShipId(1) == myShip.getId() || DockTimer.INSTANCE.getShipId(2) == myShip.getId() || DockTimer.INSTANCE.getShipId(3) == myShip.getId() || DockTimer.INSTANCE.getShipId(4) == myShip.getId()) {
+        } else if (DockTimer.INSTANCE.getShipId(1) == myShip.getMstId() || DockTimer.INSTANCE.getShipId(2) == myShip.getMstId() || DockTimer.INSTANCE.getShipId(3) == myShip.getMstId() || DockTimer.INSTANCE.getShipId(4) == myShip.getMstId()) {
             text.setText("入渠");
             //アクア
             text.setBackgroundColor(Color.rgb(51, 204, 204));

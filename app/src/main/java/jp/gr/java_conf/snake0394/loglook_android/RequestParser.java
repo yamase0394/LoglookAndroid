@@ -62,7 +62,7 @@ public class RequestParser {
                     for (int i = 0; i < shipIdList.size(); i++) {
                         MyShip myShip = MyShipManager.INSTANCE.getMyShip(shipIdList.get(i));
                         if (shipIdList.get(i) != -1 && myShip.getNowhp() <= myShip.getMaxhp() / 4) {
-                            heavyDamaged.add(myShip.getId());
+                            heavyDamaged.add(myShip.getMstId());
                         }
                     }
                     if (!heavyDamaged.isEmpty()) {
