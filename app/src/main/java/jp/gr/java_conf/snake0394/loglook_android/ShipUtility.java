@@ -79,7 +79,7 @@ public class ShipUtility {
     /**
      * @param myShip
      *
-     * @return 戦の基本攻撃力
+     * @return 夜戦の基本攻撃力
      */
     public static float getNightBattleBasicAttackPower(MyShip myShip) {
         float result = 0;
