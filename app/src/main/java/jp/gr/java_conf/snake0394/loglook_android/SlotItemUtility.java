@@ -9,11 +9,13 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
  */
 
 public class SlotItemUtility {
+
     /**
      * 改修によって上昇した分の砲撃戦火力を返します
      *
      * @param mstSlotitem
      * @param improvementLevel 改修度
+     *
      * @return 改修で上昇する砲撃戦火力
      */
     public static float getShellingImprovementFirepower(MstSlotitem mstSlotitem,int improvementLevel) {
@@ -49,6 +51,7 @@ public class SlotItemUtility {
      *
      * @param mstSlotitem
      * @param improvementLevel 改修度
+     *
      * @return 改修で上昇する夜戦火力
      */
     public static float getNightBattleImprovementFirepower(MstSlotitem mstSlotitem,int improvementLevel) {
@@ -77,6 +80,8 @@ public class SlotItemUtility {
     }
 
     /**
+     * @param mySlotItem
+     *
      * @return 熟練度によって上昇した制空値
      */
     public static int getjukurenSeiku(MySlotItem mySlotItem) {

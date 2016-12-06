@@ -16,6 +16,8 @@ import jp.gr.java_conf.snake0394.loglook_android.view.EquipIconId;
 
 public class ShipUtility {
     /**
+     * @param myShip
+     *
      * @return 砲撃戦の基本攻撃力
      */
     public static float getShellingBasicAttackPower(MyShip myShip) {
@@ -50,6 +52,8 @@ public class ShipUtility {
     }
 
     /**
+     * @param myShip
+     *
      * @return 空母の砲撃戦の基本攻撃力
      */
     private static float getShellingBasicAttackPowerCV(MyShip myShip) {
@@ -73,6 +77,8 @@ public class ShipUtility {
     }
 
     /**
+     * @param myShip
+     *
      * @return 戦の基本攻撃力
      */
     public static float getNightBattleBasicAttackPower(MyShip myShip) {
@@ -94,6 +100,8 @@ public class ShipUtility {
     }
 
     /**
+     * @param myShip
+     *
      * @return 加重対空値
      */
     public static int getAdjustedAA(MyShip myShip) {
@@ -149,6 +157,8 @@ public class ShipUtility {
     }
 
     /**
+     * @param myShip
+     *
      * @return 艦隊対空ボーナス値
      */
     public static int getAdjustedFleetAA(MyShip myShip) {

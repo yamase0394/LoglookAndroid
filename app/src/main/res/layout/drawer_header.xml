@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="80.dp"
         android:text="メニュー"
-        android:id="@+id/textView16"
+        android:mstId="@+mstId/textView16"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"

@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:text="必ず以下のサイトで使い方を確認してから使用してください"
             android:textSize="20dp"
-            android:id="@+id/textView"/>
+            android:mstId="@+mstId/textView"/>
 
 
         <TextView
@@ -26,11 +26,11 @@
             android:layout_height="wrap_content"
             android:text="http://snake0394.web.fc2.com/tool1.html"
             android:textSize="20dp"
-            android:id="@+id/textView47"
+            android:mstId="@+mstId/textView47"
             android:autoLink="web"/>
 
         <ToggleButton
-            android:id="@+id/toggleButton"
+            android:mstId="@+mstId/toggleButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"

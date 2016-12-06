@@ -9,7 +9,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/scrollView4">
+        android:mstId="@+mstId/scrollView4">
 
         <LinearLayout
             android:orientation="vertical"
@@ -33,14 +33,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="1."
-                        android:id="@+id/textView17"
+                        android:mstId="@+mstId/textView17"
                         android:textSize="24dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="New Text"
-                        android:id="@+id/name1"
+                        android:mstId="@+mstId/name1"
                         android:textSize="24dp"
                         android:layout_marginLeft="10dp"
                         android:textIsSelectable="false"/>
@@ -55,14 +55,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="完了時刻:"
-                        android:id="@+id/textView19"
+                        android:mstId="@+mstId/textView19"
                         android:textSize="15dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="New Text"
-                        android:id="@+id/time1"
+                        android:mstId="@+mstId/time1"
                         android:textSize="18dp"/>
                 </LinearLayout>
 
@@ -75,14 +75,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="残り時間:"
-                        android:id="@+id/textView21"
+                        android:mstId="@+mstId/textView21"
                         android:textSize="15dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="New Text"
-                        android:id="@+id/until1"
+                        android:mstId="@+mstId/until1"
                         android:textSize="18dp"/>
                 </LinearLayout>
             </LinearLayout>
@@ -110,14 +110,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="2."
-                        android:id="@+id/textView23"
+                        android:mstId="@+mstId/textView23"
                         android:textSize="24dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="New Text"
-                        android:id="@+id/name2"
+                        android:mstId="@+mstId/name2"
                         android:textSize="24dp"
                         android:layout_marginLeft="10dp"/>
                 </LinearLayout>
@@ -131,7 +131,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="完了時刻:"
-                        android:id="@+id/textView25"
+                        android:mstId="@+mstId/textView25"
                         android:textSize="15dp"
                         android:textIsSelectable="false"/>
 
@@ -139,7 +139,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="New Text"
-                        android:id="@+id/time2"
+                        android:mstId="@+mstId/time2"
                         android:textSize="18dp"/>
                 </LinearLayout>
 
@@ -152,14 +152,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="残り時間:"
-                        android:id="@+id/textView27"
+                        android:mstId="@+mstId/textView27"
                         android:textSize="15dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="New Text"
-                        android:id="@+id/until2"
+                        android:mstId="@+mstId/until2"
                         android:textSize="18dp"/>
                 </LinearLayout>
             </LinearLayout>
@@ -187,14 +187,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="3."
-                        android:id="@+id/textView29"
+                        android:mstId="@+mstId/textView29"
                         android:textSize="24dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="New Text"
-                        android:id="@+id/name3"
+                        android:mstId="@+mstId/name3"
                         android:textSize="24dp"
                         android:layout_marginLeft="10dp"/>
                 </LinearLayout>
@@ -208,14 +208,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="完了時刻:"
-                        android:id="@+id/textView31"
+                        android:mstId="@+mstId/textView31"
                         android:textSize="15dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="New Text"
-                        android:id="@+id/time3"
+                        android:mstId="@+mstId/time3"
                         android:textSize="18dp"/>
                 </LinearLayout>
 
@@ -228,14 +228,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="残り時間:"
-                        android:id="@+id/textView33"
+                        android:mstId="@+mstId/textView33"
                         android:textSize="15dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="New Text"
-                        android:id="@+id/until3"
+                        android:mstId="@+mstId/until3"
                         android:textSize="18dp"/>
                 </LinearLayout>
             </LinearLayout>
@@ -264,14 +264,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="4."
-                        android:id="@+id/textView35"
+                        android:mstId="@+mstId/textView35"
                         android:textSize="24dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="New Text"
-                        android:id="@+id/name4"
+                        android:mstId="@+mstId/name4"
                         android:textSize="24dp"
                         android:layout_marginLeft="10dp"/>
                 </LinearLayout>
@@ -285,14 +285,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="完了時刻:"
-                        android:id="@+id/textView37"
+                        android:mstId="@+mstId/textView37"
                         android:textSize="15dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="New Text"
-                        android:id="@+id/time4"
+                        android:mstId="@+mstId/time4"
                         android:textSize="18dp"/>
                 </LinearLayout>
 
@@ -305,14 +305,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="残り時間:"
-                        android:id="@+id/textView39"
+                        android:mstId="@+mstId/textView39"
                         android:textSize="15dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="New Text"
-                        android:id="@+id/until4"
+                        android:mstId="@+mstId/until4"
                         android:textSize="18dp"/>
                 </LinearLayout>
             </LinearLayout>
@@ -323,6 +323,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:name="jp.gr.java_conf.snake0394.loglook_android.view.fragment.ErrorFragment"
-        android:id="@+id/fragment4"/>
+        android:mstId="@+mstId/fragment4"/>
 
 </FrameLayout>
