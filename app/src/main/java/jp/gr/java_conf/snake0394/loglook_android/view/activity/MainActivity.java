@@ -34,6 +34,8 @@ import jp.gr.java_conf.snake0394.loglook_android.view.fragment.HomeFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.MissionFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.TacticalSituationFragment;
 
+import static jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity.Fragment.HOME;
+
 public class MainActivity extends AppCompatActivity implements DockFragment.OnFragmentInteractionListener, ConfigFragment.OnFragmentInteractionListener, ErrorFragment.OnFragmentInteractionListener, MissionFragment.OnFragmentInteractionListener, HomeFragment.OnFragmentInteractionListener, DeckManagerFragment.OnFragmentInteractionListener, TacticalSituationFragment.OnFragmentInteractionListener, DeckFragment.OnFragmentInteractionListener {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawer;
@@ -133,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
             //画面回転を自動に設定
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             // デフォルトはHomeFragment
-            selectItem(Fragment.HOME);
+            selectItem(HOME);
         }
     }
 
@@ -231,6 +233,11 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
     private void selectItem(Fragment mf) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         android.support.v4.app.Fragment fragment;
+
+        if (mf == null) {
+            mf = HOME;
+        }
+
         switch (mf) {
             case HOME:
                 fragment = HomeFragment.newInstance();

@@ -41,9 +41,11 @@
                     android:id="@+id/shipName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:maxWidth="220dp"
                     android:text="TextView"
-                    android:textSize="30sp"
-                    />
+                    android:textSize="30sp"/>
 
                 <TextView
                     android:id="@+id/lv"
@@ -58,10 +60,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:text="遠征"
-                    android:textSize="22sp"
                     android:background="@color/colorPrimaryDark"
-                    android:textColor="@android:color/background_light"/>
+                    android:text="遠征"
+                    android:textColor="@android:color/background_light"
+                    android:textSize="22sp"/>
 
             </LinearLayout>
 
@@ -74,13 +76,13 @@
                 <ProgressBar
                     android:id="@+id/progressBar"
                     style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="9dp"
                     android:maxHeight="10dp"
                     android:minHeight="10dp"
                     android:minWidth="50dp"
-                    android:progressDrawable="@drawable/progressbar"
-                    android:layout_width="100dp"
-                    android:layout_marginTop="9dp"/>
+                    android:progressDrawable="@drawable/progressbar"/>
 
 
                 <TextView
@@ -88,26 +90,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="3dp"
+                    android:layout_weight="1"
                     android:text="111/111"
                     android:textSize="18sp"
-                    android:layout_weight="1"
                     />
 
                 <TextView
                     android:id="@+id/cond"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="cond:99"
-                    android:textSize="18sp"
                     android:layout_marginLeft="10dp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:text="cond:99"
+                    android:textSize="18sp"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_marginLeft="10dp"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -171,9 +173,9 @@
                         android:id="@+id/space1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
                         android:text="1"
-                        android:textSize="17sp"
-                        android:layout_marginRight="5dp"/>
+                        android:textSize="17sp"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -191,10 +193,10 @@
                             android:id="@+id/equipment1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
                             android:layout_weight="1"
                             android:text="TextView"
-                            android:textSize="19sp"
-                            android:layout_marginLeft="5dp"/>
+                            android:textSize="19sp"/>
                     </LinearLayout>
 
                     <TextView
@@ -223,9 +225,9 @@
                         android:id="@+id/space2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
                         android:text="1"
-                        android:textSize="17sp"
-                        android:layout_marginRight="5dp"/>
+                        android:textSize="17sp"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -243,10 +245,10 @@
                             android:id="@+id/equipment2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
                             android:layout_weight="1"
                             android:text="TextView"
-                            android:textSize="19sp"
-                            android:layout_marginLeft="5dp"/>
+                            android:textSize="19sp"/>
                     </LinearLayout>
 
                     <TextView
@@ -274,9 +276,9 @@
                         android:id="@+id/space3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
                         android:text="1"
-                        android:textSize="17sp"
-                        android:layout_marginRight="5dp"/>
+                        android:textSize="17sp"/>
 
 
                     <LinearLayout
@@ -295,10 +297,10 @@
                             android:id="@+id/equipment3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
                             android:layout_weight="1"
                             android:text="TextView"
-                            android:textSize="19sp"
-                            android:layout_marginLeft="5dp"/>
+                            android:textSize="19sp"/>
                     </LinearLayout>
 
                     <TextView
@@ -326,9 +328,9 @@
                         android:id="@+id/space4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
                         android:text="1"
-                        android:textSize="17sp"
-                        android:layout_marginRight="5dp"/>
+                        android:textSize="17sp"/>
 
 
                     <LinearLayout
@@ -347,10 +349,10 @@
                             android:id="@+id/equipment4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
                             android:layout_weight="1"
                             android:text="TextView"
-                            android:textSize="19sp"
-                            android:layout_marginLeft="5dp"/>
+                            android:textSize="19sp"/>
                     </LinearLayout>
 
                     <TextView
@@ -383,9 +385,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:text="補強増設:"
-                    android:textSize="19sp"
-                    android:layout_marginRight="5dp"/>
+                    android:textSize="19sp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -404,10 +406,10 @@
                         android:id="@+id/extraSlot"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:text="TextView"
-                        android:textSize="19sp"
-                        android:layout_marginLeft="5dp"/>
+                        android:textSize="19sp"/>
                 </LinearLayout>
 
             </LinearLayout>
