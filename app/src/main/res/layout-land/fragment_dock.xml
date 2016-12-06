@@ -8,7 +8,7 @@
     <!-- TODO: Update blank fragment layout -->
 
     <ScrollView
-        android:mstId="@+mstId/scrollView7"
+        android:id="@+id/scrollView7"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
@@ -38,14 +38,14 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:mstId="@+mstId/textView17"
+                            android:id="@+id/textView17"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="1."
                             android:textSize="24dp"/>
 
                         <TextView
-                            android:mstId="@+mstId/name1"
+                            android:id="@+id/name1"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
@@ -66,14 +66,14 @@
                             android:orientation="horizontal">
 
                             <TextView
-                                android:mstId="@+mstId/textView19"
+                                android:id="@+id/textView19"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="完了時刻:"
                                 android:textSize="15dp"/>
 
                             <TextView
-                                android:mstId="@+mstId/time1"
+                                android:id="@+id/time1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="New Text"
@@ -86,14 +86,14 @@
                             android:orientation="horizontal">
 
                             <TextView
-                                android:mstId="@+mstId/textView21"
+                                android:id="@+id/textView21"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="残り時間:"
                                 android:textSize="15dp"/>
 
                             <TextView
-                                android:mstId="@+mstId/until1"
+                                android:id="@+id/until1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="New Text"
@@ -123,14 +123,14 @@
 
 
                         <TextView
-                            android:mstId="@+mstId/textView29"
+                            android:id="@+id/textView29"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="2."
                             android:textSize="24dp"/>
 
                         <TextView
-                            android:mstId="@+mstId/name2"
+                            android:id="@+id/name2"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
@@ -150,14 +150,14 @@
                             android:orientation="horizontal">
 
                             <TextView
-                                android:mstId="@+mstId/textView31"
+                                android:id="@+id/textView31"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="完了時刻:"
                                 android:textSize="15dp"/>
 
                             <TextView
-                                android:mstId="@+mstId/time2"
+                                android:id="@+id/time2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="New Text"
@@ -170,14 +170,14 @@
                             android:orientation="horizontal">
 
                             <TextView
-                                android:mstId="@+mstId/textView33"
+                                android:id="@+id/textView33"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="残り時間:"
                                 android:textSize="15dp"/>
 
                             <TextView
-                                android:mstId="@+mstId/until2"
+                                android:id="@+id/until2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="New Text"
@@ -206,14 +206,14 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:mstId="@+mstId/textView23"
+                            android:id="@+id/textView23"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="3."
                             android:textSize="24dp"/>
 
                         <TextView
-                            android:mstId="@+mstId/name3"
+                            android:id="@+id/name3"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
@@ -233,7 +233,7 @@
                             android:orientation="horizontal">
 
                             <TextView
-                                android:mstId="@+mstId/textView25"
+                                android:id="@+id/textView25"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="完了時刻:"
@@ -241,7 +241,7 @@
                                 android:textSize="15dp"/>
 
                             <TextView
-                                android:mstId="@+mstId/time3"
+                                android:id="@+id/time3"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="New Text"
@@ -254,14 +254,14 @@
                             android:orientation="horizontal">
 
                             <TextView
-                                android:mstId="@+mstId/textView27"
+                                android:id="@+id/textView27"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="残り時間:"
                                 android:textSize="15dp"/>
 
                             <TextView
-                                android:mstId="@+mstId/until3"
+                                android:id="@+id/until3"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="New Text"
@@ -290,14 +290,14 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:mstId="@+mstId/textView35"
+                            android:id="@+id/textView35"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="4."
                             android:textSize="24dp"/>
 
                         <TextView
-                            android:mstId="@+mstId/name4"
+                            android:id="@+id/name4"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
@@ -317,14 +317,14 @@
                             android:orientation="horizontal">
 
                             <TextView
-                                android:mstId="@+mstId/textView37"
+                                android:id="@+id/textView37"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="完了時刻:"
                                 android:textSize="15dp"/>
 
                             <TextView
-                                android:mstId="@+mstId/time4"
+                                android:id="@+id/time4"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="New Text"
@@ -337,14 +337,14 @@
                             android:orientation="horizontal">
 
                             <TextView
-                                android:mstId="@+mstId/textView39"
+                                android:id="@+id/textView39"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="残り時間:"
                                 android:textSize="15dp"/>
 
                             <TextView
-                                android:mstId="@+mstId/until4"
+                                android:id="@+id/until4"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="New Text"
@@ -358,7 +358,7 @@
     </ScrollView>
 
     <fragment
-        android:mstId="@+mstId/fragment4"
+        android:id="@+id/fragment4"
         android:name="jp.gr.java_conf.snake0394.loglook_android.view.fragment.ErrorFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

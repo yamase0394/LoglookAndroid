@@ -192,7 +192,7 @@ public class TacticalSituationFragment extends Fragment {
                 name = "state" + i;
                 strId = getResources().getIdentifier(name, "id", getActivity().getPackageName());
                 text = (TextView) getActivity().findViewById(strId);
-                if (Escape.INSTANCE.isEscaped(myShip.getMstId())) {
+                if (Escape.INSTANCE.isEscaped(myShip.getId())) {
                     text.setText("退避");
                     text.setTextColor(Color.LTGRAY);
                 } else if (ts.getFriendNowhps().get(i - 1) <= 0) {
@@ -422,7 +422,7 @@ public class TacticalSituationFragment extends Fragment {
                 strId = getResources().getIdentifier(name, "id", getActivity().getPackageName());
                 text = (TextView) getActivity().findViewById(strId);
                 text.setVisibility(View.VISIBLE);
-                if (Escape.INSTANCE.isEscaped(myShip.getMstId())) {
+                if (Escape.INSTANCE.isEscaped(myShip.getId())) {
                     text.setText("退避");
                     text.setTextColor(Color.LTGRAY);
                 } else if (ts.getFriendNowhpsCombined().get(i - 1) <= 0) {

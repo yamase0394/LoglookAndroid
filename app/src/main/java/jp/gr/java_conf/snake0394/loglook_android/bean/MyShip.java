@@ -13,7 +13,7 @@ public class MyShip implements Serializable {
   /**
    * 艦娘マスターID
    */
-  private int mstId;
+  private int id;
 
   /**
    * 並び替え順？
@@ -171,12 +171,12 @@ public class MyShip implements Serializable {
   /**
    * @return 艦娘マスターID
    */
-  public int getMstId() {
-    return mstId;
+  public int getId() {
+    return id;
   }
 
-  public void setMstId(int mstId) {
-    this.mstId = mstId;
+  public void setId(int id) {
+    this.id = id;
   }
 
   public int getSortno() {

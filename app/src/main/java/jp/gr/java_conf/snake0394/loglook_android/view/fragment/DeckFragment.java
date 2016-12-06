@@ -173,10 +173,10 @@ public class DeckFragment extends Fragment {
                     text.setText("遠征");
                     //インディゴ
                     text.setBackgroundColor(Color.parseColor("#4e5a92"));
-                } else if (Escape.INSTANCE.isEscaped(myShip.getMstId())) {
+                } else if (Escape.INSTANCE.isEscaped(myShip.getId())) {
                     text.setText("退避");
                     text.setBackgroundColor(Color.LTGRAY);
-                } else if (DockTimer.INSTANCE.getShipId(1) == myShip.getMstId() || DockTimer.INSTANCE.getShipId(2) == myShip.getMstId() || DockTimer.INSTANCE.getShipId(3) == myShip.getMstId() || DockTimer.INSTANCE.getShipId(4) == myShip.getMstId()) {
+                } else if (DockTimer.INSTANCE.getShipId(1) == myShip.getId() || DockTimer.INSTANCE.getShipId(2) == myShip.getId() || DockTimer.INSTANCE.getShipId(3) == myShip.getId() || DockTimer.INSTANCE.getShipId(4) == myShip.getId()) {
                     text.setText("入渠");
                     //アクア
                     text.setBackgroundColor(Color.rgb(51, 204, 204));
@@ -395,7 +395,7 @@ public class DeckFragment extends Fragment {
                 strId = resources.getIdentifier(name, "id", packageName);
                 Button button = (Button) rootView.findViewById(strId);
                 button.setVisibility(View.VISIBLE);
-                final int id = myShip.getMstId();
+                final int id = myShip.getId();
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

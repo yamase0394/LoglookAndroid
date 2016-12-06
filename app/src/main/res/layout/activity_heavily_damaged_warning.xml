@@ -13,7 +13,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:mstId="@+mstId/scrollView"
+        android:id="@+id/scrollView"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
@@ -31,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="大破警告"
-                android:mstId="@+mstId/textView"
+                android:id="@+id/textView"
                 android:layout_gravity="center_horizontal"
                 android:textSize="50dp"
                 android:paddingTop="20dp"/>
@@ -40,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="New Text"
-                android:mstId="@+mstId/textView2"
+                android:id="@+id/textView2"
                 android:layout_gravity="center_horizontal"
                 android:textSize="30dp"
                 android:paddingTop="10dp"
@@ -57,7 +57,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="艦これに戻る"
-                    android:mstId="@+mstId/button"
+                    android:id="@+id/button"
                     android:layout_gravity="center_horizontal"
                     android:textSize="18dp"
                     android:layout_marginLeft="20dp"
@@ -67,7 +67,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="艦隊情報を見る"
-                    android:mstId="@+mstId/button3"
+                    android:id="@+id/button3"
                     android:textSize="18dp"
                     android:layout_marginRight="20dp"/>
             </LinearLayout>

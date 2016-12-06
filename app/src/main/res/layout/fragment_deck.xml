@@ -21,7 +21,7 @@
             android:background="@color/drawer_header"/>
 
         <ScrollView
-            android:mstId="@+mstId/scrollView3"
+            android:id="@+id/scrollView3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true">
@@ -64,7 +64,7 @@
                                     android:orientation="horizontal">
 
                                     <TextView
-                                        android:mstId="@+mstId/name1"
+                                        android:id="@+id/name1"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="5dp"
@@ -75,7 +75,7 @@
                                         android:maxLines="1"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/lv1"
+                                        android:id="@+id/lv1"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="3dp"
@@ -84,7 +84,7 @@
                                         />
 
                                     <TextView
-                                        android:mstId="@+mstId/state1"
+                                        android:id="@+id/state1"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="5dp"
@@ -102,7 +102,7 @@
                                     android:orientation="horizontal">
 
                                     <ProgressBar
-                                        android:mstId="@+mstId/progressBar1"
+                                        android:id="@+id/progressBar1"
                                         style="?android:attr/progressBarStyleHorizontal"
                                         android:layout_width="80dp"
                                         android:layout_height="wrap_content"
@@ -113,7 +113,7 @@
                                         android:progressDrawable="@drawable/progressbar"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/hp1"
+                                        android:id="@+id/hp1"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="3dp"
@@ -122,7 +122,7 @@
                                         android:textSize="12sp"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/cond1"
+                                        android:id="@+id/cond1"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="7dp"
@@ -145,14 +145,14 @@
                                     android:orientation="horizontal">
 
                                     <TextView
-                                        android:mstId="@+mstId/fuelText1"
+                                        android:id="@+id/fuelText1"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="燃料:"
                                         android:textSize="13sp"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/fuel1"
+                                        android:id="@+id/fuel1"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="New Text"
@@ -167,14 +167,14 @@
                                     android:orientation="horizontal">
 
                                     <TextView
-                                        android:mstId="@+mstId/bullText1"
+                                        android:id="@+id/bullText1"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="弾薬:"
                                         android:textSize="13sp"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/bull1"
+                                        android:id="@+id/bull1"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="New Text"
@@ -194,28 +194,28 @@
                             android:weightSum="1">
 
                             <ImageView
-                                android:mstId="@+mstId/slot11"
+                                android:id="@+id/slot11"
                                 android:layout_width="24dp"
                                 android:layout_height="match_parent"
                                 app:srcCompat="@drawable/not_available"
                                 />
 
                             <ImageView
-                                android:mstId="@+mstId/slot12"
+                                android:id="@+id/slot12"
                                 android:layout_width="27dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
                                 app:srcCompat="@drawable/not_available"/>
 
                             <ImageView
-                                android:mstId="@+mstId/slot13"
+                                android:id="@+id/slot13"
                                 android:layout_width="28dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
                                 app:srcCompat="@drawable/not_available"/>
 
                             <ImageView
-                                android:mstId="@+mstId/slot14"
+                                android:id="@+id/slot14"
                                 android:layout_width="19dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
@@ -223,7 +223,7 @@
                                 app:srcCompat="@drawable/not_available"/>
 
                             <TextView
-                                android:mstId="@+mstId/slotEx1"
+                                android:id="@+id/slotEx1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
@@ -233,7 +233,7 @@
                                 android:text="増設"/>
 
                             <ImageView
-                                android:mstId="@+mstId/slotExIcon1"
+                                android:id="@+id/slotExIcon1"
                                 android:layout_width="27dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
@@ -243,7 +243,7 @@
                     </LinearLayout>
 
                     <Button
-                        android:mstId="@+mstId/detail1"
+                        android:id="@+id/detail1"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginRight="13dp"
@@ -297,7 +297,7 @@
                                     android:orientation="horizontal">
 
                                     <TextView
-                                        android:mstId="@+mstId/name2"
+                                        android:id="@+id/name2"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="5dp"
@@ -308,7 +308,7 @@
                                         android:maxLines="1"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/lv2"
+                                        android:id="@+id/lv2"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="3dp"
@@ -317,7 +317,7 @@
                                         />
 
                                     <TextView
-                                        android:mstId="@+mstId/state2"
+                                        android:id="@+id/state2"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="5dp"
@@ -335,7 +335,7 @@
                                     android:orientation="horizontal">
 
                                     <ProgressBar
-                                        android:mstId="@+mstId/progressBar2"
+                                        android:id="@+id/progressBar2"
                                         style="?android:attr/progressBarStyleHorizontal"
                                         android:layout_width="80dp"
                                         android:layout_height="wrap_content"
@@ -346,7 +346,7 @@
                                         android:progressDrawable="@drawable/progressbar"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/hp2"
+                                        android:id="@+id/hp2"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="3dp"
@@ -355,7 +355,7 @@
                                         android:textSize="12sp"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/cond2"
+                                        android:id="@+id/cond2"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="7dp"
@@ -378,14 +378,14 @@
                                     android:orientation="horizontal">
 
                                     <TextView
-                                        android:mstId="@+mstId/fuelText2"
+                                        android:id="@+id/fuelText2"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="燃料:"
                                         android:textSize="13sp"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/fuel2"
+                                        android:id="@+id/fuel2"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="New Text"
@@ -400,14 +400,14 @@
                                     android:orientation="horizontal">
 
                                     <TextView
-                                        android:mstId="@+mstId/bullText2"
+                                        android:id="@+id/bullText2"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="弾薬:"
                                         android:textSize="13sp"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/bull2"
+                                        android:id="@+id/bull2"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="New Text"
@@ -427,28 +427,28 @@
                             android:weightSum="1">
 
                             <ImageView
-                                android:mstId="@+mstId/slot21"
+                                android:id="@+id/slot21"
                                 android:layout_width="24dp"
                                 android:layout_height="match_parent"
                                 app:srcCompat="@drawable/not_available"
                                 />
 
                             <ImageView
-                                android:mstId="@+mstId/slot22"
+                                android:id="@+id/slot22"
                                 android:layout_width="27dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
                                 app:srcCompat="@drawable/not_available"/>
 
                             <ImageView
-                                android:mstId="@+mstId/slot23"
+                                android:id="@+id/slot23"
                                 android:layout_width="28dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
                                 app:srcCompat="@drawable/not_available"/>
 
                             <ImageView
-                                android:mstId="@+mstId/slot24"
+                                android:id="@+id/slot24"
                                 android:layout_width="19dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
@@ -456,7 +456,7 @@
                                 app:srcCompat="@drawable/not_available"/>
 
                             <TextView
-                                android:mstId="@+mstId/slotEx2"
+                                android:id="@+id/slotEx2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
@@ -466,7 +466,7 @@
                                 android:text="増設"/>
 
                             <ImageView
-                                android:mstId="@+mstId/slotExIcon2"
+                                android:id="@+id/slotExIcon2"
                                 android:layout_width="27dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
@@ -476,7 +476,7 @@
                     </LinearLayout>
 
                     <Button
-                        android:mstId="@+mstId/detail2"
+                        android:id="@+id/detail2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginRight="13dp"
@@ -530,7 +530,7 @@
                                     android:orientation="horizontal">
 
                                     <TextView
-                                        android:mstId="@+mstId/name3"
+                                        android:id="@+id/name3"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="5dp"
@@ -541,7 +541,7 @@
                                         android:maxLines="1"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/lv3"
+                                        android:id="@+id/lv3"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="3dp"
@@ -550,7 +550,7 @@
                                         />
 
                                     <TextView
-                                        android:mstId="@+mstId/state3"
+                                        android:id="@+id/state3"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="5dp"
@@ -568,7 +568,7 @@
                                     android:orientation="horizontal">
 
                                     <ProgressBar
-                                        android:mstId="@+mstId/progressBar3"
+                                        android:id="@+id/progressBar3"
                                         style="?android:attr/progressBarStyleHorizontal"
                                         android:layout_width="80dp"
                                         android:layout_height="wrap_content"
@@ -579,7 +579,7 @@
                                         android:progressDrawable="@drawable/progressbar"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/hp3"
+                                        android:id="@+id/hp3"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="3dp"
@@ -588,7 +588,7 @@
                                         android:textSize="12sp"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/cond3"
+                                        android:id="@+id/cond3"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="7dp"
@@ -611,14 +611,14 @@
                                     android:orientation="horizontal">
 
                                     <TextView
-                                        android:mstId="@+mstId/fuelText3"
+                                        android:id="@+id/fuelText3"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="燃料:"
                                         android:textSize="13sp"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/fuel3"
+                                        android:id="@+id/fuel3"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="New Text"
@@ -633,14 +633,14 @@
                                     android:orientation="horizontal">
 
                                     <TextView
-                                        android:mstId="@+mstId/bullText3"
+                                        android:id="@+id/bullText3"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="弾薬:"
                                         android:textSize="13sp"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/bull3"
+                                        android:id="@+id/bull3"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="New Text"
@@ -660,28 +660,28 @@
                             android:weightSum="1">
 
                             <ImageView
-                                android:mstId="@+mstId/slot31"
+                                android:id="@+id/slot31"
                                 android:layout_width="24dp"
                                 android:layout_height="match_parent"
                                 app:srcCompat="@drawable/not_available"
                                 />
 
                             <ImageView
-                                android:mstId="@+mstId/slot32"
+                                android:id="@+id/slot32"
                                 android:layout_width="27dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
                                 app:srcCompat="@drawable/not_available"/>
 
                             <ImageView
-                                android:mstId="@+mstId/slot33"
+                                android:id="@+id/slot33"
                                 android:layout_width="28dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
                                 app:srcCompat="@drawable/not_available"/>
 
                             <ImageView
-                                android:mstId="@+mstId/slot34"
+                                android:id="@+id/slot34"
                                 android:layout_width="19dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
@@ -689,7 +689,7 @@
                                 app:srcCompat="@drawable/not_available"/>
 
                             <TextView
-                                android:mstId="@+mstId/slotEx3"
+                                android:id="@+id/slotEx3"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
@@ -699,7 +699,7 @@
                                 android:text="増設"/>
 
                             <ImageView
-                                android:mstId="@+mstId/slotExIcon3"
+                                android:id="@+id/slotExIcon3"
                                 android:layout_width="27dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
@@ -709,7 +709,7 @@
                     </LinearLayout>
 
                     <Button
-                        android:mstId="@+mstId/detail3"
+                        android:id="@+id/detail3"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginRight="13dp"
@@ -764,7 +764,7 @@
                                     android:orientation="horizontal">
 
                                     <TextView
-                                        android:mstId="@+mstId/name4"
+                                        android:id="@+id/name4"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="5dp"
@@ -775,7 +775,7 @@
                                         android:maxLines="1"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/lv4"
+                                        android:id="@+id/lv4"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="3dp"
@@ -784,7 +784,7 @@
                                         />
 
                                     <TextView
-                                        android:mstId="@+mstId/state4"
+                                        android:id="@+id/state4"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="5dp"
@@ -802,7 +802,7 @@
                                     android:orientation="horizontal">
 
                                     <ProgressBar
-                                        android:mstId="@+mstId/progressBar4"
+                                        android:id="@+id/progressBar4"
                                         style="?android:attr/progressBarStyleHorizontal"
                                         android:layout_width="80dp"
                                         android:layout_height="wrap_content"
@@ -813,7 +813,7 @@
                                         android:progressDrawable="@drawable/progressbar"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/hp4"
+                                        android:id="@+id/hp4"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="3dp"
@@ -822,7 +822,7 @@
                                         android:textSize="12sp"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/cond4"
+                                        android:id="@+id/cond4"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="7dp"
@@ -845,14 +845,14 @@
                                     android:orientation="horizontal">
 
                                     <TextView
-                                        android:mstId="@+mstId/fuelText4"
+                                        android:id="@+id/fuelText4"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="燃料:"
                                         android:textSize="13sp"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/fuel4"
+                                        android:id="@+id/fuel4"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="New Text"
@@ -867,14 +867,14 @@
                                     android:orientation="horizontal">
 
                                     <TextView
-                                        android:mstId="@+mstId/bullText4"
+                                        android:id="@+id/bullText4"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="弾薬:"
                                         android:textSize="13sp"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/bull4"
+                                        android:id="@+id/bull4"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="New Text"
@@ -894,28 +894,28 @@
                             android:weightSum="1">
 
                             <ImageView
-                                android:mstId="@+mstId/slot41"
+                                android:id="@+id/slot41"
                                 android:layout_width="24dp"
                                 android:layout_height="match_parent"
                                 app:srcCompat="@drawable/not_available"
                                 />
 
                             <ImageView
-                                android:mstId="@+mstId/slot42"
+                                android:id="@+id/slot42"
                                 android:layout_width="27dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
                                 app:srcCompat="@drawable/not_available"/>
 
                             <ImageView
-                                android:mstId="@+mstId/slot43"
+                                android:id="@+id/slot43"
                                 android:layout_width="28dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
                                 app:srcCompat="@drawable/not_available"/>
 
                             <ImageView
-                                android:mstId="@+mstId/slot44"
+                                android:id="@+id/slot44"
                                 android:layout_width="19dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
@@ -923,7 +923,7 @@
                                 app:srcCompat="@drawable/not_available"/>
 
                             <TextView
-                                android:mstId="@+mstId/slotEx4"
+                                android:id="@+id/slotEx4"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
@@ -933,7 +933,7 @@
                                 android:text="増設"/>
 
                             <ImageView
-                                android:mstId="@+mstId/slotExIcon4"
+                                android:id="@+id/slotExIcon4"
                                 android:layout_width="27dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
@@ -943,7 +943,7 @@
                     </LinearLayout>
 
                     <Button
-                        android:mstId="@+mstId/detail4"
+                        android:id="@+id/detail4"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginRight="13dp"
@@ -997,7 +997,7 @@
                                     android:orientation="horizontal">
 
                                     <TextView
-                                        android:mstId="@+mstId/name5"
+                                        android:id="@+id/name5"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="5dp"
@@ -1008,7 +1008,7 @@
                                         android:maxLines="1"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/lv5"
+                                        android:id="@+id/lv5"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="3dp"
@@ -1017,7 +1017,7 @@
                                         />
 
                                     <TextView
-                                        android:mstId="@+mstId/state5"
+                                        android:id="@+id/state5"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="5dp"
@@ -1034,7 +1034,7 @@
                                     android:orientation="horizontal">
 
                                     <ProgressBar
-                                        android:mstId="@+mstId/progressBar5"
+                                        android:id="@+id/progressBar5"
                                         style="?android:attr/progressBarStyleHorizontal"
                                         android:layout_width="80dp"
                                         android:layout_height="wrap_content"
@@ -1045,7 +1045,7 @@
                                         android:progressDrawable="@drawable/progressbar"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/hp5"
+                                        android:id="@+id/hp5"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="3dp"
@@ -1054,7 +1054,7 @@
                                         android:textSize="12sp"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/cond5"
+                                        android:id="@+id/cond5"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="7dp"
@@ -1077,14 +1077,14 @@
                                     android:orientation="horizontal">
 
                                     <TextView
-                                        android:mstId="@+mstId/fuelText5"
+                                        android:id="@+id/fuelText5"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="燃料:"
                                         android:textSize="13sp"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/fuel5"
+                                        android:id="@+id/fuel5"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="New Text"
@@ -1099,14 +1099,14 @@
                                     android:orientation="horizontal">
 
                                     <TextView
-                                        android:mstId="@+mstId/bullText5"
+                                        android:id="@+id/bullText5"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="弾薬:"
                                         android:textSize="13sp"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/bull5"
+                                        android:id="@+id/bull5"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="New Text"
@@ -1126,28 +1126,28 @@
                             android:weightSum="1">
 
                             <ImageView
-                                android:mstId="@+mstId/slot51"
+                                android:id="@+id/slot51"
                                 android:layout_width="24dp"
                                 android:layout_height="match_parent"
                                 app:srcCompat="@drawable/not_available"
                                 />
 
                             <ImageView
-                                android:mstId="@+mstId/slot52"
+                                android:id="@+id/slot52"
                                 android:layout_width="27dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
                                 app:srcCompat="@drawable/not_available"/>
 
                             <ImageView
-                                android:mstId="@+mstId/slot53"
+                                android:id="@+id/slot53"
                                 android:layout_width="28dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
                                 app:srcCompat="@drawable/not_available"/>
 
                             <ImageView
-                                android:mstId="@+mstId/slot54"
+                                android:id="@+id/slot54"
                                 android:layout_width="19dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
@@ -1155,7 +1155,7 @@
                                 app:srcCompat="@drawable/not_available"/>
 
                             <TextView
-                                android:mstId="@+mstId/slotEx5"
+                                android:id="@+id/slotEx5"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
@@ -1165,7 +1165,7 @@
                                 android:text="増設"/>
 
                             <ImageView
-                                android:mstId="@+mstId/slotExIcon5"
+                                android:id="@+id/slotExIcon5"
                                 android:layout_width="27dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
@@ -1175,7 +1175,7 @@
                     </LinearLayout>
 
                     <Button
-                        android:mstId="@+mstId/detail5"
+                        android:id="@+id/detail5"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginRight="13dp"
@@ -1229,7 +1229,7 @@
                                     android:orientation="horizontal">
 
                                     <TextView
-                                        android:mstId="@+mstId/name6"
+                                        android:id="@+id/name6"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="5dp"
@@ -1240,7 +1240,7 @@
                                         android:maxLines="1"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/lv6"
+                                        android:id="@+id/lv6"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="3dp"
@@ -1249,7 +1249,7 @@
                                         />
 
                                     <TextView
-                                        android:mstId="@+mstId/state6"
+                                        android:id="@+id/state6"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="5dp"
@@ -1267,7 +1267,7 @@
                                     android:orientation="horizontal">
 
                                     <ProgressBar
-                                        android:mstId="@+mstId/progressBar6"
+                                        android:id="@+id/progressBar6"
                                         style="?android:attr/progressBarStyleHorizontal"
                                         android:layout_width="80dp"
                                         android:layout_height="wrap_content"
@@ -1278,7 +1278,7 @@
                                         android:progressDrawable="@drawable/progressbar"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/hp6"
+                                        android:id="@+id/hp6"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="3dp"
@@ -1287,7 +1287,7 @@
                                         android:textSize="12sp"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/cond6"
+                                        android:id="@+id/cond6"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="7dp"
@@ -1310,14 +1310,14 @@
                                     android:orientation="horizontal">
 
                                     <TextView
-                                        android:mstId="@+mstId/fuelText6"
+                                        android:id="@+id/fuelText6"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="燃料:"
                                         android:textSize="13sp"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/fuel6"
+                                        android:id="@+id/fuel6"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="New Text"
@@ -1332,14 +1332,14 @@
                                     android:orientation="horizontal">
 
                                     <TextView
-                                        android:mstId="@+mstId/bullText6"
+                                        android:id="@+id/bullText6"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="弾薬:"
                                         android:textSize="13sp"/>
 
                                     <TextView
-                                        android:mstId="@+mstId/bull6"
+                                        android:id="@+id/bull6"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="New Text"
@@ -1359,28 +1359,28 @@
                             android:weightSum="1">
 
                             <ImageView
-                                android:mstId="@+mstId/slot61"
+                                android:id="@+id/slot61"
                                 android:layout_width="24dp"
                                 android:layout_height="match_parent"
                                 app:srcCompat="@drawable/not_available"
                                 />
 
                             <ImageView
-                                android:mstId="@+mstId/slot62"
+                                android:id="@+id/slot62"
                                 android:layout_width="27dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
                                 app:srcCompat="@drawable/not_available"/>
 
                             <ImageView
-                                android:mstId="@+mstId/slot63"
+                                android:id="@+id/slot63"
                                 android:layout_width="28dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
                                 app:srcCompat="@drawable/not_available"/>
 
                             <ImageView
-                                android:mstId="@+mstId/slot64"
+                                android:id="@+id/slot64"
                                 android:layout_width="19dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
@@ -1388,7 +1388,7 @@
                                 app:srcCompat="@drawable/not_available"/>
 
                             <TextView
-                                android:mstId="@+mstId/slotEx6"
+                                android:id="@+id/slotEx6"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
@@ -1398,7 +1398,7 @@
                                 android:text="増設"/>
 
                             <ImageView
-                                android:mstId="@+mstId/slotExIcon6"
+                                android:id="@+id/slotExIcon6"
                                 android:layout_width="27dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="1dp"
@@ -1408,7 +1408,7 @@
                     </LinearLayout>
 
                     <Button
-                        android:mstId="@+mstId/detail6"
+                        android:id="@+id/detail6"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginRight="13dp"
@@ -1443,7 +1443,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:mstId="@+mstId/textView18"
+                            android:id="@+id/textView18"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -1451,7 +1451,7 @@
                             android:textSize="15dp"/>
 
                         <TextView
-                            android:mstId="@+mstId/seiku"
+                            android:id="@+id/seiku"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -1459,7 +1459,7 @@
                             android:textSize="15dp"/>
 
                         <TextView
-                            android:mstId="@+mstId/textView22"
+                            android:id="@+id/textView22"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -1467,7 +1467,7 @@
                             android:textSize="15dp"/>
 
                         <TextView
-                            android:mstId="@+mstId/touchStartRate"
+                            android:id="@+id/touchStartRate"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -1484,7 +1484,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:mstId="@+mstId/textView30"
+                            android:id="@+id/textView30"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -1492,7 +1492,7 @@
                             android:textSize="15dp"/>
 
                         <TextView
-                            android:mstId="@+mstId/sakuteki25"
+                            android:id="@+id/sakuteki25"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -1500,7 +1500,7 @@
                             android:textSize="15dp"/>
 
                         <TextView
-                            android:mstId="@+mstId/textView26"
+                            android:id="@+id/textView26"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -1508,7 +1508,7 @@
                             android:textSize="15dp"/>
 
                         <TextView
-                            android:mstId="@+mstId/sakuteki33"
+                            android:id="@+id/sakuteki33"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -1524,7 +1524,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:mstId="@+mstId/textView41"
+                            android:id="@+id/textView41"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -1532,7 +1532,7 @@
                             android:textSize="15dp"/>
 
                         <TextView
-                            android:mstId="@+mstId/levelSum"
+                            android:id="@+id/levelSum"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -1540,7 +1540,7 @@
                             android:textSize="15dp"/>
 
                         <TextView
-                            android:mstId="@+mstId/textView44"
+                            android:id="@+id/textView44"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -1548,7 +1548,7 @@
                             android:textSize="15dp"/>
 
                         <TextView
-                            android:mstId="@+mstId/condRecoveryTime"
+                            android:id="@+id/condRecoveryTime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"

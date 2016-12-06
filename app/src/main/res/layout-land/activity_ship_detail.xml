@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:mstId="@+mstId/activity_ship_detail"
+    android:id="@+id/activity_ship_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="jp.gr.java_conf.snake0394.loglook_android.view.activity.ShipDetailActivity">
@@ -19,7 +19,7 @@
             android:background="?attr/colorPrimary"
             android:theme="?attr/actionBarTheme"
             android:minHeight="?attr/actionBarSize"
-            android:mstId="@+mstId/toolbar2"/>
+            android:id="@+id/toolbar2"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,14 +48,14 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:mstId="@+mstId/shipName"
+                            android:id="@+id/shipName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="TextView"
                             android:textSize="30sp"/>
 
                         <TextView
-                            android:mstId="@+mstId/lv"
+                            android:id="@+id/lv"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
@@ -64,7 +64,7 @@
                             android:layout_weight="1"/>
 
                         <TextView
-                            android:mstId="@+mstId/state"
+                            android:id="@+id/state"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="15dp"
@@ -82,7 +82,7 @@
                         android:layout_height="wrap_content">
 
                         <ProgressBar
-                            android:mstId="@+mstId/progressBar"
+                            android:id="@+id/progressBar"
                             style="?android:attr/progressBarStyleHorizontal"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -93,7 +93,7 @@
                             android:layout_width="120dp"/>
 
                         <TextView
-                            android:mstId="@+mstId/hp"
+                            android:id="@+id/hp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
@@ -102,7 +102,7 @@
                             />
 
                         <TextView
-                            android:mstId="@+mstId/cond"
+                            android:id="@+id/cond"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="TextView"
@@ -127,14 +127,14 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:mstId="@+mstId/textView53"
+                            android:id="@+id/textView53"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="燃料:"
                             android:textSize="20sp"/>
 
                         <TextView
-                            android:mstId="@+mstId/fuel"
+                            android:id="@+id/fuel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -148,14 +148,14 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:mstId="@+mstId/textView54"
+                            android:id="@+id/textView54"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="弾薬:"
                             android:textSize="20sp"/>
 
                         <TextView
-                            android:mstId="@+mstId/bull"
+                            android:id="@+id/bull"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -191,7 +191,7 @@
                             >
 
                             <TextView
-                                android:mstId="@+mstId/space1"
+                                android:id="@+id/space1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="1"
@@ -204,14 +204,14 @@
                                 android:orientation="horizontal">
 
                                 <ImageView
-                                    android:mstId="@+mstId/equipIcon1"
+                                    android:id="@+id/equipIcon1"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     app:srcCompat="@drawable/not_available"
                                     />
 
                                 <TextView
-                                    android:mstId="@+mstId/equipment1"
+                                    android:id="@+id/equipment1"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
@@ -221,7 +221,7 @@
                             </LinearLayout>
 
                             <TextView
-                                android:mstId="@+mstId/alv1"
+                                android:id="@+id/alv1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="15dp"
@@ -229,7 +229,7 @@
                                 android:textSize="20sp"/>
 
                             <TextView
-                                android:mstId="@+mstId/improvement1"
+                                android:id="@+id/improvement1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="★"
@@ -244,7 +244,7 @@
                             android:layout_marginTop="5dp">
 
                             <TextView
-                                android:mstId="@+mstId/space2"
+                                android:id="@+id/space2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="1"
@@ -257,14 +257,14 @@
                                 android:orientation="horizontal">
 
                                 <ImageView
-                                    android:mstId="@+mstId/equipIcon2"
+                                    android:id="@+id/equipIcon2"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     app:srcCompat="@drawable/not_available"
                                     />
 
                                 <TextView
-                                    android:mstId="@+mstId/equipment2"
+                                    android:id="@+id/equipment2"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
@@ -274,7 +274,7 @@
                             </LinearLayout>
 
                             <TextView
-                                android:mstId="@+mstId/alv2"
+                                android:id="@+id/alv2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="15dp"
@@ -282,7 +282,7 @@
                                 android:textSize="20sp"/>
 
                             <TextView
-                                android:mstId="@+mstId/improvement2"
+                                android:id="@+id/improvement2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="★"
@@ -295,7 +295,7 @@
                             android:layout_marginTop="5dp">
 
                             <TextView
-                                android:mstId="@+mstId/space3"
+                                android:id="@+id/space3"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="1"
@@ -309,14 +309,14 @@
                                 android:orientation="horizontal">
 
                                 <ImageView
-                                    android:mstId="@+mstId/equipIcon3"
+                                    android:id="@+id/equipIcon3"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     app:srcCompat="@drawable/not_available"
                                     />
 
                                 <TextView
-                                    android:mstId="@+mstId/equipment3"
+                                    android:id="@+id/equipment3"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
@@ -326,7 +326,7 @@
                             </LinearLayout>
 
                             <TextView
-                                android:mstId="@+mstId/alv3"
+                                android:id="@+id/alv3"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="15dp"
@@ -334,7 +334,7 @@
                                 android:textSize="20sp"/>
 
                             <TextView
-                                android:mstId="@+mstId/improvement3"
+                                android:id="@+id/improvement3"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="★"
@@ -347,7 +347,7 @@
                             android:layout_marginTop="5dp">
 
                             <TextView
-                                android:mstId="@+mstId/space4"
+                                android:id="@+id/space4"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="1"
@@ -361,14 +361,14 @@
                                 android:orientation="horizontal">
 
                                 <ImageView
-                                    android:mstId="@+mstId/equipIcon4"
+                                    android:id="@+id/equipIcon4"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     app:srcCompat="@drawable/not_available"
                                     />
 
                                 <TextView
-                                    android:mstId="@+mstId/equipment4"
+                                    android:id="@+id/equipment4"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
@@ -378,7 +378,7 @@
                             </LinearLayout>
 
                             <TextView
-                                android:mstId="@+mstId/alv4"
+                                android:id="@+id/alv4"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="15dp"
@@ -386,7 +386,7 @@
                                 android:textSize="20sp"/>
 
                             <TextView
-                                android:mstId="@+mstId/improvement4"
+                                android:id="@+id/improvement4"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="★"
@@ -403,7 +403,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:mstId="@+mstId/textView76"
+                            android:id="@+id/textView76"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="補強増設:"
@@ -421,11 +421,11 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 app:srcCompat="@drawable/not_available"
-                                android:mstId="@+mstId/extraSlotIcon"
+                                android:id="@+id/extraSlotIcon"
                                 />
 
                             <TextView
-                                android:mstId="@+mstId/extraSlot"
+                                android:id="@+id/extraSlot"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -454,7 +454,7 @@
                             android:text="砲撃戦火力:"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:mstId="@+mstId/textView51"
+                            android:id="@+id/textView51"
                             android:textSize="19sp"
                             android:layout_marginLeft="60dp"
                             android:layout_weight="1"
@@ -464,7 +464,7 @@
                             android:text="TextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:mstId="@+mstId/shellingBasicAttackPower"
+                            android:id="@+id/shellingBasicAttackPower"
                             android:layout_marginLeft="5dp"
                             android:textSize="19sp"
                             android:layout_marginRight="30dp"
@@ -483,7 +483,7 @@
                             android:text="夜戦火力:"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:mstId="@+mstId/textView52"
+                            android:id="@+id/textView52"
                             android:textSize="19sp"
                             android:layout_marginLeft="60dp"
                             android:layout_weight="1"
@@ -493,7 +493,7 @@
                             android:text="TextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:mstId="@+mstId/nightBattleBasicAttackPower"
+                            android:id="@+id/nightBattleBasicAttackPower"
                             android:layout_marginLeft="5dp"
                             android:textSize="19sp"
                             android:layout_marginRight="30dp"
