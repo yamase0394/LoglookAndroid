@@ -6,6 +6,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,8 +67,18 @@ public class DeckManagerFragment extends Fragment {
             @Override
             public void run() {
                 tabLayout.setupWithViewPager(viewPager);
+                tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
+                        super.onTabReselected(tab);
+                        Log.d("reselected", String.valueOf(tab.getPosition()));
+                        android.support.v4.app.DialogFragment dialogFragment = DeckMenuDialogFragment.newInstance(tab.getPosition() + 1);
+                        dialogFragment.show(getFragmentManager(), "fragment_dialog");
+                    }
+                });
             }
         });
+
         return view;
     }
 

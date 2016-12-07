@@ -134,7 +134,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="対空Ci補正"
+                android:text="対空CI補正"
                 android:textSize="15sp"/>
 
             <EditText
