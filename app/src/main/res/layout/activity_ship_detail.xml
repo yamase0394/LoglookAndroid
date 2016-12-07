@@ -544,12 +544,12 @@
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:id="@+id/AACIModifier"
-                        android:maxLength="3"
+                        android:maxLength="4"
                         android:imeOptions="actionDone"
                         android:text="1.0"
                         android:hint="対空CI補正"
                         android:layout_weight="1"
-                        android:layout_width="35dp"/>
+                        android:layout_width="45dp"/>
                 </LinearLayout>
 
             </LinearLayout>

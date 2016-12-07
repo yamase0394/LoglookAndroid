@@ -581,13 +581,13 @@
                                 android:id="@+id/AACIModifier"
                                 android:layout_height="wrap_content"
                                 android:inputType="numberDecimal"
-                                android:maxLength="3"
+                                android:maxLength="4"
                                 android:imeOptions="actionDone"
                                 android:text="1.0"
                                 android:textSize="14sp"
                                 android:scrollbarSize="1dp"
                                 android:hint="対空CI補正"
-                                android:layout_width="35dp"/>
+                                android:layout_width="45dp"/>
 
                         </LinearLayout>
 
