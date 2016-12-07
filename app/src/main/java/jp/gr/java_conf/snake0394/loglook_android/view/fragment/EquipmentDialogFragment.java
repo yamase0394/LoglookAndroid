@@ -50,18 +50,18 @@ public class EquipmentDialogFragment extends android.support.v4.app.DialogFragme
                 slotItemList.add(MySlotItemManager.INSTANCE.getMySlotItem(slotItemId));
             }
         }
-    
+
         TextView text;
         for (int i = 1; i <= 4; i++) {
             int slotItemId = myShip.getSlot().get(i - 1);
-        
+
             if (slotItemId == -1) {
                 String name = "space" + i;
                 int strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
                 text = (TextView) rootView.findViewById(strId);
                 text.setVisibility(View.INVISIBLE);
-            
-            
+
+
                 name = "equipIcon" + i;
                 strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
                 ImageView image = (ImageView) rootView.findViewById(strId);
@@ -70,27 +70,27 @@ public class EquipmentDialogFragment extends android.support.v4.app.DialogFragme
                 } else {
                     image.setImageResource(EquipIconId.NOT_AVAILABLE.getImageId());
                 }
-            
+
                 name = "equipment" + i;
                 strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
                 text = (TextView) rootView.findViewById(strId);
                 text.setVisibility(View.INVISIBLE);
-            
+
                 name = "alv" + i;
                 strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
                 text = (TextView) rootView.findViewById(strId);
                 text.setVisibility(View.INVISIBLE);
-            
+
                 name = "improvement" + i;
                 strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
                 text = (TextView) rootView.findViewById(strId);
                 text.setVisibility(View.INVISIBLE);
-            
+
                 continue;
             }
-        
+
             MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(slotItemId);
-        
+
             String name = "space" + i;
             int strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
             text = (TextView) rootView.findViewById(strId);
@@ -100,25 +100,25 @@ public class EquipmentDialogFragment extends android.support.v4.app.DialogFragme
             } else {
                 text.setText(String.valueOf(myShip.getOnslot().get(i - 1)));
             }
-        
+
             name = "equipIcon" + i;
             strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
             ImageView image = (ImageView) rootView.findViewById(strId);
             image.setImageResource(EquipIconId.toEquipIconId(MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId()).getType().get(3)).getImageId());
-        
+
             name = "equipment" + i;
             strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
             text = (TextView) rootView.findViewById(strId);
             text.setVisibility(View.VISIBLE);
             text.setText(MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId()).getName());
-        
+
             name = "alv" + i;
             strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
             text = (TextView) rootView.findViewById(strId);
             text.setVisibility(View.VISIBLE);
             switch (mySlotItem.getAlv()) {
                 case 0:
-                    text.setText("");
+                    text.setVisibility(View.INVISIBLE);
                     break;
                 case 1:
                     text.setText("|");
@@ -149,7 +149,7 @@ public class EquipmentDialogFragment extends android.support.v4.app.DialogFragme
                     text.setTextColor(Color.rgb(243, 213, 26));
                     break;
             }
-        
+
             name = "improvement" + i;
             strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
             text = (TextView) rootView.findViewById(strId);
@@ -160,10 +160,10 @@ public class EquipmentDialogFragment extends android.support.v4.app.DialogFragme
                 text.setText("★" + String.valueOf(mySlotItem.getLevel()));
             }
         }
-    
+
         ImageView image = (ImageView) rootView.findViewById(R.id.extraSlotIcon);
         text = (TextView) rootView.findViewById(R.id.extraSlot);
-    
+
         if (MySlotItemManager.INSTANCE.contains(myShip.getSlotEx())) {
             MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlotEx()).getMstId());
             image.setImageResource(EquipIconId.toEquipIconId(mstSlotitem.getType().get(3)).getImageId());
@@ -174,7 +174,7 @@ public class EquipmentDialogFragment extends android.support.v4.app.DialogFragme
             } else if (myShip.getSlotEx() == -1) {
                 image.setImageResource(EquipIconId.EMPTY.getImageId());
             }
-        
+
             text.setText("");
         }
 

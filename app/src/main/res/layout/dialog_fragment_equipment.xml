@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
@@ -11,10 +12,12 @@
         android:background="@color/colorAccent"/>
 
     <TableLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp">
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:shrinkColumns="1">
 
         <TableRow
             android:layout_width="match_parent"
@@ -41,31 +44,52 @@
                     app:srcCompat="@drawable/not_available"
                     />
 
-                <TextView
-                    android:id="@+id/equipment1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_weight="1"
-                    android:text="TextView"
-                    android:textSize="19sp"/>
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fillViewport="false"
+                    android:fadingEdgeLength="5dp"
+                    android:requiresFadingEdge="horizontal"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/equipment1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:text="TextView"
+                            android:textSize="18sp"
+                            android:ellipsize="end"
+                            android:scrollHorizontally="false"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:isScrollContainer="false"
+                            android:maxLines="1"/>
+                    </LinearLayout>
+                </HorizontalScrollView>
+
             </LinearLayout>
 
             <TextView
                 android:id="@+id/alv1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="15dp"
                 android:text="|"
-                android:textSize="20sp"/>
+                android:textSize="20sp"
+                android:layout_marginLeft="5dp"/>
 
             <TextView
                 android:id="@+id/improvement1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="★"
-                android:textSize="17sp"
-                />
+                android:textSize="16sp"
+                android:layout_marginLeft="5dp"/>
         </TableRow>
 
         <TableRow
@@ -93,30 +117,51 @@
                     app:srcCompat="@drawable/not_available"
                     />
 
-                <TextView
-                    android:id="@+id/equipment2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_weight="1"
-                    android:text="TextView"
-                    android:textSize="19sp"/>
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fillViewport="false"
+                    android:fadingEdgeLength="5dp"
+                    android:requiresFadingEdge="horizontal"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/equipment2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:text="TextView"
+                            android:textSize="18sp"
+                            android:ellipsize="end"
+                            android:scrollHorizontally="false"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:isScrollContainer="false"
+                            android:maxLines="1"/>
+                    </LinearLayout>
+                </HorizontalScrollView>
             </LinearLayout>
 
             <TextView
                 android:id="@+id/alv2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="15dp"
                 android:text="|"
-                android:textSize="20sp"/>
+                android:textSize="20sp"
+                android:layout_marginLeft="5dp"/>
 
             <TextView
                 android:id="@+id/improvement2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="★"
-                android:textSize="17sp"/>
+                android:textSize="16sp"
+                android:layout_marginLeft="5dp"/>
         </TableRow>
 
         <TableRow
@@ -145,30 +190,51 @@
                     app:srcCompat="@drawable/not_available"
                     />
 
-                <TextView
-                    android:id="@+id/equipment3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_weight="1"
-                    android:text="TextView"
-                    android:textSize="19sp"/>
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fillViewport="false"
+                    android:fadingEdgeLength="5dp"
+                    android:requiresFadingEdge="horizontal"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/equipment3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:text="TextView"
+                            android:textSize="18sp"
+                            android:ellipsize="end"
+                            android:scrollHorizontally="false"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:isScrollContainer="false"
+                            android:maxLines="1"/>
+                    </LinearLayout>
+                </HorizontalScrollView>
             </LinearLayout>
 
             <TextView
                 android:id="@+id/alv3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="15dp"
                 android:text="|"
-                android:textSize="20sp"/>
+                android:textSize="20sp"
+                android:layout_marginLeft="5dp"/>
 
             <TextView
                 android:id="@+id/improvement3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="★"
-                android:textSize="17sp"/>
+                android:textSize="16sp"
+                android:layout_marginLeft="5dp"/>
         </TableRow>
 
         <TableRow
@@ -197,30 +263,51 @@
                     app:srcCompat="@drawable/not_available"
                     />
 
-                <TextView
-                    android:id="@+id/equipment4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_weight="1"
-                    android:text="TextView"
-                    android:textSize="19sp"/>
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fillViewport="false"
+                    android:fadingEdgeLength="5dp"
+                    android:requiresFadingEdge="horizontal"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/equipment4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:text="TextView"
+                            android:textSize="18sp"
+                            android:ellipsize="end"
+                            android:scrollHorizontally="false"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:isScrollContainer="false"
+                            android:maxLines="1"/>
+                    </LinearLayout>
+                </HorizontalScrollView>
             </LinearLayout>
 
             <TextView
                 android:id="@+id/alv4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="15dp"
                 android:text="|"
-                android:textSize="20sp"/>
+                android:textSize="20sp"
+                android:layout_marginLeft="5dp"/>
 
             <TextView
                 android:id="@+id/improvement4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="★"
-                android:textSize="17sp"/>
+                android:textSize="16sp"
+                android:layout_marginLeft="5dp"/>
         </TableRow>
 
 
@@ -241,7 +328,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:text="補強増設:"
-            android:textSize="19sp"/>
+            android:textSize="18sp"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -263,7 +350,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_weight="1"
                 android:text="TextView"
-                android:textSize="19sp"/>
+                android:textSize="18sp"/>
         </LinearLayout>
 
     </LinearLayout>

@@ -295,7 +295,7 @@ public class ShipDetailActivity extends AppCompatActivity {
             text.setVisibility(View.VISIBLE);
             switch (mySlotItem.getAlv()) {
                 case 0:
-                    text.setText("");
+                    text.setVisibility(View.INVISIBLE);
                     break;
                 case 1:
                     text.setText("|");
