@@ -17,7 +17,6 @@ import jp.gr.java_conf.snake0394.loglook_android.view.EquipIconId;
 public class ShipUtility {
     /**
      * @param myShip
-     *
      * @return 砲撃戦の基本攻撃力
      */
     public static float getShellingBasicAttackPower(MyShip myShip) {
@@ -53,7 +52,6 @@ public class ShipUtility {
 
     /**
      * @param myShip
-     *
      * @return 空母の砲撃戦の基本攻撃力
      */
     private static float getShellingBasicAttackPowerCV(MyShip myShip) {
@@ -78,7 +76,6 @@ public class ShipUtility {
 
     /**
      * @param myShip
-     *
      * @return 夜戦の基本攻撃力
      */
     public static float getNightBattleBasicAttackPower(MyShip myShip) {
@@ -101,10 +98,9 @@ public class ShipUtility {
 
     /**
      * @param myShip
-     *
      * @return 加重対空値
      */
-    public static int getAdjustedAA(MyShip myShip) {
+    public static double getAdjustedAA(MyShip myShip) {
         int equipmentBasicAASum = 0;
         float modifiedEquipmentAASum = 0;
 
@@ -153,15 +149,14 @@ public class ShipUtility {
             a = 2;
         }
 
-        return (int) (a * Math.floor(x / a));
+        return a * Math.floor(x / a);
     }
 
     /**
      * @param myShip
-     *
      * @return 艦隊対空ボーナス値
      */
-    public static int getAdjustedFleetAA(MyShip myShip) {
+    public static double getAdjustedFleetAA(MyShip myShip) {
         float modifiedEquipmentAA = 0;
         for (int slotitemId : myShip.getSlot()) {
             if (!MySlotItemManager.INSTANCE.contains(slotitemId) || slotitemId == -1) {
@@ -207,14 +202,13 @@ public class ShipUtility {
             }
 
         }
-        return (int) Math.floor(modifiedEquipmentAA);
+        return Math.floor(modifiedEquipmentAA);
     }
 
     /**
      * @param myShip
      * @param slotNum 相手スロット機数
-     *
-     * @return 割合撃墜
+     * @return 割合撃墜機数
      */
     public static int getProportionalAirDefense(MyShip myShip, int slotNum) {
         return (int) Math.floor(getAdjustedAA(myShip) / 400 * slotNum);
@@ -225,8 +219,7 @@ public class ShipUtility {
      * @param deck
      * @param formation
      * @param AACIModifier 対空CI変動ボーナス補正
-     *
-     * @return 固定撃墜
+     * @return 固定撃墜機数
      */
     public static int getFixedAirDefense(MyShip myShip, Deck deck, String formation, float AACIModifier) {
         return (int) Math.floor(((getAdjustedAA(myShip) + DeckUtility.getAdjustedFleetAA(deck, formation)) * AACIModifier) / 10);

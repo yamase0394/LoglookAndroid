@@ -17,4 +17,12 @@
     <string name="title2">艦隊</string>
     <string name="title3">遠征</string>
     <string name="title_activity_ship_detail">ShipDetailActivity</string>
+
+    <string-array name="formationList">
+        <item>単縦陣</item>
+        <item>複縦陣</item>
+        <item>輪形陣</item>
+        <item>梯形陣</item>
+        <item>単横陣</item>
+    </string-array>
 </resources>

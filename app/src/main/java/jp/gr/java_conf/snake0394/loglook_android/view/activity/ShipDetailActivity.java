@@ -1,22 +1,31 @@
 package jp.gr.java_conf.snake0394.loglook_android.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import jp.gr.java_conf.snake0394.loglook_android.DockTimer;
-import jp.gr.java_conf.snake0394.loglook_android.view.EquipIconId;
 import jp.gr.java_conf.snake0394.loglook_android.Escape;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.ShipUtility;
@@ -29,6 +38,7 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
+import jp.gr.java_conf.snake0394.loglook_android.view.EquipIconId;
 
 public class ShipDetailActivity extends AppCompatActivity {
 
@@ -352,6 +362,79 @@ public class ShipDetailActivity extends AppCompatActivity {
         text = (TextView) findViewById(R.id.nightBattleBasicAttackPower);
         power = (int) ShipUtility.getNightBattleBasicAttackPower(myShip);
         text.setText(String.valueOf(power));
+
+        text = (TextView) findViewById(R.id.proportionalAirDefence);
+        //小数第二を四捨五入
+        BigDecimal value = new BigDecimal(ShipUtility.getAdjustedAA(myShip) / 400 * 100);
+        BigDecimal roundHalfUp = value.setScale(1, BigDecimal.ROUND_HALF_UP);
+        text.setText(roundHalfUp + "%");
+
+        Spinner spinner = (Spinner) findViewById(R.id.formationSpinner);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Spinner spinner = (Spinner) findViewById(R.id.formationSpinner);
+                // 初回起動時の動作
+                if (spinner.isFocusable() == false) {
+                    spinner.setFocusable(true);
+                    return;
+                }
+                //固定撃墜を更新
+                String formation = (String) spinner.getSelectedItem();
+                EditText editText = (EditText) findViewById(R.id.AACIModifier);
+                Editable getText = editText.getText();
+                float AACIModefier = 1f;
+                try {
+                    AACIModefier = Float.parseFloat(getText.toString());
+                }catch (NumberFormatException e){
+                    editText.setText("1.0");
+                }
+                TextView text = (TextView) findViewById(R.id.fixedAirDefence);
+                text.setText(ShipUtility.getFixedAirDefense(myShip, deck, formation, AACIModefier) + "機");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        adapter.add("単縦陣/梯形陣/単横陣");
+        adapter.add("複縦陣");
+        adapter.add("輪形陣");
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setFocusable(false);
+
+        EditText editText = (EditText) findViewById(R.id.AACIModifier);
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    //IMEを閉じる
+                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    //固定撃墜を更新
+                    Spinner spinner = (Spinner) findViewById(R.id.formationSpinner);
+                    String formation = (String) spinner.getSelectedItem();
+                    EditText editText = (EditText) findViewById(R.id.AACIModifier);
+                    Editable getText = editText.getText();
+                    float AACIModefier = 1f;
+                    try {
+                         AACIModefier = Float.parseFloat(getText.toString());
+                    }catch (NumberFormatException e){
+                        editText.setText("1.0");
+                    }
+                    TextView text = (TextView) findViewById(R.id.fixedAirDefence);
+                    text.setText(ShipUtility.getFixedAirDefense(myShip, deck, formation, AACIModefier) + "機");
+                    handled = true;
+                }
+                return handled;
+            }
+        });
+
+        text = (TextView) findViewById(R.id.fixedAirDefence);
+        text.setText(ShipUtility.getFixedAirDefense(myShip, deck, "単縦陣", 1) + "機");
     }
 
     @Override

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -21,8 +22,6 @@ import java.util.List;
 import jp.gr.java_conf.snake0394.loglook_android.App;
 import jp.gr.java_conf.snake0394.loglook_android.DeckUtility;
 import jp.gr.java_conf.snake0394.loglook_android.DockTimer;
-import jp.gr.java_conf.snake0394.loglook_android.view.EquipIconId;
-import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
 import jp.gr.java_conf.snake0394.loglook_android.Escape;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
@@ -35,6 +34,8 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
+import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
+import jp.gr.java_conf.snake0394.loglook_android.view.EquipIconId;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.ShipDetailActivity;
 
 /**
@@ -150,13 +151,21 @@ public class DeckFragment extends Fragment {
                     continue;
                 }
 
-                final MyShip myShip = MyShipManager.INSTANCE.getMyShip(shipId.get(i - 1));
+                final int id = shipId.get(i - 1);
+                final MyShip myShip = MyShipManager.INSTANCE.getMyShip(id);
 
                 name = "name" + i;
                 strId = resources.getIdentifier(name, "id", App.getInstance().getPackageName());
                 text = (TextView) rootView.findViewById(strId);
                 text.setVisibility(View.VISIBLE);
                 text.setText(myShip.getName());
+                text.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        android.support.v4.app.DialogFragment dialogFragment = ShipParamDialogFragment.newInstance(id,getArguments().getInt("deckId"));
+                        dialogFragment.show(getFragmentManager(), "fragment_dialog");
+                    }
+                });
 
                 name = "lv" + i;
                 strId = resources.getIdentifier(name, "id", packageName);
@@ -246,6 +255,17 @@ public class DeckFragment extends Fragment {
                         image.setImageResource(EquipIconId.EMPTY.getImageId());
                     }
                 }
+
+                name = "equipments" + i;
+                strId = resources.getIdentifier(name, "id", packageName);
+                LinearLayout linearLayout = (LinearLayout) rootView.findViewById(strId);
+                linearLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        android.support.v4.app.DialogFragment dialogFragment = EquipmentDialogFragment.newInstance(id);
+                        dialogFragment.show(getFragmentManager(), "fragment_dialog");
+                    }
+                });
 
                 name = "progressBar" + i;
                 strId = resources.getIdentifier(name, "id", packageName);
@@ -395,7 +415,6 @@ public class DeckFragment extends Fragment {
                 strId = resources.getIdentifier(name, "id", packageName);
                 Button button = (Button) rootView.findViewById(strId);
                 button.setVisibility(View.VISIBLE);
-                final int id = myShip.getId();
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

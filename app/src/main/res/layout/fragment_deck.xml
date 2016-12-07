@@ -72,7 +72,8 @@
                                         android:textSize="20sp"
                                         android:ellipsize="end"
                                         android:maxWidth="150dp"
-                                        android:maxLines="1"/>
+                                        android:maxLines="1"
+                                        android:clickable="true"/>
 
                                     <TextView
                                         android:id="@+id/lv1"
@@ -191,7 +192,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
                             android:orientation="horizontal"
-                            android:weightSum="1">
+                            android:weightSum="1"
+                            android:id="@+id/equipments1"
+                            android:clickable="true">
 
                             <ImageView
                                 android:id="@+id/slot11"
@@ -305,7 +308,8 @@
                                         android:textSize="20sp"
                                         android:ellipsize="end"
                                         android:maxWidth="150dp"
-                                        android:maxLines="1"/>
+                                        android:maxLines="1"
+                                        android:clickable="true"/>
 
                                     <TextView
                                         android:id="@+id/lv2"
@@ -424,7 +428,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
                             android:orientation="horizontal"
-                            android:weightSum="1">
+                            android:weightSum="1"
+                            android:id="@+id/equipments2"
+                            android:clickable="true">
 
                             <ImageView
                                 android:id="@+id/slot21"
@@ -538,7 +544,8 @@
                                         android:textSize="20sp"
                                         android:ellipsize="end"
                                         android:maxWidth="150dp"
-                                        android:maxLines="1"/>
+                                        android:maxLines="1"
+                                        android:clickable="true"/>
 
                                     <TextView
                                         android:id="@+id/lv3"
@@ -657,7 +664,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
                             android:orientation="horizontal"
-                            android:weightSum="1">
+                            android:weightSum="1"
+                            android:id="@+id/equipments3"
+                            android:clickable="true">
 
                             <ImageView
                                 android:id="@+id/slot31"
@@ -772,7 +781,8 @@
                                         android:textSize="20sp"
                                         android:ellipsize="end"
                                         android:maxWidth="150dp"
-                                        android:maxLines="1"/>
+                                        android:maxLines="1"
+                                        android:clickable="true"/>
 
                                     <TextView
                                         android:id="@+id/lv4"
@@ -891,7 +901,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
                             android:orientation="horizontal"
-                            android:weightSum="1">
+                            android:weightSum="1"
+                            android:id="@+id/equipments4"
+                            android:clickable="true">
 
                             <ImageView
                                 android:id="@+id/slot41"
@@ -1005,7 +1017,8 @@
                                         android:textSize="20sp"
                                         android:ellipsize="end"
                                         android:maxWidth="150dp"
-                                        android:maxLines="1"/>
+                                        android:maxLines="1"
+                                        android:clickable="true"/>
 
                                     <TextView
                                         android:id="@+id/lv5"
@@ -1123,7 +1136,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
                             android:orientation="horizontal"
-                            android:weightSum="1">
+                            android:weightSum="1"
+                            android:id="@+id/equipments5"
+                            android:clickable="true">
 
                             <ImageView
                                 android:id="@+id/slot51"
@@ -1237,7 +1252,8 @@
                                         android:textSize="20sp"
                                         android:ellipsize="end"
                                         android:maxWidth="150dp"
-                                        android:maxLines="1"/>
+                                        android:maxLines="1"
+                                        android:clickable="true"/>
 
                                     <TextView
                                         android:id="@+id/lv6"
@@ -1356,7 +1372,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
                             android:orientation="horizontal"
-                            android:weightSum="1">
+                            android:weightSum="1"
+                            android:id="@+id/equipments6"
+                            android:clickable="true">
 
                             <ImageView
                                 android:id="@+id/slot61"
