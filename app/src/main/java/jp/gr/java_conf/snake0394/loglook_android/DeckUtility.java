@@ -139,10 +139,11 @@ public class DeckUtility {
                         sakuteki += mstSlotitem.getSaku() * 0.6;
                         break;
                     case 小型電探:
-                        //大型電探の索敵の改修上昇値は*1.4かも
-                        //ただし、索敵33計算の係数が変わるかは不明
-                    case 大型電探:
                         float tempSakuteki = (float) (mstSlotitem.getSaku() + 1.25 * Math.sqrt(mySlotItem.getLevel()));
+                        sakuteki += tempSakuteki * 0.6;
+                        break;
+                    case 大型電探:
+                        tempSakuteki = (float) (mstSlotitem.getSaku() + 1.4 * Math.sqrt(mySlotItem.getLevel()));
                         sakuteki += tempSakuteki * 0.6;
                         break;
                     case 艦上攻撃機:
