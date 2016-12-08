@@ -75,6 +75,10 @@ public enum EquipIconId {
         return UNKNOWN;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public int getImageId() {
         return imageId;
     }

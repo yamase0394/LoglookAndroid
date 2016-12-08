@@ -377,5 +377,6 @@ public class MstSlotitem implements Serializable {
     public void setDistance(int distance) {
         this.distance = distance;
     }
+
 }
 

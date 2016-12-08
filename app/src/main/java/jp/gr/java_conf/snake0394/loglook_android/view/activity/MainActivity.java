@@ -30,6 +30,7 @@ import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DamagedShipFragme
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DeckFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DeckManagerFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DockFragment;
+import jp.gr.java_conf.snake0394.loglook_android.view.fragment.EquipmentFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.ErrorFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.HomeFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.MissionFragment;
@@ -56,7 +57,8 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
         DOCK(4),
         DAMAGED_SHIP(5),
         TACTICAL_SITUATION(6),
-        CONFIG(7);
+        CONFIG(7),
+        EQUIPMENT(8);
 
         private int position;
 
@@ -271,6 +273,9 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
                 break;
             case DAMAGED_SHIP:
                 fragment = DamagedShipFragment.newInstance();
+                break;
+            case EQUIPMENT:
+                fragment = EquipmentFragment.newInstance();
                 break;
             default:
                 return;
