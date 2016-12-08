@@ -1,6 +1,7 @@
 package jp.gr.java_conf.snake0394.loglook_android.bean;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -39,5 +40,9 @@ public enum MyShipManager {
 
     public boolean contains(int id){
         return myShipMap.containsKey(id);
+    }
+
+    public Collection<MyShip> getMyShips(){
+        return myShipMap.values();
     }
 }

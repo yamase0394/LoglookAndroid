@@ -11,7 +11,7 @@ public class MyShip implements Serializable {
   private static final long serialVersionUID = 9173002282498069548L;
 
   /**
-   * 艦娘マスターID
+   * 艦娘ID
    */
   private int id;
 
@@ -21,7 +21,7 @@ public class MyShip implements Serializable {
   private int sortno;
 
   /**
-   * 艦娘ID
+   * 艦娘マスターID
    */
   private int shipId;
 
@@ -169,7 +169,7 @@ public class MyShip implements Serializable {
   }
 
   /**
-   * @return 艦娘マスターID
+   * @return 艦娘ID
    */
   public int getId() {
     return id;
@@ -188,7 +188,7 @@ public class MyShip implements Serializable {
   }
 
   /**
-   * 艦娘ID
+   * 艦娘マスターID
    */
   public int getShipId() {
     return shipId;

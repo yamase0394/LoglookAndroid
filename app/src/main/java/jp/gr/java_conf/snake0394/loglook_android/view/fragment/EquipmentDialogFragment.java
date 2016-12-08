@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -43,6 +44,7 @@ public class EquipmentDialogFragment extends android.support.v4.app.DialogFragme
         final Activity activity = getActivity();
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         final View rootView = LayoutInflater.from(activity).inflate(R.layout.dialog_fragment_equipment, null);
+        Log.d("shipId", String.valueOf(getArguments().getInt("shipId")));
         final MyShip myShip = MyShipManager.INSTANCE.getMyShip(getArguments().getInt("shipId"));
         List<MySlotItem> slotItemList = new ArrayList<>();
         for (int slotItemId : myShip.getSlot()) {
@@ -60,7 +62,6 @@ public class EquipmentDialogFragment extends android.support.v4.app.DialogFragme
                 int strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
                 text = (TextView) rootView.findViewById(strId);
                 text.setVisibility(View.INVISIBLE);
-
 
                 name = "equipIcon" + i;
                 strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
