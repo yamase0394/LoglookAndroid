@@ -3,7 +3,6 @@ package jp.gr.java_conf.snake0394.loglook_android.view.fragment;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import jp.gr.java_conf.snake0394.loglook_android.R;
@@ -27,11 +29,11 @@ import jp.gr.java_conf.snake0394.loglook_android.view.EquipIconId;
 
 public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.EquipmentViewHolder> {
 
-    private SortedList<MySlotItem> sortedList;
+    private List<MySlotItem> mySlotItemList;
     private final FragmentManager fragmentManager;
 
-    public EquipmentAdapter(FragmentManager fragmentManager, String sortType, String order) {
-        sortedList = new SortedList<>(MySlotItem.class, new EquipmentCallback(this, sortType, order));
+    public EquipmentAdapter(FragmentManager fragmentManager) {
+        mySlotItemList = new ArrayList<>();
         this.fragmentManager = fragmentManager;
     }
 
@@ -43,7 +45,7 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Equi
 
     @Override
     public void onBindViewHolder(EquipmentViewHolder sampleViewHolder, int i) {
-        MySlotItem data = sortedList.get(i);
+        MySlotItem data = mySlotItemList.get(i);
         if (data != null) {
             sampleViewHolder.bind(data);
         }
@@ -51,28 +53,79 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Equi
 
     @Override
     public int getItemCount() {
-        return sortedList.size();
+        return mySlotItemList.size();
     }
 
     public void addDataOf(List<MySlotItem> dataList) {
-        sortedList.addAll(dataList);
+        this.mySlotItemList.addAll(dataList);
+        notifyDataSetChanged();
     }
 
     public void removeDataOf(List<MySlotItem> dataList) {
-        sortedList.beginBatchedUpdates();
         for (MySlotItem data : dataList) {
-            sortedList.remove(data);
+            mySlotItemList.remove(data);
         }
-        sortedList.endBatchedUpdates();
+        notifyDataSetChanged();
     }
 
     public void clearData() {
-        sortedList.clear();
+        mySlotItemList.clear();
+        notifyDataSetChanged();
     }
 
-    public SortedList<MySlotItem> getList() {
-        return sortedList;
+    public List<MySlotItem> getList() {
+        return mySlotItemList;
     }
+
+    public void sort(String sortType, String order){
+        switch (sortType){
+            case "名前":
+                Collections.sort(mySlotItemList,new NameComparator(order));
+                break;
+            case "改修":
+                Collections.sort(mySlotItemList,new ImprovementComparator(order));
+                break;
+        }
+        notifyDataSetChanged();
+    }
+
+    private class NameComparator implements Comparator<MySlotItem> {
+        private String order;
+
+        public NameComparator(String order){
+            super();
+            this.order = order;
+        }
+
+        public int compare(MySlotItem a, MySlotItem b) {
+            MstSlotitem mstSlotitemA = MstSlotitemManager.INSTANCE.getMstSlotitem(a.getMstId());
+            MstSlotitem mstSlotitemB = MstSlotitemManager.INSTANCE.getMstSlotitem(b.getMstId());
+            int result =  mstSlotitemA.getName().compareTo(mstSlotitemB.getName());
+            if(order.equals("降順")){
+                result *= -1;
+            }
+            return result;
+        }
+    }
+
+    private class ImprovementComparator implements Comparator<MySlotItem> {
+        private String order;
+
+        public ImprovementComparator(String order){
+            super();
+            this.order = order;
+        }
+
+        public int compare(MySlotItem a, MySlotItem b) {
+            int result =  a.getLevel() - b.getLevel();
+            if(order.equals("降順")){
+                result *= -1;
+            }
+            return result;
+        }
+    }
+
+
 
     public static class EquipmentViewHolder extends RecyclerView.ViewHolder {
 
@@ -153,79 +206,4 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Equi
         }
     }
 
-    private static class EquipmentCallback extends SortedList.Callback<MySlotItem> {
-
-        private RecyclerView.Adapter adapter;
-        private String sortType;
-        private String order;
-
-        EquipmentCallback(@NonNull RecyclerView.Adapter adapter, String sortType, String order) {
-            this.adapter = adapter;
-            this.sortType = sortType;
-            this.order = order;
-        }
-
-        @Override
-        public int compare(MySlotItem data1, MySlotItem data2) {
-            int result = 0;
-            switch (sortType) {
-                case "名前":
-                    MstSlotitem mstSlotitem1 = MstSlotitemManager.INSTANCE.getMstSlotitem(data1.getMstId());
-                    MstSlotitem mstSlotitem2 = MstSlotitemManager.INSTANCE.getMstSlotitem(data2.getMstId());
-                    result = mstSlotitem1.getName().compareTo(mstSlotitem2.getName());
-                    if (result == 0) {
-                        result = data1.getShipId() - data2.getShipId();
-                    }
-                    break;
-                case "改修度":
-                    mstSlotitem1 = MstSlotitemManager.INSTANCE.getMstSlotitem(data1.getMstId());
-                    mstSlotitem2 = MstSlotitemManager.INSTANCE.getMstSlotitem(data2.getMstId());
-                    result = mstSlotitem1.getName().compareTo(mstSlotitem2.getName());
-                    if (result == 0) {
-                        result = data1.getLevel() - data2.getLevel();
-                    }
-                    break;
-                case "追加時期":
-                    result = (int) (data1.getMstId() - data2.getMstId());
-                    break;
-            }
-
-            switch (order) {
-                case "降順":
-                    result *= -1;
-                    break;
-            }
-            return result;
-        }
-
-        @Override
-        public void onInserted(int position, int count) {
-            adapter.notifyItemRangeInserted(position, count);
-        }
-
-        @Override
-        public void onRemoved(int position, int count) {
-            adapter.notifyItemRangeRemoved(position, count);
-        }
-
-        @Override
-        public void onMoved(int fromPosition, int toPosition) {
-            adapter.notifyItemMoved(fromPosition, toPosition);
-        }
-
-        @Override
-        public void onChanged(int position, int count) {
-            adapter.notifyItemRangeChanged(position, count);
-        }
-
-        @Override
-        public boolean areContentsTheSame(MySlotItem oldData, MySlotItem newData) {
-            return false;
-        }
-
-        @Override
-        public boolean areItemsTheSame(MySlotItem data1, MySlotItem data2) {
-            return false;
-        }
-    }
 }
