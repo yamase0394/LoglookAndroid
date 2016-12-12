@@ -1,5 +1,6 @@
 package jp.gr.java_conf.snake0394.loglook_android.proxy;
 
+import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.api.Response;
 import org.eclipse.jetty.proxy.AsyncMiddleManServlet;
@@ -45,5 +46,11 @@ public class MyAsyncMiddleManServlet extends AsyncMiddleManServlet {
         return super.newServerResponseContentTransformer(clientRequest, proxyResponse, serverResponse);
     }
 
+    @Override
+    protected HttpClient newHttpClient() {
+        HttpClient httpClient = super.newHttpClient();
+        httpClient.setResponseBufferSize(5*1000*1000);
+        return httpClient;
+    }
 }
 
