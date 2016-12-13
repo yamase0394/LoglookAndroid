@@ -76,7 +76,15 @@ public class DamagedShipFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setFocusable(false);
-        spinner.setSelection(0);
+        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        switch (sp.getString("damagedShipSortType", "修復時間")) {
+            case "修復時間":
+                spinner.setSelection(0);
+                break;
+            case "損傷度":
+                spinner.setSelection(1);
+                break;
+        }
 
         spinner = (Spinner) rootView.findViewById(R.id.orderSpinner);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -108,7 +116,14 @@ public class DamagedShipFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setFocusable(false);
-        spinner.setSelection(1);
+        switch (sp.getString("damagedShipOrder", "降順")) {
+            case "昇順":
+                spinner.setSelection(0);
+                break;
+            case "降順":
+                spinner.setSelection(1);
+                break;
+        }
 
         return rootView;
     }
