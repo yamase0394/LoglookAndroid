@@ -22,4 +22,8 @@ public class DialogActivity extends AppCompatActivity {
         super.onPause();
         finish();
     }
+
+    public void onDialogDissmissed(){
+        finish();
+    }
 }
