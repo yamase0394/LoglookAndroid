@@ -26,11 +26,12 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
+import jp.gr.java_conf.snake0394.loglook_android.view.activity.DialogActivity;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity;
 
 
 /**
- * アプリを機動するランチャー
+ * アプリを起動するランチャー
  */
 public class SlantLauncher extends Service implements SensorEventListener {
     private boolean isTouching = false; //指定箇所がタップされているか
@@ -89,26 +90,7 @@ public class SlantLauncher extends Service implements SensorEventListener {
         int viewWidth = sp.getInt("viewWidth", 20);
         int viewHeight = sp.getInt("viewHeight", 50);
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(viewWidth, viewHeight, viewY, viewX, WindowManager.LayoutParams.TYPE_SYSTEM_ERROR, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, transparent);
-        v.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                //タップされた
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    isTouching = true;
-
-                    //振動させる
-                    if (sp.getBoolean("touchVibration", true)) {
-                        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-                        vibrator.vibrate(30);
-                    }
-
-                    //指が画面から離れた
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    isTouching = false;
-                }
-                return true;
-            }
-        });
+        v.setOnTouchListener(new FlickTouchListener(getApplicationContext()));
         wm.addView(v, params);
 
         return START_STICKY;
@@ -231,5 +213,165 @@ public class SlantLauncher extends Service implements SensorEventListener {
             }
         }
         return isForeGround;
+    }
+
+    private class FlickTouchListener implements View.OnTouchListener {
+        // 最後にタッチされた座標
+        private float startTouchX;
+        private float startTouchY;
+
+        // 現在タッチ中の座標
+        private float nowTouchedX;
+        private float nowTouchedY;
+
+        // フリックの遊び部分（最低限移動しないといけない距離）
+        private float adjust = 120;
+
+        private Context context;
+
+        public FlickTouchListener(Context context) {
+            this.context = context;
+        }
+
+        @Override
+
+        public boolean onTouch(View v_, MotionEvent event_) {
+            // タッチされている指の本数
+            Log.v("motionEvent", "--touch_count = " + event_.getPointerCount());
+
+            // タッチされている座標
+            Log.v("Y", "" + event_.getY());
+            Log.v("X", "" + event_.getX());
+
+            switch (event_.getAction()) {
+
+                // タッチ
+                case MotionEvent.ACTION_DOWN:
+                    Log.v("motionEvent", "--ACTION_DOWN");
+                    startTouchX = event_.getX();
+                    startTouchY = event_.getY();
+
+                    isTouching = true;
+
+                    //振動させる
+                    if (sp.getBoolean("touchVibration", true)) {
+                        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                        vibrator.vibrate(30);
+                    }
+                    break;
+
+                // タッチ中に追加でタッチした場合
+                case MotionEvent.ACTION_POINTER_DOWN:
+                    Log.v("motionEvent", "--ACTION_POINTER_DOWN");
+                    break;
+
+                // スライド
+                case MotionEvent.ACTION_MOVE:
+                    Log.v("motionEvent", "--ACTION_MOVE");
+                    break;
+
+                // タッチが離れた
+                case MotionEvent.ACTION_UP:
+                    Log.v("motionEvent", "--ACTION_UP");
+                    nowTouchedX = event_.getX();
+                    nowTouchedY = event_.getY();
+
+                    isTouching = false;
+
+                    if (startTouchY > nowTouchedY) {
+                        if (startTouchX > nowTouchedX) {
+                            if ((startTouchY - nowTouchedY) > (startTouchX - nowTouchedX)) {
+                                if (startTouchY > nowTouchedY + adjust) {
+                                    Log.v("Flick", "--上");
+                                    // 上フリック時の処理を記述する
+                                    Intent i = new Intent(context, DialogActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    context.startActivity(i);
+                                }
+                            } else if ((startTouchY - nowTouchedY) < (startTouchX - nowTouchedX)) {
+                                if (startTouchX > nowTouchedX + adjust) {
+                                    Log.v("Flick", "--左");
+                                    // 左フリック時の処理を記述する
+                                    Intent i = new Intent(context, DialogActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    context.startActivity(i);
+                                }
+                            }
+                        } else if (startTouchX < nowTouchedX) {
+                            if ((startTouchY - nowTouchedY) > (nowTouchedX - startTouchX)) {
+                                if (startTouchY > nowTouchedY + adjust) {
+                                    Log.v("Flick", "--上");
+                                    // 上フリック時の処理を記述する
+                                    Intent i = new Intent(context, DialogActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    context.startActivity(i);
+                                }
+                            } else if ((startTouchY - nowTouchedY) < (nowTouchedX - startTouchX)) {
+                                if (startTouchX < nowTouchedX + adjust) {
+                                    Log.v("Flick", "--右");
+                                    // 右フリック時の処理を記述する
+                                    Intent i = new Intent(context, DialogActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    context.startActivity(i);
+                                }
+                            }
+                        }
+                    } else if (startTouchY < nowTouchedY) {
+                        if (startTouchX > nowTouchedX) {
+                            if ((nowTouchedY - startTouchY) > (startTouchX - nowTouchedX)) {
+                                if (startTouchY < nowTouchedY + adjust) {
+                                    Log.v("Flick", "--下");
+                                    // 下フリック時の処理を記述する
+                                    Intent i = new Intent(context, DialogActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    context.startActivity(i);
+                                }
+                            } else if ((nowTouchedY - startTouchY) < (startTouchX - nowTouchedX)) {
+                                if (startTouchX > nowTouchedX + adjust) {
+                                    Log.v("Flick", "--左");
+                                    // 左フリック時の処理を記述する
+                                    Intent i = new Intent(context, DialogActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    context.startActivity(i);
+                                }
+                            }
+                        } else if (startTouchX < nowTouchedX) {
+                            if ((nowTouchedY - startTouchY) > (nowTouchedX - startTouchX)) {
+                                if (startTouchY < nowTouchedY + adjust) {
+                                    Log.v("Flick", "--下");
+                                    // 下フリック時の処理を記述する
+                                    Intent i = new Intent(context, DialogActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    context.startActivity(i);
+                                }
+                            } else if ((nowTouchedY - startTouchY) < (nowTouchedX - startTouchX)) {
+                                if (startTouchX < nowTouchedX + adjust) {
+                                    Log.v("Flick", "--右");
+                                    // 右フリック時の処理を記述する
+                                    Intent i = new Intent(context, DialogActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    context.startActivity(i);
+                                }
+                            }
+                        }
+                    }
+                    break;
+
+                // アップ後にほかの指がタッチ中の場合
+                case MotionEvent.ACTION_POINTER_UP:
+                    Log.v("motionEvent", "--ACTION_POINTER_UP");
+                    break;
+
+                // UP+DOWNの同時発生(タッチのキャンセル）
+                case MotionEvent.ACTION_CANCEL:
+                    Log.v("motionEvent", "--ACTION_CANCEL");
+
+                    // ターゲットとするUIの範囲外を押下
+                case MotionEvent.ACTION_OUTSIDE:
+                    Log.v("motionEvent", "--ACTION_OUTSIDE");
+                    break;
+            }
+            return (true);
+        }
     }
 }

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -134,5 +135,21 @@ public class ShipParamDialogFragment extends android.support.v4.app.DialogFragme
 
         builder.setView(rootView).setTitle(myShip.getName() + "(Lv" + myShip.getLv() + ")");
         return builder.create();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("dialo", "pause");
+        // onPause でダイアログを閉じる場合
+        dismiss();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d("dialo", "stop");
+        // onPause でダイアログを閉じる場合
+        dismiss();
     }
 }

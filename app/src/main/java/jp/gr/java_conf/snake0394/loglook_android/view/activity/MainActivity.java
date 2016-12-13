@@ -56,9 +56,9 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
         MISSION(3),
         DOCK(4),
         DAMAGED_SHIP(5),
-        TACTICAL_SITUATION(6),
-        CONFIG(7),
-        EQUIPMENT(8);
+        EQUIPMENT(6),
+        TACTICAL_SITUATION(7),
+        CONFIG(8);
 
         private int position;
 

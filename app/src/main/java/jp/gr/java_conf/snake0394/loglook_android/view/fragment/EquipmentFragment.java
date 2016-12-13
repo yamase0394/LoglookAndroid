@@ -123,8 +123,8 @@ public class EquipmentFragment extends Fragment {
 
     adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item);
     adapter.add("名前");
-    adapter.add("改修");
-    adapter.add("追加時期");
+    adapter.add("改修度");
+    adapter.add("入手");
     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     spinner.setAdapter(adapter);
     spinner.setFocusable(false);

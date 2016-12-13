@@ -74,6 +74,13 @@
             android:screenOrientation="unspecified"
             android:theme="@style/AppTheme">
         </activity>
+
+        <activity
+            android:name=".view.activity.DialogActivity"
+            android:theme="@style/TransparencyTheme"
+            android:screenOrientation="landscape"
+            android:launchMode="singleInstance">
+        </activity>
     </application>
 
 </manifest>

@@ -218,4 +218,12 @@ public class DeckMenuDialogFragment extends android.support.v4.app.DialogFragmen
         builder.setView(rootView).setTitle("第" + getArguments().getInt("deckId") + "艦隊防空情報");
         return builder.create();
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        // onPause でダイアログを閉じる場合
+        dismiss();
+    }
 }

@@ -182,4 +182,12 @@ public class EquipmentDialogFragment extends android.support.v4.app.DialogFragme
         builder.setView(rootView).setTitle(myShip.getName() + "(Lv" + myShip.getLv() + ")");
         return builder.create();
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        // onPause でダイアログを閉じる場合
+        dismiss();
+    }
 }

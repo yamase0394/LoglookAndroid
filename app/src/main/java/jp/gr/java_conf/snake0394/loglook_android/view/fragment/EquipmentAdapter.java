@@ -77,13 +77,16 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Equi
         return mySlotItemList;
     }
 
-    public void sort(String sortType, String order){
-        switch (sortType){
+    public void sort(String sortType, String order) {
+        switch (sortType) {
             case "名前":
-                Collections.sort(mySlotItemList,new NameComparator(order));
+                Collections.sort(mySlotItemList, new NameComparator(order));
                 break;
-            case "改修":
-                Collections.sort(mySlotItemList,new ImprovementComparator(order));
+            case "改修度":
+                Collections.sort(mySlotItemList, new ImprovementComparator(order));
+                break;
+            case "入手":
+                Collections.sort(mySlotItemList, new GetTimeComparator(order));
                 break;
         }
         notifyDataSetChanged();
@@ -92,7 +95,7 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Equi
     private class NameComparator implements Comparator<MySlotItem> {
         private String order;
 
-        public NameComparator(String order){
+        public NameComparator(String order) {
             super();
             this.order = order;
         }
@@ -100,8 +103,8 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Equi
         public int compare(MySlotItem a, MySlotItem b) {
             MstSlotitem mstSlotitemA = MstSlotitemManager.INSTANCE.getMstSlotitem(a.getMstId());
             MstSlotitem mstSlotitemB = MstSlotitemManager.INSTANCE.getMstSlotitem(b.getMstId());
-            int result =  mstSlotitemA.getName().compareTo(mstSlotitemB.getName());
-            if(order.equals("降順")){
+            int result = mstSlotitemA.getName().compareTo(mstSlotitemB.getName());
+            if (order.equals("降順")) {
                 result *= -1;
             }
             return result;
@@ -111,20 +114,43 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Equi
     private class ImprovementComparator implements Comparator<MySlotItem> {
         private String order;
 
-        public ImprovementComparator(String order){
+        public ImprovementComparator(String order) {
             super();
             this.order = order;
         }
 
         public int compare(MySlotItem a, MySlotItem b) {
-            int result =  a.getLevel() - b.getLevel();
-            if(order.equals("降順")){
+            MstSlotitem mstSlotitemA = MstSlotitemManager.INSTANCE.getMstSlotitem(a.getMstId());
+            MstSlotitem mstSlotitemB = MstSlotitemManager.INSTANCE.getMstSlotitem(b.getMstId());
+            int result = mstSlotitemA.getName().compareTo(mstSlotitemB.getName());
+
+            //名前が同じ場合は名前の昇順でソートする
+            if (result == 0) {
+                result = a.getLevel() - b.getLevel();
+            }
+            if (order.equals("降順")) {
                 result *= -1;
             }
             return result;
         }
     }
 
+    private class GetTimeComparator implements Comparator<MySlotItem> {
+        private String order;
+
+        public GetTimeComparator(String order) {
+            super();
+            this.order = order;
+        }
+
+        public int compare(MySlotItem a, MySlotItem b) {
+            int result = a.getId() - b.getId();
+            if (order.equals("降順")) {
+                result *= -1;
+            }
+            return result;
+        }
+    }
 
 
     public static class EquipmentViewHolder extends RecyclerView.ViewHolder {
