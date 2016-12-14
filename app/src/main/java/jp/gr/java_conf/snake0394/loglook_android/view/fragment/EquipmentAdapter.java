@@ -124,13 +124,18 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Equi
             MstSlotitem mstSlotitemB = MstSlotitemManager.INSTANCE.getMstSlotitem(b.getMstId());
             int result = mstSlotitemA.getName().compareTo(mstSlotitemB.getName());
 
-            //名前が同じ場合は名前の昇順でソートする
+            //同じ装備の場合は改修度でソート
             if (result == 0) {
                 result = a.getLevel() - b.getLevel();
+                if (order.equals("降順")) {
+                    result *= -1;
+                }
+                //違う装備の場合
+                //安定ソートにするため0を返す
+            } else {
+                result = 0;
             }
-            if (order.equals("降順")) {
-                result *= -1;
-            }
+
             return result;
         }
     }
