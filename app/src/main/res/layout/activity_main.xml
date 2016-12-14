@@ -11,18 +11,32 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:background="?attr/colorPrimary"
-            android:minHeight="45dp"
-            android:layout_height="45dp"/>
+            android:layout_height="wrap_content">
 
-        <!-- 本体部分-->
-        <FrameLayout
-            android:id="@+id/body"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            <android.support.design.widget.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:background="?attr/colorPrimary"
+                    android:minHeight="45dp"
+                    app:layout_scrollFlags="scroll|enterAlways"/>
+
+            </android.support.design.widget.AppBarLayout>
+
+            <!-- 本体部分-->
+            <FrameLayout
+                android:id="@+id/body"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+        </android.support.design.widget.CoordinatorLayout>
 
     </LinearLayout>
     <!-- Slider部分-->

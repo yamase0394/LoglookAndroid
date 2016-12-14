@@ -278,6 +278,10 @@ public class SlantLauncher extends Service implements SensorEventListener {
 
                     isTouching = false;
 
+                    if(!isForeground()){
+                        return true;
+                    }
+
                     if (startTouchY > nowTouchedY) {
                         if (startTouchX > nowTouchedX) {
                             if ((startTouchY - nowTouchedY) > (startTouchX - nowTouchedX)) {

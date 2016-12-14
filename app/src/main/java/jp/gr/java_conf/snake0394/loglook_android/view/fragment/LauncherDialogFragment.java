@@ -20,11 +20,6 @@ public class LauncherDialogFragment extends android.support.v4.app.DialogFragmen
 
     public static LauncherDialogFragment newInstance() {
         LauncherDialogFragment fragment = new LauncherDialogFragment();
-
-        Bundle args = new Bundle();
-        //args.putInt("shipId", shipId);
-        fragment.setArguments(args);
-
         return fragment;
     }
 
@@ -48,8 +43,8 @@ public class LauncherDialogFragment extends android.support.v4.app.DialogFragmen
     @Override
     public void onResume() {
         super.onResume();
-        Dialog dialog = getDialog();
 
+        Dialog dialog = getDialog();
 
         //AttributeからLayoutParamsを求める
         WindowManager.LayoutParams layoutParams = dialog.getWindow().getAttributes();
@@ -59,8 +54,8 @@ public class LauncherDialogFragment extends android.support.v4.app.DialogFragmen
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
         //LayoutParamsにdpを計算して適用(今回は横幅300dp)(※metrics.scaledDensityの返り値はfloat)
-        float dialogWidth =  300* metrics.scaledDensity;
-        layoutParams.width = (int)dialogWidth;
+        float dialogWidth = 300 * metrics.scaledDensity;
+        layoutParams.width = (int) dialogWidth;
 
         //LayoutParamsをセットする
         dialog.getWindow().setAttributes(layoutParams);
