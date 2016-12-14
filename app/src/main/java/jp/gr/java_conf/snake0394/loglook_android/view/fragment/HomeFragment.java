@@ -17,9 +17,9 @@ import android.widget.ToggleButton;
 
 import java.util.List;
 
+import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.SlantLauncher;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.ProxyServerService;
-import jp.gr.java_conf.snake0394.loglook_android.R;
 
 
 public class HomeFragment extends Fragment {
@@ -87,6 +87,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
         ToggleButton tb = (ToggleButton) getActivity().findViewById(R.id.toggleButton);
         tb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
