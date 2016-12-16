@@ -31,7 +31,7 @@ import jp.gr.java_conf.snake0394.loglook_android.view.EquipIconId;
 public class EquipmentFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private AppBarLayout appBarLayout;
+    private AppBarLayout sortAppBar;
 
     public EquipmentFragment() {
         // Required empty public constructor
@@ -162,7 +162,7 @@ public class EquipmentFragment extends Fragment {
         spinner.setFocusable(false);
         spinner.setSelection(0);
 
-        appBarLayout = (AppBarLayout) rootView.findViewById(R.id.appBar);
+        sortAppBar = (AppBarLayout) rootView.findViewById(R.id.sortAppBar);
 
         return rootView;
     }
@@ -320,6 +320,9 @@ public class EquipmentFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        AppBarLayout appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appBar);
         appBarLayout.setExpanded(true, true);
+
+        sortAppBar.setExpanded(true, true);
     }
 }

@@ -24,7 +24,7 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 public class DamagedShipFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private AppBarLayout appBarLayout;
+    private AppBarLayout sortAppBar;
 
     public DamagedShipFragment() {
         // Required empty public constructor
@@ -127,7 +127,7 @@ public class DamagedShipFragment extends Fragment {
                 break;
         }
 
-        appBarLayout = (AppBarLayout) rootView.findViewById(R.id.appBar);
+        sortAppBar = (AppBarLayout) rootView.findViewById(R.id.sortAppBar);
 
         return rootView;
     }
@@ -163,6 +163,9 @@ public class DamagedShipFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        AppBarLayout appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appBar);
         appBarLayout.setExpanded(true, true);
+
+        sortAppBar.setExpanded(true, true);
     }
 }
