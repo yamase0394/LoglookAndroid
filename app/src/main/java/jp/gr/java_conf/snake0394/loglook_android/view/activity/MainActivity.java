@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
 
     private static int OVERLAY_PERMISSION_REQ_CODE = 1234;
 
-
     /**
      * このアクティビティが持つfragment
      */
