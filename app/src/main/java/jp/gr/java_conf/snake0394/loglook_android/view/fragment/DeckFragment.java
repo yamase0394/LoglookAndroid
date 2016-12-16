@@ -459,6 +459,7 @@ public class DeckFragment extends Fragment {
             ErrorLogger.writeLog(e);
             e.printStackTrace();
         }
+
         return rootView;
     }
 
