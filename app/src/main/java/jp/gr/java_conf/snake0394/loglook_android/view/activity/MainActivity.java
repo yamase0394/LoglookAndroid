@@ -5,9 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -22,7 +20,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -92,13 +89,6 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (!Settings.canDrawOverlays(this)) {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-                startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
-            }
-        }
 
         setContentView(R.layout.activity_main);
 
@@ -334,19 +324,6 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
             Log.d("MainActivity", "fragment");
             intent.putExtra("position", Fragment.NULL.getPosition());
             present = mf;
-        }
-    }
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (requestCode == OVERLAY_PERMISSION_REQ_CODE) {
-                if (!Settings.canDrawOverlays(this)) {
-                    // SYSTEM_ALERT_WINDOW permission not granted...
-                    Toast.makeText(this, "権限の取得に失敗しました", Toast.LENGTH_LONG).show();
-                }
-            }
         }
     }
 }
