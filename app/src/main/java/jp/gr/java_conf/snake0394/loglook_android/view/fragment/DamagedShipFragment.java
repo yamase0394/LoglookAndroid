@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +24,7 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 public class DamagedShipFragment extends Fragment {
 
     private RecyclerView recyclerView;
+    private AppBarLayout appBarLayout;
 
     public DamagedShipFragment() {
         // Required empty public constructor
@@ -125,6 +127,8 @@ public class DamagedShipFragment extends Fragment {
                 break;
         }
 
+        appBarLayout = (AppBarLayout) rootView.findViewById(R.id.appBar);
+
         return rootView;
     }
 
@@ -156,4 +160,9 @@ public class DamagedShipFragment extends Fragment {
         ((DamagedShipAdapter) recyclerView.getAdapter()).addDataOf(initialDataList);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        appBarLayout.setExpanded(true, true);
+    }
 }
