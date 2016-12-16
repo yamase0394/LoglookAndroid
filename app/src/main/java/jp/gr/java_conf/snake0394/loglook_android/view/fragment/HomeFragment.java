@@ -125,6 +125,13 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
-        tb.setChecked(true);
+
+        //SystemAlert
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        if (sharedPreferences.getBoolean("SystemAlertPermissionGranted", true)) {
+            tb.setChecked(true);
+        }
     }
+
+
 }
