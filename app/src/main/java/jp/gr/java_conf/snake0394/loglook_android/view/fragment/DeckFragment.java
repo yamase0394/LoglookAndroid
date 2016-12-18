@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +44,7 @@ import jp.gr.java_conf.snake0394.loglook_android.view.activity.ShipDetailActivit
  */
 public class DeckFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
+    View rootView;
 
     public DeckFragment() {
         // Required empty public constructor
@@ -61,7 +63,14 @@ public class DeckFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_deck, container, false);
+        if (rootView != null) {
+            Log.d("deck", "使いまわす");
+            return rootView;
+        }
+
+        rootView = inflater.inflate(R.layout.fragment_deck, container, false);
+
+        Log.d("deck", "createview@" + getArguments().getInt("deckId"));
 
         try {
             final Deck deck = DeckManager.INSTANCE.getDeck(getArguments().getInt("deckId"));
@@ -162,7 +171,7 @@ public class DeckFragment extends Fragment {
                 text.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        android.support.v4.app.DialogFragment dialogFragment = ShipParamDialogFragment.newInstance(id,getArguments().getInt("deckId"));
+                        android.support.v4.app.DialogFragment dialogFragment = ShipParamDialogFragment.newInstance(id, getArguments().getInt("deckId"));
                         dialogFragment.show(getFragmentManager(), "fragment_dialog");
                     }
                 });
