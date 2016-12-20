@@ -96,6 +96,20 @@ public class CombinedEachWater extends Battle{
      * サイズは航空隊による攻撃の回数。
      * 格納されているリスト[0]=-1,[1]～[6]=敵が受けたダメージ。
      */
+    private List<Integer> baseInjectionEnemyDamage = null;
+
+    /**
+     * 基地航空隊による敵へのダメージ。
+     * サイズは航空隊による攻撃の回数。
+     * 格納されているリスト[0]=-1,[1]～[6]=敵が受けたダメージ。
+     */
+    private List<Integer> baseInjectionEnemyDamageCombined = null;
+
+    /**
+     * 基地航空隊による敵へのダメージ。
+     * サイズは航空隊による攻撃の回数。
+     * 格納されているリスト[0]=-1,[1]～[6]=敵が受けたダメージ。
+     */
     private List<List<Integer>> baseEnemyDamage = null;
 
     /**
@@ -104,6 +118,31 @@ public class CombinedEachWater extends Battle{
      * 格納されているリスト[0]=-1,[1]～[6]=敵が受けたダメージ。
      */
     private List<List<Integer>> baseEnemyDamageCombined = null;
+
+    /**
+     * 艦載機による味方へのダメージ。
+     * [0]=-1,[1]～[6]=味方が受けたダメージ。
+     */
+    private List<Integer> injectionKoukuFriendDamage = null;
+
+    /**
+     * 艦載機による敵へのダメージ。
+     * [0]=-1,[1]～[6]=敵が受けたダメージ。
+     */
+    private List<Integer> injectionKoukuEnemyDamage = null;
+
+    /**
+     * 艦載機による第2艦隊へのダメージ。
+     * [0]=-1,[1]～[6]=味方が受けたダメージ。
+     */
+    private List<Integer> injectionkoukuFriendDamageCombined = null;
+
+    /**
+     * 艦載機による第2艦隊へのダメージ。
+     * [0]=-1,[1]～[6]=味方が受けたダメージ。
+     */
+    private List<Integer> injectionkoukuEnemyDamageCombined = null;
+
 
     /**
      * 艦載機による味方へのダメージ。
@@ -617,6 +656,61 @@ public class CombinedEachWater extends Battle{
         this.raigekiEnemyDamage = raigekiEnemyDamage;
     }
 
+    @Override
+    public List<Integer> getBaseInjectionEnemyDamage() {
+        return baseInjectionEnemyDamage;
+    }
+
+    @Override
+    public void setBaseInjectionEnemyDamage(List<Integer> baseInjectionEnemyDamage) {
+        this.baseInjectionEnemyDamage = baseInjectionEnemyDamage;
+    }
+
+    @Override
+    public List<Integer> getBaseInjectionEnemyDamageCombined() {
+        return baseInjectionEnemyDamageCombined;
+    }
+
+    public void setBaseInjectionEnemyDamageCombined(List<Integer> baseInjectionEnemyDamageCombined) {
+        this.baseInjectionEnemyDamageCombined = baseInjectionEnemyDamageCombined;
+    }
+
+    @Override
+    public List<Integer> getInjectionKoukuFriendDamage() {
+        return injectionKoukuFriendDamage;
+    }
+
+    @Override
+    public void setInjectionKoukuFriendDamage(List<Integer> injectionKoukuFriendDamage) {
+        this.injectionKoukuFriendDamage = injectionKoukuFriendDamage;
+    }
+
+    @Override
+    public List<Integer> getInjectionKoukuEnemyDamage() {
+        return injectionKoukuEnemyDamage;
+    }
+
+    @Override
+    public void setInjectionKoukuEnemyDamage(List<Integer> injectionKoukuEnemyDamage) {
+        this.injectionKoukuEnemyDamage = injectionKoukuEnemyDamage;
+    }
+
+    public List<Integer> getInjectionkoukuFriendDamageCombined() {
+        return injectionkoukuFriendDamageCombined;
+    }
+
+    public void setInjectionkoukuFriendDamageCombined(List<Integer> injectionkoukuFriendDamageCombined) {
+        this.injectionkoukuFriendDamageCombined = injectionkoukuFriendDamageCombined;
+    }
+
+    public List<Integer> getInjectionkoukuEnemyDamageCombined() {
+        return injectionkoukuEnemyDamageCombined;
+    }
+
+    public void setInjectionkoukuEnemyDamageCombined(List<Integer> injectionkoukuEnemyDamageCombined) {
+        this.injectionkoukuEnemyDamageCombined = injectionkoukuEnemyDamageCombined;
+    }
+
     public void set(String jsonStr) {
         try {
             JSONObject battleroot = new JSONObject(jsonStr);
@@ -755,6 +849,27 @@ public class CombinedEachWater extends Battle{
                     break;
             }
 
+            if (battledata.has("api_air_base_injection")) {
+                JSONObject airBaseAttack = battledata.getJSONObject("api_air_base_injection");
+                JSONObject stage3 = airBaseAttack.getJSONObject("api_stage3");
+                JSONArray edam = stage3.getJSONArray("api_edam");
+                tIntList = new ArrayList<>();
+                for (int i = 0; i < edam.length(); i++) {
+                    tIntList.add(edam.getInt(i));
+                }
+                setBaseInjectionEnemyDamage(tIntList);
+
+                if (airBaseAttack.has("api_stage3_combined")) {
+                    stage3 = airBaseAttack.getJSONObject("api_stage3_combined");
+                    edam = stage3.getJSONArray("api_edam");
+                    tIntList = new ArrayList<>();
+                    for (int j = 0; j < edam.length(); j++) {
+                        tIntList.add(edam.getInt(j));
+                    }
+                    setBaseInjectionEnemyDamageCombined(tIntList);
+                }
+            }
+
             if (battledata.has("api_air_base_attack")) {
                 JSONArray airBaseAttack = battledata.getJSONArray("api_air_base_attack");
                 List<List<Integer>> tIntListList = new ArrayList<>();
@@ -779,6 +894,42 @@ public class CombinedEachWater extends Battle{
                 }
                 setBaseEnemyDamage(tIntListList);
                 setBaseEnemyDamageCombined(tIntListListCombined);
+            }
+
+            if (battledata.has("api_injection_kouku")) {
+                JSONObject injectionKouku = battledata.getJSONObject("api_injection_kouku");
+                JSONObject stage3 = injectionKouku.getJSONObject("api_stage3");
+
+                JSONArray fdam = stage3.getJSONArray("api_fdam");
+                tIntList = new ArrayList<>();
+                for (int i = 0; i < fdam.length(); i++) {
+                    tIntList.add(fdam.getInt(i));
+                }
+                setInjectionKoukuFriendDamage(tIntList);
+
+                JSONArray edam = stage3.getJSONArray("api_edam");
+                tIntList = new ArrayList<>();
+                for (int i = 0; i < edam.length(); i++) {
+                    tIntList.add(edam.getInt(i));
+                }
+                setInjectionKoukuEnemyDamage(tIntList);
+
+                if (injectionKouku.has("api_stage3_combined")) {
+                    JSONObject stage3Combined = injectionKouku.getJSONObject("api_stage3_combined");
+                    fdam = stage3Combined.getJSONArray("api_fdam");
+                    tIntList = new ArrayList<>();
+                    for (int i = 0; i < fdam.length(); i++) {
+                        tIntList.add(fdam.getInt(i));
+                    }
+                    setInjectionkoukuFriendDamageCombined(tIntList);
+
+                    edam = stage3Combined.getJSONArray("api_edam");
+                    tIntList = new ArrayList<>();
+                    for (int i = 0; i < edam.length(); i++) {
+                        tIntList.add(edam.getInt(i));
+                    }
+                    setInjectionkoukuEnemyDamageCombined(tIntList);
+                }
             }
 
             JSONObject kouku = battledata.getJSONObject("api_kouku");

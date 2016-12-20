@@ -6,7 +6,7 @@ import java.util.Map;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 
 /**
- * Created by snake0394 on 2016/10/29.
+ * MstSlotItemのType[3]
  */
 
 public enum EquipIconId {
@@ -48,6 +48,8 @@ public enum EquipIconId {
     特型内火艇(36, R.drawable.special_amphibious_tank),
     陸上攻撃機(37, R.drawable.land_based_attack_aircraft),
     局地戦闘機(38, R.drawable.interceptor_fighter),
+    噴式戦闘爆撃機_噴式景雲改(39, R.drawable.jet_powered_fighter_bomber_icon_1),
+    噴式戦闘爆撃機_橘花改(40, R.drawable.jet_powered_fighter_bomber_icon_2),
     UNKNOWN(300, R.drawable.unknown),
     EMPTY(301, R.drawable.empty),
     NOT_AVAILABLE(302, R.drawable.not_available);

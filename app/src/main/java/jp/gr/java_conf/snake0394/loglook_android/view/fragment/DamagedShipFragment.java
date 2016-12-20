@@ -163,8 +163,6 @@ public class DamagedShipFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        AppBarLayout appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appBar);
-        appBarLayout.setExpanded(true, true);
 
         sortAppBar.setExpanded(true, true);
     }

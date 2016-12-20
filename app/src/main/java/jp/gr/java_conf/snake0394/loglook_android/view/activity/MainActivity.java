@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -153,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
             selectItem(mf);
             return;
         }
+
         if (savedInstanceState == null) {
             //画面回転を自動に設定
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
@@ -297,6 +299,11 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
                 break;
             default:
                 return;
+        }
+
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appBar);
+        if (appBarLayout != null) {
+            appBarLayout.setExpanded(true, true);
         }
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();

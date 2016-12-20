@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by snake0394 on 2016/08/22.
+ * MstSlotItemのType[2]
  */
 public enum EquipType {
     不明(0),
@@ -56,6 +56,10 @@ public enum EquipType {
     特型内火艇(46),
     陸上攻撃機(47),
     局地戦闘機(48),
+    噴式戦闘機(56),
+    噴式戦闘爆撃機(57),
+    噴式攻撃機(58),
+    噴式偵察機(59),
     大型電探Ⅱ(93),
     艦上偵察機Ⅱ(94);
 
