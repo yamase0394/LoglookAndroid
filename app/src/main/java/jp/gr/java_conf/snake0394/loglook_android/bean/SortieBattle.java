@@ -82,6 +82,13 @@ public enum SortieBattle {
      * サイズは航空隊による攻撃の回数。
      * 格納されているリスト[0]=-1,[1]～[6]=敵が受けたダメージ。
      */
+    private List<List<Integer>> baseInjectionEnemyDamage = null;
+
+    /**
+     * 基地航空隊による敵へのダメージ。
+     * サイズは航空隊による攻撃の回数。
+     * 格納されているリスト[0]=-1,[1]～[6]=敵が受けたダメージ。
+     */
     private List<List<Integer>> baseEnemyDamage = null;
 
     /**

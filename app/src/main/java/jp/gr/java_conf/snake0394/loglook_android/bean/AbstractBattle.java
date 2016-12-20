@@ -50,11 +50,35 @@ public abstract class AbstractBattle {
         return "";
     }
 
+    public List<Integer> getBaseInjectionEnemyDamage() {
+        return null;
+    }
+
+    public List<Integer> getBaseInjectionEnemyDamageCombined() {
+        return null;
+    }
+
     public List<List<Integer>> getBaseEnemyDamage() {
         return null;
     }
 
     public List<List<Integer>> getBaseEnemyDamageCombined() {
+        return null;
+    }
+
+    public List<Integer> getInjectionKoukuFriendDamage() {
+        return null;
+    }
+
+    public List<Integer> getInjectionKoukuEnemyDamage() {
+        return null;
+    }
+
+    public List<Integer> getInjectionKoukuFriendDamageCombined() {
+        return null;
+    }
+
+    public List<Integer> getInjectionKoukuEnemyDamageCombined() {
         return null;
     }
 
