@@ -8,11 +8,16 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -456,7 +461,31 @@ public class DeckFragment extends Fragment {
             text.setText(String.valueOf(DeckUtility.getSakuteki25(deck)));
 
             text = (TextView) rootView.findViewById(R.id.sakuteki33);
-            text.setText(String.valueOf(DeckUtility.getSakuteki33(deck)));
+            text.setText(String.valueOf(DeckUtility.getSakuteki33(deck,1)));
+
+            EditText editText = (EditText) rootView.findViewById(R.id.junction);
+            editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        //IMEを閉じる
+                        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                        //索敵(33)
+                        EditText editText = (EditText) rootView.findViewById(R.id.junction);
+                        Editable getText = editText.getText();
+                        float junction = 1f;
+                        try {
+                            junction = Float.parseFloat(getText.toString());
+                        } catch (NumberFormatException e) {
+                            editText.setText("1");
+                        }
+                        TextView text = (TextView) rootView.findViewById(R.id.sakuteki33);
+                        text.setText(String.valueOf(DeckUtility.getSakuteki33(deck,junction)));
+                    }
+                    return true;
+                }
+            });
 
             text = (TextView) rootView.findViewById(R.id.levelSum);
             text.setText(String.valueOf(deck.getLevelSum()));

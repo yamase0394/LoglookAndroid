@@ -101,8 +101,9 @@ public class DeckUtility {
      * @param deck
      * @return 艦隊の判定式(33)の索敵値
      */
-    public static float getSakuteki33(Deck deck) {
+    public static float getSakuteki33(Deck deck,float junctionCoefficient) {
         float sakuteki = 0;
+        float adjustedEquipsearch = 0;
         //艦隊の空き数
         int empty = 0;
         for (int i = 0; i < deck.getShipId().size(); i++) {
@@ -136,35 +137,38 @@ public class DeckUtility {
                     case 大型飛行艇:
                     case 大型探照灯:
                     case 水上戦闘機:
-                        sakuteki += mstSlotitem.getSaku() * 0.6;
+                    case 噴式戦闘爆撃機:
+                        adjustedEquipsearch += mstSlotitem.getSaku() * 0.6;
                         break;
                     case 小型電探:
                         float tempSakuteki = (float) (mstSlotitem.getSaku() + 1.25 * Math.sqrt(mySlotItem.getLevel()));
-                        sakuteki += tempSakuteki * 0.6;
+                        adjustedEquipsearch += tempSakuteki * 0.6;
                         break;
                     case 大型電探:
                         tempSakuteki = (float) (mstSlotitem.getSaku() + 1.4 * Math.sqrt(mySlotItem.getLevel()));
-                        sakuteki += tempSakuteki * 0.6;
+                        adjustedEquipsearch += tempSakuteki * 0.6;
                         break;
                     case 艦上攻撃機:
-                        sakuteki += mstSlotitem.getSaku() * 0.8;
+                        adjustedEquipsearch += mstSlotitem.getSaku() * 0.8;
                         break;
                     case 艦上偵察機:
                     case 艦上偵察機Ⅱ:
-                        sakuteki += mstSlotitem.getSaku();
+                        adjustedEquipsearch += mstSlotitem.getSaku();
                         break;
                     case 水上偵察機:
                         tempSakuteki = (float) (mstSlotitem.getSaku() + 1.2 * Math.sqrt(mySlotItem.getLevel()));
-                        sakuteki += tempSakuteki * 1.2;
+                        adjustedEquipsearch += tempSakuteki * 1.2;
                         break;
                     case 水上爆撃機:
-                        sakuteki += mstSlotitem.getSaku() * 1.1;
+                        adjustedEquipsearch += mstSlotitem.getSaku() * 1.1;
                         break;
                 }
             }
             //艦船の素敵値を足す
             sakuteki += Math.sqrt(myShip.getSakuteki().get(0) - equipSakuSum);
         }
+        adjustedEquipsearch *= junctionCoefficient;
+        sakuteki += adjustedEquipsearch;
         //索敵 = -(司令部レベル*0.4)小数点以下を切り上げ + 2*艦隊の空き数
         sakuteki += (float) (-Math.ceil(0.4 * Basic.INSTANCE.getLevel()) + 2 * empty);
         BigDecimal bd = new BigDecimal(Float.toString(sakuteki));
