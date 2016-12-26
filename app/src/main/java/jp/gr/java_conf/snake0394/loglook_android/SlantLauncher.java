@@ -66,6 +66,12 @@ public class SlantLauncher extends Service implements SensorEventListener {
         Sensor sensors = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sm.registerListener(this, sensors, SensorManager.SENSOR_DELAY_NORMAL);
 
+        //関連するセンサを動作させないと加速度が正しく取れないことがある
+        final Sensor ori = sm.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+        sm.registerListener(this, ori, SensorManager.SENSOR_DELAY_NORMAL);
+        final Sensor mag = sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        sm.registerListener(this, mag, SensorManager.SENSOR_DELAY_NORMAL);
+
         //タッチイベントを取得するためのviewを作る
         wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -106,6 +112,10 @@ public class SlantLauncher extends Service implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER) {
+            return;
+        }
+
         //加速度センサの値から重力の影響を取り除く
         gravity[0] = alpha * gravity[0] + (1 - alpha) * event.values[0];
         gravity[1] = alpha * gravity[1] + (1 - alpha) * event.values[1];
@@ -237,7 +247,7 @@ public class SlantLauncher extends Service implements SensorEventListener {
 
         public boolean onTouch(View v_, MotionEvent event_) {
             // タッチされている指の本数
-            Log.v("motionEvent", "--touch_count = " + event_.getPointerCount());
+            //Log.v("motionEvent", "--touch_count = " + event_.getPointerCount());
 
             // タッチされている座標
             Log.v("Y", "" + event_.getY());
@@ -278,15 +288,17 @@ public class SlantLauncher extends Service implements SensorEventListener {
 
                     isTouching = false;
 
-                    if(!isForeground()){
+                    if (!isForeground()) {
                         return true;
                     }
 
+                    //上
                     if (startTouchY > nowTouchedY) {
+                        //左
                         if (startTouchX > nowTouchedX) {
                             if ((startTouchY - nowTouchedY) > (startTouchX - nowTouchedX)) {
                                 if (startTouchY > nowTouchedY + adjust) {
-                                    Log.v("Flick", "--上");
+                                    Log.v("Flick", "左上上");
                                     // 上フリック時の処理を記述する
                                     Intent i = new Intent(context, DialogActivity.class);
                                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -294,25 +306,26 @@ public class SlantLauncher extends Service implements SensorEventListener {
                                 }
                             } else if ((startTouchY - nowTouchedY) < (startTouchX - nowTouchedX)) {
                                 if (startTouchX > nowTouchedX + adjust) {
-                                    Log.v("Flick", "--左");
+                                    Log.v("Flick", "左上左");
                                     // 左フリック時の処理を記述する
                                     Intent i = new Intent(context, DialogActivity.class);
                                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     context.startActivity(i);
                                 }
                             }
+                            //右
                         } else if (startTouchX < nowTouchedX) {
                             if ((startTouchY - nowTouchedY) > (nowTouchedX - startTouchX)) {
                                 if (startTouchY > nowTouchedY + adjust) {
-                                    Log.v("Flick", "--上");
+                                    Log.v("Flick", "右上上");
                                     // 上フリック時の処理を記述する
                                     Intent i = new Intent(context, DialogActivity.class);
                                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     context.startActivity(i);
                                 }
                             } else if ((startTouchY - nowTouchedY) < (nowTouchedX - startTouchX)) {
-                                if (startTouchX < nowTouchedX + adjust) {
-                                    Log.v("Flick", "--右");
+                                if (startTouchX + adjust < nowTouchedX) {
+                                    Log.v("Flick", "右上右");
                                     // 右フリック時の処理を記述する
                                     Intent i = new Intent(context, DialogActivity.class);
                                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -320,11 +333,13 @@ public class SlantLauncher extends Service implements SensorEventListener {
                                 }
                             }
                         }
+                        //下
                     } else if (startTouchY < nowTouchedY) {
+                        //左
                         if (startTouchX > nowTouchedX) {
                             if ((nowTouchedY - startTouchY) > (startTouchX - nowTouchedX)) {
-                                if (startTouchY < nowTouchedY + adjust) {
-                                    Log.v("Flick", "--下");
+                                if (startTouchY + adjust < nowTouchedY) {
+                                    Log.v("Flick", "左下下");
                                     // 下フリック時の処理を記述する
                                     Intent i = new Intent(context, DialogActivity.class);
                                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -332,25 +347,26 @@ public class SlantLauncher extends Service implements SensorEventListener {
                                 }
                             } else if ((nowTouchedY - startTouchY) < (startTouchX - nowTouchedX)) {
                                 if (startTouchX > nowTouchedX + adjust) {
-                                    Log.v("Flick", "--左");
+                                    Log.v("Flick", "左下左");
                                     // 左フリック時の処理を記述する
                                     Intent i = new Intent(context, DialogActivity.class);
                                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     context.startActivity(i);
                                 }
                             }
+                            //右
                         } else if (startTouchX < nowTouchedX) {
                             if ((nowTouchedY - startTouchY) > (nowTouchedX - startTouchX)) {
-                                if (startTouchY < nowTouchedY + adjust) {
-                                    Log.v("Flick", "--下");
+                                if (startTouchY + adjust < nowTouchedY) {
+                                    Log.v("Flick", "右下下");
                                     // 下フリック時の処理を記述する
                                     Intent i = new Intent(context, DialogActivity.class);
                                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     context.startActivity(i);
                                 }
                             } else if ((nowTouchedY - startTouchY) < (nowTouchedX - startTouchX)) {
-                                if (startTouchX < nowTouchedX + adjust) {
-                                    Log.v("Flick", "--右");
+                                if (startTouchX + adjust < nowTouchedX) {
+                                    Log.v("Flick", "右下右");
                                     // 右フリック時の処理を記述する
                                     Intent i = new Intent(context, DialogActivity.class);
                                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
