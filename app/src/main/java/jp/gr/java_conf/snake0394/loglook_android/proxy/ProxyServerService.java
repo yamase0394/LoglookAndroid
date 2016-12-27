@@ -14,9 +14,10 @@ import org.eclipse.jetty.proxy.ConnectHandler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 
-import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
 import jp.gr.java_conf.snake0394.loglook_android.R;
+import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity;
 
 
@@ -78,6 +79,7 @@ public class ProxyServerService extends Service implements Runnable {
         Log.d("server", sp.getString("port", "8080"));
 
         serverConnector.setPort(Integer.parseInt(sp.getString("port", "8080")));
+
         server.addConnector(serverConnector);
 
         // HTTPS接続をプロキシするため、CONNECTメソッドを処理するハンドラーを設定
@@ -85,8 +87,13 @@ public class ProxyServerService extends Service implements Runnable {
         server.setHandler(connectHandler);
 
         // HTTP接続をプロキシするため、ProxyServletを設定
-        ServletContextHandler contextHandler = new ServletContextHandler(connectHandler, "/");
-        contextHandler.addServlet(MyAsyncMiddleManServlet.class, "/");
+        ServletContextHandler contextHandler = new ServletContextHandler(connectHandler, "/", ServletContextHandler.SESSIONS);
+
+        ServletHolder holder = new ServletHolder(MyAsyncMiddleManServlet.class);
+        holder.setInitParameter("maxThreads", "256");
+        holder.setInitParameter("timeout", "600000");
+
+        contextHandler.addServlet(holder, "/*");
 
         try {
             server.start();

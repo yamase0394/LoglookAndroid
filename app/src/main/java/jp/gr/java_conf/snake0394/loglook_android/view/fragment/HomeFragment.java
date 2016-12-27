@@ -128,7 +128,7 @@ public class HomeFragment extends Fragment {
 
         //SystemAlert
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
-        if (sp.getBoolean("SystemAlertPermissionGranted", false)&& sp.getBoolean("UsageAccessPermissionGranted",false)) {
+        if (sp.getBoolean("SystemAlertPermissionGranted", true) && sp.getBoolean("UsageAccessPermissionGranted", true)) {
             tb.setChecked(true);
         }
     }
