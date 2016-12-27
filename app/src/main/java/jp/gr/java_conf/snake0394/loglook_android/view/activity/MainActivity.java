@@ -1,8 +1,12 @@
 package jp.gr.java_conf.snake0394.loglook_android.view.activity;
 
+import android.annotation.TargetApi;
+import android.app.AppOpsManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -51,7 +55,8 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
     //画面回転時のfragmentの更新に使用
     private Fragment present;
 
-    private static int OVERLAY_PERMISSION_REQ_CODE = 1234;
+    private final int OVERLAY_REQ_CODE = 1234;
+    private final int USAGE_ACCESS_REQ_CODE = 2222;
 
 
     /**
@@ -94,13 +99,21 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+
+        if (!canGetUsageStats()) {
+            Intent   intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            startActivityForResult(intent, USAGE_ACCESS_REQ_CODE);
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("UsageAccessPermissionGranted", false);
+            editor.apply();
+        }
 
         //Android6以降の端末でランチャーのオーバーレイ用の権限を取得する
         if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(this)) {
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
+            startActivityForResult(intent, OVERLAY_REQ_CODE);
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("SystemAlertPermissionGranted", false);
@@ -350,7 +363,7 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == OVERLAY_PERMISSION_REQ_CODE) {
+        if (requestCode == OVERLAY_REQ_CODE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
                 //権限が得られなかった
             } else {
@@ -359,6 +372,44 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
                 editor.putBoolean("SystemAlertPermissionGranted", true);
                 editor.apply();
             }
+        } else if (requestCode == USAGE_ACCESS_REQ_CODE) {
+            if (checkPermission(getApplicationContext())) {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("UsageAccessPermissionGranted", true);
+                editor.apply();
+            }else{
+
+            }
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private static boolean checkPermission(Context context) {
+        // Lollipop以前は使えないAPIが含まれています。
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return true;
+        }
+        // AppOpsManagerを取得
+        AppOpsManager aom = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+        // GET_USAGE_STATSのステータスを取得
+        int mode = aom.checkOp(AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.getPackageName());
+        if (mode == AppOpsManager.MODE_DEFAULT) {
+            // AppOpsの状態がデフォルトなら通常のpermissionチェックを行う。
+            // 普通のアプリならfalse
+            return context.checkPermission("android.permission.PACKAGE_USAGE_STATS", android.os.Process.myPid(), android.os.Process.myUid()) == PackageManager.PERMISSION_GRANTED;
+        }
+        // AppOpsの状態がデフォルトでないならallowedのみtrue
+        return mode == AppOpsManager.MODE_ALLOWED;
+    }
+
+    private boolean canGetUsageStats() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return true;
+        }
+        AppOpsManager aom = (AppOpsManager) getSystemService(APP_OPS_SERVICE);
+        int uid = android.os.Process.myUid();
+        int mode = aom.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, uid, getPackageName());
+        return mode == AppOpsManager.MODE_ALLOWED;
     }
 }

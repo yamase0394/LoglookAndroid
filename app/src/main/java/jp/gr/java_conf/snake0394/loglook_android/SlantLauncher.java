@@ -2,6 +2,9 @@ package jp.gr.java_conf.snake0394.loglook_android;
 
 import android.app.ActivityManager;
 import android.app.Service;
+import android.app.usage.UsageEvents;
+import android.app.usage.UsageStatsManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,6 +25,7 @@ import android.view.View;
 import android.view.WindowManager;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -212,17 +216,64 @@ public class SlantLauncher extends Service implements SensorEventListener {
     //艦これがフォアグラウンドか確認する
     private boolean isForeground() {
         String packageName = "com.dmm.dmmlabo.kancolle";
-        boolean isForeGround = false;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            List<ComponentName> list = getForegroundAppList(getApplicationContext(), 1);
+            Log.d("list", "foreground");
+            for (ComponentName name : list) {
+                Log.d("foreground", name.getPackageName());
+                if (name.getPackageName().equals(packageName)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> processInfoList = am.getRunningAppProcesses();
         for (ActivityManager.RunningAppProcessInfo info : processInfoList) {
             if (info.processName.contains(packageName)) {
                 if (info.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
-                    isForeGround = true;
+                    return true;
                 }
             }
         }
-        return isForeGround;
+
+        return false;
+    }
+
+    private List<ComponentName> getForegroundAppList(Context context, int size) {
+        List<ComponentName> nameList = new ArrayList<>();
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return nameList;
+        }
+
+        long time = System.currentTimeMillis();
+        UsageStatsManager usm = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
+        long interval = 10 * 1000;
+        do {
+            UsageEvents events = usm.queryEvents(time - interval, time);
+            while (events.hasNextEvent()) {
+                UsageEvents.Event event = new UsageEvents.Event();
+                if (events.getNextEvent(event)) {
+                    // eventTypeがMOVE_TO_FOREGROUNDのものだけ取ったらgetRunningTasksっぽかったのでフィルタしています。
+                    // 古い順に取得されるので先頭から追加して新しい順に直しています。
+                    if (event.getEventType() == UsageEvents.Event.MOVE_TO_FOREGROUND) {
+                        // 使いやすいようにcomponentNameに変えています。
+                        String packageName = event.getPackageName();
+                        ComponentName name = new ComponentName(packageName, event.getClassName());
+                        // リストにの先頭に追加する
+                        nameList.add(0, name);
+                    }
+                }
+            }
+            interval *= 10;
+        }
+        // 指定した数以上、foregroundのイベントが取得できるまで続けてます。
+        // 無限ループになりそうなので10万秒くらいを上限にしています。これでも大きすぎる気がします。
+        while (nameList.size() < size || interval > 100000 * 1000);
+        return nameList;
     }
 
     private class FlickTouchListener implements View.OnTouchListener {
@@ -249,12 +300,15 @@ public class SlantLauncher extends Service implements SensorEventListener {
             // タッチされている指の本数
             //Log.v("motionEvent", "--touch_count = " + event_.getPointerCount());
 
+            if (!isForeground()) {
+                return true;
+            }
+
             // タッチされている座標
             Log.v("Y", "" + event_.getY());
             Log.v("X", "" + event_.getX());
 
             switch (event_.getAction()) {
-
                 // タッチ
                 case MotionEvent.ACTION_DOWN:
                     Log.v("motionEvent", "--ACTION_DOWN");
@@ -287,10 +341,6 @@ public class SlantLauncher extends Service implements SensorEventListener {
                     nowTouchedY = event_.getY();
 
                     isTouching = false;
-
-                    if (!isForeground()) {
-                        return true;
-                    }
 
                     //上
                     if (startTouchY > nowTouchedY) {
@@ -394,4 +444,5 @@ public class SlantLauncher extends Service implements SensorEventListener {
             return (true);
         }
     }
+
 }
