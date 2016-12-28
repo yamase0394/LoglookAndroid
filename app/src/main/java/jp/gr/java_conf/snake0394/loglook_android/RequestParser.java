@@ -31,6 +31,7 @@ import jp.gr.java_conf.snake0394.loglook_android.view.activity.HeavilyDamagedWar
 
 public class RequestParser {
     public static void parse(String uri, String requestBody) {
+        //Log.d("requestURI", uri);
         try {
             Context context = App.getInstance();
             switch (uri) {

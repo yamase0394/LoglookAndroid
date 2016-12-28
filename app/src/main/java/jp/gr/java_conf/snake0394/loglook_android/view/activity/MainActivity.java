@@ -177,31 +177,6 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d("MainActivity", "onStop");
-        /*
-        if (present != Fragment.TACTICAL_SITUATION) {
-            //画面回転を自動に設定
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-        }
-        */
-        //現在の画面の向きに応じて画面の向きを設定
-        Resources resources = getResources();
-        Configuration config = resources.getConfiguration();
-        switch (config.orientation) {
-            case Configuration.ORIENTATION_PORTRAIT:
-                Log.d("MainActivity", "縦");
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-                break;
-            case Configuration.ORIENTATION_LANDSCAPE:
-                Log.d("MainActivity", "横");
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                break;
-        }
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
         Log.d("MainActivity", "onStop");
@@ -347,7 +322,7 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
         //画面の向き
         boolean usesLandscape = intent.getBooleanExtra("usesLandscape", false);
         if (usesLandscape) {
-            Log.d("MainActivity", "横");
+            Log.d("onNewIntent", "横");
             intent.putExtra("usesLandscape", false);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
