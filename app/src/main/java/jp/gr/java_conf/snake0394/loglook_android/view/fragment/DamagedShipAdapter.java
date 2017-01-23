@@ -167,6 +167,7 @@ public class DamagedShipAdapter extends RecyclerView.Adapter<DamagedShipAdapter.
             } else if (myShip.getSlot().get(0) == -1) {
                 slot1.setImageResource(EquipIconId.EMPTY.getImageId());
             } else {
+                //装備取得前に開くとmySlotItemがnullになる
                 mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlot().get(0));
                 mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
                 slot1.setImageResource(EquipIconId.toEquipIconId(mstSlotitem.getType().get(3)).getImageId());

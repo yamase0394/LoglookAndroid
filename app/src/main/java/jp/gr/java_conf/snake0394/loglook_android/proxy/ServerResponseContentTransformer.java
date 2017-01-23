@@ -1,7 +1,5 @@
 package jp.gr.java_conf.snake0394.loglook_android.proxy;
 
-import android.util.Log;
-
 import org.eclipse.jetty.proxy.AsyncMiddleManServlet;
 
 import java.io.IOException;
@@ -19,7 +17,6 @@ import jp.gr.java_conf.snake0394.loglook_android.JsonParser;
 public class ServerResponseContentTransformer implements AsyncMiddleManServlet.ContentTransformer {
     StringBuilder sb;
     final String uri;
-    int length = 0;
 
     public ServerResponseContentTransformer(String requestURI) {
         super();
