@@ -15,7 +15,6 @@ import org.littleshoot.proxy.HttpFiltersAdapter;
 import org.littleshoot.proxy.HttpFiltersSourceAdapter;
 import org.littleshoot.proxy.HttpProxyServer;
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
-import org.littleshoot.proxy.impl.ThreadPoolConfiguration;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -99,15 +98,10 @@ public class LittleProxyServerService extends Service implements Runnable {
     public void run() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
-        ThreadPoolConfiguration conf = new ThreadPoolConfiguration().withAcceptorThreads(1)
-                                                                    .withClientToProxyWorkerThreads(2)
-                                                                    .withProxyToServerWorkerThreads(2);
-
         server = DefaultHttpProxyServer.bootstrap()
                                        .withPort(Integer.parseInt(sp.getString("port", "8080")))
                                        .withAllowLocalOnly(true)
                                        .withConnectTimeout(30000)
-                                       .withThreadPoolConfiguration(conf)
                                        .withFiltersSource(new CaptureAdapter())
                                        .start();
     }
