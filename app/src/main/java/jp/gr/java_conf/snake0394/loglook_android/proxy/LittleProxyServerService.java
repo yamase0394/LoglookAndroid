@@ -15,6 +15,7 @@ import org.littleshoot.proxy.HttpFiltersAdapter;
 import org.littleshoot.proxy.HttpFiltersSourceAdapter;
 import org.littleshoot.proxy.HttpProxyServer;
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
+import org.littleshoot.proxy.impl.ThreadPoolConfiguration;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -98,10 +99,15 @@ public class LittleProxyServerService extends Service implements Runnable {
     public void run() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
+        ThreadPoolConfiguration conf = new ThreadPoolConfiguration().withAcceptorThreads(1)
+                                                                    .withClientToProxyWorkerThreads(2)
+                                                                    .withProxyToServerWorkerThreads(2);
+
         server = DefaultHttpProxyServer.bootstrap()
                                        .withPort(Integer.parseInt(sp.getString("port", "8080")))
                                        .withAllowLocalOnly(true)
                                        .withConnectTimeout(30000)
+                                       .withThreadPoolConfiguration(conf)
                                        .withFiltersSource(new CaptureAdapter())
                                        .start();
     }
@@ -110,7 +116,11 @@ public class LittleProxyServerService extends Service implements Runnable {
 
         @Override
         public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
-            return new CaptureFilters(originalRequest, ctx);
+            if (originalRequest.getUri()
+                               .contains("kcsapi")) {
+                return new CaptureFilters(originalRequest, ctx);
+            }
+            return new HttpFiltersAdapter(originalRequest, ctx);
         }
     }
 
@@ -172,30 +182,37 @@ public class LittleProxyServerService extends Service implements Runnable {
             if (!this.released) {
                 try {
                     if (this.request != null && this.response != null) {
-                        byte[] resbody = this.toByteArray(this.requestBuf.duplicate());
-                        byte[] reqbody = this.toByteArray(this.responseBuf.duplicate());
                         String regex = "/kcsapi/(.+)";
                         Pattern p = Pattern.compile(regex);
                         Matcher m = p.matcher(this.request.getUri());
                         if (m.find()) {
-                            String uri = m.group(1);
-                            String clientReqest = new String(resbody, "UTF-8");
-                            RequestParser.parse(uri, clientReqest);
+                            byte[] resbody = this.toByteArray(this.requestBuf.duplicate());
+                            byte[] reqbody = this.toByteArray(this.responseBuf.duplicate());
+                            final String uri = m.group(1);
+                            final String clientReqest = new String(resbody, "UTF-8");
+                            final String serverResponse = new String(reqbody, "UTF-8");
+                            //タイムアウトを避けるため別スレッドで処理
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    RequestParser.parse(uri, clientReqest);
 
-                            String jsonStr;
-                            regex = "svdata=(.+)";
-                            p = Pattern.compile(regex);
-                            m = p.matcher(new String(reqbody, "UTF-8"));
-                            if (m.find()) {
-                                jsonStr = m.group(1);
-                                JsonParser.parse(uri, jsonStr);
-                            } else {
-                                //"svdata="が無い場合不必要なデータと判断
-                            }
+                                    String jsonStr;
+                                    String regex = "svdata=(.+)";
+                                    Pattern p = Pattern.compile(regex);
+                                    Matcher m = p.matcher(serverResponse);
+                                    if (m.find()) {
+                                        jsonStr = m.group(1);
+                                        JsonParser.parse(uri, jsonStr);
+                                    } else {
+                                        //"svdata="が無い場合不必要なデータと判断
+                                    }
+                                }
+                            }).start();
                         }
                     }
                 } catch (Exception e) {
-
+                    e.printStackTrace();
                 } finally {
                     this.release();
                 }

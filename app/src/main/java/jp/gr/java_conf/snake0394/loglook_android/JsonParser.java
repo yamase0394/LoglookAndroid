@@ -66,7 +66,7 @@ import jp.gr.java_conf.snake0394.loglook_android.view.activity.HeavilyDamagedWar
  */
 public class JsonParser {
 
-    public static void parse(String uri, String jsonStr) {
+    public synchronized static void parse(String uri, String jsonStr) {
         Context context = App.getInstance();
         try {
             //Log.d("JsonParser", uri);

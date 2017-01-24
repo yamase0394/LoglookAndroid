@@ -1,4 +1,4 @@
-package jp.gr.java_conf.snake0394.loglook_android;
+package jp.gr.java_conf.snake0394.loglook_android.view;
 
 import android.content.Context;
 import android.support.design.widget.CoordinatorLayout;

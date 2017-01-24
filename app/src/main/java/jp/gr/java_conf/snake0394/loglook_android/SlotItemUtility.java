@@ -7,7 +7,6 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
 /**
  * Created by snake0394 on 2016/10/29.
  */
-
 public class SlotItemUtility {
 
     /**
