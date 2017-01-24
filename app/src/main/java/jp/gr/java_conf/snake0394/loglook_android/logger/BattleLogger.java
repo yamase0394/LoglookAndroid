@@ -1,17 +1,11 @@
 package jp.gr.java_conf.snake0394.loglook_android.logger;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.util.Log;
-
-import com.dropbox.client2.DropboxAPI;
-import com.dropbox.client2.android.AndroidAuthSession;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
@@ -19,7 +13,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import jp.gr.java_conf.snake0394.loglook_android.BattleType;
-import jp.gr.java_conf.snake0394.loglook_android.DropboxAuthManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.AbstractBattle;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager;
@@ -65,7 +58,8 @@ public enum BattleLogger {
 
     public void writeLog(Context context) {
         //SDカードのディレクトリパス
-        File sdcard_path = new File(Environment.getExternalStorageDirectory().getPath() + "/泥提督支援アプリ/");
+        File sdcard_path = new File(Environment.getExternalStorageDirectory()
+                                               .getPath() + "/泥提督支援アプリ/");
 
         //パス区切り用セパレータ
         String Fs = File.separator;
@@ -87,7 +81,8 @@ public enum BattleLogger {
 
             BufferedWriter pw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath, true), "SJIS"));
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            sb.append(sdf.format(Calendar.getInstance().getTime()) + ",");
+            sb.append(sdf.format(Calendar.getInstance()
+                                         .getTime()) + ",");
             sb.append(SortieBattleresult.INSTANCE.getQuestName() + ",");
             sb.append(cell + ",");
             if (isFirstBattle && eventId == 5) {
@@ -147,10 +142,16 @@ public enum BattleLogger {
                 if (eship.get(j) == -1) {
                     sb.append(",");
                 } else {
-                    sb.append(MstShipManager.INSTANCE.getMstShip(eship.get(j)).getName());
-                    if (!MstShipManager.INSTANCE.getMstShip(eship.get(j)).getYomi().equals("") && !MstShipManager.INSTANCE.getMstShip(eship.get(j)).getYomi().equals("-")) {
+                    sb.append(MstShipManager.INSTANCE.getMstShip(eship.get(j))
+                                                     .getName());
+                    if (!MstShipManager.INSTANCE.getMstShip(eship.get(j))
+                                                .getYomi()
+                                                .equals("") && !MstShipManager.INSTANCE.getMstShip(eship.get(j))
+                                                                                       .getYomi()
+                                                                                       .equals("-")) {
                         sb.append("(");
-                        sb.append(MstShipManager.INSTANCE.getMstShip(eship.get(j)).getYomi());
+                        sb.append(MstShipManager.INSTANCE.getMstShip(eship.get(j))
+                                                         .getYomi());
                         sb.append(")");
                     }
                     sb.append(",");
@@ -169,36 +170,6 @@ public enum BattleLogger {
             pw.write(sb.toString());
             pw.flush();
             pw.close();
-
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-
-            //Dropboxに保存する
-            if (sp.getBoolean("saveInDropbox", false)) {
-                //SDカードのディレクトリパス
-                sdf = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
-                sdcard_path = new File(Environment.getExternalStorageDirectory().getPath() + "/泥提督支援アプリ/temp/battle/");
-
-                String fileName = "battle" + sdf.format(Calendar.getInstance().getTime()) + ".txt";
-                //テキストファイル保存先のファイルパス
-                filePath = sdcard_path + Fs + fileName;
-
-                //フォルダがなければ作成
-                if (!sdcard_path.exists()) {
-                    sdcard_path.mkdirs();
-                }
-                pw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath), "SJIS"));
-                pw.write(sb.toString());
-                pw.flush();
-                pw.close();
-
-                DropboxAPI<AndroidAuthSession> mDBApi;
-                DropboxAuthManager dropboxAuthManager = new DropboxAuthManager(context);
-                mDBApi = new DropboxAPI<>(dropboxAuthManager.loadAndroidAuthSession()); //SharedPreferencesから認証情報取得
-                file = new File(filePath);
-                FileInputStream inputStream = new FileInputStream(file);
-                DropboxAPI.Entry response = mDBApi.putFile("/battle/" + fileName, inputStream, file.length(), null, null);
-                Log.d("DbExampleLog", "The uploaded file's rev is: " + response.rev);
-            }
         } catch (Exception e) {
             e.printStackTrace();
             ErrorLogger.writeLog(e);

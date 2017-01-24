@@ -64,7 +64,14 @@ public class LittleProxyServerService extends Service implements Runnable {
         //タップしたときMainActivityを起動
         intent = new Intent(this, MainActivity.class);
         PendingIntent pending = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        Notification builder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_stat_transparent).setTicker("start").setContentTitle("泥提督支援アプリ").setContentText("").setWhen(System.currentTimeMillis()).setContentIntent(pending).setPriority(Notification.PRIORITY_MIN).build();
+        Notification builder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_stat_transparent)
+                                                                   .setTicker("start")
+                                                                   .setContentTitle("泥提督支援アプリ")
+                                                                   .setContentText("")
+                                                                   .setWhen(System.currentTimeMillis())
+                                                                   .setContentIntent(pending)
+                                                                   .setPriority(Notification.PRIORITY_MIN)
+                                                                   .build();
         builder.flags = Notification.FLAG_ONGOING_EVENT;
         startForeground(R.string.app_name, builder);
 
@@ -91,7 +98,12 @@ public class LittleProxyServerService extends Service implements Runnable {
     public void run() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
-        server = DefaultHttpProxyServer.bootstrap().withPort(Integer.parseInt(sp.getString("port", "8080"))).withAllowLocalOnly(true).withConnectTimeout(30000).withFiltersSource(new CaptureAdapter()).start();
+        server = DefaultHttpProxyServer.bootstrap()
+                                       .withPort(Integer.parseInt(sp.getString("port", "8080")))
+                                       .withAllowLocalOnly(true)
+                                       .withConnectTimeout(30000)
+                                       .withFiltersSource(new CaptureAdapter())
+                                       .start();
     }
 
     static class CaptureAdapter extends HttpFiltersSourceAdapter {
@@ -105,9 +117,11 @@ public class LittleProxyServerService extends Service implements Runnable {
     static class CaptureFilters extends HttpFiltersAdapter {
         private boolean released;
 
-        private CompositeByteBuf requestBuf = this.ctx.alloc().compositeBuffer();
+        private CompositeByteBuf requestBuf = this.ctx.alloc()
+                                                      .compositeBuffer();
 
-        private CompositeByteBuf responseBuf = this.ctx.alloc().compositeBuffer();
+        private CompositeByteBuf responseBuf = this.ctx.alloc()
+                                                       .compositeBuffer();
 
         private HttpRequest request;
 
@@ -227,9 +241,7 @@ public class LittleProxyServerService extends Service implements Runnable {
             }
             return out.toByteArray();
         }
-
     }
-
 }
 
 

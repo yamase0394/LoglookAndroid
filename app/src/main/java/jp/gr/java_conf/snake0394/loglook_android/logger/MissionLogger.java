@@ -1,23 +1,16 @@
 package jp.gr.java_conf.snake0394.loglook_android.logger;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.util.Log;
-
-import com.dropbox.client2.DropboxAPI;
-import com.dropbox.client2.android.AndroidAuthSession;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import jp.gr.java_conf.snake0394.loglook_android.DropboxAuthManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MissionResult;
 
 /**
@@ -28,7 +21,8 @@ public enum MissionLogger {
 
     synchronized public void writeLog(MissionResult mr, Context context) {
         //SDカードのディレクトリパス
-        File sdcard_path = new File(Environment.getExternalStorageDirectory().getPath() + "/泥提督支援アプリ/");
+        File sdcard_path = new File(Environment.getExternalStorageDirectory()
+                                               .getPath() + "/泥提督支援アプリ/");
 
         //パス区切り用セパレータ
         String Fs = File.separator;
@@ -50,7 +44,8 @@ public enum MissionLogger {
 
             BufferedWriter pw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath, true), "SJIS"));
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            sb.append(sdf.format(Calendar.getInstance().getTime()) + ",");
+            sb.append(sdf.format(Calendar.getInstance()
+                                         .getTime()) + ",");
             if (mr.getClearResult() == 0) {
                 sb.append("失敗,");
             } else if (mr.getClearResult() == 1) {
@@ -60,8 +55,10 @@ public enum MissionLogger {
             }
             sb.append(mr.getMapareaName() + ",");
             sb.append(mr.getQuestName() + ",");
-            for (int i = 0; i < mr.getGainMaterial().size(); i++) {
-                sb.append(mr.getGainMaterial().get(i) + ",");
+            for (int i = 0; i < mr.getGainMaterial()
+                                  .size(); i++) {
+                sb.append(mr.getGainMaterial()
+                            .get(i) + ",");
             }
             if (mr.getUseitemCount1() > 0) {
                 sb.append(mr.getUseitemName1() + ",");
@@ -81,33 +78,6 @@ public enum MissionLogger {
             pw.write(sb.toString());
             pw.flush();
             pw.close();
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-            if (sp.getBoolean("saveInDropbox", false)) {
-                //SDカードのディレクトリパス
-                sdf = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
-                sdcard_path = new File(Environment.getExternalStorageDirectory().getPath() + "/泥提督支援アプリ/temp/mission");
-
-                String fileName = "mission" + sdf.format(Calendar.getInstance().getTime()) + ".txt";
-                //テキストファイル保存先のファイルパス
-                filePath = sdcard_path + Fs + fileName;
-
-                //フォルダがなければ作成
-                if (!sdcard_path.exists()) {
-                    sdcard_path.mkdirs();
-                }
-                pw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath), "SJIS"));
-                pw.write(sb.toString());
-                pw.flush();
-                pw.close();
-
-                DropboxAPI<AndroidAuthSession> mDBApi;
-                DropboxAuthManager dropboxAuthManager = new DropboxAuthManager(context);
-                mDBApi = new DropboxAPI<>(dropboxAuthManager.loadAndroidAuthSession()); //SharedPreferencesから認証情報取得
-                file = new File(filePath);
-                FileInputStream inputStream = new FileInputStream(file);
-                DropboxAPI.Entry response = mDBApi.putFile("/mission/" + fileName, inputStream, file.length(), null, null);
-                Log.d("DbExampleLog", "The uploaded file's rev is: " + response.rev);
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }

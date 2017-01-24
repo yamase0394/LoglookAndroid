@@ -23,11 +23,9 @@ import android.widget.Toast;
 
 import java.lang.reflect.Method;
 
-import jp.gr.java_conf.snake0394.loglook_android.DropboxAuthManager;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.SlantLauncher;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.LittleProxyServerService;
-import jp.gr.java_conf.snake0394.loglook_android.view.activity.DropboxAuthActivity;
 
 import static android.content.Context.WINDOW_SERVICE;
 import static jp.gr.java_conf.snake0394.loglook_android.R.id.viewX;
@@ -226,38 +224,6 @@ public class ConfigFragment extends Fragment {
             }
         });
         if (sharedPreferences.getBoolean("saveRequest", false)) {
-            cb.setChecked(true);
-        } else {
-            cb.setChecked(false);
-        }
-        cb.setVisibility(View.GONE);
-
-        //Dropboxを使用するか
-        cb = (CheckBox) getActivity().findViewById(R.id.saveInDropboxCheck);
-        cb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            // チェックボックスがクリックされた時に呼び出されます
-            public void onClick(View v) {
-                CheckBox cb = (CheckBox) v;
-
-                if (!cb.isChecked()) {
-                    editor.putBoolean("saveInDropbox", false);
-                    editor.apply();
-                    return;
-                }
-
-                DropboxAuthManager dropboxAuthManager = new DropboxAuthManager(getActivity());
-                if (!dropboxAuthManager.hasLoadAndroidAuthSession()) {
-                    Intent sendIntent = new Intent(getActivity(), DropboxAuthActivity.class);
-                    // sendIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                    startActivity(sendIntent);
-                } else {
-                    editor.putBoolean("saveInDropbox", true);
-                    editor.apply();
-                }
-            }
-        });
-        if (sharedPreferences.getBoolean("saveInDropbox", false)) {
             cb.setChecked(true);
         } else {
             cb.setChecked(false);

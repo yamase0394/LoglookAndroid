@@ -1,6 +1,5 @@
 package jp.gr.java_conf.snake0394.loglook_android.view.activity;
 
-import android.annotation.TargetApi;
 import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.Intent;
@@ -47,7 +46,14 @@ import jp.gr.java_conf.snake0394.loglook_android.view.fragment.TacticalSituation
 
 import static jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity.Fragment.HOME;
 
-public class MainActivity extends AppCompatActivity implements DockFragment.OnFragmentInteractionListener, ConfigFragment.OnFragmentInteractionListener, ErrorFragment.OnFragmentInteractionListener, MissionFragment.OnFragmentInteractionListener, HomeFragment.OnFragmentInteractionListener, DeckManagerFragment.OnFragmentInteractionListener, TacticalSituationFragment.OnFragmentInteractionListener, DeckFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements DockFragment.OnFragmentInteractionListener,
+                                                               ConfigFragment.OnFragmentInteractionListener,
+                                                               ErrorFragment.OnFragmentInteractionListener,
+                                                               MissionFragment.OnFragmentInteractionListener,
+                                                               HomeFragment.OnFragmentInteractionListener,
+                                                               DeckManagerFragment.OnFragmentInteractionListener,
+                                                               TacticalSituationFragment.OnFragmentInteractionListener,
+                                                               DeckFragment.OnFragmentInteractionListener {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawer;
     private String[] mDrawerItemTitles;
@@ -102,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
         setContentView(R.layout.activity_main);
 
         if (!canGetUsageStats()) {
-            Intent   intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
             startActivityForResult(intent, USAGE_ACCESS_REQ_CODE);
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -140,7 +146,8 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
         mDrawerList = (ListView) findViewById(R.id.slide_menu);
 
         //ヘッダー
-        mDrawerList.addHeaderView(LayoutInflater.from(this).inflate(R.layout.drawer_header, null));
+        mDrawerList.addHeaderView(LayoutInflater.from(this)
+                                                .inflate(R.layout.drawer_header, null));
 
         // Set the adapter for list view.
         mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mDrawerItemTitles));
@@ -353,13 +360,12 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean("UsageAccessPermissionGranted", true);
                 editor.apply();
-            }else{
+            } else {
 
             }
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private static boolean checkPermission(Context context) {
         // Lollipop以前は使えないAPIが含まれています。
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
