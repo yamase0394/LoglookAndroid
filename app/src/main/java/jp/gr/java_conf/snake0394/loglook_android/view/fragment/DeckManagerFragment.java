@@ -1,6 +1,5 @@
 package jp.gr.java_conf.snake0394.loglook_android.view.fragment;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -31,15 +30,9 @@ public class DeckManagerFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     public static DeckManagerFragment newInstance() {
         DeckManagerFragment fragment = new DeckManagerFragment();
         return fragment;
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 
     private void setupViewPager(ViewPager viewPager) {

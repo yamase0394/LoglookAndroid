@@ -28,10 +28,14 @@ public enum CreateShipLogger {
 
     private int kdockId;
 
-    /**大型建造フラグ*/
+    /**
+     * 大型建造フラグ
+     */
     private int largeFlag;
 
-    /**writeをする準備ができているか*/
+    /**
+     * writeをする準備ができているか
+     */
     private boolean isReady;
 
     public int getKdockId() {
@@ -42,19 +46,20 @@ public enum CreateShipLogger {
         return isReady;
     }
 
-    public void ready(int kdockId, int largeFlag){
+    public void ready(int kdockId, int largeFlag) {
         this.kdockId = kdockId;
         this.largeFlag = largeFlag;
         isReady = true;
     }
 
-    public void write(Kdock kdock,int emptyDockNum){
-        if(!isReady){
+    public void write(Kdock kdock, int emptyDockNum) {
+        if (!isReady) {
             return;
         }
 
         //SDカードのディレクトリパス
-        File sdcard_path = new File(Environment.getExternalStorageDirectory().getPath() + "/泥提督支援アプリ/");
+        File sdcard_path = new File(Environment.getExternalStorageDirectory()
+                                               .getPath() + "/泥提督支援アプリ/");
 
         //パス区切り用セパレータ
         String Fs = File.separator;
@@ -79,10 +84,11 @@ public enum CreateShipLogger {
 
             //日付
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            sb.append(sdf.format(Calendar.getInstance().getTime()) + ",");
+            sb.append(sdf.format(Calendar.getInstance()
+                                         .getTime()) + ",");
 
             //種類
-            switch (largeFlag){
+            switch (largeFlag) {
                 case 0:
                     sb.append("通常艦建造,");
                     break;
@@ -129,8 +135,9 @@ public enum CreateShipLogger {
 
             //秘書艦
             Deck deck1 = DeckManager.INSTANCE.getDeck(1);
-            MyShip  secretaryShip = MyShipManager.INSTANCE.getMyShip(deck1.getShipId().get(0));
-            sb.append(secretaryShip.getName() + "(Lv" + secretaryShip.getLv() +")");
+            MyShip secretaryShip = MyShipManager.INSTANCE.getMyShip(deck1.getShipId()
+                                                                         .get(0));
+            sb.append(secretaryShip.getName() + "(Lv" + secretaryShip.getLv() + ")");
             sb.append(",");
 
             //司令部Lv

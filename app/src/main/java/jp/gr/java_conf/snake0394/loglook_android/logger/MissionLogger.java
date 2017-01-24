@@ -1,6 +1,5 @@
 package jp.gr.java_conf.snake0394.loglook_android.logger;
 
-import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
@@ -19,10 +18,9 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MissionResult;
 public enum MissionLogger {
     INSTANCE;
 
-    synchronized public void writeLog(MissionResult mr, Context context) {
+    synchronized public void writeLog(MissionResult mr) {
         //SDカードのディレクトリパス
-        File sdcard_path = new File(Environment.getExternalStorageDirectory()
-                                               .getPath() + "/泥提督支援アプリ/");
+        File sdcard_path = new File(Environment.getExternalStorageDirectory().getPath() + "/泥提督支援アプリ/");
 
         //パス区切り用セパレータ
         String Fs = File.separator;

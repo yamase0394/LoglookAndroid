@@ -35,25 +35,16 @@ import java.util.Map;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.ConfigFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DamagedShipFragment;
-import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DeckFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DeckManagerFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DockFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.EquipmentFragment;
-import jp.gr.java_conf.snake0394.loglook_android.view.fragment.ErrorFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.HomeFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.MissionFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.TacticalSituationFragment;
 
 import static jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity.Fragment.HOME;
 
-public class MainActivity extends AppCompatActivity implements DockFragment.OnFragmentInteractionListener,
-                                                               ConfigFragment.OnFragmentInteractionListener,
-                                                               ErrorFragment.OnFragmentInteractionListener,
-                                                               MissionFragment.OnFragmentInteractionListener,
-                                                               HomeFragment.OnFragmentInteractionListener,
-                                                               DeckManagerFragment.OnFragmentInteractionListener,
-                                                               TacticalSituationFragment.OnFragmentInteractionListener,
-                                                               DeckFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawer;
     private String[] mDrawerItemTitles;
@@ -317,10 +308,6 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
 
         //現在のDrawerListの位置を記録
         present = mf;
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
     }
 
     @Override

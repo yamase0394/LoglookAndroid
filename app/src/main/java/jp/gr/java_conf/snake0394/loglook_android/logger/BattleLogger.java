@@ -1,6 +1,5 @@
 package jp.gr.java_conf.snake0394.loglook_android.logger;
 
-import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
@@ -56,10 +55,9 @@ public enum BattleLogger {
         this.battle = battle;
     }
 
-    public void writeLog(Context context) {
+    public void writeLog() {
         //SDカードのディレクトリパス
-        File sdcard_path = new File(Environment.getExternalStorageDirectory()
-                                               .getPath() + "/泥提督支援アプリ/");
+        File sdcard_path = new File(Environment.getExternalStorageDirectory().getPath() + "/泥提督支援アプリ/");
 
         //パス区切り用セパレータ
         String Fs = File.separator;
@@ -142,16 +140,10 @@ public enum BattleLogger {
                 if (eship.get(j) == -1) {
                     sb.append(",");
                 } else {
-                    sb.append(MstShipManager.INSTANCE.getMstShip(eship.get(j))
-                                                     .getName());
-                    if (!MstShipManager.INSTANCE.getMstShip(eship.get(j))
-                                                .getYomi()
-                                                .equals("") && !MstShipManager.INSTANCE.getMstShip(eship.get(j))
-                                                                                       .getYomi()
-                                                                                       .equals("-")) {
+                    sb.append(MstShipManager.INSTANCE.getMstShip(eship.get(j)).getName());
+                    if (!MstShipManager.INSTANCE.getMstShip(eship.get(j)).getYomi().equals("") && !MstShipManager.INSTANCE.getMstShip(eship.get(j)).getYomi().equals("-")) {
                         sb.append("(");
-                        sb.append(MstShipManager.INSTANCE.getMstShip(eship.get(j))
-                                                         .getYomi());
+                        sb.append(MstShipManager.INSTANCE.getMstShip(eship.get(j)).getYomi());
                         sb.append(")");
                     }
                     sb.append(",");

@@ -1,10 +1,8 @@
 package jp.gr.java_conf.snake0394.loglook_android.view.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -30,16 +28,7 @@ import jp.gr.java_conf.snake0394.loglook_android.proxy.LittleProxyServerService;
 import static android.content.Context.WINDOW_SERVICE;
 import static jp.gr.java_conf.snake0394.loglook_android.R.id.viewX;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ConfigFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ConfigFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ConfigFragment extends Fragment {
-    private OnFragmentInteractionListener mListener;
 
     public ConfigFragment() {
         // Required empty public constructor
@@ -61,44 +50,6 @@ public class ConfigFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_config, container, false);
 
         return rootView;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 
     @Override

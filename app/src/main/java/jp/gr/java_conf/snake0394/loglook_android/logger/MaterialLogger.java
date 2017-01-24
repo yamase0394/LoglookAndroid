@@ -1,6 +1,5 @@
 package jp.gr.java_conf.snake0394.loglook_android.logger;
 
-import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
@@ -27,7 +26,7 @@ public enum MaterialLogger {
     private Calendar preCalender = Calendar.getInstance();
 
 
-    public void writeLog(Material material, Context context) {
+    public void writeLog(Material material) {
 
         Calendar calendar = Calendar.getInstance();
 
