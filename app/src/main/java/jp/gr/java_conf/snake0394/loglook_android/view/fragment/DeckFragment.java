@@ -454,9 +454,6 @@ public class DeckFragment extends Fragment {
             text = (TextView) rootView.findViewById(R.id.touchStartRate);
             text.setText(String.valueOf(DeckUtility.getTouchStartRate(deck)) + "%");
 
-            text = (TextView) rootView.findViewById(R.id.sakuteki25);
-            text.setText(String.valueOf(DeckUtility.getSakuteki25(deck)));
-
             text = (TextView) rootView.findViewById(R.id.sakuteki33);
             text.setText(String.valueOf(DeckUtility.getSakuteki33(deck,1)));
 
