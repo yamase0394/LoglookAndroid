@@ -34,10 +34,6 @@ public enum CreateItemLogger {
      */
     private boolean isReady;
 
-    public boolean isReady() {
-        return isReady;
-    }
-
     public void ready(int fuel, int bullet, int steel, int bauxite) {
         this.fuel = fuel;
         this.bullet = bullet;
@@ -52,7 +48,8 @@ public enum CreateItemLogger {
         }
 
         //SDカードのディレクトリパス
-        File sdcard_path = new File(Environment.getExternalStorageDirectory().getPath() + "/泥提督支援アプリ/");
+        File sdcard_path = new File(Environment.getExternalStorageDirectory()
+                                               .getPath() + "/泥提督支援アプリ/");
 
         //パス区切り用セパレータ
         String Fs = File.separator;
@@ -76,7 +73,8 @@ public enum CreateItemLogger {
 
             //日付
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            sb.append(sdf.format(Calendar.getInstance().getTime()) + ",");
+            sb.append(sdf.format(Calendar.getInstance()
+                                         .getTime()) + ",");
 
             //開発装備,種別
             switch (createFlag) {
@@ -111,7 +109,8 @@ public enum CreateItemLogger {
 
             //秘書艦
             Deck deck1 = DeckManager.INSTANCE.getDeck(1);
-            MyShip secretaryShip = MyShipManager.INSTANCE.getMyShip(deck1.getShipId().get(0));
+            MyShip secretaryShip = MyShipManager.INSTANCE.getMyShip(deck1.getShipId()
+                                                                         .get(0));
             sb.append(secretaryShip.getName() + "(Lv" + secretaryShip.getLv() + ")");
             sb.append(",");
 

@@ -28,9 +28,9 @@ import jp.gr.java_conf.snake0394.loglook_android.view.activity.HeavilyDamagedWar
 /**
  * Created by snake0394 on 2016/10/26.
  */
-
 public class RequestParser {
-    public static void parse(String uri, String requestBody) {
+    public synchronized static void parse(String uri, String requestBody) {
+        //Log.d("requestURI", uri);
         try {
             Context context = App.getInstance();
             switch (uri) {

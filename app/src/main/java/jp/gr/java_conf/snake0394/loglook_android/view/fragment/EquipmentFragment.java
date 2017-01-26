@@ -198,6 +198,13 @@ public class EquipmentFragment extends Fragment {
                 mySlotItem.setShipId(myShip.getId());
                 equipSet.add(id);
             }
+
+            int id = myShip.getSlotEx();
+            if(MySlotItemManager.INSTANCE.contains(id)|| id == -1){
+                MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(id);
+                mySlotItem.setShipId(myShip.getId());
+                equipSet.add(id);
+            }
         }
 
         Spinner equipType = (Spinner) getActivity().findViewById(R.id.equipTypeFilterSpinner);

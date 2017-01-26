@@ -1,8 +1,11 @@
 package jp.gr.java_conf.snake0394.loglook_android.view.activity;
 
+import android.app.AppOpsManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -32,18 +35,16 @@ import java.util.Map;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.ConfigFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DamagedShipFragment;
-import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DeckFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DeckManagerFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DockFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.EquipmentFragment;
-import jp.gr.java_conf.snake0394.loglook_android.view.fragment.ErrorFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.HomeFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.MissionFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.TacticalSituationFragment;
 
 import static jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity.Fragment.HOME;
 
-public class MainActivity extends AppCompatActivity implements DockFragment.OnFragmentInteractionListener, ConfigFragment.OnFragmentInteractionListener, ErrorFragment.OnFragmentInteractionListener, MissionFragment.OnFragmentInteractionListener, HomeFragment.OnFragmentInteractionListener, DeckManagerFragment.OnFragmentInteractionListener, TacticalSituationFragment.OnFragmentInteractionListener, DeckFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawer;
     private String[] mDrawerItemTitles;
@@ -51,7 +52,8 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
     //画面回転時のfragmentの更新に使用
     private Fragment present;
 
-    private static int OVERLAY_PERMISSION_REQ_CODE = 1234;
+    private final int OVERLAY_REQ_CODE = 1234;
+    private final int USAGE_ACCESS_REQ_CODE = 2222;
 
 
     /**
@@ -94,13 +96,21 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+
+        if (!canGetUsageStats()) {
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            startActivityForResult(intent, USAGE_ACCESS_REQ_CODE);
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("UsageAccessPermissionGranted", false);
+            editor.apply();
+        }
 
         //Android6以降の端末でランチャーのオーバーレイ用の権限を取得する
         if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(this)) {
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
+            startActivityForResult(intent, OVERLAY_REQ_CODE);
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("SystemAlertPermissionGranted", false);
@@ -127,7 +137,8 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
         mDrawerList = (ListView) findViewById(R.id.slide_menu);
 
         //ヘッダー
-        mDrawerList.addHeaderView(LayoutInflater.from(this).inflate(R.layout.drawer_header, null));
+        mDrawerList.addHeaderView(LayoutInflater.from(this)
+                                                .inflate(R.layout.drawer_header, null));
 
         // Set the adapter for list view.
         mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mDrawerItemTitles));
@@ -160,31 +171,6 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             // デフォルトはHomeFragment
             selectItem(HOME);
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d("MainActivity", "onStop");
-        /*
-        if (present != Fragment.TACTICAL_SITUATION) {
-            //画面回転を自動に設定
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-        }
-        */
-        //現在の画面の向きに応じて画面の向きを設定
-        Resources resources = getResources();
-        Configuration config = resources.getConfiguration();
-        switch (config.orientation) {
-            case Configuration.ORIENTATION_PORTRAIT:
-                Log.d("MainActivity", "縦");
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-                break;
-            case Configuration.ORIENTATION_LANDSCAPE:
-                Log.d("MainActivity", "横");
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                break;
         }
     }
 
@@ -325,16 +311,12 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-    }
-
-    @Override
     protected void onNewIntent(Intent intent) {
         Log.d("MainActivity", "onNewIntent");
         //画面の向き
         boolean usesLandscape = intent.getBooleanExtra("usesLandscape", false);
         if (usesLandscape) {
-            Log.d("MainActivity", "横");
+            Log.d("onNewIntent", "横");
             intent.putExtra("usesLandscape", false);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
@@ -350,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == OVERLAY_PERMISSION_REQ_CODE) {
+        if (requestCode == OVERLAY_REQ_CODE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
                 //権限が得られなかった
             } else {
@@ -359,6 +341,43 @@ public class MainActivity extends AppCompatActivity implements DockFragment.OnFr
                 editor.putBoolean("SystemAlertPermissionGranted", true);
                 editor.apply();
             }
+        } else if (requestCode == USAGE_ACCESS_REQ_CODE) {
+            if (checkPermission(getApplicationContext())) {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("UsageAccessPermissionGranted", true);
+                editor.apply();
+            } else {
+
+            }
         }
+    }
+
+    private static boolean checkPermission(Context context) {
+        // Lollipop以前は使えないAPIが含まれています。
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return true;
+        }
+        // AppOpsManagerを取得
+        AppOpsManager aom = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+        // GET_USAGE_STATSのステータスを取得
+        int mode = aom.checkOp(AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.getPackageName());
+        if (mode == AppOpsManager.MODE_DEFAULT) {
+            // AppOpsの状態がデフォルトなら通常のpermissionチェックを行う。
+            // 普通のアプリならfalse
+            return context.checkPermission("android.permission.PACKAGE_USAGE_STATS", android.os.Process.myPid(), android.os.Process.myUid()) == PackageManager.PERMISSION_GRANTED;
+        }
+        // AppOpsの状態がデフォルトでないならallowedのみtrue
+        return mode == AppOpsManager.MODE_ALLOWED;
+    }
+
+    private boolean canGetUsageStats() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return true;
+        }
+        AppOpsManager aom = (AppOpsManager) getSystemService(APP_OPS_SERVICE);
+        int uid = android.os.Process.myUid();
+        int mode = aom.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, uid, getPackageName());
+        return mode == AppOpsManager.MODE_ALLOWED;
     }
 }

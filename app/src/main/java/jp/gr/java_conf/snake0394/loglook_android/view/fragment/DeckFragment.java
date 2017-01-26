@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -48,13 +47,11 @@ import jp.gr.java_conf.snake0394.loglook_android.view.activity.ShipDetailActivit
  * 第一艦隊のFragment
  */
 public class DeckFragment extends Fragment {
-    private OnFragmentInteractionListener mListener;
-    View rootView;
+    private View rootView;
 
     public DeckFragment() {
         // Required empty public constructor
     }
-
 
     public static DeckFragment newInstance() {
         DeckFragment fragment = new DeckFragment();
@@ -457,9 +454,6 @@ public class DeckFragment extends Fragment {
             text = (TextView) rootView.findViewById(R.id.touchStartRate);
             text.setText(String.valueOf(DeckUtility.getTouchStartRate(deck)) + "%");
 
-            text = (TextView) rootView.findViewById(R.id.sakuteki25);
-            text.setText(String.valueOf(DeckUtility.getSakuteki25(deck)));
-
             text = (TextView) rootView.findViewById(R.id.sakuteki33);
             text.setText(String.valueOf(DeckUtility.getSakuteki33(deck,1)));
 
@@ -500,48 +494,4 @@ public class DeckFragment extends Fragment {
 
         return rootView;
     }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
 }

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <jp.gr.java_conf.snake0394.loglook_android.NestedCoordinatorLayout
+    <jp.gr.java_conf.snake0394.loglook_android.view.NestedCoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:statusBarBackground="@android:color/white">
@@ -64,6 +64,6 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             />
 
-    </jp.gr.java_conf.snake0394.loglook_android.NestedCoordinatorLayout>
+    </jp.gr.java_conf.snake0394.loglook_android.view.NestedCoordinatorLayout>
 </LinearLayout>
 

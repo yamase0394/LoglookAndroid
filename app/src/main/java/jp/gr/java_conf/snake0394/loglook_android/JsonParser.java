@@ -66,7 +66,7 @@ import jp.gr.java_conf.snake0394.loglook_android.view.activity.HeavilyDamagedWar
  */
 public class JsonParser {
 
-    public static void parse(String uri, String jsonStr) {
+    public synchronized static void parse(String uri, String jsonStr) {
         Context context = App.getInstance();
         try {
             //Log.d("JsonParser", uri);
@@ -224,7 +224,7 @@ public class JsonParser {
                     materialList.set(5, a);
                     Material material = new Material();
                     material.setMaterialList(materialList);
-                    MaterialLogger.INSTANCE.writeLog(material, context);
+                    MaterialLogger.INSTANCE.writeLog(material);
 
                     //root/data/ship
                     JSONArray shipArray = portData.getJSONArray("api_ship");
@@ -699,7 +699,7 @@ public class JsonParser {
                         contentB.setGetShipName("");
                         contentB.setGetShipType("");
                     }
-                    BattleLogger.INSTANCE.writeLog(context);
+                    BattleLogger.INSTANCE.writeLog();
                     break;
 
 
@@ -804,7 +804,7 @@ public class JsonParser {
                         Escape.INSTANCE.ready(damaged, towing);
                     } catch (Exception e) {
                     }
-                    BattleLogger.INSTANCE.writeLog(context);
+                    BattleLogger.INSTANCE.writeLog();
                     break;
 
                 case "api_req_combined_battle/goback_port":
@@ -918,7 +918,7 @@ public class JsonParser {
                         expSum += exp.getInt(i);
                     }
                     mr.setExpSum(expSum);
-                    MissionLogger.INSTANCE.writeLog(mr, context);
+                    MissionLogger.INSTANCE.writeLog(mr);
                     break;
 
             }

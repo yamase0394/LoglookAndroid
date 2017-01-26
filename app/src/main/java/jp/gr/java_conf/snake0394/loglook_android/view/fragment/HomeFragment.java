@@ -4,7 +4,6 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -19,12 +18,10 @@ import java.util.List;
 
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.SlantLauncher;
-import jp.gr.java_conf.snake0394.loglook_android.proxy.ProxyServerService;
+import jp.gr.java_conf.snake0394.loglook_android.proxy.LittleProxyServerService;
 
 
 public class HomeFragment extends Fragment {
-
-    private OnFragmentInteractionListener mListener;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -46,44 +43,6 @@ public class HomeFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
     @Override
     public void onStart() {
         super.onStart();
@@ -99,7 +58,7 @@ public class HomeFragment extends Fragment {
                     boolean isMyServiceRunnning = false;
                     for (ActivityManager.RunningServiceInfo curr : listServiceInfo) {
                         // クラス名を比較
-                        if (curr.service.getClassName().equals(ProxyServerService.class.getName())) {
+                        if (curr.service.getClassName().equals(LittleProxyServerService.class.getName())) {
                             // 実行中のサービスと一致
                             isProxyServerRunnning = true;
                         }
@@ -109,7 +68,7 @@ public class HomeFragment extends Fragment {
                         }
                     }
                     if (!isProxyServerRunnning || !isMyServiceRunnning) {
-                        Intent intent = new Intent(getActivity(), ProxyServerService.class);
+                        Intent intent = new Intent(getActivity(), LittleProxyServerService.class);
                         getActivity().startService(intent);
                         intent = new Intent(getActivity(), SlantLauncher.class);
                         getActivity().startService(intent);
@@ -117,7 +76,7 @@ public class HomeFragment extends Fragment {
                         Toast.makeText(getActivity(), "起動 port:" + sp.getString("port", "8080"), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Intent intent = new Intent(getActivity(), ProxyServerService.class);
+                    Intent intent = new Intent(getActivity(), LittleProxyServerService.class);
                     getActivity().stopService(intent);
                     intent = new Intent(getActivity(), SlantLauncher.class);
                     getActivity().stopService(intent);
@@ -127,8 +86,8 @@ public class HomeFragment extends Fragment {
         });
 
         //SystemAlert
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        if (sharedPreferences.getBoolean("SystemAlertPermissionGranted", true)) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+        if (sp.getBoolean("SystemAlertPermissionGranted", true) && sp.getBoolean("UsageAccessPermissionGranted", true)) {
             tb.setChecked(true);
         }
     }

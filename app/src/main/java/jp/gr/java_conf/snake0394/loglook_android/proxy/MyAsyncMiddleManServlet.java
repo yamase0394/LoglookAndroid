@@ -5,9 +5,12 @@ import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.api.Response;
 import org.eclipse.jetty.proxy.AsyncMiddleManServlet;
 
+import java.io.IOException;
+import java.net.InetAddress;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -49,8 +52,18 @@ public class MyAsyncMiddleManServlet extends AsyncMiddleManServlet {
     @Override
     protected HttpClient newHttpClient() {
         HttpClient httpClient = super.newHttpClient();
-        httpClient.setResponseBufferSize(5*1000*1000);
         return httpClient;
     }
+
+    @Override
+    protected void service(HttpServletRequest clientRequest, HttpServletResponse proxyResponse) throws ServletException, IOException {
+        if (!InetAddress.getByName(clientRequest.getRemoteAddr()).isLoopbackAddress()) {
+            proxyResponse.setStatus(400);
+            return;
+        }
+        super.service(clientRequest, proxyResponse);
+    }
+
+
 }
 
