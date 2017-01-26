@@ -21,6 +21,7 @@ import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
@@ -38,6 +39,8 @@ import jp.gr.java_conf.snake0394.loglook_android.JsonParser;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.RequestParser;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity;
+
+import static org.apache.commons.io.IOUtils.copyLarge;
 
 public class LittleProxyServerService extends Service implements Runnable {
 
