@@ -9,6 +9,8 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
+import com.google.common.primitives.Shorts;
+
 import org.apache.commons.io.IOUtils;
 import org.littleshoot.proxy.HttpFilters;
 import org.littleshoot.proxy.HttpFiltersAdapter;
@@ -36,9 +38,6 @@ import jp.gr.java_conf.snake0394.loglook_android.JsonParser;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.RequestParser;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity;
-
-import static com.google.common.primitives.Shorts.BYTES;
-
 
 public class LittleProxyServerService extends Service implements Runnable {
 
@@ -238,7 +237,7 @@ public class LittleProxyServerService extends Service implements Runnable {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             try (ByteBufInputStream in = new ByteBufInputStream(buf)) {
                 if (in.available() > 1) {
-                    in.mark(BYTES);
+                    in.mark(Shorts.BYTES);
                     int magicbyte = in.readUnsignedShort();
                     in.reset();
                     InputStream wrap;
