@@ -63,6 +63,28 @@ public class MissionFragment extends Fragment {
                 int strId = getResources().getIdentifier(name, "id", getActivity().getPackageName());
                 Deck deck = DeckManager.INSTANCE.getDeck(i);
                 TextView text = (TextView) getActivity().findViewById(strId);
+
+                if(deck == null){
+                    text.setText("");
+                    name = "mission" + i;
+                    strId = getResources().getIdentifier(name, "id", getActivity().getPackageName());
+                    text = (TextView) getActivity().findViewById(strId);
+                    text.setText("");
+                    text.setBackgroundColor(0x00000000);
+
+                    name = "time" + i;
+                    strId = getResources().getIdentifier(name, "id", getActivity().getPackageName());
+                    text = (TextView) getActivity().findViewById(strId);
+                    text.setText("");
+
+                    name = "remaining" + i;
+                    strId = getResources().getIdentifier(name, "id", getActivity().getPackageName());
+                    text = (TextView) getActivity().findViewById(strId);
+                    text.setText("");
+
+                    continue;
+                }
+
                 text.setText(deck.getName());
 
                 List<Long> mission = deck.getMission();
@@ -159,6 +181,7 @@ public class MissionFragment extends Fragment {
             transaction = manager.beginTransaction();
             transaction.show(fragment);
             transaction.commit();
+            e.printStackTrace();
         }
     }
 
