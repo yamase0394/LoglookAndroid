@@ -16,7 +16,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.reflect.Method;
@@ -126,24 +125,14 @@ public class ConfigFragment extends Fragment {
         } else {
             cb.setChecked(false);
         }
-        cb.setVisibility(View.GONE);
-
-        TextView textView = (TextView) getActivity().findViewById(R.id.textView13);
-        textView.setVisibility(View.GONE);
-        textView = (TextView) getActivity().findViewById(R.id.textView14);
-        textView.setVisibility(View.GONE);
-        textView = (TextView) getActivity().findViewById(R.id.textView15);
-        textView.setVisibility(View.GONE);
 
         //ホスト名
         ed = (EditText) getActivity().findViewById(R.id.proxyHost);
         ed.setText(sharedPreferences.getString("proxyHost", ""));
-        ed.setVisibility(View.GONE);
 
         //ポート番号
         ed = (EditText) getActivity().findViewById(R.id.proxyPort);
         ed.setText(sharedPreferences.getString("proxyPort", ""));
-        ed.setVisibility(View.GONE);
 
         //jsonを保存するか
         cb = (CheckBox) getActivity().findViewById(R.id.saveJsoncheck);

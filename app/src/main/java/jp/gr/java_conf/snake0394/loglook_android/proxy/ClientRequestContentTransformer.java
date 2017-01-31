@@ -1,12 +1,12 @@
 package jp.gr.java_conf.snake0394.loglook_android.proxy;
 
+import android.util.Log;
+
 import org.eclipse.jetty.proxy.AsyncMiddleManServlet;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
-
-import jp.gr.java_conf.snake0394.loglook_android.RequestParser;
 
 /**
  * Created by snake0394 on 2016/11/02.
@@ -40,6 +40,7 @@ public class ClientRequestContentTransformer implements AsyncMiddleManServlet.Co
     private void onClientRequestComplete() {
         String requestBody = sb.toString();
         //Log.d("requestBody", requestBody);
-        RequestParser.parse(uri, requestBody);
+        //RequestParser.parse(uri, requestBody);
+        Log.d("jetty_clientReq", requestBody);
     }
 }

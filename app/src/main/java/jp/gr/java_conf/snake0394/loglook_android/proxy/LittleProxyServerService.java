@@ -8,20 +8,27 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.google.common.primitives.Shorts;
 
 import org.apache.commons.io.IOUtils;
+import org.littleshoot.proxy.ChainedProxy;
+import org.littleshoot.proxy.ChainedProxyAdapter;
+import org.littleshoot.proxy.ChainedProxyManager;
 import org.littleshoot.proxy.HttpFilters;
 import org.littleshoot.proxy.HttpFiltersAdapter;
 import org.littleshoot.proxy.HttpFiltersSourceAdapter;
 import org.littleshoot.proxy.HttpProxyServer;
+import org.littleshoot.proxy.HttpProxyServerBootstrap;
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.net.BindException;
+import java.net.InetSocketAddress;
+import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
@@ -40,11 +47,10 @@ import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.RequestParser;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity;
 
-import static org.apache.commons.io.IOUtils.copyLarge;
-
 public class LittleProxyServerService extends Service implements Runnable {
 
     private HttpProxyServer server;
+    //private Server jettyServer;
 
     public LittleProxyServerService() {
     }
@@ -90,6 +96,7 @@ public class LittleProxyServerService extends Service implements Runnable {
         super.onDestroy();
         try {
             server.abort();
+            //jettyServer.stop();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -98,14 +105,75 @@ public class LittleProxyServerService extends Service implements Runnable {
 
     @Override
     public void run() {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
-        server = DefaultHttpProxyServer.bootstrap()
-                                       .withPort(Integer.parseInt(sp.getString("port", "8080")))
-                                       .withAllowLocalOnly(true)
-                                       .withConnectTimeout(30000)
-                                       .withFiltersSource(new CaptureAdapter())
-                                       .start();
+        /*
+        //System.setProperty("http.keepAlive", "false");
+
+        jettyServer = new Server();
+        ServerConnector serverConnector = new ServerConnector(jettyServer);
+
+        // リクエストを待ち受けるポート番号を設定
+        serverConnector.setHost("127.0.0.1");
+        Log.d("server", sp.getString("port", "8080"));
+
+        serverConnector.setPort(10000);
+
+        jettyServer.addConnector(serverConnector);
+
+        // HTTPS接続をプロキシするため、CONNECTメソッドを処理するハンドラーを設定
+        ConnectHandler connectHandler = new MyConnectHandler();
+        jettyServer.setHandler(connectHandler);
+
+        // HTTP接続をプロキシするため、ProxyServletを設定
+        ServletContextHandler contextHandler = new ServletContextHandler(connectHandler, "/", ServletContextHandler.SESSIONS);
+
+        ServletHolder holder = new ServletHolder(MyAsyncMiddleManServlet.class);
+        holder.setInitParameter("timeout", "300000");
+
+        contextHandler.addServlet(holder, "/*");
+
+        try {
+            jettyServer.start();
+        } catch (Exception e) {
+        }
+        */
+
+        HttpProxyServerBootstrap serverBuilder = DefaultHttpProxyServer.bootstrap()
+                                                                       .withPort(Integer.parseInt(sp.getString("port", "8080")))
+                                                                       .withConnectTimeout(300000)
+                                                                       .withAllowLocalOnly(true)
+                                                                       .withFiltersSource(new CaptureAdapter());
+
+        if (sp.getBoolean("useProxy", false)) {
+            serverBuilder.withChainProxyManager(new ChainedProxyManager() {
+                @Override
+                public void lookupChainedProxies(HttpRequest req, Queue<ChainedProxy> proxies) {
+                    if (!KancolleServerSet.INSTANCE.contains(req.headers().get("Host"))) {
+                        ChainedProxy proxy = new ChainedProxyAdapter() {
+                            @Override
+                            public InetSocketAddress getChainedProxyAddress() {
+                                String host = sp.getString("proxyHost", "");
+                                int port = Integer.parseInt(sp.getString("proxyPort", ""));
+                                return new InetSocketAddress(host, port);
+                            }
+                        };
+                        proxies.add(proxy);
+                    }
+                    proxies.add(ChainedProxyAdapter.FALLBACK_TO_DIRECT_CONNECTION);
+                }
+            });
+        }
+
+        try {
+            server = serverBuilder.start();
+        } catch (RuntimeException e) {
+            if (e.getCause() instanceof BindException) {
+                System.out.println("bind");
+            } else {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
     static class CaptureAdapter extends HttpFiltersSourceAdapter {
@@ -116,6 +184,7 @@ public class LittleProxyServerService extends Service implements Runnable {
                                .contains("kcsapi")) {
                 return new CaptureFilters(originalRequest, ctx);
             }
+
             return new HttpFiltersAdapter(originalRequest, ctx);
         }
     }
@@ -142,6 +211,13 @@ public class LittleProxyServerService extends Service implements Runnable {
             if (!this.released) {
                 this.add(this.requestBuf, httpObject);
             }
+
+            if (httpObject instanceof HttpRequest) {
+                ((HttpRequest) httpObject).headers()
+                                          .add("Connection", "close");
+            }
+
+            Log.d("proxyToServerReq", httpObject.toString());
             return super.proxyToServerRequest(httpObject);
         }
 
@@ -150,6 +226,7 @@ public class LittleProxyServerService extends Service implements Runnable {
             if (!this.released) {
                 this.add(this.responseBuf, httpObject);
             }
+            Log.d("serverToProxyRes", httpObject.toString());
             return super.serverToProxyResponse(httpObject);
         }
 
@@ -161,15 +238,28 @@ public class LittleProxyServerService extends Service implements Runnable {
                 if (!HttpResponseStatus.OK.equals(res.getStatus())) {
                     this.release();
                 }
+                res.headers()
+                   .set("Connection", "close");
             }
+            Log.d("proxyToClientRes", httpObject.toString());
             return super.proxyToClientResponse(httpObject);
         }
+
 
         @Override
         public HttpResponse clientToProxyRequest(HttpObject httpObject) {
             if (httpObject instanceof HttpRequest) {
-                this.request = (HttpRequest) httpObject;
+                ((HttpRequest) httpObject).headers()
+                                          .set("Connection", "close");
+                ((HttpRequest) httpObject).headers()
+                                          .remove("Proxy-Connection");
             }
+
+            if (httpObject instanceof HttpRequest) {
+                this.request = (HttpRequest) httpObject;
+                Log.d("clientToProxyReq", this.request.toString());
+            }
+            Log.d("clientToProxyReq", httpObject.toString());
             return super.clientToProxyRequest(httpObject);
         }
 
@@ -183,7 +273,7 @@ public class LittleProxyServerService extends Service implements Runnable {
                         Matcher m = p.matcher(this.request.getUri());
                         if (m.find()) {
                             byte[] resbody = this.toByteArray(this.requestBuf.duplicate());
-                            byte[] reqbody = this.toByteArray(this.responseBuf.duplicate());
+                            final byte[] reqbody = this.toByteArray(this.responseBuf.duplicate());
                             final String uri = m.group(1);
                             final String clientReqest = new String(resbody, "UTF-8");
                             final String serverResponse = new String(reqbody, "UTF-8");
@@ -200,6 +290,9 @@ public class LittleProxyServerService extends Service implements Runnable {
                                     if (m.find()) {
                                         jsonStr = m.group(1);
                                         JsonParser.parse(uri, jsonStr);
+                                        Log.d("uri", uri);
+                                        Log.d("clientReq", clientReqest);
+                                        Log.d("serverRes", jsonStr);
                                     } else {
                                         //"svdata="が無い場合不必要なデータと判断
                                     }

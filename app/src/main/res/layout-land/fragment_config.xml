@@ -176,7 +176,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="35dp"
-                    android:text="(艦これ以外のHTTP通信のみ)"/>
+                    android:text="(艦これ以外の通信のみ)"/>
 
                 <LinearLayout
                     android:layout_width="226dp"

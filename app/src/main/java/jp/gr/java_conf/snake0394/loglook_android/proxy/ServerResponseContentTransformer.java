@@ -1,5 +1,7 @@
 package jp.gr.java_conf.snake0394.loglook_android.proxy;
 
+import android.util.Log;
+
 import org.eclipse.jetty.proxy.AsyncMiddleManServlet;
 
 import java.io.IOException;
@@ -7,8 +9,6 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import jp.gr.java_conf.snake0394.loglook_android.JsonParser;
 
 /**
  * Created by snake0394 on 2016/11/02.
@@ -53,7 +53,8 @@ public class ServerResponseContentTransformer implements AsyncMiddleManServlet.C
         }
 
         //Log.d("loglook", uri);
+        Log.d("jetty_clientRes", jsonStr);
 
-        JsonParser.parse(uri, jsonStr);
+        //JsonParser.parse(uri, jsonStr);
     }
 }
