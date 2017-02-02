@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.common.primitives.Shorts;
 
@@ -38,6 +39,7 @@ import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.CompositeByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpContent;
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
@@ -45,6 +47,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import jp.gr.java_conf.snake0394.loglook_android.JsonParser;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.RequestParser;
+import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity;
 
 public class LittleProxyServerService extends Service implements Runnable {
@@ -94,12 +97,8 @@ public class LittleProxyServerService extends Service implements Runnable {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        try {
-            server.abort();
-            //jettyServer.stop();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        server.abort();
+        //jettyServer.stop();
         stopForeground(true);
     }
 
@@ -108,8 +107,6 @@ public class LittleProxyServerService extends Service implements Runnable {
         final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         /*
-        //System.setProperty("http.keepAlive", "false");
-
         jettyServer = new Server();
         ServerConnector serverConnector = new ServerConnector(jettyServer);
 
@@ -141,15 +138,16 @@ public class LittleProxyServerService extends Service implements Runnable {
 
         HttpProxyServerBootstrap serverBuilder = DefaultHttpProxyServer.bootstrap()
                                                                        .withPort(Integer.parseInt(sp.getString("port", "8080")))
-                                                                       .withConnectTimeout(300000)
+                                                                       .withConnectTimeout(30000)
                                                                        .withAllowLocalOnly(true)
                                                                        .withFiltersSource(new CaptureAdapter());
 
+        //上流プロキシの設定
         if (sp.getBoolean("useProxy", false)) {
             serverBuilder.withChainProxyManager(new ChainedProxyManager() {
                 @Override
                 public void lookupChainedProxies(HttpRequest req, Queue<ChainedProxy> proxies) {
-                    if (!KancolleServerSet.INSTANCE.contains(req.headers().get("Host"))) {
+                    if (!KancolleServerSet.INSTANCE.contains(HttpHeaders.getHost(req))) {
                         ChainedProxy proxy = new ChainedProxyAdapter() {
                             @Override
                             public InetSocketAddress getChainedProxyAddress() {
@@ -167,16 +165,18 @@ public class LittleProxyServerService extends Service implements Runnable {
 
         try {
             server = serverBuilder.start();
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             if (e.getCause() instanceof BindException) {
-                System.out.println("bind");
+                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG)
+                     .show();
             } else {
-                System.out.println(e.getMessage());
+                ErrorLogger.writeLog(e);
             }
+            e.printStackTrace();
         }
     }
 
-    static class CaptureAdapter extends HttpFiltersSourceAdapter {
+    private class CaptureAdapter extends HttpFiltersSourceAdapter {
 
         @Override
         public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
@@ -189,7 +189,7 @@ public class LittleProxyServerService extends Service implements Runnable {
         }
     }
 
-    static class CaptureFilters extends HttpFiltersAdapter {
+    private class CaptureFilters extends HttpFiltersAdapter {
         private boolean released;
 
         private CompositeByteBuf requestBuf = this.ctx.alloc()
@@ -210,14 +210,14 @@ public class LittleProxyServerService extends Service implements Runnable {
         public HttpResponse proxyToServerRequest(HttpObject httpObject) {
             if (!this.released) {
                 this.add(this.requestBuf, httpObject);
+                Log.d("proxyToServerReq", httpObject.toString());
             }
 
             if (httpObject instanceof HttpRequest) {
-                ((HttpRequest) httpObject).headers()
-                                          .add("Connection", "close");
+                //((HttpRequest) httpObject).headers().add("Connection", "close");
+                HttpHeaders.setKeepAlive((HttpRequest) httpObject, false);
             }
 
-            Log.d("proxyToServerReq", httpObject.toString());
             return super.proxyToServerRequest(httpObject);
         }
 
@@ -225,39 +225,36 @@ public class LittleProxyServerService extends Service implements Runnable {
         public HttpObject serverToProxyResponse(HttpObject httpObject) {
             if (!this.released) {
                 this.add(this.responseBuf, httpObject);
+                Log.d("serverToProxyRes", httpObject.toString());
             }
-            Log.d("serverToProxyRes", httpObject.toString());
             return super.serverToProxyResponse(httpObject);
         }
 
         @Override
         public HttpObject proxyToClientResponse(HttpObject httpObject) {
-            if (httpObject instanceof HttpResponse) {
-                HttpResponse res = (HttpResponse) httpObject;
-                this.response = res;
-                if (!HttpResponseStatus.OK.equals(res.getStatus())) {
-                    this.release();
+            if (!this.released) {
+                if (httpObject instanceof HttpResponse) {
+                    HttpResponse res = (HttpResponse) httpObject;
+                    this.response = res;
+                    if (!HttpResponseStatus.OK.equals(res.getStatus())) {
+                        this.release();
+                    }
+                    res.headers()
+                       .set("Connection", "close");
                 }
-                res.headers()
-                   .set("Connection", "close");
+                Log.d("proxyToClientRes", httpObject.toString());
             }
-            Log.d("proxyToClientRes", httpObject.toString());
             return super.proxyToClientResponse(httpObject);
         }
-
 
         @Override
         public HttpResponse clientToProxyRequest(HttpObject httpObject) {
             if (httpObject instanceof HttpRequest) {
-                ((HttpRequest) httpObject).headers()
-                                          .set("Connection", "close");
-                ((HttpRequest) httpObject).headers()
-                                          .remove("Proxy-Connection");
-            }
-
-            if (httpObject instanceof HttpRequest) {
+                //((HttpRequest) httpObject).headers().set("Connection", "close");
+                HttpHeaders.setKeepAlive((HttpRequest) httpObject, false);
+                //((HttpRequest) httpObject).headers().remove("Proxy-Connection");
+                HttpHeaders.removeHeader((HttpRequest) httpObject, "Proxy-Connection");
                 this.request = (HttpRequest) httpObject;
-                Log.d("clientToProxyReq", this.request.toString());
             }
             Log.d("clientToProxyReq", httpObject.toString());
             return super.clientToProxyRequest(httpObject);
@@ -273,7 +270,7 @@ public class LittleProxyServerService extends Service implements Runnable {
                         Matcher m = p.matcher(this.request.getUri());
                         if (m.find()) {
                             byte[] resbody = this.toByteArray(this.requestBuf.duplicate());
-                            final byte[] reqbody = this.toByteArray(this.responseBuf.duplicate());
+                            byte[] reqbody = this.toByteArray(this.responseBuf.duplicate());
                             final String uri = m.group(1);
                             final String clientReqest = new String(resbody, "UTF-8");
                             final String serverResponse = new String(reqbody, "UTF-8");

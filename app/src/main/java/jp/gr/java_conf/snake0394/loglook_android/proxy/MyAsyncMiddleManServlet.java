@@ -1,5 +1,7 @@
 package jp.gr.java_conf.snake0394.loglook_android.proxy;
 
+import android.util.Log;
+
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.api.Response;
@@ -57,6 +59,7 @@ public class MyAsyncMiddleManServlet extends AsyncMiddleManServlet {
 
     @Override
     protected void service(HttpServletRequest clientRequest, HttpServletResponse proxyResponse) throws ServletException, IOException {
+        Log.d("jetty", "http");
         if (!InetAddress.getByName(clientRequest.getRemoteAddr()).isLoopbackAddress()) {
             proxyResponse.setStatus(400);
             return;
