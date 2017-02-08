@@ -1,5 +1,7 @@
 package jp.gr.java_conf.snake0394.loglook_android.bean;
 
+import com.rits.cloning.Cloner;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,16 +35,17 @@ public enum MyShipManager {
                 remove.add(i);
             }
         }
-        for(int i:remove){
+        for (int i : remove) {
             myShipMap.remove(i);
         }
     }
 
-    public boolean contains(int id){
+    public boolean contains(int id) {
         return myShipMap.containsKey(id);
     }
 
-    public Collection<MyShip> getMyShips(){
-        return myShipMap.values();
+    public Collection<MyShip> getMyShips() {
+        Cloner cloner = new Cloner();
+        return cloner.deepClone(myShipMap.values());
     }
 }

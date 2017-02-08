@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,16 +32,28 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
  */
 
 public class ShipParamDialogFragment extends android.support.v4.app.DialogFragment {
+    private static final String ARG_SHIP_ID = "shipId";
+    private static final String ARG_DECK_ID = "deckId";
+
+    private int shipId;
+    private int deckId;
 
     public static ShipParamDialogFragment newInstance(int shipId, int deckId) {
         ShipParamDialogFragment fragment = new ShipParamDialogFragment();
-
         Bundle args = new Bundle();
-        args.putInt("shipId", shipId);
-        args.putInt("deckId", deckId);
+        args.putInt(ARG_SHIP_ID, shipId);
+        args.putInt(ARG_DECK_ID, deckId);
         fragment.setArguments(args);
-
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            shipId = getArguments().getInt(ARG_SHIP_ID);
+            deckId = getArguments().getInt(ARG_DECK_ID);
+        }
     }
 
     @Override
@@ -49,8 +61,8 @@ public class ShipParamDialogFragment extends android.support.v4.app.DialogFragme
         final Activity activity = getActivity();
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         final View rootView = LayoutInflater.from(activity).inflate(R.layout.dialog_fragment_ship_param, null);
-        final MyShip myShip = MyShipManager.INSTANCE.getMyShip(getArguments().getInt("shipId"));
-        final Deck deck = DeckManager.INSTANCE.getDeck(getArguments().getInt("deckId"));
+        final MyShip myShip = MyShipManager.INSTANCE.getMyShip(shipId);
+        final Deck deck = DeckManager.INSTANCE.getDeck(deckId);
 
         TextView text = (TextView) rootView.findViewById(R.id.shellingBasicAttackPower);
         int power = (int) ShipUtility.getShellingBasicAttackPower(myShip);
@@ -140,16 +152,6 @@ public class ShipParamDialogFragment extends android.support.v4.app.DialogFragme
     @Override
     public void onPause() {
         super.onPause();
-        Log.d("dialo", "pause");
-        // onPause でダイアログを閉じる場合
-        dismiss();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d("dialo", "stop");
-        // onPause でダイアログを閉じる場合
         dismiss();
     }
 }

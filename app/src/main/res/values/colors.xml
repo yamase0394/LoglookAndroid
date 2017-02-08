@@ -8,5 +8,20 @@
     <color name="drawer_slider_back">#FFFFFF</color>
     <color name="drawer_slider_back_selected">#81C784</color>
     <color name="drawer_slider_item">#000000</color>
-    <color name="drawer_header">#d1d1d1</color>
+    <color name="drawer_header">#fff8eb</color>
+    <color name="my_ship_list_header">#656565</color>
+
+    <color name="expedition">#4e5a92</color>
+    <color name="escort">#ffcccccc</color>
+    <color name="docking">#33cccc</color>
+    <color name="undamaged">#3baf75</color>
+    <color name="good_health">#99cc00</color>
+    <color name="minor_damage">#ffe61e</color>
+    <color name="moderate_damage">#ff8c00</color>
+    <color name="heavy_damage">#ffff0000</color>
+    <color name="high_morale">#3baf75</color>
+    <color name="normal_cond">#767676</color>
+    <color name="slightly_fatigued">#edb918</color>
+    <color name="moderately_fatigued">#ff8c00</color>
+    <color name="seriously_fatigued">#ffff0000</color>
 </resources>

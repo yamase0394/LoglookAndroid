@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.BindException;
 import java.net.InetSocketAddress;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -105,6 +107,8 @@ public class LittleProxyServerService extends Service implements Runnable {
     @Override
     public void run() {
         final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+
+        //System.setProperty("http.keepAlive", "false");
 
         /*
         jettyServer = new Server();
@@ -198,26 +202,35 @@ public class LittleProxyServerService extends Service implements Runnable {
         private CompositeByteBuf responseBuf = this.ctx.alloc()
                                                        .compositeBuffer();
 
+        private StringBuilder sb = new StringBuilder();
+
         private HttpRequest request;
 
         private HttpResponse response;
 
         CaptureFilters(HttpRequest originalRequest, ChannelHandlerContext ctx) {
             super(originalRequest, ctx);
+            //Log.d("CaptureFilter", "start");
+            sb.append("**********");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            sb.append(sdf.format(Calendar.getInstance()
+                                         .getTime()) + "\r\n");
         }
 
         @Override
         public HttpResponse proxyToServerRequest(HttpObject httpObject) {
             if (!this.released) {
                 this.add(this.requestBuf, httpObject);
-                Log.d("proxyToServerReq", httpObject.toString());
             }
 
             if (httpObject instanceof HttpRequest) {
                 //((HttpRequest) httpObject).headers().add("Connection", "close");
                 HttpHeaders.setKeepAlive((HttpRequest) httpObject, false);
             }
-
+            //Log.d("proxyToServerReq", httpObject.toString());
+            sb.append("--------proxyToServerReq\r\n");
+            sb.append(httpObject.toString());
+            sb.append("\r\n");
             return super.proxyToServerRequest(httpObject);
         }
 
@@ -225,8 +238,11 @@ public class LittleProxyServerService extends Service implements Runnable {
         public HttpObject serverToProxyResponse(HttpObject httpObject) {
             if (!this.released) {
                 this.add(this.responseBuf, httpObject);
-                Log.d("serverToProxyRes", httpObject.toString());
             }
+            //Log.d("serverToProxyRes", httpObject.toString());
+            sb.append("--------serverToProxyRes\r\n");
+            sb.append(httpObject.toString());
+            sb.append("\r\n");
             return super.serverToProxyResponse(httpObject);
         }
 
@@ -239,24 +255,27 @@ public class LittleProxyServerService extends Service implements Runnable {
                     if (!HttpResponseStatus.OK.equals(res.getStatus())) {
                         this.release();
                     }
-                    res.headers()
-                       .set("Connection", "close");
+                    HttpHeaders.setKeepAlive((HttpResponse) httpObject, false);
                 }
-                Log.d("proxyToClientRes", httpObject.toString());
             }
+            //Log.d("proxyToClientRes", httpObject.toString());
+            sb.append("--------proxyToClientRes\r\n");
+            sb.append(httpObject.toString());
+            sb.append("\r\n");
             return super.proxyToClientResponse(httpObject);
         }
 
         @Override
         public HttpResponse clientToProxyRequest(HttpObject httpObject) {
             if (httpObject instanceof HttpRequest) {
-                //((HttpRequest) httpObject).headers().set("Connection", "close");
                 HttpHeaders.setKeepAlive((HttpRequest) httpObject, false);
-                //((HttpRequest) httpObject).headers().remove("Proxy-Connection");
                 HttpHeaders.removeHeader((HttpRequest) httpObject, "Proxy-Connection");
                 this.request = (HttpRequest) httpObject;
             }
-            Log.d("clientToProxyReq", httpObject.toString());
+            //Log.d("clientToProxyReq", httpObject.toString());
+            sb.append("--------clientToProxyReq\r\n");
+            sb.append(httpObject.toString());
+            sb.append("\r\n");
             return super.clientToProxyRequest(httpObject);
         }
 
@@ -287,7 +306,7 @@ public class LittleProxyServerService extends Service implements Runnable {
                                     if (m.find()) {
                                         jsonStr = m.group(1);
                                         JsonParser.parse(uri, jsonStr);
-                                        Log.d("uri", uri);
+                                        //Log.d("uri", uri);
                                         Log.d("clientReq", clientReqest);
                                         Log.d("serverRes", jsonStr);
                                     } else {
@@ -295,6 +314,41 @@ public class LittleProxyServerService extends Service implements Runnable {
                                     }
                                 }
                             }).start();
+                            sb.append("--------request\r\n");
+                            sb.append(clientReqest);
+                            sb.append("\r\n");
+                            sb.append("--------response\r\n");
+                            sb.append(serverResponse);
+                            sb.append("\r\n");
+                            //System.out.println(sb.toString());
+
+                            /*
+                            //SDカードのディレクトリパス
+                            File sdcard_path = new File(Environment.getExternalStorageDirectory()
+                                                                   .getPath() + "/泥提督支援アプリ/");
+
+                            //パス区切り用セパレータ
+                            String Fs = File.separator;
+
+                            //テキストファイル保存先のファイルパス
+                            String filePath = sdcard_path + Fs + "log_littleProxy.txt";
+
+                            //フォルダがなければ作成
+                            if (!sdcard_path.exists()) {
+                                sdcard_path.mkdir();
+                            }
+
+                            try {
+                                BufferedWriter pw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath, true), "SJIS"));
+                                pw.write(sb.toString());
+                                pw.flush();
+                                pw.close();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                ErrorLogger.writeLog(e);
+                            }
+                            */
+
                         }
                     }
                 } catch (Exception e) {

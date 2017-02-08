@@ -205,6 +205,29 @@ public class JsonParser {
 
                     break;
 
+                case "api_get_member/require_info":
+                    JSONObject root = new JSONObject(jsonStr);
+                    JSONObject dataObj = root.getJSONObject("api_data");
+                    JSONArray slotItemArray = dataObj.getJSONArray("api_slot_item");
+                    List <Integer> list = new ArrayList<>();
+                    for (int i = 0; i < slotItemArray.length(); i++) {
+                        JSONObject jsonObj = slotItemArray.getJSONObject(i);
+                        MySlotItem msi = new MySlotItem();
+                        msi.setId(jsonObj.getInt("api_id"));
+                        msi.setMstId(jsonObj.getInt("api_slotitem_id"));
+                        msi.setLocked(jsonObj.getInt("api_locked"));
+                        msi.setLevel(jsonObj.getInt("api_level"));
+                        try {
+                            msi.setAlv(jsonObj.getInt("api_alv"));
+                        } catch (Exception e) {
+                        }
+                        MySlotItemManager.INSTANCE.put(msi);
+                        list.add(msi.getId());
+                    }
+                    MySlotItemManager.INSTANCE.delete(list);
+                    MySlotItemManager.INSTANCE.serialize();
+                    break;
+
 
                 //母港画面に移動時
                 case "api_port/port":
@@ -229,7 +252,7 @@ public class JsonParser {
                     //root/data/ship
                     JSONArray shipArray = portData.getJSONArray("api_ship");
                     JSONObject[] shipObj = new JSONObject[shipArray.length()];
-                    List<Integer> list = new ArrayList<>();
+                    list = new ArrayList<>();
                     for (int i = 0; i < shipArray.length(); i++) {
                         shipObj[i] = shipArray.getJSONObject(i);
                         MyShip myShip = new MyShip();
@@ -342,8 +365,6 @@ public class JsonParser {
                     mstShip.setName("");
                     mstShip.setYomi("");
                     ShipMap.INSTANCE.put(-1, mstShip);
-                    MyShipManager.INSTANCE.put(-1, null);
-
 
                     //root/data/deck_port
                     JSONArray deckPortArray = portData.getJSONArray("api_deck_port");
@@ -413,7 +434,7 @@ public class JsonParser {
 
                 //プリセットによる編成変更
                 case "api_req_hensei/preset_select":
-                    JSONObject root = new JSONObject(jsonStr);
+                    root = new JSONObject(jsonStr);
                     JSONObject dataB = root.getJSONObject("api_data");
                     deck = DeckManager.INSTANCE.getDeck(dataB.getInt("api_id"));
                     List<Integer> tlist = new ArrayList<>();
@@ -479,17 +500,16 @@ public class JsonParser {
                 case "api_get_member/slot_item":
                     root = new JSONObject(jsonStr);
                     data = root.getJSONArray("api_data");
-                    JSONObject[] dataObject = new JSONObject[data.length()];
                     list = new ArrayList<>();
                     for (int i = 0; i < data.length(); i++) {
-                        dataObject[i] = data.getJSONObject(i);
+                        JSONObject jsonObj = data.getJSONObject(i);
                         MySlotItem msi = new MySlotItem();
-                        msi.setId(dataObject[i].getInt("api_id"));
-                        msi.setMstId(dataObject[i].getInt("api_slotitem_id"));
-                        msi.setLocked(dataObject[i].getInt("api_locked"));
-                        msi.setLevel(dataObject[i].getInt("api_level"));
+                        msi.setId(jsonObj.getInt("api_id"));
+                        msi.setMstId(jsonObj.getInt("api_slotitem_id"));
+                        msi.setLocked(jsonObj.getInt("api_locked"));
+                        msi.setLevel(jsonObj.getInt("api_level"));
                         try {
-                            msi.setAlv(dataObject[i].getInt("api_alv"));
+                            msi.setAlv(jsonObj.getInt("api_alv"));
                         } catch (Exception e) {
                         }
                         MySlotItemManager.INSTANCE.put(msi);
@@ -617,19 +637,6 @@ public class JsonParser {
                     }
 
                     break;
-
-
-                //入渠画面に移動時
-                case "api_get_member/ndock":
-                    root = new JSONObject(jsonStr);
-                    data = root.getJSONArray("api_data");
-                    int count = data.length();
-                    dataObject = new JSONObject[count];
-                    for (int i = 0; i < count; i++) {
-                        dataObject[i] = data.getJSONObject(i);
-                    }
-                    break;
-
 
                 //出撃時
                 case "api_req_map/start":

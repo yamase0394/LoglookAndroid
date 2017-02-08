@@ -46,6 +46,29 @@ public class SlotItemUtility {
     }
 
     /**
+     * 改修によって上昇した分の雷撃戦火力を返します
+     *
+     * @param mstSlotitem
+     * @param improvementLevel 改修度
+     *
+     * @return 改修で上昇する雷撃戦火力
+     */
+    public static float getTorpedoSalvoImprovementPower(MstSlotitem mstSlotitem,int improvementLevel) {
+        //改修していない
+        if (improvementLevel == 0) {
+            return 0;
+        }
+
+        switch (EquipType.toEquipType(mstSlotitem.getType().get(2))) {
+            case 魚雷:
+            case 潜水艦魚雷:
+            case 対空機銃:
+                return (float) (1.2 * Math.sqrt(improvementLevel));
+        }
+        return 0;
+    }
+
+    /**
      * 改修によって上昇した分の夜戦火力を返します
      *
      * @param mstSlotitem

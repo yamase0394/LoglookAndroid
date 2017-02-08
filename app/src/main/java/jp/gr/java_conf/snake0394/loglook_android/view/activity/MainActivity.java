@@ -40,8 +40,10 @@ import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DockFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.EquipmentFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.HomeFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.MissionFragment;
+import jp.gr.java_conf.snake0394.loglook_android.view.fragment.MyShipListFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.TacticalSituationFragment;
 
+import static jp.gr.java_conf.snake0394.loglook_android.R.id.toolbar;
 import static jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity.Fragment.HOME;
 
 public class MainActivity extends AppCompatActivity {
@@ -66,9 +68,10 @@ public class MainActivity extends AppCompatActivity {
         MISSION(3),
         DOCK(4),
         DAMAGED_SHIP(5),
-        EQUIPMENT(6),
-        TACTICAL_SITUATION(7),
-        CONFIG(8);
+        MY_SHIP_LIST(6),
+        EQUIPMENT(7),
+        TACTICAL_SITUATION(8),
+        CONFIG(9);
 
         private int position;
 
@@ -248,8 +251,12 @@ public class MainActivity extends AppCompatActivity {
             mf = HOME;
         }
 
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appBar);
+        appBarLayout.setExpanded(true, true);
+
         switch (mf) {
             case HOME:
+                ((AppBarLayout.LayoutParams)findViewById(toolbar).getLayoutParams()).setScrollFlags(0);
                 fragment = HomeFragment.newInstance();
                 break;
             case DECK:
@@ -266,30 +273,21 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case TACTICAL_SITUATION:
                 fragment = TacticalSituationFragment.newInstance();
-                /*
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.replace(R.id.body, fragment);
-                transaction.commitAllowingStateLoss();
-                //ツールバーのタイトルを更新
-                getSupportActionBar().setTitle("戦況");
-                //現在のDrawerListの位置を記録
-                present = mf;
-                return;
-                */
                 break;
             case DAMAGED_SHIP:
+                ((AppBarLayout.LayoutParams)findViewById(toolbar).getLayoutParams()).setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
                 fragment = DamagedShipFragment.newInstance();
                 break;
             case EQUIPMENT:
+                ((AppBarLayout.LayoutParams)findViewById(toolbar).getLayoutParams()).setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
                 fragment = EquipmentFragment.newInstance();
+                break;
+            case MY_SHIP_LIST:
+                ((AppBarLayout.LayoutParams)findViewById(toolbar).getLayoutParams()).setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+                fragment = MyShipListFragment.newInstance();
                 break;
             default:
                 return;
-        }
-
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appBar);
-        if (appBarLayout != null) {
-            appBarLayout.setExpanded(true, true);
         }
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();

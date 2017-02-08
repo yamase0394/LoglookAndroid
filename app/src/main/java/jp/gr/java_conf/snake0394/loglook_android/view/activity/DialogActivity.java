@@ -8,7 +8,6 @@ import jp.gr.java_conf.snake0394.loglook_android.view.fragment.LauncherDialogFra
 /**
  * Serviceからダイアログを表示するためのActivity
  */
-
 public class DialogActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {

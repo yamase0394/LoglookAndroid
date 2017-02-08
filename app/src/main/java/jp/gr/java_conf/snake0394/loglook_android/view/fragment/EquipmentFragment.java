@@ -4,7 +4,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,7 +30,6 @@ import jp.gr.java_conf.snake0394.loglook_android.view.EquipIconId;
 public class EquipmentFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private AppBarLayout sortAppBar;
 
     public EquipmentFragment() {
         // Required empty public constructor
@@ -161,8 +159,6 @@ public class EquipmentFragment extends Fragment {
         spinner.setAdapter(adapter);
         spinner.setFocusable(false);
         spinner.setSelection(0);
-
-        sortAppBar = (AppBarLayout) rootView.findViewById(R.id.sortAppBar);
 
         return rootView;
     }
@@ -322,12 +318,11 @@ public class EquipmentFragment extends Fragment {
             }
         }
         ((EquipmentAdapter) recyclerView.getAdapter()).addDataOf(initialDataList);
+        recyclerView.scrollToPosition(0);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
-        sortAppBar.setExpanded(true, true);
     }
 }

@@ -248,14 +248,6 @@
                     android:text="リクエストを保存する"
                     android:textSize="15dp"/>
 
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="ログをDropboxに保存する"
-                    android:id="@+id/saveInDropboxCheck"
-                    android:layout_marginTop="5dp"
-                    android:textSize="15dp"/>
-
 
             </LinearLayout>
 

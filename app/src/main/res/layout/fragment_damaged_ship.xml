@@ -55,8 +55,7 @@
             android:scrollbarSize="5dp"
             android:scrollbarThumbVertical="?android:attr/fastScrollPreviewBackgroundRight"
             android:scrollbars="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     </jp.gr.java_conf.snake0394.loglook_android.view.NestedCoordinatorLayout>
 </LinearLayout>
