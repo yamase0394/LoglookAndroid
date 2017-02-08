@@ -295,6 +295,10 @@ public class DeckUtility {
      * @return 艦隊防空値
      */
     public static float getAdjustedFleetAA(Deck deck, String formation) {
+        if(deck == null) {
+            return 0;
+        }
+
         //艦隊防空値
         int fleetAA = 0;
 

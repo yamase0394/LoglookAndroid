@@ -83,7 +83,7 @@ public class DamagedShipAdapter extends RecyclerView.Adapter<DamagedShipAdapter.
         return sortedList;
     }
 
-    public static class DamagedShipViewHolder extends RecyclerView.ViewHolder {
+    class DamagedShipViewHolder extends RecyclerView.ViewHolder {
 
         private FragmentManager fragmentManager;
         private TextView name;
@@ -93,6 +93,7 @@ public class DamagedShipAdapter extends RecyclerView.Adapter<DamagedShipAdapter.
         private ImageView slot2;
         private ImageView slot3;
         private ImageView slot4;
+        private ImageView slotEx;
         private LinearLayout equipments;
         private ProgressBar hpBar;
         private TextView hp;
@@ -110,6 +111,7 @@ public class DamagedShipAdapter extends RecyclerView.Adapter<DamagedShipAdapter.
             slot2 = (ImageView) rootView.findViewById(R.id.slot2);
             slot3 = (ImageView) rootView.findViewById(R.id.slot3);
             slot4 = (ImageView) rootView.findViewById(R.id.slot4);
+            slotEx = (ImageView) rootView.findViewById(R.id.imageview_slot_ex);
             equipments = (LinearLayout) rootView.findViewById(R.id.equipments);
             hpBar = (ProgressBar) rootView.findViewById(R.id.hpBar);
             hp = (TextView) rootView.findViewById(R.id.hp);
@@ -164,43 +166,87 @@ public class DamagedShipAdapter extends RecyclerView.Adapter<DamagedShipAdapter.
             MstSlotitem mstSlotitem;
             if (1 > myShip.getSlotnum()) {
                 slot1.setImageResource(EquipIconId.NOT_AVAILABLE.getImageId());
-            } else if (myShip.getSlot().get(0) == -1) {
+            } else if (myShip.getSlot()
+                             .get(0) == -1) {
                 slot1.setImageResource(EquipIconId.EMPTY.getImageId());
             } else {
                 //装備取得前に開くとmySlotItemがnullになる
-                mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlot().get(0));
-                mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-                slot1.setImageResource(EquipIconId.toEquipIconId(mstSlotitem.getType().get(3)).getImageId());
+                mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlot()
+                                                                            .get(0));
+                if (mySlotItem != null) {
+                    mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
+                    slot1.setImageResource(EquipIconId.toEquipIconId(mstSlotitem.getType()
+                                                                                .get(3))
+                                                      .getImageId());
+                } else {
+                    slot1.setImageResource(EquipIconId.UNKNOWN.getImageId());
+                }
             }
 
             if (2 > myShip.getSlotnum()) {
                 slot2.setImageResource(EquipIconId.NOT_AVAILABLE.getImageId());
-            } else if (myShip.getSlot().get(1) == -1) {
+            } else if (myShip.getSlot()
+                             .get(1) == -1) {
                 slot2.setImageResource(EquipIconId.EMPTY.getImageId());
             } else {
-                mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlot().get(1));
-                mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-                slot2.setImageResource(EquipIconId.toEquipIconId(mstSlotitem.getType().get(3)).getImageId());
+                mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlot()
+                                                                            .get(1));
+                if (mySlotItem != null) {
+                    mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
+                    slot2.setImageResource(EquipIconId.toEquipIconId(mstSlotitem.getType()
+                                                                                .get(3))
+                                                      .getImageId());
+                } else {
+                    slot2.setImageResource(EquipIconId.UNKNOWN.getImageId());
+                }
             }
 
             if (3 > myShip.getSlotnum()) {
                 slot3.setImageResource(EquipIconId.NOT_AVAILABLE.getImageId());
-            } else if (myShip.getSlot().get(2) == -1) {
+            } else if (myShip.getSlot()
+                             .get(2) == -1) {
                 slot3.setImageResource(EquipIconId.EMPTY.getImageId());
             } else {
-                mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlot().get(2));
-                mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-                slot3.setImageResource(EquipIconId.toEquipIconId(mstSlotitem.getType().get(3)).getImageId());
+                mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlot()
+                                                                            .get(2));
+                if (mySlotItem != null) {
+                    mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
+                    slot3.setImageResource(EquipIconId.toEquipIconId(mstSlotitem.getType()
+                                                                                .get(3))
+                                                      .getImageId());
+                } else {
+                    slot3.setImageResource(EquipIconId.UNKNOWN.getImageId());
+                }
             }
 
             if (4 > myShip.getSlotnum()) {
                 slot4.setImageResource(EquipIconId.NOT_AVAILABLE.getImageId());
-            } else if (myShip.getSlot().get(3) == -1) {
+            } else if (myShip.getSlot()
+                             .get(3) == -1) {
                 slot4.setImageResource(EquipIconId.EMPTY.getImageId());
             } else {
-                mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlot().get(3));
+                mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlot()
+                                                                            .get(3));
+                if (mySlotItem != null) {
+                    mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
+                    slot4.setImageResource(EquipIconId.toEquipIconId(mstSlotitem.getType()
+                                                                                .get(3))
+                                                      .getImageId());
+                } else {
+                    slot4.setImageResource(EquipIconId.UNKNOWN.getImageId());
+                }
+            }
+
+            if (MySlotItemManager.INSTANCE.contains(myShip.getSlotEx())) {
+                mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlotEx());
                 mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-                slot4.setImageResource(EquipIconId.toEquipIconId(mstSlotitem.getType().get(3)).getImageId());
+                slotEx.setImageResource(EquipIconId.toEquipIconId(mstSlotitem.getType().get(3)).getImageId());
+            } else {
+                if (myShip.getSlotEx() == 0) {
+                    slotEx.setImageResource(EquipIconId.NOT_AVAILABLE.getImageId());
+                } else if (myShip.getSlotEx() == -1) {
+                    slotEx.setImageResource(EquipIconId.EMPTY.getImageId());
+                }
             }
 
             equipments.setOnClickListener(new View.OnClickListener() {

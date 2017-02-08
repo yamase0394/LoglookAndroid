@@ -76,6 +76,28 @@ public class ShipUtility {
 
     /**
      * @param myShip
+     * @return 雷撃戦の基本攻撃力
+     */
+    public static float getTorpedoSalvoBasicAttackPower(MyShip myShip) {
+        float result = 0;
+        result += myShip.getRaisou().get(0);
+
+        for (int id : myShip.getSlot()) {
+            if (!MySlotItemManager.INSTANCE.contains(id)) {
+                break;
+            }
+
+            MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(id);
+            MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
+
+            result += SlotItemUtility.getTorpedoSalvoImprovementPower(mstSlotitem, mySlotItem.getLevel());
+        }
+
+        return result;
+    }
+
+    /**
+     * @param myShip
      * @return 夜戦の基本攻撃力
      */
     public static float getNightBattleBasicAttackPower(MyShip myShip) {

@@ -16,7 +16,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="必ず以下のサイトで使い方を確認してから使用してください"
+            android:text="以下のサイトで使い方を確認してから使用してください"
             android:textSize="20dp"
             android:id="@+id/textView"/>
 

@@ -223,8 +223,6 @@ public class RequestParser {
                     CreateItemLogger.INSTANCE.ready(fuel,bullet,steel,bauxite);
                     break;
 
-
-
                 case "api_req_nyukyo/start":
                     regex = "api%5Fhighspeed=(\\d+)";
                     p = Pattern.compile(regex);
