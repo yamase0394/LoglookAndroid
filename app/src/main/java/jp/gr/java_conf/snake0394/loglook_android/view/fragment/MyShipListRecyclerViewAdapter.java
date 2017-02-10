@@ -1,6 +1,5 @@
 package jp.gr.java_conf.snake0394.loglook_android.view.fragment;
 
-import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -17,15 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -56,32 +51,11 @@ public class MyShipListRecyclerViewAdapter extends RecyclerView.Adapter<MyShipLi
     private List<Label> labelList;
     private OnRecyclerViewItemClickListener listener;
 
-    public MyShipListRecyclerViewAdapter(FragmentManager fragmentManager, String sortType, String order, OnRecyclerViewItemClickListener listener) {
+    public MyShipListRecyclerViewAdapter(FragmentManager fragmentManager, String sortType, String order, OnRecyclerViewItemClickListener listener, Map<Integer, List<Label>> toLabelMap, List<Label> labelList) {
         sortedList = new SortedList<>(MyShipListItem.class, new SortedListCallcack(this, sortType, order));
         this.fragmentManager = fragmentManager;
-        SharedPreferences sp = App.getInstance()
-                                  .getSharedPreferences();
-
-        toLabelMap = new Gson().fromJson(sp.getString("toLabelMap", null), new TypeToken<Map<Integer, List<Label>>>() {
-        }.getType());
-
-        if (toLabelMap == null) {
-            toLabelMap = new HashMap<>();
-            SharedPreferences.Editor editor = sp.edit();
-            editor.putString("toLabelMap", new Gson().toJson(toLabelMap));
-            editor.commit();
-        }
-
-        labelList = new Gson().fromJson(sp.getString("labelList", null), new TypeToken<List<Label>>() {
-        }.getType());
-
-        if (labelList == null) {
-            labelList = new ArrayList<>();
-            SharedPreferences.Editor editor = sp.edit();
-            editor.putString("labelList", new Gson().toJson(labelList));
-            editor.commit();
-        }
-
+        this.toLabelMap = toLabelMap;
+        this.labelList = labelList;
         this.listener = listener;
     }
 
@@ -176,15 +150,9 @@ public class MyShipListRecyclerViewAdapter extends RecyclerView.Adapter<MyShipLi
         toLabelMap.put(myShipListItem.getMyShip()
                                      .getId(), myShipListItem.getLabelList());
 
-        SharedPreferences.Editor editor = App.getInstance()
-                                             .getSharedPreferences()
-                                             .edit();
-        editor.putString("toLabelMap", new Gson().toJson(toLabelMap));
-        editor.putString("labelList", new Gson().toJson(labelList));
-        editor.commit();
-
         notifyItemChanged(position);
     }
+
 
     public void removeLabel(int position, Label label) {
         MyShipListItem myShipListItem = sortedList.get(position);
@@ -208,18 +176,15 @@ public class MyShipListRecyclerViewAdapter extends RecyclerView.Adapter<MyShipLi
         }
         labelList.retainAll(existingLabelSet);
 
-        SharedPreferences.Editor editor = App.getInstance()
-                                             .getSharedPreferences()
-                                             .edit();
-        editor.putString("toLabelMap", new Gson().toJson(toLabelMap));
-        editor.putString("labelList", new Gson().toJson(labelList));
-        editor.commit();
-
         notifyItemChanged(position);
     }
 
     public List<Label> getLabelList() {
-        return this.labelList;
+        return labelList;
+    }
+
+    public Map<Integer, List<Label>> getToLabelMap() {
+        return toLabelMap;
     }
 
     public List<MyShipListItem> getItemList() {
@@ -252,11 +217,11 @@ public class MyShipListRecyclerViewAdapter extends RecyclerView.Adapter<MyShipLi
             return labelList;
         }
 
-        public void addLabel(Label label) {
-            this.labelList.add(label);
-        }
     }
 
+    /**
+     * Labelの同一性はnameフィールドで判定されます
+     */
     public static class Label {
         private String name;
         private int color;
@@ -395,14 +360,11 @@ public class MyShipListRecyclerViewAdapter extends RecyclerView.Adapter<MyShipLi
 
     static class MyShipListRecyclerViewHolder extends RecyclerView.ViewHolder {
         private FragmentManager fragmentManager;
+
         private CardView cardView;
         private TextView name;
         private TextView lv;
         private TextView state;
-        private ImageView slot1;
-        private ImageView slot2;
-        private ImageView slot3;
-        private ImageView slot4;
         private ImageView slotEx;
         private List<ImageView> slotList;
         private LinearLayout equipments;
@@ -422,10 +384,10 @@ public class MyShipListRecyclerViewAdapter extends RecyclerView.Adapter<MyShipLi
             name = (TextView) rootView.findViewById(R.id.name);
             lv = (TextView) rootView.findViewById(R.id.lv);
             state = (TextView) rootView.findViewById(R.id.state);
-            slot1 = (ImageView) rootView.findViewById(R.id.slot1);
-            slot2 = (ImageView) rootView.findViewById(R.id.slot2);
-            slot3 = (ImageView) rootView.findViewById(R.id.slot3);
-            slot4 = (ImageView) rootView.findViewById(R.id.slot4);
+            ImageView slot1 = (ImageView) rootView.findViewById(R.id.slot1);
+            ImageView slot2 = (ImageView) rootView.findViewById(R.id.slot2);
+            ImageView slot3 = (ImageView) rootView.findViewById(R.id.slot3);
+            ImageView slot4 = (ImageView) rootView.findViewById(R.id.slot4);
             slotList = Arrays.asList(slot1, slot2, slot3, slot4);
             slotEx = (ImageView) rootView.findViewById(R.id.imageview_slot_ex);
             equipments = (LinearLayout) rootView.findViewById(R.id.equipments);
@@ -438,7 +400,6 @@ public class MyShipListRecyclerViewAdapter extends RecyclerView.Adapter<MyShipLi
             shipASWTextView = (TextView) rootView.findViewById(R.id.text_ship_asw);
             labelLayout = (LinearLayout) rootView.findViewById(R.id.layout_label);
         }
-
 
         public void bind(@NonNull final MyShipListRecyclerViewAdapter.MyShipListItem myShipListItem, final OnRecyclerViewItemClickListener listener) {
             final MyShip myShip = myShipListItem.getMyShip();
@@ -609,7 +570,6 @@ public class MyShipListRecyclerViewAdapter extends RecyclerView.Adapter<MyShipLi
                 labelTextView.setText(label.getName());
                 GradientDrawable bgShape = (GradientDrawable) labelTextView.getBackground();
                 bgShape.setColor(label.getColor());
-                //labelTextView.setBackgroundColor(label.getColor());
                 labelLayout.addView(labelView);
             }
         }

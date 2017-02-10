@@ -10,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -24,36 +23,39 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.os.operando.garum.Configuration;
-import com.os.operando.garum.Garum;
-import com.os.operando.garum.annotations.DefaultString;
-import com.os.operando.garum.annotations.Pref;
-import com.os.operando.garum.annotations.PrefKey;
-import com.os.operando.garum.models.PrefModel;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
+import jp.gr.java_conf.snake0394.loglook_android.App;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.ShipType;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
-
-import static jp.gr.java_conf.snake0394.loglook_android.R.id.shipTypeFilterSpinner;
+import jp.gr.java_conf.snake0394.loglook_android.storage.MyShipListFragmentPrefs;
+import jp.gr.java_conf.snake0394.loglook_android.storage.MyShipListFragmentPrefsSpotRepository;
+import jp.gr.java_conf.snake0394.loglook_android.view.fragment.MyShipListRecyclerViewAdapter.Label;
 
 /**
  * 艦娘一覧画面
  */
 public class MyShipListFragment extends Fragment implements MyShipListRecyclerViewAdapter.OnRecyclerViewItemClickListener,
-                                                            MyShipListAddLabelDialog.OnFinishedListener {
+                                                            MyShipListAddLabelDialog.OnFinishedListener,
+                                                            View.OnTouchListener {
+
+    private static final List<String> SORT_TYPE_LIST = Arrays.asList("ID", "Lv", "cond", "砲撃戦火力", "雷撃戦火力", "夜戦火力", "対潜");
 
     private RecyclerView recyclerView;
     private SearchView searchView;
     private Spinner labelFilterSpinner;
     private List<MyShip> dataList;
-    private Prefs prefs;
+    private MyShipListFragmentPrefs prefs;
 
     public MyShipListFragment() {
         // Required empty public constructor
@@ -68,10 +70,15 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Configuration.Builder builder = new Configuration.Builder(getContext());
-        builder.setModelClasses(Prefs.class);
-        Garum.initialize(builder.create());
-        this.prefs = new Prefs();
+        this.prefs = MyShipListFragmentPrefsSpotRepository.getEntity(App.getInstance());
+
+        //保存方法変更のため暫く以前の保存場所から取り出せるようにする
+        if (prefs.toLabelMap.size() == 0) {
+            prefs.toLabelMap = new Gson().fromJson(App.getInstance().getSharedPreferences().getString("toLabelMap", null), new TypeToken<Map<Integer, List<Label>>>() {}.getType());
+        }
+        if (prefs.labelList.size() == 0) {
+            prefs.labelList = new Gson().fromJson(App.getInstance().getSharedPreferences().getString("labelList", null), new TypeToken<List<Label>>() {}.getType());
+        }
     }
 
     @Override
@@ -84,7 +91,7 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
         this.searchView = (SearchView) toolbar.getMenu()
                                               .findItem(R.id.menu_search)
                                               .getActionView();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        this.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -97,7 +104,7 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
                 return true;
             }
         });
-        EditText searchPlate = (EditText) searchView.findViewById(R.id.search_src_text);
+        final EditText searchPlate = (EditText) this.searchView.findViewById(R.id.search_src_text);
         searchPlate.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -124,36 +131,18 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
 
         //IMEを閉じる
         rootView.findViewById(R.id.layout_base)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        searchView.clearFocus();
-                    }
-                });
+                .setOnTouchListener(this);
         rootView.findViewById(R.id.sortAppBar)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        searchView.clearFocus();
-                    }
-                });
+                .setOnTouchListener(this);
 
         if (this.recyclerView == null) {
             this.recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
             this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             //IMEを閉じる
-            this.recyclerView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        searchView.clearFocus();
-                    }
-                    return false;
-                }
-            });
+            this.recyclerView.setOnTouchListener(this);
         }
         if (recyclerView.getAdapter() == null) {
-            MyShipListRecyclerViewAdapter adapter = new MyShipListRecyclerViewAdapter(getFragmentManager(), prefs.sortType, prefs.order, this);
+            MyShipListRecyclerViewAdapter adapter = new MyShipListRecyclerViewAdapter(getFragmentManager(), prefs.sortType, prefs.order, this,prefs.toLabelMap,prefs.labelList);
             recyclerView.setAdapter(adapter);
         }
 
@@ -161,7 +150,7 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Spinner type = (Spinner) rootView.findViewById(R.id.sortSpinner);
+                Spinner type = (Spinner) parent;
                 // 初回起動時の動作
                 if (type.isFocusable() == false) {
                     type.setFocusable(true);
@@ -169,9 +158,8 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
                 }
 
                 prefs.sortType = (String) type.getSelectedItem();
-                prefs.save();
 
-                MyShipListRecyclerViewAdapter adapter = new MyShipListRecyclerViewAdapter(getFragmentManager(), prefs.sortType, prefs.order, MyShipListFragment.this);
+                MyShipListRecyclerViewAdapter adapter = new MyShipListRecyclerViewAdapter(getFragmentManager(), prefs.sortType, prefs.order, MyShipListFragment.this,prefs.toLabelMap,prefs.labelList);
                 recyclerView.swapAdapter(adapter, false);
                 initDataList();
                 recyclerView.scrollToPosition(0);
@@ -183,41 +171,13 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item);
-        adapter.addAll("ID", "Lv", "cond", "砲撃戦火力", "雷撃戦火力", "夜戦火力", "対潜");
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item);
+        arrayAdapter.addAll((String[]) SORT_TYPE_LIST.toArray());
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
         spinner.setFocusable(false);
-        switch (prefs.sortType) {
-            case "ID":
-                spinner.setSelection(0);
-                break;
-            case "Lv":
-                spinner.setSelection(1);
-                break;
-            case "cond":
-                spinner.setSelection(2);
-                break;
-            case "砲撃戦火力":
-                spinner.setSelection(3);
-                break;
-            case "雷撃戦火力":
-                spinner.setSelection(4);
-                break;
-            case "夜戦火力":
-                spinner.setSelection(5);
-                break;
-            case "対潜":
-                spinner.setSelection(6);
-                break;
-        }
-        spinner.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                searchView.clearFocus();
-                return false;
-            }
-        });
+        spinner.setSelection(SORT_TYPE_LIST.indexOf(prefs.sortType));
+        spinner.setOnTouchListener(this);
 
         Button orderButton = (Button) rootView.findViewById(R.id.button_order);
         orderButton.setOnClickListener(new View.OnClickListener() {
@@ -231,15 +191,12 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
                     case "昇順":
                         orderButton.setText("降順");
                         break;
-                    default:
-                        Log.e("MyShipList", "無効な値:" + orderButton.getText());
-                        return;
                 }
 
-                prefs.order = orderButton.getText().toString();
-                prefs.save();
+                prefs.order = orderButton.getText()
+                                         .toString();
 
-                MyShipListRecyclerViewAdapter adapter = new MyShipListRecyclerViewAdapter(getFragmentManager(), prefs.sortType, prefs.order, MyShipListFragment.this);
+                MyShipListRecyclerViewAdapter adapter = new MyShipListRecyclerViewAdapter(getFragmentManager(), prefs.sortType, prefs.order, MyShipListFragment.this,prefs.toLabelMap,prefs.labelList);
                 recyclerView.swapAdapter(adapter, false);
                 initDataList();
                 recyclerView.scrollToPosition(0);
@@ -247,21 +204,17 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
                 searchView.clearFocus();
             }
         });
-
         orderButton.setText(prefs.order);
 
-
-        spinner = (Spinner) rootView.findViewById(shipTypeFilterSpinner);
+        spinner = (Spinner) rootView.findViewById(R.id.shipTypeFilterSpinner);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Spinner shipTypeFilterSpinner = (Spinner) parent;
 
                 prefs.shipTypeFilter = (String) shipTypeFilterSpinner.getSelectedItem();
-                prefs.save();
 
                 filterDataList();
-
                 recyclerView.scrollToPosition(0);
 
                 searchView.clearFocus();
@@ -271,13 +224,13 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item);
-        adapter.add("すべて");
+        arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item);
+        arrayAdapter.add("すべて");
         for (ShipType shipType : ShipType.values()) {
-            adapter.add(shipType.toString());
+            arrayAdapter.add(shipType.toString());
         }
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
         if (dataList == null) {
             try {
                 ShipType displayShipType = ShipType.valueOf(prefs.shipTypeFilter);
@@ -287,13 +240,7 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
                 spinner.setSelection(0);
             }
         }
-        spinner.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                searchView.clearFocus();
-                return false;
-            }
-        });
+        spinner.setOnTouchListener(this);
 
         labelFilterSpinner = (Spinner) rootView.findViewById(R.id.spinner_filter_label);
         labelFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -305,7 +252,6 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
                 }
 
                 prefs.labelFilter = (String) labelFilterSpinner.getSelectedItem();
-                prefs.save();
 
                 filterDataList();
 
@@ -318,33 +264,34 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item);
-        adapter.add("すべて");
-        for (MyShipListRecyclerViewAdapter.Label label : ((MyShipListRecyclerViewAdapter) recyclerView.getAdapter()).getLabelList()) {
-            adapter.add(label.getName());
+        arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item);
+        arrayAdapter.add("すべて");
+        for (Label label : ((MyShipListRecyclerViewAdapter) recyclerView.getAdapter()).getLabelList()) {
+            arrayAdapter.add(label.getName());
         }
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        labelFilterSpinner.setAdapter(adapter);
-        if (((MyShipListRecyclerViewAdapter) recyclerView.getAdapter()).getLabelList()
-                                                                       .contains(new MyShipListRecyclerViewAdapter.Label(prefs.labelFilter, 0))) {
-            labelFilterSpinner.setSelection(((MyShipListRecyclerViewAdapter) recyclerView.getAdapter()).getLabelList()
-                                                                                                       .indexOf(new MyShipListRecyclerViewAdapter.Label(prefs.labelFilter, 0)) + 1);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        labelFilterSpinner.setAdapter(arrayAdapter);
+        MyShipListRecyclerViewAdapter recyclerViewAdapter = (MyShipListRecyclerViewAdapter) recyclerView.getAdapter();
+        List<Label> labelList = recyclerViewAdapter.getLabelList();
+        Label comparisionLabel = new Label(prefs.labelFilter, 0);
+        if (labelList.contains(comparisionLabel)) {
+            labelFilterSpinner.setSelection(labelList.indexOf(comparisionLabel) + 1);
         } else {
-            switch (prefs.labelFilter) {
-                case "すべて":
-                    labelFilterSpinner.setSelection(0);
-                    break;
-            }
+            labelFilterSpinner.setSelection(0);
         }
-        labelFilterSpinner.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                searchView.clearFocus();
-                return false;
-            }
-        });
+        labelFilterSpinner.setOnTouchListener(this);
 
         return rootView;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        MyShipListRecyclerViewAdapter recyclerViewAdapter = (MyShipListRecyclerViewAdapter) recyclerView.getAdapter();
+        prefs.toLabelMap = recyclerViewAdapter.getToLabelMap();
+        prefs.labelList = recyclerViewAdapter.getLabelList();
+        MyShipListFragmentPrefsSpotRepository.putEntity(App.getInstance(), prefs);
     }
 
     private void initDataList() {
@@ -403,19 +350,16 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
         initDataList();
 
         if (((MyShipListRecyclerViewAdapter) recyclerView.getAdapter()).getLabelList()
-                                                                       .contains(new MyShipListRecyclerViewAdapter.Label(prefs.labelFilter, 0))) {
+                                                                       .contains(new Label(prefs.labelFilter, 0))) {
             dataList = new ArrayList<>();
             for (MyShipListRecyclerViewAdapter.MyShipListItem item : ((MyShipListRecyclerViewAdapter) recyclerView.getAdapter()).getItemList()) {
                 if (item.getLabelList()
-                        .contains(new MyShipListRecyclerViewAdapter.Label(prefs.labelFilter, 0))) {
+                        .contains(new Label(prefs.labelFilter, 0))) {
                     dataList.add(item.getMyShip());
                 }
             }
         } else {
-            switch (prefs.labelFilter) {
-                case "すべて":
-                    return;
-            }
+            return;
         }
 
         initDataList();
@@ -430,20 +374,6 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
 
         super.onDestroyView();
     }
-
-    /*
-    //MyShipListSortDialogFragmentのコールバック
-    @Override
-    public void onItemClicked(String selectedStr) {
-        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        final SharedPreferences.Editor editor = sp.edit();
-        editor.putString("myShipListSortType", selectedStr);
-        editor.apply();
-        MyShipListRecyclerViewAdapter adapter = new MyShipListRecyclerViewAdapter(getFragmentManager(), selectedStr, sp.getString("myShipListOrder", "降順"), this);
-        recyclerView.swapAdapter(adapter, false);
-        initDataList();
-    }
-    */
 
     @Override
     public void onRecyclerViewItemClicked(final int position) {
@@ -489,25 +419,20 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
                                                                                    .get(which));
                                        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item);
                                        arrayAdapter.add("すべて");
-                                       for (MyShipListRecyclerViewAdapter.Label label : ((MyShipListRecyclerViewAdapter) recyclerView.getAdapter()).getLabelList()) {
+                                       for (Label label : ((MyShipListRecyclerViewAdapter) recyclerView.getAdapter()).getLabelList()) {
                                            arrayAdapter.add(label.getName());
                                        }
                                        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                                        labelFilterSpinner.setAdapter(arrayAdapter);
                                        labelFilterSpinner.setFocusable(false);
 
-                                       if (((MyShipListRecyclerViewAdapter) recyclerView.getAdapter()).getLabelList()
-                                                                                                      .contains(new MyShipListRecyclerViewAdapter.Label(prefs.labelFilter, 0))) {
-                                           labelFilterSpinner.setSelection(((MyShipListRecyclerViewAdapter) recyclerView.getAdapter()).getLabelList()
-                                                                                                                                      .indexOf(new MyShipListRecyclerViewAdapter.Label(prefs.labelFilter, 0)) + 1);
+                                       MyShipListRecyclerViewAdapter recyclerViewAdapter = (MyShipListRecyclerViewAdapter) recyclerView.getAdapter();
+                                       List<Label> labelList = recyclerViewAdapter.getLabelList();
+                                       Label comparisionLabel = new Label(prefs.labelFilter, 0);
+                                       if (labelList.contains(comparisionLabel)) {
+                                           labelFilterSpinner.setSelection(labelList.indexOf(comparisionLabel) + 1);
                                        } else {
-                                           switch (prefs.labelFilter) {
-                                               case "すべて":
-                                                   labelFilterSpinner.setSelection(0);
-                                                   break;
-                                               default:
-                                                   labelFilterSpinner.setSelection(0);
-                                           }
+                                           labelFilterSpinner.setSelection(0);
                                        }
 
                                        filterDataList();
@@ -523,57 +448,38 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
     }
 
     @Override
-    public void onAddLabelFinished(boolean isCanceled, int position, @Nullable MyShipListRecyclerViewAdapter.Label adedLabel) {
+    public void onAddLabelFinished(boolean isCanceled, int position, @Nullable Label addedLabel) {
         if (isCanceled) {
             return;
         }
 
         MyShipListRecyclerViewAdapter adapter = (MyShipListRecyclerViewAdapter) recyclerView.getAdapter();
-        adapter.addLabel(position, adedLabel);
+        adapter.addLabel(position, addedLabel);
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item);
         arrayAdapter.add("すべて");
-        for (MyShipListRecyclerViewAdapter.Label label : ((MyShipListRecyclerViewAdapter) recyclerView.getAdapter()).getLabelList()) {
+        for (Label label : ((MyShipListRecyclerViewAdapter) recyclerView.getAdapter()).getLabelList()) {
             arrayAdapter.add(label.getName());
         }
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         labelFilterSpinner.setAdapter(arrayAdapter);
         labelFilterSpinner.setFocusable(false);
 
-        if (((MyShipListRecyclerViewAdapter) recyclerView.getAdapter()).getLabelList()
-                                                                       .contains(new MyShipListRecyclerViewAdapter.Label(prefs.labelFilter, 0))) {
-            labelFilterSpinner.setSelection(((MyShipListRecyclerViewAdapter) recyclerView.getAdapter()).getLabelList()
-                                                                                                       .indexOf(new MyShipListRecyclerViewAdapter.Label(prefs.labelFilter, 0)) + 1);
+        MyShipListRecyclerViewAdapter recyclerViewAdapter = (MyShipListRecyclerViewAdapter) recyclerView.getAdapter();
+        List<Label> labelList = recyclerViewAdapter.getLabelList();
+        Label comparisionLabel = new Label(prefs.labelFilter, 0);
+        if (labelList.contains(comparisionLabel)) {
+            labelFilterSpinner.setSelection(labelList.indexOf(comparisionLabel) + 1);
         } else {
-            switch (prefs.labelFilter) {
-                case "すべて":
-                    labelFilterSpinner.setSelection(0);
-                    break;
-                default:
-                    labelFilterSpinner.setSelection(0);
-            }
+            labelFilterSpinner.setSelection(0);
         }
 
         filterDataList();
     }
 
-    @Pref(name = "pref_my_ship_list_fragment")
-    private static class Prefs extends PrefModel {
-
-        @PrefKey
-        @DefaultString("すべて")
-        private String labelFilter;
-
-        @PrefKey
-        @DefaultString("すべて")
-        private String shipTypeFilter;
-
-        @PrefKey
-        @DefaultString("Lv")
-        private String sortType;
-
-        @PrefKey
-        @DefaultString("降順")
-        private String order;
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        this.searchView.clearFocus();
+        return false;
     }
 }
