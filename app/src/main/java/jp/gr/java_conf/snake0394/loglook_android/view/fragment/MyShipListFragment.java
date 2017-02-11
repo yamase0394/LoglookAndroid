@@ -28,6 +28,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,9 +76,15 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
         //保存方法変更のため暫く以前の保存場所から取り出せるようにする
         if (prefs.toLabelMap.size() == 0) {
             prefs.toLabelMap = new Gson().fromJson(App.getInstance().getSharedPreferences().getString("toLabelMap", null), new TypeToken<Map<Integer, List<Label>>>() {}.getType());
+            if (prefs.toLabelMap == null) {
+                prefs.toLabelMap = new HashMap<>();
+            }
         }
         if (prefs.labelList.size() == 0) {
             prefs.labelList = new Gson().fromJson(App.getInstance().getSharedPreferences().getString("labelList", null), new TypeToken<List<Label>>() {}.getType());
+            if (prefs.labelList == null) {
+                prefs.labelList = new ArrayList<>();
+            }
         }
     }
 
