@@ -196,11 +196,17 @@ public class EquipmentFragment extends Fragment {
             }
 
             int id = myShip.getSlotEx();
-            if(MySlotItemManager.INSTANCE.contains(id)|| id == -1){
-                MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(id);
-                mySlotItem.setShipId(myShip.getId());
-                equipSet.add(id);
+            /*
+            if(id == -1 || id == 0 || !MySlotItemManager.INSTANCE.contains(id)){
+                continue;
             }
+            */
+            MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(id);
+            if (mySlotItem == null) {
+                continue;
+            }
+            mySlotItem.setShipId(myShip.getId());
+            equipSet.add(id);
         }
 
         Spinner equipType = (Spinner) getActivity().findViewById(R.id.equipTypeFilterSpinner);
