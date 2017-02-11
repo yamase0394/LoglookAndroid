@@ -44,6 +44,10 @@ public enum MyShipManager {
         return myShipMap.containsKey(id);
     }
 
+    /**
+     * 保持するMyShipのCollectionを返します。
+     * このCollectionに対する変更は内部データに一切の影響を与えません。
+     */
     public Collection<MyShip> getMyShips() {
         Cloner cloner = new Cloner();
         return cloner.deepClone(myShipMap.values());

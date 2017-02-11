@@ -212,6 +212,9 @@ public class EquipmentFragment extends Fragment {
         Spinner equipType = (Spinner) getActivity().findViewById(R.id.equipTypeFilterSpinner);
         String showEquipType = (String) equipType.getSelectedItem();
         for (MySlotItem mySlotItem : MySlotItemManager.INSTANCE.getMySlotItems()) {
+            if (mySlotItem == null) {
+                continue;
+            }
             MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
             switch (showEquipType) {
                 case "全装備":
