@@ -196,16 +196,25 @@ public class EquipmentFragment extends Fragment {
             }
 
             int id = myShip.getSlotEx();
-            if(MySlotItemManager.INSTANCE.contains(id)|| id == -1){
-                MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(id);
-                mySlotItem.setShipId(myShip.getId());
-                equipSet.add(id);
+            /*
+            if(id == -1 || id == 0 || !MySlotItemManager.INSTANCE.contains(id)){
+                continue;
             }
+            */
+            MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(id);
+            if (mySlotItem == null) {
+                continue;
+            }
+            mySlotItem.setShipId(myShip.getId());
+            equipSet.add(id);
         }
 
         Spinner equipType = (Spinner) getActivity().findViewById(R.id.equipTypeFilterSpinner);
         String showEquipType = (String) equipType.getSelectedItem();
         for (MySlotItem mySlotItem : MySlotItemManager.INSTANCE.getMySlotItems()) {
+            if (mySlotItem == null) {
+                continue;
+            }
             MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
             switch (showEquipType) {
                 case "全装備":

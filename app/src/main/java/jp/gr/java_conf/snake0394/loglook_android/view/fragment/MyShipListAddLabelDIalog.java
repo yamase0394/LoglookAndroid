@@ -22,9 +22,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,6 +29,8 @@ import java.util.Set;
 
 import jp.gr.java_conf.snake0394.loglook_android.App;
 import jp.gr.java_conf.snake0394.loglook_android.R;
+import jp.gr.java_conf.snake0394.loglook_android.storage.MyShipListFragmentPrefs;
+import jp.gr.java_conf.snake0394.loglook_android.storage.MyShipListFragmentPrefsSpotRepository;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 /**
@@ -55,11 +54,8 @@ public class MyShipListAddLabelDialog extends android.support.v4.app.DialogFragm
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final List<MyShipListRecyclerViewAdapter.Label> labelList = new Gson().fromJson(App.getInstance()
-                                                                                          .getSharedPreferences()
-                                                                                          .getString("labelList", null), new TypeToken<List<MyShipListRecyclerViewAdapter.Label>>() {
-        }.getType());
-
+        MyShipListFragmentPrefs prefs = MyShipListFragmentPrefsSpotRepository.getEntity(App.getInstance());
+        final List<MyShipListRecyclerViewAdapter.Label> labelList = prefs.labelList;
         final Set<String> labelNameSet = new HashSet();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
