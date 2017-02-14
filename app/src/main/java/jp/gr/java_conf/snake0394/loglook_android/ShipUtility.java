@@ -11,7 +11,7 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitemManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
-import jp.gr.java_conf.snake0394.loglook_android.view.EquipIconId;
+import jp.gr.java_conf.snake0394.loglook_android.view.EquipType3;
 
 /**
  * Created by snake0394 on 2016/10/29.
@@ -144,7 +144,7 @@ public class ShipUtility {
             equipmentBasicAASum += slotitemBasicAA;
 
             //装備倍率
-            switch (EquipIconId.toEquipIconId(mstSlotitem.getType().get(3))) {
+            switch (EquipType3.toEquipType3(mstSlotitem.getType().get(3))) {
                 case 高角砲:
                 case 高射装置:
                     modifiedEquipmentAASum += slotitemBasicAA * 4;
@@ -160,7 +160,7 @@ public class ShipUtility {
             int level = mySlotItem.getLevel();
 
             //改修係数
-            switch (EquipIconId.toEquipIconId(mstSlotitem.getType().get(3))) {
+            switch (EquipType3.toEquipType3(mstSlotitem.getType().get(3))) {
                 case 高角砲:
                     modifiedEquipmentAASum += Math.sqrt(level) * 3;
                     break;
@@ -198,7 +198,7 @@ public class ShipUtility {
             int slotitemBasicAA = mstSlotitem.getTyku();
 
             //装備倍率
-            switch (EquipIconId.toEquipIconId(mstSlotitem.getType().get(3))) {
+            switch (EquipType3.toEquipType3(mstSlotitem.getType().get(3))) {
                 case 小口径主砲:
                 case 中口径主砲:
                 case 大口径主砲:
@@ -223,7 +223,7 @@ public class ShipUtility {
 
             //改修係数
             int level = mySlotItem.getLevel();
-            switch (EquipIconId.toEquipIconId(mstSlotitem.getType().get(3))) {
+            switch (EquipType3.toEquipType3(mstSlotitem.getType().get(3))) {
                 case 高角砲:
                     modifiedEquipmentAA += Math.sqrt(level) * 3;
                     break;

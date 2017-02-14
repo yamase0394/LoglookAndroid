@@ -25,7 +25,7 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
-import jp.gr.java_conf.snake0394.loglook_android.view.EquipIconId;
+import jp.gr.java_conf.snake0394.loglook_android.view.EquipType3;
 
 public class EquipmentFragment extends Fragment {
 
@@ -221,72 +221,72 @@ public class EquipmentFragment extends Fragment {
                     initialDataList.add(mySlotItem);
                     break;
                 case "小口径主砲":
-                    if (mstSlotitem.getType().get(3) == EquipIconId.小口径主砲.getId()) {
+                    if (mstSlotitem.getType().get(3) == EquipType3.小口径主砲.getId()) {
                         initialDataList.add(mySlotItem);
                     }
                     break;
                 case "中口径主砲":
-                    if (mstSlotitem.getType().get(3) == EquipIconId.中口径主砲.getId()) {
+                    if (mstSlotitem.getType().get(3) == EquipType3.中口径主砲.getId()) {
                         initialDataList.add(mySlotItem);
                     }
                     break;
                 case "大口径主砲":
-                    if (mstSlotitem.getType().get(3) == EquipIconId.大口径主砲.getId()) {
+                    if (mstSlotitem.getType().get(3) == EquipType3.大口径主砲.getId()) {
                         initialDataList.add(mySlotItem);
                     }
                     break;
                 case "副砲":
-                    if (mstSlotitem.getType().get(3) == EquipIconId.副砲.getId()) {
+                    if (mstSlotitem.getType().get(3) == EquipType3.副砲.getId()) {
                         initialDataList.add(mySlotItem);
                     }
                     break;
                 case "魚雷":
-                    if (mstSlotitem.getType().get(3) == EquipIconId.魚雷.getId()) {
+                    if (mstSlotitem.getType().get(3) == EquipType3.魚雷.getId()) {
                         initialDataList.add(mySlotItem);
                     }
                     break;
                 case "艦上戦闘機":
-                    if (mstSlotitem.getType().get(3) == EquipIconId.艦上戦闘機.getId()) {
+                    if (mstSlotitem.getType().get(3) == EquipType3.艦上戦闘機.getId()) {
                         initialDataList.add(mySlotItem);
                     }
                     break;
                 case "艦上爆撃機":
-                    if (mstSlotitem.getType().get(3) == EquipIconId.艦上爆撃機.getId()) {
+                    if (mstSlotitem.getType().get(3) == EquipType3.艦上爆撃機.getId()) {
                         initialDataList.add(mySlotItem);
                     }
                     break;
                 case "艦上攻撃機":
-                    if (mstSlotitem.getType().get(3) == EquipIconId.艦上攻撃機.getId()) {
+                    if (mstSlotitem.getType().get(3) == EquipType3.艦上攻撃機.getId()) {
                         initialDataList.add(mySlotItem);
                     }
                     break;
                 case "艦上偵察機":
-                    if (mstSlotitem.getType().get(3) == EquipIconId.艦上偵察機.getId()) {
+                    if (mstSlotitem.getType().get(3) == EquipType3.艦上偵察機.getId()) {
                         initialDataList.add(mySlotItem);
                     }
                     break;
                 case "水上機/飛行艇":
-                    if (mstSlotitem.getType().get(3) == EquipIconId.水上機.getId() || mstSlotitem.getType().get(3) == EquipIconId.大型飛行艇.getId()) {
+                    if (mstSlotitem.getType().get(3) == EquipType3.水上機.getId() || mstSlotitem.getType().get(3) == EquipType3.大型飛行艇.getId()) {
                         initialDataList.add(mySlotItem);
                     }
                     break;
                 case "電探":
-                    if (mstSlotitem.getType().get(3) == EquipIconId.電探.getId()) {
+                    if (mstSlotitem.getType().get(3) == EquipType3.電探.getId()) {
                         initialDataList.add(mySlotItem);
                     }
                     break;
                 case "高角砲":
-                    if (mstSlotitem.getType().get(3) == EquipIconId.高角砲.getId()) {
+                    if (mstSlotitem.getType().get(3) == EquipType3.高角砲.getId()) {
                         initialDataList.add(mySlotItem);
                     }
                     break;
                 case "機銃/高射装置":
-                    if (mstSlotitem.getType().get(3) == EquipIconId.対空機銃.getId() || mstSlotitem.getType().get(3) == EquipIconId.高射装置.getId()) {
+                    if (mstSlotitem.getType().get(3) == EquipType3.対空機銃.getId() || mstSlotitem.getType().get(3) == EquipType3.高射装置.getId()) {
                         initialDataList.add(mySlotItem);
                     }
                     break;
                 case "対潜":
-                    switch (EquipIconId.toEquipIconId(mstSlotitem.getType().get(3))) {
+                    switch (EquipType3.toEquipType3(mstSlotitem.getType().get(3))) {
                         case ソナー:
                         case 爆雷:
                         case 対潜哨戒機:
@@ -295,12 +295,12 @@ public class EquipmentFragment extends Fragment {
                     }
                     break;
                 case "陸上機":
-                    if (mstSlotitem.getType().get(3) == EquipIconId.局地戦闘機.getId() || mstSlotitem.getType().get(3) == EquipIconId.陸上攻撃機.getId()) {
+                    if (mstSlotitem.getType().get(3) == EquipType3.局地戦闘機.getId() || mstSlotitem.getType().get(3) == EquipType3.陸上攻撃機.getId()) {
                         initialDataList.add(mySlotItem);
                     }
                     break;
                 case "その他":
-                    switch (EquipIconId.toEquipIconId(mstSlotitem.getType().get(3))) {
+                    switch (EquipType3.toEquipType3(mstSlotitem.getType().get(3))) {
                         case 特型内火艇:
                         case 補給物資:
                         case 戦闘糧食:

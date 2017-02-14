@@ -38,7 +38,7 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitemManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
-import jp.gr.java_conf.snake0394.loglook_android.view.EquipIconId;
+import jp.gr.java_conf.snake0394.loglook_android.view.EquipType3;
 
 /**
  * Created by snake0394 on 2016/12/08.
@@ -484,20 +484,20 @@ public class MyShipListRecyclerViewAdapter extends RecyclerView.Adapter<MyShipLi
             for (int i = 0; i < slotList.size(); i++) {
                 ImageView slotImage = slotList.get(i);
                 if (i > myShip.getSlotnum() - 1) {
-                    slotImage.setImageResource(EquipIconId.NOT_AVAILABLE.getImageId());
+                    slotImage.setImageResource(EquipType3.NOT_AVAILABLE.getImageId());
                 } else if (myShip.getSlot()
                                  .get(i) == -1) {
-                    slotImage.setImageResource(EquipIconId.EMPTY.getImageId());
+                    slotImage.setImageResource(EquipType3.EMPTY.getImageId());
                 } else {
                     MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlot()
                                                                                            .get(i));
                     if (mySlotItem != null) {
                         MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-                        slotImage.setImageResource(EquipIconId.toEquipIconId(mstSlotitem.getType()
-                                                                                        .get(3))
-                                                              .getImageId());
+                        slotImage.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType()
+                                                                                      .get(3))
+                                                             .getImageId());
                     } else {
-                        slotImage.setImageResource(EquipIconId.UNKNOWN.getImageId());
+                        slotImage.setImageResource(EquipType3.UNKNOWN.getImageId());
                     }
                 }
             }
@@ -505,14 +505,14 @@ public class MyShipListRecyclerViewAdapter extends RecyclerView.Adapter<MyShipLi
             if (MySlotItemManager.INSTANCE.contains(myShip.getSlotEx())) {
                 MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlotEx());
                 MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-                slotEx.setImageResource(EquipIconId.toEquipIconId(mstSlotitem.getType()
-                                                                             .get(3))
-                                                   .getImageId());
+                slotEx.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType()
+                                                                           .get(3))
+                                                  .getImageId());
             } else {
                 if (myShip.getSlotEx() == 0) {
-                    slotEx.setImageResource(EquipIconId.NOT_AVAILABLE.getImageId());
+                    slotEx.setImageResource(EquipType3.NOT_AVAILABLE.getImageId());
                 } else if (myShip.getSlotEx() == -1) {
-                    slotEx.setImageResource(EquipIconId.EMPTY.getImageId());
+                    slotEx.setImageResource(EquipType3.EMPTY.getImageId());
                 }
             }
 
