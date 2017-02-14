@@ -6,7 +6,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -53,18 +53,18 @@ import static butterknife.ButterKnife.findById;
 public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRecyclerViewAdapter.DeckTabsRecyclerViewHolder> {
 
     private List<Deck> deckList;
-    private final FragmentManager fragmentManager;
+    private OnRecyclerViewClickListener listener;
 
-    public DeckTabsRecyclerViewAdapter(FragmentManager fragmentManager) {
+    public DeckTabsRecyclerViewAdapter(OnRecyclerViewClickListener listener) {
         deckList = new ArrayList<>();
-        this.fragmentManager = fragmentManager;
+        this.listener = listener;
     }
 
     @Override
     public DeckTabsRecyclerViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View itemView = LayoutInflater.from(viewGroup.getContext())
                                       .inflate(R.layout.fragment_deck, viewGroup, false);
-        return new DeckTabsRecyclerViewHolder(itemView, fragmentManager);
+        return new DeckTabsRecyclerViewHolder(itemView);
     }
 
     @Override
@@ -81,9 +81,11 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
         this.deckList = deckList;
     }
 
-    public static class DeckTabsRecyclerViewHolder extends RecyclerView.ViewHolder {
+    public interface OnRecyclerViewClickListener {
+        void onRecyclerViewClicked(DialogFragment dialogFragment, Intent intent);
+    }
 
-        private FragmentManager fragmentManager;
+    class DeckTabsRecyclerViewHolder extends RecyclerView.ViewHolder {
         private TextView[] names;
         private TextView[] conds;
         private TextView[] lvs;
@@ -107,9 +109,8 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
         private TextView levelSum;
         private TextView condRecoveryTime;
 
-        public DeckTabsRecyclerViewHolder(View rootView, FragmentManager fragmentManager) {
+        public DeckTabsRecyclerViewHolder(View rootView) {
             super(rootView);
-            this.fragmentManager = fragmentManager;
 
             final int maxShipNum = 6;
             final int maxSlotNum = 4;
@@ -240,7 +241,7 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                         @Override
                         public void onClick(View v) {
                             android.support.v4.app.DialogFragment dialogFragment = ShipParamDialogFragment.newInstance(id, deck.getId());
-                            dialogFragment.show(fragmentManager, "fragment_dialog");
+                            listener.onRecyclerViewClicked(dialogFragment, null);
                         }
                     });
 
@@ -317,7 +318,7 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                         @Override
                         public void onClick(View v) {
                             android.support.v4.app.DialogFragment dialogFragment = EquipmentDialogFragment.newInstance(id);
-                            dialogFragment.show(fragmentManager, "fragment_dialog");
+                            listener.onRecyclerViewClicked(dialogFragment, null);
                         }
                     });
 
@@ -458,7 +459,7 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                                     break;
                             }
 
-                            //App.getInstance().startActivity(intent);
+                            listener.onRecyclerViewClicked(null, intent);
                         }
                     });
                 }

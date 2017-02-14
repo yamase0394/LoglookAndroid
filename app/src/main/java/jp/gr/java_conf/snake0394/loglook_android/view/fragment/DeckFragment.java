@@ -1,7 +1,9 @@
 package jp.gr.java_conf.snake0394.loglook_android.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,7 +25,7 @@ import static butterknife.ButterKnife.findById;
 /**
  * Deck1~4Fragmentを管理するFragmentです
  */
-public class DeckFragment extends Fragment {
+public class DeckFragment extends Fragment implements DeckTabsRecyclerViewAdapter.OnRecyclerViewClickListener{
     private View view;
     private Unbinder unbinder;
 
@@ -48,7 +50,7 @@ public class DeckFragment extends Fragment {
         LoopRecyclerViewPager viewPager = findById(view, R.id.viewpager);
         LinearLayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         viewPager.setLayoutManager(layout);
-        DeckTabsRecyclerViewAdapter recyclerAdapter = new DeckTabsRecyclerViewAdapter(getFragmentManager());
+        DeckTabsRecyclerViewAdapter recyclerAdapter = new DeckTabsRecyclerViewAdapter(this);
         recyclerAdapter.setItems(DeckManager.INSTANCE.getDeckList());
         viewPager.setAdapter(recyclerAdapter);
         TabLayout tabLayout = findById(view, R.id.tabs);
@@ -64,6 +66,18 @@ public class DeckFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onRecyclerViewClicked(DialogFragment dialogFragment, Intent intent) {
+        if (dialogFragment != null) {
+            dialogFragment.show(getFragmentManager(), "dialog");
+            return;
+        }
+
+        if (intent != null) {
+            startActivity(intent);
+        }
     }
 
     private static class TabLayoutAdapter implements TabLayoutSupport.ViewPagerTabLayoutAdapter {
