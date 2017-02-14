@@ -35,7 +35,7 @@ import java.util.Map;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.ConfigFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DamagedShipFragment;
-import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DeckManagerFragment;
+import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DeckFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DockFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.EquipmentFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.HomeFragment;
@@ -165,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
         Fragment mf = Fragment.toMainFragment(intent.getIntExtra("position", Fragment.NULL.getPosition()));
         if (mf != Fragment.NULL) {
             intent.putExtra("position", Fragment.NULL.getPosition());
+            present = mf;
             selectItem(mf);
             return;
         }
@@ -173,7 +174,11 @@ public class MainActivity extends AppCompatActivity {
             //画面回転を自動に設定
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             // デフォルトはHomeFragment
-            selectItem(HOME);
+            if (present == null) {
+                selectItem(HOME);
+            } else {
+                selectItem(present);
+            }
         }
     }
 
@@ -256,11 +261,11 @@ public class MainActivity extends AppCompatActivity {
 
         switch (mf) {
             case HOME:
-                ((AppBarLayout.LayoutParams)findViewById(toolbar).getLayoutParams()).setScrollFlags(0);
+                ((AppBarLayout.LayoutParams) findViewById(toolbar).getLayoutParams()).setScrollFlags(0);
                 fragment = HomeFragment.newInstance();
                 break;
             case DECK:
-                fragment = DeckManagerFragment.newInstance();
+                fragment = DeckFragment.newInstance();
                 break;
             case MISSION:
                 fragment = MissionFragment.newInstance();
@@ -275,15 +280,15 @@ public class MainActivity extends AppCompatActivity {
                 fragment = TacticalSituationFragment.newInstance();
                 break;
             case DAMAGED_SHIP:
-                ((AppBarLayout.LayoutParams)findViewById(toolbar).getLayoutParams()).setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+                ((AppBarLayout.LayoutParams) findViewById(toolbar).getLayoutParams()).setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
                 fragment = DamagedShipFragment.newInstance();
                 break;
             case EQUIPMENT:
-                ((AppBarLayout.LayoutParams)findViewById(toolbar).getLayoutParams()).setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+                ((AppBarLayout.LayoutParams) findViewById(toolbar).getLayoutParams()).setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
                 fragment = EquipmentFragment.newInstance();
                 break;
             case MY_SHIP_LIST:
-                ((AppBarLayout.LayoutParams)findViewById(toolbar).getLayoutParams()).setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+                ((AppBarLayout.LayoutParams) findViewById(toolbar).getLayoutParams()).setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
                 fragment = MyShipListFragment.newInstance();
                 break;
             default:
@@ -293,6 +298,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.body, fragment);
         //transaction.commit();
+        //Il
         transaction.commitAllowingStateLoss();
 
         //選択されたDrawerListの位置ををハイライト
