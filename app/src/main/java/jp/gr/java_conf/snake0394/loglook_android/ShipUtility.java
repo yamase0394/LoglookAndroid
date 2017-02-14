@@ -35,9 +35,12 @@ public class ShipUtility {
         float result = 0;
         result += myShip.getKaryoku().get(0) + 5;
 
-        for (int id : myShip.getSlot()) {
-            if (!MySlotItemManager.INSTANCE.contains(id)) {
-                break;
+        List<Integer> slotItemIdList = new ArrayList<>();
+        slotItemIdList.addAll(myShip.getSlot());
+        slotItemIdList.add(myShip.getSlotEx());
+        for (int id : slotItemIdList) {
+            if (!MySlotItemManager.INSTANCE.contains(id) || id == 0 || id == -1) {
+                continue;
             }
             MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(id);
 
@@ -61,9 +64,12 @@ public class ShipUtility {
         float bomb = 0;
         float improvementFirePower = 0;
 
-        for (int id : myShip.getSlot()) {
-            if (!MySlotItemManager.INSTANCE.contains(id)) {
-                break;
+        List<Integer> slotItemIdList = new ArrayList<>();
+        slotItemIdList.addAll(myShip.getSlot());
+        slotItemIdList.add(myShip.getSlotEx());
+        for (int id : slotItemIdList) {
+            if (!MySlotItemManager.INSTANCE.contains(id) || id == 0 || id == -1) {
+                continue;
             }
 
             MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(id);
@@ -85,9 +91,12 @@ public class ShipUtility {
         float result = 0;
         result += myShip.getRaisou().get(0);
 
-        for (int id : myShip.getSlot()) {
-            if (!MySlotItemManager.INSTANCE.contains(id)) {
-                break;
+        List<Integer> slotItemIdList = new ArrayList<>();
+        slotItemIdList.addAll(myShip.getSlot());
+        slotItemIdList.add(myShip.getSlotEx());
+        for (int id : slotItemIdList) {
+            if (!MySlotItemManager.INSTANCE.contains(id) || id == 0 || id == -1) {
+                continue;
             }
 
             MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(id);
