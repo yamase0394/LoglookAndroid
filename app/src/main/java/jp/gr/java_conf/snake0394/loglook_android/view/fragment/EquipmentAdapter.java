@@ -21,7 +21,7 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitemManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
-import jp.gr.java_conf.snake0394.loglook_android.view.EquipIconId;
+import jp.gr.java_conf.snake0394.loglook_android.view.EquipType3;
 
 /**
  * Created by snake0394 on 2016/12/08.
@@ -184,7 +184,7 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Equi
 
             equipment.setText(mstSlotitem.getName());
 
-            equipIcon.setImageResource(EquipIconId.toEquipIconId(MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId()).getType().get(3)).getImageId());
+            equipIcon.setImageResource(EquipType3.toEquipType3(MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId()).getType().get(3)).getImageId());
 
             switch (mySlotItem.getAlv()) {
                 case 0:

@@ -6,7 +6,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.util.SortedList;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,12 +19,14 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnLongClick;
 import jp.gr.java_conf.snake0394.loglook_android.App;
 import jp.gr.java_conf.snake0394.loglook_android.DockTimer;
 import jp.gr.java_conf.snake0394.loglook_android.Escape;
@@ -38,7 +39,9 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitemManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
-import jp.gr.java_conf.snake0394.loglook_android.view.EquipIconId;
+import jp.gr.java_conf.snake0394.loglook_android.view.EquipType3;
+
+import static butterknife.ButterKnife.findById;
 
 /**
  * Created by snake0394 on 2016/12/08.
@@ -63,14 +66,14 @@ public class MyShipListRecyclerViewAdapter extends RecyclerView.Adapter<MyShipLi
     public MyShipListRecyclerViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View itemView = LayoutInflater.from(viewGroup.getContext())
                                       .inflate(R.layout.cardview_ship, viewGroup, false);
-        return new MyShipListRecyclerViewHolder(itemView, fragmentManager);
+        return new MyShipListRecyclerViewHolder(itemView, fragmentManager, listener);
     }
 
     @Override
     public void onBindViewHolder(MyShipListRecyclerViewHolder sampleViewHolder, int i) {
         MyShipListItem data = sortedList.get(i);
         if (data != null) {
-            sampleViewHolder.bind(data, this.listener);
+            sampleViewHolder.bind(data);
         }
     }
 
@@ -360,57 +363,50 @@ public class MyShipListRecyclerViewAdapter extends RecyclerView.Adapter<MyShipLi
 
     static class MyShipListRecyclerViewHolder extends RecyclerView.ViewHolder {
         private FragmentManager fragmentManager;
+        private final OnRecyclerViewItemClickListener listener;
 
-        private CardView cardView;
-        private TextView name;
-        private TextView lv;
-        private TextView state;
-        private ImageView slotEx;
+        @BindView(R.id.name)
+        TextView name;
+        @BindView(R.id.lv)
+        TextView lv;
+        @BindView(R.id.state)
+        TextView state;
         private List<ImageView> slotList;
-        private LinearLayout equipments;
-        private ProgressBar hpBar;
-        private TextView hp;
-        private TextView cond;
-        private TextView shellingBasicAttackPowerTextView;
-        private TextView torpedoBasicAttackPowerTextView;
-        private TextView nightBattleBasicAttackPowerTextView;
-        private TextView shipASWTextView;
-        private LinearLayout labelLayout;
+        @BindView(R.id.imageview_slot_ex)
+        ImageView slotEx;
+        @BindView(R.id.equipments)
+        LinearLayout equipments;
+        @BindView(R.id.hpBar)
+        ProgressBar hpBar;
+        @BindView(R.id.hp)
+        TextView hp;
+        @BindView(R.id.cond)
+        TextView cond;
+        @BindView(R.id.text__shelling_basic_attack_power)
+        TextView shellingBasicAttackPowerTextView;
+        @BindView(R.id.text_torpedo_basic_attack_power)
+        TextView torpedoBasicAttackPowerTextView;
+        @BindView(R.id.text_night_battle_basic_attack_power)
+        TextView nightBattleBasicAttackPowerTextView;
+        @BindView(R.id.text_ship_asw)
+        TextView shipASWTextView;
+        @BindView(R.id.layout_label)
+        LinearLayout labelLayout;
 
-        public MyShipListRecyclerViewHolder(View rootView, FragmentManager fragmentManager) {
+        public MyShipListRecyclerViewHolder(View rootView, FragmentManager fragmentManager, OnRecyclerViewItemClickListener listener) {
             super(rootView);
             this.fragmentManager = fragmentManager;
-            cardView = (CardView) rootView.findViewById(R.id.cardview);
-            name = (TextView) rootView.findViewById(R.id.name);
-            lv = (TextView) rootView.findViewById(R.id.lv);
-            state = (TextView) rootView.findViewById(R.id.state);
-            ImageView slot1 = (ImageView) rootView.findViewById(R.id.slot1);
-            ImageView slot2 = (ImageView) rootView.findViewById(R.id.slot2);
-            ImageView slot3 = (ImageView) rootView.findViewById(R.id.slot3);
-            ImageView slot4 = (ImageView) rootView.findViewById(R.id.slot4);
-            slotList = Arrays.asList(slot1, slot2, slot3, slot4);
-            slotEx = (ImageView) rootView.findViewById(R.id.imageview_slot_ex);
-            equipments = (LinearLayout) rootView.findViewById(R.id.equipments);
-            hpBar = (ProgressBar) rootView.findViewById(R.id.hpBar);
-            hp = (TextView) rootView.findViewById(R.id.hp);
-            cond = (TextView) rootView.findViewById(R.id.cond);
-            shellingBasicAttackPowerTextView = (TextView) rootView.findViewById(R.id.text__shelling_basic_attack_power);
-            torpedoBasicAttackPowerTextView = (TextView) rootView.findViewById(R.id.text_torpedo_basic_attack_power);
-            nightBattleBasicAttackPowerTextView = (TextView) rootView.findViewById(R.id.text_night_battle_basic_attack_power);
-            shipASWTextView = (TextView) rootView.findViewById(R.id.text_ship_asw);
-            labelLayout = (LinearLayout) rootView.findViewById(R.id.layout_label);
+            this.listener = listener;
+            ButterKnife.bind(this, rootView);
+            slotList = new ArrayList<>();
+            slotList.add((ImageView) findById(rootView, R.id.slot1));
+            slotList.add((ImageView) findById(rootView, R.id.slot2));
+            slotList.add((ImageView) findById(rootView, R.id.slot3));
+            slotList.add((ImageView) findById(rootView, R.id.slot4));
         }
 
-        public void bind(@NonNull final MyShipListRecyclerViewAdapter.MyShipListItem myShipListItem, final OnRecyclerViewItemClickListener listener) {
+        public void bind(@NonNull final MyShipListRecyclerViewAdapter.MyShipListItem myShipListItem) {
             final MyShip myShip = myShipListItem.getMyShip();
-
-            cardView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    listener.onRecyclerViewItemClicked(getAdapterPosition());
-                    return false;
-                }
-            });
 
             name.setText(myShip.getName());
 
@@ -443,13 +439,6 @@ public class MyShipListRecyclerViewAdapter extends RecyclerView.Adapter<MyShipLi
                     }
                 });
             }
-            name.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    listener.onRecyclerViewItemClicked(getAdapterPosition());
-                    return false;
-                }
-            });
 
             lv.setText("Lv:" + String.valueOf(myShip.getLv()));
 
@@ -484,20 +473,20 @@ public class MyShipListRecyclerViewAdapter extends RecyclerView.Adapter<MyShipLi
             for (int i = 0; i < slotList.size(); i++) {
                 ImageView slotImage = slotList.get(i);
                 if (i > myShip.getSlotnum() - 1) {
-                    slotImage.setImageResource(EquipIconId.NOT_AVAILABLE.getImageId());
+                    slotImage.setImageResource(EquipType3.NOT_AVAILABLE.getImageId());
                 } else if (myShip.getSlot()
                                  .get(i) == -1) {
-                    slotImage.setImageResource(EquipIconId.EMPTY.getImageId());
+                    slotImage.setImageResource(EquipType3.EMPTY.getImageId());
                 } else {
                     MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlot()
                                                                                            .get(i));
                     if (mySlotItem != null) {
                         MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-                        slotImage.setImageResource(EquipIconId.toEquipIconId(mstSlotitem.getType()
-                                                                                        .get(3))
-                                                              .getImageId());
+                        slotImage.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType()
+                                                                                      .get(3))
+                                                             .getImageId());
                     } else {
-                        slotImage.setImageResource(EquipIconId.UNKNOWN.getImageId());
+                        slotImage.setImageResource(EquipType3.UNKNOWN.getImageId());
                     }
                 }
             }
@@ -505,14 +494,14 @@ public class MyShipListRecyclerViewAdapter extends RecyclerView.Adapter<MyShipLi
             if (MySlotItemManager.INSTANCE.contains(myShip.getSlotEx())) {
                 MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlotEx());
                 MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-                slotEx.setImageResource(EquipIconId.toEquipIconId(mstSlotitem.getType()
-                                                                             .get(3))
-                                                   .getImageId());
+                slotEx.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType()
+                                                                           .get(3))
+                                                  .getImageId());
             } else {
                 if (myShip.getSlotEx() == 0) {
-                    slotEx.setImageResource(EquipIconId.NOT_AVAILABLE.getImageId());
+                    slotEx.setImageResource(EquipType3.NOT_AVAILABLE.getImageId());
                 } else if (myShip.getSlotEx() == -1) {
-                    slotEx.setImageResource(EquipIconId.EMPTY.getImageId());
+                    slotEx.setImageResource(EquipType3.EMPTY.getImageId());
                 }
             }
 
@@ -521,13 +510,6 @@ public class MyShipListRecyclerViewAdapter extends RecyclerView.Adapter<MyShipLi
                 public void onClick(View v) {
                     android.support.v4.app.DialogFragment dialogFragment = EquipmentDialogFragment.newInstance(myShip.getId());
                     dialogFragment.show(fragmentManager, "fragment_dialog");
-                }
-            });
-            equipments.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    listener.onRecyclerViewItemClicked(getAdapterPosition());
-                    return false;
                 }
             });
 
@@ -572,6 +554,12 @@ public class MyShipListRecyclerViewAdapter extends RecyclerView.Adapter<MyShipLi
                 bgShape.setColor(label.getColor());
                 labelLayout.addView(labelView);
             }
+        }
+
+        @OnLongClick({R.id.cardview, R.id.name, R.id.equipments})
+        boolean onLongClick() {
+            listener.onRecyclerViewItemClicked(getAdapterPosition());
+            return false;
         }
     }
 

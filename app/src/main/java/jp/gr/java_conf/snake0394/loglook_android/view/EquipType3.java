@@ -8,8 +8,7 @@ import jp.gr.java_conf.snake0394.loglook_android.R;
 /**
  * MstSlotItemのType[3]
  */
-
-public enum EquipIconId {
+public enum EquipType3 {
     小口径主砲(1, R.drawable.red_gun_light),
     中口径主砲(2, R.drawable.red_gun_medium),
     大口径主砲(3, R.drawable.red_gun_heavy),
@@ -57,20 +56,20 @@ public enum EquipIconId {
     private int id;
     private int imageId;
 
-    private static Map<Integer, EquipIconId> toEquipIconIdMap = new HashMap<>();
+    private static Map<Integer, EquipType3> toEquipIconIdMap = new HashMap<>();
 
     static {
-        for (EquipIconId et : values()) {
+        for (EquipType3 et : values()) {
             toEquipIconIdMap.put(et.id, et);
         }
     }
 
-    EquipIconId(int id, int imageId) {
+    EquipType3(int id, int imageId) {
         this.id = id;
         this.imageId = imageId;
     }
 
-    public static EquipIconId toEquipIconId(int id) {
+    public static EquipType3 toEquipType3(int id) {
         if (toEquipIconIdMap.containsKey(id)) {
             return toEquipIconIdMap.get(id);
         }
