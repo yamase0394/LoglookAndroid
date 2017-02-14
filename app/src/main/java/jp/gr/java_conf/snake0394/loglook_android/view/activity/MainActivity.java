@@ -35,7 +35,7 @@ import java.util.Map;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.ConfigFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DamagedShipFragment;
-import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DeckTabsFragment;
+import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DeckFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DockFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.EquipmentFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.HomeFragment;
@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
                 fragment = HomeFragment.newInstance();
                 break;
             case DECK:
-                fragment = DeckTabsFragment.newInstance();
+                fragment = DeckFragment.newInstance();
                 break;
             case MISSION:
                 fragment = MissionFragment.newInstance();
