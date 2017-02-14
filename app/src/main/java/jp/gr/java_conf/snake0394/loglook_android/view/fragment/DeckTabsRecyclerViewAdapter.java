@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +43,8 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
 import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
 import jp.gr.java_conf.snake0394.loglook_android.view.EquipIconId;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.ShipDetailActivity;
+
+import static butterknife.ButterKnife.findById;
 
 /**
  * Created by snake0394 on 2016/12/08.
@@ -135,73 +136,73 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
             for (int i = 1; i <= maxShipNum; i++) {
                 String name = "name" + i;
                 int strId = res.getIdentifier(name, "id", packageName);
-                names[i - 1] = (TextView) rootView.findViewById(strId);
+                names[i - 1] = findById(rootView, strId);
 
                 name = "cond" + i;
                 strId = res.getIdentifier(name, "id", packageName);
-                conds[i - 1] = (TextView) rootView.findViewById(strId);
+                conds[i - 1] = findById(rootView, strId);
 
                 name = "lv" + i;
                 strId = res.getIdentifier(name, "id", packageName);
-                lvs[i - 1] = (TextView) rootView.findViewById(strId);
+                lvs[i - 1] = findById(rootView, strId);
 
                 name = "state" + i;
                 strId = res.getIdentifier(name, "id", packageName);
-                states[i - 1] = (TextView) rootView.findViewById(strId);
+                states[i - 1] = findById(rootView, strId);
 
                 name = "progressBar" + i;
                 strId = res.getIdentifier(name, "id", packageName);
-                progressBars[i - 1] = (ProgressBar) rootView.findViewById(strId);
+                progressBars[i - 1] = findById(rootView, strId);
 
                 name = "hp" + i;
                 strId = res.getIdentifier(name, "id", packageName);
-                hps[i - 1] = (TextView) rootView.findViewById(strId);
+                hps[i - 1] = findById(rootView, strId);
 
                 name = "fuelText" + i;
                 strId = res.getIdentifier(name, "id", packageName);
-                fuelDescriptions[i - 1] = (TextView) rootView.findViewById(strId);
+                fuelDescriptions[i - 1] = findById(rootView, strId);
 
                 name = "fuel" + i;
                 strId = res.getIdentifier(name, "id", packageName);
-                fuels[i - 1] = (TextView) rootView.findViewById(strId);
+                fuels[i - 1] = findById(rootView, strId);
 
                 name = "bullText" + i;
                 strId = res.getIdentifier(name, "id", packageName);
-                bullDescriptions[i - 1] = (TextView) rootView.findViewById(strId);
+                bullDescriptions[i - 1] = findById(rootView, strId);
 
                 name = "bull" + i;
                 strId = res.getIdentifier(name, "id", packageName);
-                bulls[i - 1] = (TextView) rootView.findViewById(strId);
+                bulls[i - 1] = findById(rootView, strId);
 
                 name = "equipments" + i;
                 strId = res.getIdentifier(name, "id", packageName);
-                equipmentLayouts[i - 1] = (LinearLayout) rootView.findViewById(strId);
+                equipmentLayouts[i - 1] = findById(rootView, strId);
 
                 for (int j = 1; j <= 4; j++) {
                     name = "slot" + i + j;
                     strId = res.getIdentifier(name, "id", packageName);
-                    slots[i - 1][j - 1] = (ImageView) rootView.findViewById(strId);
+                    slots[i - 1][j - 1] = findById(rootView, strId);
                 }
 
                 name = "slotEx" + i;
                 strId = res.getIdentifier(name, "id", packageName);
-                slotExDescriptions[i - 1] = (TextView) rootView.findViewById(strId);
+                slotExDescriptions[i - 1] = findById(rootView, strId);
 
                 name = "slotExIcon" + i;
                 strId = res.getIdentifier(name, "id", packageName);
-                slotExIcons[i - 1] = (ImageView) rootView.findViewById(strId);
+                slotExIcons[i - 1] = findById(rootView, strId);
 
                 name = "detail" + i;
                 strId = res.getIdentifier(name, "id", packageName);
-                detailButtons[i - 1] = (Button) rootView.findViewById(strId);
+                detailButtons[i - 1] = findById(rootView, strId);
             }
 
-            seiku = (TextView) rootView.findViewById(R.id.seiku);
-            touchStartRate = (TextView) rootView.findViewById(R.id.touchStartRate);
-            sakuteki33 = (TextView) rootView.findViewById(R.id.sakuteki33);
-            junction = (EditText) rootView.findViewById(R.id.junction);
-            levelSum = (TextView) rootView.findViewById(R.id.levelSum);
-            condRecoveryTime = (TextView) rootView.findViewById(R.id.condRecoveryTime);
+            seiku = findById(rootView, R.id.seiku);
+            touchStartRate = findById(rootView, R.id.touchStartRate);
+            sakuteki33 = findById(rootView, R.id.sakuteki33);
+            junction = findById(rootView, R.id.junction);
+            levelSum = findById(rootView, R.id.levelSum);
+            condRecoveryTime = findById(rootView, R.id.condRecoveryTime);
         }
 
         public void bind(@NonNull final Deck deck) {
@@ -428,19 +429,15 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                     conds[i].setText("cond:" + Integer.toString(myShip.getCond()));
                     //condの値で色分けする
                     if (myShip.getCond() >= 50) {
-                        //緑
-                        conds[i].setTextColor(Color.rgb(59, 175, 117));
+                        conds[i].setTextColor(ContextCompat.getColor(App.getInstance(), R.color.high_morale));
                     } else if (myShip.getCond() >= 40) {
-                        //グレー
-                        conds[i].setTextColor(Color.rgb(118, 118, 118));
+                        conds[i].setTextColor(ContextCompat.getColor(App.getInstance(), R.color.normal_cond));
                     } else if (myShip.getCond() >= 30) {
-                        //黄色
-                        conds[i].setTextColor(Color.rgb(237, 185, 24));
+                        conds[i].setTextColor(ContextCompat.getColor(App.getInstance(), R.color.slightly_fatigued));
                     } else if (myShip.getCond() >= 20) {
-                        //オレンジ
-                        conds[i].setTextColor(Color.rgb(255, 140, 0));
+                        conds[i].setTextColor(ContextCompat.getColor(App.getInstance(), R.color.moderately_fatigued));
                     } else {
-                        conds[i].setTextColor(Color.RED);
+                        conds[i].setTextColor(ContextCompat.getColor(App.getInstance(), R.color.seriously_fatigued));
                     }
 
                     detailButtons[i].setVisibility(View.VISIBLE);

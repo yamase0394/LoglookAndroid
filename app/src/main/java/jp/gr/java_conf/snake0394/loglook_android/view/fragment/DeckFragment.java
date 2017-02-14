@@ -5,7 +5,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,8 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager;
+
+import static butterknife.ButterKnife.findById;
 
 /**
  * Deck1~4Fragmentを管理するFragmentです
@@ -44,13 +45,13 @@ public class DeckFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_deck_manager_new, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        LoopRecyclerViewPager viewPager = ButterKnife.findById(view, R.id.viewpager);
+        LoopRecyclerViewPager viewPager = findById(view, R.id.viewpager);
         LinearLayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         viewPager.setLayoutManager(layout);
         DeckTabsRecyclerViewAdapter recyclerAdapter = new DeckTabsRecyclerViewAdapter(getFragmentManager());
         recyclerAdapter.setItems(DeckManager.INSTANCE.getDeckList());
         viewPager.setAdapter(recyclerAdapter);
-        TabLayout tabLayout = ButterKnife.findById(view, R.id.tabs);
+        TabLayout tabLayout = findById(view, R.id.tabs);
         TabLayoutSupport.setupWithViewPager(tabLayout, viewPager, new TabLayoutAdapter());
         tabLayout.getTabAt(0).select();
         TabListener listener = new TabListener(tabLayout, viewPager, getFragmentManager());
@@ -63,11 +64,6 @@ public class DeckFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
     }
 
     private static class TabLayoutAdapter implements TabLayoutSupport.ViewPagerTabLayoutAdapter {
@@ -95,13 +91,12 @@ public class DeckFragment extends Fragment {
         public TabListener(TabLayout tabLayout, RecyclerViewPager viewPager, FragmentManager fragmentManager) {
             super(tabLayout, viewPager);
             this.fragmentManager = fragmentManager;
-            superListener = new TabLayoutSupport.ViewPagerOnTabSelectedListener(viewPager);
+            this.superListener = new TabLayoutSupport.ViewPagerOnTabSelectedListener(viewPager);
         }
 
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
             superListener.onTabSelected(tab);
-            Log.d("selected", String.valueOf(tab.getPosition()));
             this.pageChanged = false;
         }
 
@@ -112,7 +107,6 @@ public class DeckFragment extends Fragment {
 
         @Override
         public void onTabReselected(TabLayout.Tab tab) {
-            Log.d("reselected", String.valueOf(tab.getPosition()));
             if(pageChanged){
                 android.support.v4.app.DialogFragment dialogFragment = DeckMenuDialogFragment.newInstance(tab.getPosition() + 1);
                 dialogFragment.show(this.fragmentManager, "fragment_dialog");
@@ -122,7 +116,6 @@ public class DeckFragment extends Fragment {
         @Override
         public void OnPageChanged(int oldPosition, int newPosition) {
             super.OnPageChanged(oldPosition, newPosition);
-            Log.d("pageChanged", oldPosition + "to" + newPosition);
             this.pageChanged = true;
         }
     }
