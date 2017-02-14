@@ -1,5 +1,8 @@
 package jp.gr.java_conf.snake0394.loglook_android;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstShipManager;
@@ -126,9 +129,12 @@ public class ShipUtility {
         int equipmentBasicAASum = 0;
         float modifiedEquipmentAASum = 0;
 
-        for (int id : myShip.getSlot()) {
-            if (!MySlotItemManager.INSTANCE.contains(id)) {
-                break;
+        List<Integer> slotItemIdList = new ArrayList<>();
+        slotItemIdList.addAll(myShip.getSlot());
+        slotItemIdList.add(myShip.getSlotEx());
+        for (int id : slotItemIdList) {
+            if (!MySlotItemManager.INSTANCE.contains(id) || id == 0 || id == -1) {
+                continue;
             }
 
             MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(id);
@@ -180,9 +186,12 @@ public class ShipUtility {
      */
     public static double getAdjustedFleetAA(MyShip myShip) {
         float modifiedEquipmentAA = 0;
-        for (int slotitemId : myShip.getSlot()) {
-            if (!MySlotItemManager.INSTANCE.contains(slotitemId) || slotitemId == -1) {
-                break;
+        List<Integer> slotItemIdList = new ArrayList<>();
+        slotItemIdList.addAll(myShip.getSlot());
+        slotItemIdList.add(myShip.getSlotEx());
+        for (int slotitemId : slotItemIdList) {
+            if (!MySlotItemManager.INSTANCE.contains(slotitemId) || slotitemId == -1 || slotitemId == 0) {
+                continue;
             }
             MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(slotitemId);
             MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
