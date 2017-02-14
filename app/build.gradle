@@ -49,5 +49,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.github.kobakei.spot:compiler:1.0.0'
     compile 'com.github.kobakei.spot:library:1.0.0'
+    compile 'com.github.lsjwzh.RecyclerViewPager:lib:v1.1.1'
+    compile 'com.github.lsjwzh.RecyclerViewPager:tablayoutsupport:v1.1.1'
 }
 
