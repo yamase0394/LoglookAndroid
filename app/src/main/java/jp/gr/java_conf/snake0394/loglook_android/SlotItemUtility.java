@@ -23,7 +23,7 @@ public class SlotItemUtility {
             return 0;
         }
 
-        switch (EquipType.toEquipType(mstSlotitem.getType().get(2))) {
+        switch (EquipType2.toEquipType2(mstSlotitem.getType().get(2))) {
             case 小口径主砲:
             case 中口径主砲:
             case 副砲:
@@ -59,7 +59,7 @@ public class SlotItemUtility {
             return 0;
         }
 
-        switch (EquipType.toEquipType(mstSlotitem.getType().get(2))) {
+        switch (EquipType2.toEquipType2(mstSlotitem.getType().get(2))) {
             case 魚雷:
             case 潜水艦魚雷:
             case 対空機銃:
@@ -82,7 +82,7 @@ public class SlotItemUtility {
             return 0;
         }
 
-        switch (EquipType.toEquipType(mstSlotitem.getType().get(2))) {
+        switch (EquipType2.toEquipType2(mstSlotitem.getType().get(2))) {
             case 小口径主砲:
             case 中口径主砲:
             case 大口径主砲:
@@ -108,7 +108,7 @@ public class SlotItemUtility {
      */
     public static int getjukurenSeiku(MySlotItem mySlotItem) {
         MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-        switch (EquipType.toEquipType(mstSlotitem.getType().get(2))) {
+        switch (EquipType2.toEquipType2(mstSlotitem.getType().get(2))) {
             case 艦上戦闘機:
             case 水上戦闘機:
                 switch (mySlotItem.getAlv()) {

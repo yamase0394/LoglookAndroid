@@ -488,13 +488,13 @@ public class JsonParser {
                     }
 
                     int equipTypeId = obj.getInt("api_type3");
-                    EquipType equipType = EquipType.toEquipType(equipTypeId);
+                    EquipType2 equipType2 = EquipType2.toEquipType2(equipTypeId);
 
                     obj = obj.getJSONObject("api_slot_item");
                     int mstSlotItemId = obj.getInt("api_slotitem_id");
                     MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mstSlotItemId);
 
-                    CreateItemLogger.INSTANCE.write(createFlag, mstSlotitem, equipType);
+                    CreateItemLogger.INSTANCE.write(createFlag, mstSlotitem, equipType2);
                     break;
 
                 case "api_get_member/slot_item":
