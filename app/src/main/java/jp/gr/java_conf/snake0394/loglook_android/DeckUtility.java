@@ -45,7 +45,7 @@ public class DeckUtility {
                 MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(slotitemId);
                 MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
                 //制空に関係のある装備のみ制空値を求める
-                switch (EquipType.toEquipType(mstSlotitem.getType().get(2))) {
+                switch (EquipType2.toEquipType2(mstSlotitem.getType().get(2))) {
                     case 艦上戦闘機:
                         seiku += (int) ((mstSlotitem.getTyku() + 0.2 * mySlotItem.getLevel()) * Math.sqrt(myShip.getOnslot().get(j)) + getjukurenSeiku(mySlotItem));
                         break;
@@ -83,7 +83,7 @@ public class DeckUtility {
                 }
                 MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(slotitemId);
                 MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-                EquipType et = EquipType.toEquipType(mstSlotitem.getType().get(2));
+                EquipType2 et = EquipType2.toEquipType2(mstSlotitem.getType().get(2));
                 switch (et) {
                     case 水上偵察機:
                     case 艦上偵察機:
@@ -123,7 +123,7 @@ public class DeckUtility {
                 int mstSlotItemId = mySlotItem.getMstId();
                 MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mstSlotItemId);
                 equipSakuSum += mstSlotitem.getSaku();
-                EquipType et = EquipType.toEquipType(mstSlotitem.getType().get(2));
+                EquipType2 et = EquipType2.toEquipType2(mstSlotitem.getType().get(2));
                 //改修と係数を考慮した装備の索敵値を足す
                 switch (et) {
                     case 艦上戦闘機:
@@ -198,7 +198,7 @@ public class DeckUtility {
                 int mstSlotItemId = mySlotItem.getMstId();
                 MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mstSlotItemId);
                 equipSakuSum += mstSlotitem.getSaku();
-                EquipType et = EquipType.toEquipType(mstSlotitem.getType().get(2));
+                EquipType2 et = EquipType2.toEquipType2(mstSlotitem.getType().get(2));
                 //改修と係数を考慮した装備の索敵値を足す
                 switch (et) {
                     case 艦上爆撃機:

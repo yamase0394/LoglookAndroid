@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * MstSlotItemのType[2]
  */
-public enum EquipType {
+public enum EquipType2 {
     不明(0),
     小口径主砲(1),
     中口径主砲(2),
@@ -65,19 +65,19 @@ public enum EquipType {
 
     private int id;
 
-    private static Map<Integer, EquipType> toEquipTypeMap = new HashMap<>();
+    private static Map<Integer, EquipType2> toEquipTypeMap = new HashMap<>();
 
     static {
-        for (EquipType et : values()) {
+        for (EquipType2 et : values()) {
             toEquipTypeMap.put(et.id, et);
         }
     }
 
-    EquipType(int id) {
+    EquipType2(int id) {
         this.id = id;
     }
 
-    public static EquipType toEquipType(int id) {
+    public static EquipType2 toEquipType2(int id) {
         return toEquipTypeMap.get(id);
     }
 }

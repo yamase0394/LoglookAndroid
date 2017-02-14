@@ -43,7 +43,7 @@ public class ShipUtility {
 
             //速吸は艦攻を装備しているとき空母の計算式になる
             MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-            if (EquipType.toEquipType(mstSlotitem.getType().get(2)) == EquipType.艦上攻撃機) {
+            if (EquipType2.toEquipType2(mstSlotitem.getType().get(2)) == EquipType2.艦上攻撃機) {
                 return getShellingBasicAttackPowerCV(myShip);
             }
 
