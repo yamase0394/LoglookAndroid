@@ -1,5 +1,7 @@
 package jp.gr.java_conf.snake0394.loglook_android.bean;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 /**
@@ -12,26 +14,31 @@ public class MySlotItem implements Serializable {
     /**
      * 装備固有ID
      */
+    @SerializedName("api_id")
     private int id;
 
     /**
      * 装備ID
      */
+    @SerializedName("api_slotitem_id")
     private int mstId;
 
     /**
      * 装備ロック 1=ロック、0=ロックされていない
      */
+    @SerializedName("api_locked")
     private int locked;
 
     /**
      * 改修度。 0=未改修、1～10改修度
      */
+    @SerializedName("api_level")
     private int level;
 
     /**
      * 熟練度。熟練度がついていない場合元データは存在しない。0=熟練度なし。1～7=熟練度。
      */
+    @SerializedName("api_alv")
     private int alv = 0;
 
     /**

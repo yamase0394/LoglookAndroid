@@ -9,9 +9,9 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.widget.Toast;
 
+import com.google.common.base.Optional;
 import com.google.common.primitives.Shorts;
 
 import org.apache.commons.io.IOUtils;
@@ -25,16 +25,20 @@ import org.littleshoot.proxy.HttpProxyServer;
 import org.littleshoot.proxy.HttpProxyServerBootstrap;
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.BindException;
 import java.net.InetSocketAddress;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.Queue;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 import io.netty.buffer.ByteBuf;
@@ -47,9 +51,7 @@ import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import jp.gr.java_conf.snake0394.loglook_android.JsonParser;
 import jp.gr.java_conf.snake0394.loglook_android.R;
-import jp.gr.java_conf.snake0394.loglook_android.RequestParser;
 import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity;
 
@@ -186,13 +188,56 @@ public class LittleProxyServerService extends Service implements Runnable {
         }
     }
 
+    private static class Interceptor {
+
+        private List<ContentListenerSpi> listeners;
+
+        public Interceptor() {
+            listeners = new ArrayList<>();
+            try {
+                listeners.add(APIListener.class.newInstance());
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void intercept(HttpResponse res, byte[] resbody, HttpRequest req, byte[] reqbody) {
+            try {
+                for (final ContentListenerSpi listener : this.listeners) {
+                    final RequestMetaData requestMetaData = RequestMetaDataWrapper.build(req, resbody);
+                    if (listener.test(requestMetaData)) {
+                        final ResponseMetaData responseMetaData = ResponseMetaDataWrapper.build(res, reqbody);
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    listener.accept(requestMetaData, responseMetaData);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }).start();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
     private class CaptureAdapter extends HttpFiltersSourceAdapter {
+
+        private Interceptor interceptor = new Interceptor();
 
         @Override
         public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
+
             if (originalRequest.getUri()
                                .contains("kcsapi")) {
-                return new CaptureFilters(originalRequest, ctx);
+                return new CaptureFilters(originalRequest, ctx, this.interceptor);
             }
 
             return new HttpFiltersAdapter(originalRequest, ctx);
@@ -200,6 +245,8 @@ public class LittleProxyServerService extends Service implements Runnable {
     }
 
     private class CaptureFilters extends HttpFiltersAdapter {
+        private Interceptor interceptor;
+
         private boolean released;
 
         private CompositeByteBuf requestBuf = this.ctx.alloc()
@@ -208,19 +255,19 @@ public class LittleProxyServerService extends Service implements Runnable {
         private CompositeByteBuf responseBuf = this.ctx.alloc()
                                                        .compositeBuffer();
 
-        private StringBuilder sb = new StringBuilder();
+        //private StringBuilder sb = new StringBuilder();
 
         private HttpRequest request;
 
         private HttpResponse response;
 
-        CaptureFilters(HttpRequest originalRequest, ChannelHandlerContext ctx) {
+        CaptureFilters(HttpRequest originalRequest, ChannelHandlerContext ctx, Interceptor interceptor) {
             super(originalRequest, ctx);
+            this.interceptor = interceptor;
             //Log.d("CaptureFilter", "start");
-            sb.append("**********");
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            sb.append(sdf.format(Calendar.getInstance()
-                                         .getTime()) + "\r\n");
+            //sb.append("**********");
+            //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            //sb.append(sdf.format(Calendar.getInstance().getTime()) + "\r\n");
         }
 
         @Override
@@ -234,9 +281,9 @@ public class LittleProxyServerService extends Service implements Runnable {
                 HttpHeaders.setKeepAlive((HttpRequest) httpObject, false);
             }
             //Log.d("proxyToServerReq", httpObject.toString());
-            sb.append("--------proxyToServerReq\r\n");
-            sb.append(httpObject.toString());
-            sb.append("\r\n");
+            //sb.append("--------proxyToServerReq\r\n");
+            //sb.append(httpObject.toString());
+            //sb.append("\r\n");
             return super.proxyToServerRequest(httpObject);
         }
 
@@ -246,9 +293,9 @@ public class LittleProxyServerService extends Service implements Runnable {
                 this.add(this.responseBuf, httpObject);
             }
             //Log.d("serverToProxyRes", httpObject.toString());
-            sb.append("--------serverToProxyRes\r\n");
-            sb.append(httpObject.toString());
-            sb.append("\r\n");
+            //sb.append("--------serverToProxyRes\r\n");
+            //sb.append(httpObject.toString());
+            //sb.append("\r\n");
             return super.serverToProxyResponse(httpObject);
         }
 
@@ -265,9 +312,9 @@ public class LittleProxyServerService extends Service implements Runnable {
                 }
             }
             //Log.d("proxyToClientRes", httpObject.toString());
-            sb.append("--------proxyToClientRes\r\n");
-            sb.append(httpObject.toString());
-            sb.append("\r\n");
+            //sb.append("--------proxyToClientRes\r\n");
+            //sb.append(httpObject.toString());
+            //sb.append("\r\n");
             return super.proxyToClientResponse(httpObject);
         }
 
@@ -279,9 +326,9 @@ public class LittleProxyServerService extends Service implements Runnable {
                 this.request = (HttpRequest) httpObject;
             }
             //Log.d("clientToProxyReq", httpObject.toString());
-            sb.append("--------clientToProxyReq\r\n");
-            sb.append(httpObject.toString());
-            sb.append("\r\n");
+            //sb.append("--------clientToProxyReq\r\n");
+            //sb.append(httpObject.toString());
+            //sb.append("\r\n");
             return super.clientToProxyRequest(httpObject);
         }
 
@@ -290,72 +337,15 @@ public class LittleProxyServerService extends Service implements Runnable {
             if (!this.released) {
                 try {
                     if (this.request != null && this.response != null) {
-                        String regex = "/kcsapi/(.+)";
-                        Pattern p = Pattern.compile(regex);
-                        Matcher m = p.matcher(this.request.getUri());
-                        if (m.find()) {
-                            byte[] resbody = this.toByteArray(this.requestBuf.duplicate());
-                            byte[] reqbody = this.toByteArray(this.responseBuf.duplicate());
-                            final String uri = m.group(1);
-                            final String clientReqest = new String(resbody, "UTF-8");
-                            final String serverResponse = new String(reqbody, "UTF-8");
-                            //タイムアウトを避けるため別スレッドで処理
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    RequestParser.parse(uri, clientReqest);
-
-                                    String jsonStr;
-                                    String regex = "svdata=(.+)";
-                                    Pattern p = Pattern.compile(regex);
-                                    Matcher m = p.matcher(serverResponse);
-                                    if (m.find()) {
-                                        jsonStr = m.group(1);
-                                        JsonParser.parse(uri, jsonStr);
-                                        //Log.d("uri", uri);
-                                        Log.d("clientReq", clientReqest);
-                                        Log.d("serverRes", jsonStr);
-                                    } else {
-                                        //"svdata="が無い場合不必要なデータと判断
-                                    }
-                                }
-                            }).start();
-                            sb.append("--------request\r\n");
-                            sb.append(clientReqest);
-                            sb.append("\r\n");
-                            sb.append("--------response\r\n");
-                            sb.append(serverResponse);
-                            sb.append("\r\n");
-                            //System.out.println(sb.toString());
-
-                            /*
-                            //SDカードのディレクトリパス
-                            File sdcard_path = new File(Environment.getExternalStorageDirectory()
-                                                                   .getPath() + "/泥提督支援アプリ/");
-
-                            //パス区切り用セパレータ
-                            String Fs = File.separator;
-
-                            //テキストファイル保存先のファイルパス
-                            String filePath = sdcard_path + Fs + "log_littleProxy.txt";
-
-                            //フォルダがなければ作成
-                            if (!sdcard_path.exists()) {
-                                sdcard_path.mkdir();
-                            }
-
-                            try {
-                                BufferedWriter pw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath, true), "SJIS"));
-                                pw.write(sb.toString());
-                                pw.flush();
-                                pw.close();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                ErrorLogger.writeLog(e);
-                            }
-                            */
-
-                        }
+                        byte[] resbody = this.toByteArray(this.requestBuf.duplicate());
+                        byte[] reqbody = this.toByteArray(this.responseBuf.duplicate());
+                        this.interceptor.intercept(this.response, resbody, this.request, reqbody);
+                        //sb.append("--------request\r\n");
+                        //sb.append(clientReqest);
+                        //sb.append("\r\n");
+                        //sb.append("--------response\r\n");
+                        //sb.append(serverResponse);
+                        //sb.append("\r\n");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -403,6 +393,208 @@ public class LittleProxyServerService extends Service implements Runnable {
                 }
             }
             return out.toByteArray();
+        }
+    }
+
+    static class RequestMetaDataWrapper implements RequestMetaData {
+
+        private String contentType;
+
+        private String method;
+
+        //private Map<String, List<String>> parameterMap;
+
+        private String queryString;
+
+        private String requestURI;
+
+        private Optional<InputStream> requestBody;
+
+        @Override
+        public String getContentType() {
+            return this.contentType;
+        }
+
+        void setContentType(String contentType) {
+            this.contentType = contentType;
+        }
+
+        @Override
+        public Map<String, Collection<String>> getHeaders() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getMethod() {
+            return this.method;
+        }
+
+        void setMethod(String method) {
+            this.method = method;
+        }
+
+        @Override
+        public Map<String, List<String>> getParameterMap() {
+            throw new UnsupportedOperationException();
+        }
+
+        /*
+        void setParameterMap(Map<String, List<String>> parameterMap) {
+            this.parameterMap = parameterMap;
+        }
+        */
+
+        @Override
+        public String getProtocol() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getQueryString() {
+            return this.queryString;
+        }
+
+        void setQueryString(String queryString) {
+            this.queryString = queryString;
+        }
+
+        @Override
+        public String getRemoteAddr() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int getRemotePort() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getRequestURI() {
+            return this.requestURI;
+        }
+
+        void setRequestURI(String requestURI) {
+            this.requestURI = requestURI;
+        }
+
+        @Override
+        public String getRequestURL() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getScheme() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getServerName() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int getServerPort() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Optional<InputStream> getRequestBody() {
+            return this.requestBody;
+        }
+
+        void setRequestBody(Optional<InputStream> requestBody) {
+            this.requestBody = requestBody;
+        }
+
+        static RequestMetaData build(HttpRequest req, byte[] body) throws UnsupportedEncodingException, URISyntaxException {
+            HttpHeaders header = req.headers();
+            RequestMetaDataWrapper meta = new RequestMetaDataWrapper();
+
+            meta.setContentType(header.get(HttpHeaders.Names.CONTENT_TYPE));
+            meta.setMethod(req.getMethod()
+                              .toString());
+
+            /*
+            BiConsumer<Map<String, List<String>>, String[]> accumulator = (m, v) -> {
+                if (v.length == 2) {
+                    m.computeIfAbsent(v[0], k -> new ArrayList<>())
+                     .add(v[1]);
+                }
+            };
+            BiConsumer<Map<String, List<String>>, Map<String, List<String>>> combiner = (m1, m2) -> {
+                m2.entrySet()
+                  .stream()
+                  .forEach(entry -> m1.merge(entry.getKey(), entry.getValue(), (l1, l2) -> {
+                      l1.addAll(l2);
+                      return l1;
+                  }));
+            };
+            String bodystr = URLDecoder.decode(new String(body, StandardCharsets.UTF_8), "UTF-8");
+            meta.setParameterMap(Arrays.stream(bodystr.split("&"))
+                                       .map(kv -> kv.split("="))
+                                       .collect(LinkedHashMap::new, accumulator, combiner));
+            */
+
+            URI url = new URI(req.getUri());
+            meta.setQueryString(url.getQuery());
+            meta.setRequestURI(url.getPath());
+            meta.setRequestBody(Optional.of((InputStream) new ByteArrayInputStream(body)));
+
+            return meta;
+        }
+    }
+
+
+    static class ResponseMetaDataWrapper implements ResponseMetaData {
+
+        private int status;
+
+        private String contentType;
+
+        private Optional<InputStream> responseBody;
+
+        @Override
+        public int getStatus() {
+            return this.status;
+        }
+
+        void setStatus(int status) {
+            this.status = status;
+        }
+
+        @Override
+        public String getContentType() {
+            return this.contentType;
+        }
+
+        void setContentType(String contentType) {
+            this.contentType = contentType;
+        }
+
+        @Override
+        public Map<String, Collection<String>> getHeaders() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Optional<InputStream> getResponseBody() {
+            return this.responseBody;
+        }
+
+        void setResponseBody(Optional<InputStream> responseBody) {
+            this.responseBody = responseBody;
+        }
+
+        static ResponseMetaData build(HttpResponse res, byte[] body) throws UnsupportedEncodingException, URISyntaxException {
+            HttpHeaders header = res.headers();
+            ResponseMetaDataWrapper meta = new ResponseMetaDataWrapper();
+
+            meta.setStatus(res.getStatus()
+                              .code());
+            meta.setContentType(header.get(HttpHeaders.Names.CONTENT_TYPE));
+            meta.setResponseBody(Optional.of((InputStream) new ByteArrayInputStream(body)));
+
+            return meta;
         }
     }
 }
