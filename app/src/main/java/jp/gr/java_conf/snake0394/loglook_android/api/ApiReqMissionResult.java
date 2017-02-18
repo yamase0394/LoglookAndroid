@@ -1,5 +1,7 @@
 package jp.gr.java_conf.snake0394.loglook_android.api;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -22,6 +24,8 @@ import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;
 public class ApiReqMissionResult implements APIListenerSpi {
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
+
+        Log.d("ApiReqMissionResult", json.toString());
 
         JsonObject data = json.getAsJsonObject("api_data");
 
