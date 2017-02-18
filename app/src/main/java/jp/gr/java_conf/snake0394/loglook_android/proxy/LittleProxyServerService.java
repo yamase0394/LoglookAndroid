@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
@@ -55,6 +56,7 @@ import jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity;
 public class LittleProxyServerService extends Service implements Runnable {
 
     private HttpProxyServer server;
+    private final Handler handler = new Handler();
     //private Server jettyServer;
 
     public LittleProxyServerService() {
@@ -169,10 +171,14 @@ public class LittleProxyServerService extends Service implements Runnable {
 
         try {
             server = serverBuilder.start();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             if (e.getCause() instanceof BindException) {
-                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG)
-                     .show();
+                handler.post(new Runnable() {
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG)
+                             .show();
+                    }
+                });
             } else {
                 ErrorLogger.writeLog(e);
             }
