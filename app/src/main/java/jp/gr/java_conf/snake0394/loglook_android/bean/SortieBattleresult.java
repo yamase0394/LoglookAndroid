@@ -1,27 +1,33 @@
 package jp.gr.java_conf.snake0394.loglook_android.bean;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by snake0394 on 2016/08/05.
  */
-public enum SortieBattleresult {
-    INSTANCE;
+public class SortieBattleresult {
 
-    /**戦闘結果ランク*/
+    /**
+     * 戦闘結果ランク
+     */
+    @SerializedName("api_win_rank")
     private String rank;
 
-    /**海域名*/
+    /**
+     * 海域名
+     */
+    @SerializedName("api_quest_name")
     private String questName;
 
-    /**敵艦隊名*/
-    private String eFleetName;
+    @SerializedName("api_enemy_info")
+    private ApiEnemyInfo apiEnemyInfo;
 
-    /**ドロップした艦種*/
-    private String getShipType = "";
+    @SerializedName("api_get_ship")
+    private ApiGetShip apiGetShip;
 
-    /**ドロップした艦名*/
-    private String getShipName = "";
 
-    private SortieBattleresult(){}
+    private SortieBattleresult() {
+    }
 
     public String getRank() {
         return rank;
@@ -40,26 +46,63 @@ public enum SortieBattleresult {
     }
 
     public String geteFleetName() {
-        return eFleetName;
-    }
-
-    public void seteFleetName(String eFleetName) {
-        this.eFleetName = eFleetName;
-    }
-
-    public String getGetShipType() {
-        return getShipType;
+        return this.apiEnemyInfo.eFleetName;
     }
 
     public void setGetShipType(String getShipType) {
-        this.getShipType = getShipType;
+        if (this.apiGetShip == null) {
+            return;
+        }
+        this.apiGetShip.getShipName = getShipType;
     }
 
-    public String getGetShipName() {
-        return getShipName;
+    public String getGetShipType() {
+        if (this.apiGetShip == null) {
+            return "";
+        }
+        return apiGetShip.getShipType;
     }
 
     public void setGetShipName(String getShipName) {
-        this.getShipName = getShipName;
+        if (this.apiGetShip == null) {
+            return;
+        }
+        this.apiGetShip.getShipName = getShipName;
+    }
+
+    public String getGetShipName() {
+        if (this.apiGetShip == null) {
+            return "";
+        }
+        return apiGetShip.getShipName;
+    }
+
+
+    private class ApiEnemyInfo {
+        /**
+         * 敵艦隊名
+         */
+        @SerializedName("api_deck_name")
+        private String eFleetName;
+
+        ApiEnemyInfo() {
+        }
+    }
+
+    private class ApiGetShip {
+        /**
+         * ドロップした艦種
+         */
+        @SerializedName("api_ship_type")
+        private String getShipType = "";
+
+        /**
+         * ドロップした艦名
+         */
+        @SerializedName("api_ship_name")
+        private String getShipName = "";
+
+        ApiGetShip() {
+        }
     }
 }

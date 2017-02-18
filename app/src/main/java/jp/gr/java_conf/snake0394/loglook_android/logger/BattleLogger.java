@@ -54,7 +54,7 @@ public enum BattleLogger {
         this.battle = battle;
     }
 
-    public void writeLog() {
+    public void writeLog(SortieBattleresult battleresult) {
         //SDカードのディレクトリパス
         File sdcard_path = new File(Environment.getExternalStorageDirectory().getPath() + "/泥提督支援アプリ/");
 
@@ -80,7 +80,7 @@ public enum BattleLogger {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             sb.append(sdf.format(Calendar.getInstance()
                                          .getTime()) + ",");
-            sb.append(SortieBattleresult.INSTANCE.getQuestName() + ",");
+            sb.append(battleresult.getQuestName() + ",");
             sb.append(cell + ",");
             if (isFirstBattle && eventId == 5) {
                 sb.append("出撃&ボス");
@@ -92,7 +92,7 @@ public enum BattleLogger {
                 sb.append("");
             }
             sb.append(",");
-            sb.append(SortieBattleresult.INSTANCE.getRank());
+            sb.append(battleresult.getRank());
             sb.append(",");
             sb.append(battle.getTactic());
             sb.append(",");
@@ -106,11 +106,11 @@ public enum BattleLogger {
             sb.append(",");
             sb.append(battle.getEtTouchPlane());
             sb.append(",");
-            sb.append(SortieBattleresult.INSTANCE.geteFleetName());
+            sb.append(battleresult.geteFleetName());
             sb.append(",");
-            sb.append(SortieBattleresult.INSTANCE.getGetShipType());
+            sb.append(battleresult.getGetShipType());
             sb.append(",");
-            sb.append(SortieBattleresult.INSTANCE.getGetShipName());
+            sb.append(battleresult.getGetShipName());
             sb.append(",");
 
             Deck deck = DeckManager.INSTANCE.getDeck(battle.getDeckId());

@@ -20,6 +20,10 @@ android {
         }
     }
 
+    sourceSets {
+        main.resources.srcDirs = ["build/intermediates/classes/debug"]
+    }
+
     packagingOptions {
         exclude 'META-INF/INDEX.LIST'
     }
@@ -53,5 +57,7 @@ dependencies {
     compile 'com.github.kobakei.spot:library:1.0.0'
     compile 'com.github.lsjwzh.RecyclerViewPager:lib:v1.1.1'
     compile 'com.github.lsjwzh.RecyclerViewPager:tablayoutsupport:v1.1.1'
+    compile group: 'org.atteo.classindex', name: 'classindex', version: '3.4'
 }
+
 
