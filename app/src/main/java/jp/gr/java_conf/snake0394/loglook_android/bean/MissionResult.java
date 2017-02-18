@@ -33,6 +33,13 @@ public class MissionResult {
     private String questName;
 
     /**
+     * 取得アイテムの存在フラグ [n]=0ならapi_get_item<n+1>は存在しない
+     * 0=なし, 1=高速修復材, 2=高速建造材, 3=開発資材, 4=アイテム, 5=家具コイン
+     */
+    @SerializedName("api_useitem_flag")
+    private List<Integer> useitemFlag;
+
+    /**
      * 獲得資源
      */
     @SerializedName("api_get_material")
@@ -95,6 +102,10 @@ public class MissionResult {
         this.gainMaterial = gainMaterial;
     }
 
+    public List<Integer> getUseitemFlag() {
+        return useitemFlag;
+    }
+
     public int getUseitemId1() {
         if (item1 == null) {
             return -1;
@@ -102,11 +113,25 @@ public class MissionResult {
         return item1.id;
     }
 
+    public void setUseitemId1(int id) {
+        if (item1 == null) {
+            return;
+        }
+        this.item1.id = id;
+    }
+
     public String getUseitemName1() {
         if (item1 == null) {
             return "";
         }
         return item1.name;
+    }
+
+    public void setUseitemName1(String name) {
+        if (this.item1 == null) {
+            return;
+        }
+        this.item1.name = name;
     }
 
     public int getUseitemCount1() {
@@ -123,11 +148,25 @@ public class MissionResult {
         return item2.id;
     }
 
+    public void setUseitemId2(int id) {
+        if (item2 == null) {
+            return;
+        }
+        this.item2.id = id;
+    }
+
     public String getUseitemName2() {
         if (item2 == null) {
             return "";
         }
         return item2.name;
+    }
+
+    public void setUseitemName2(String name) {
+        if (this.item2 == null) {
+            return;
+        }
+        this.item2.name = name;
     }
 
     public int getUseitemCount2() {
@@ -148,13 +187,13 @@ public class MissionResult {
     private class ApiGetItem {
 
         @SerializedName("api_useitem_id")
-        private int id;
+        private int id = -1;
 
         @SerializedName("api_useitem_name")
-        private String name;
+        private String name = "";
 
         @SerializedName("api_useitem_count")
-        private int count;
+        private int count = 0;
 
         ApiGetItem() {
         }
