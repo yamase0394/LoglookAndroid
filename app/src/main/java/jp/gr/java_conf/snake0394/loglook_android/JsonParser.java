@@ -49,7 +49,6 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.PracticeBattle;
-import jp.gr.java_conf.snake0394.loglook_android.bean.ShipMap;
 import jp.gr.java_conf.snake0394.loglook_android.bean.SortieBattleresult;
 import jp.gr.java_conf.snake0394.loglook_android.bean.SpMidnightBattle;
 import jp.gr.java_conf.snake0394.loglook_android.bean.TacticalSituation;
@@ -356,15 +355,9 @@ public class JsonParser {
                         } catch (Exception e) {
                         }
                         list.add(myShip.getId());
-                        ShipMap.INSTANCE.put(myShip.getId(), MstShipManager.INSTANCE.getMstShip(myShip.getShipId()));
                         MyShipManager.INSTANCE.put(myShip.getId(), myShip);
                     }
                     MyShipManager.INSTANCE.delete(list);
-                    mstShip = new MstShip();
-                    mstShip.setId(-1);
-                    mstShip.setName("");
-                    mstShip.setYomi("");
-                    ShipMap.INSTANCE.put(-1, mstShip);
 
                     //root/data/deck_port
                     JSONArray deckPortArray = portData.getJSONArray("api_deck_port");
@@ -632,7 +625,6 @@ public class JsonParser {
                         } catch (Exception e) {
                         }
                         list.add(myShip.getId());
-                        ShipMap.INSTANCE.put(myShip.getId(), MstShipManager.INSTANCE.getMstShip(myShip.getShipId()));
                         MyShipManager.INSTANCE.put(myShip.getId(), myShip);
                     }
 
