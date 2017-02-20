@@ -1,4 +1,4 @@
-package jp.gr.java_conf.snake0394.loglook_android.storage;
+package jp.gr.java_conf.snake0394.loglook_android.storage.converter;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

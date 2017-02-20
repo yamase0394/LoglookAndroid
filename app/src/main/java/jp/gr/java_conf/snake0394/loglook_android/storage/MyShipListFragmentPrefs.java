@@ -5,6 +5,8 @@ import java.util.Map;
 
 import io.github.kobakei.spot.annotation.Pref;
 import io.github.kobakei.spot.annotation.PrefString;
+import jp.gr.java_conf.snake0394.loglook_android.storage.converter.LabelListTypeConverter;
+import jp.gr.java_conf.snake0394.loglook_android.storage.converter.LabelMapTypeConverter;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.MyShipListRecyclerViewAdapter;
 
 /**

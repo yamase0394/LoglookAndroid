@@ -19,7 +19,6 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
-import jp.gr.java_conf.snake0394.loglook_android.bean.ShipMap;
 import jp.gr.java_conf.snake0394.loglook_android.bean.SortieBattleresult;
 
 /**
@@ -125,7 +124,7 @@ public enum BattleLogger {
                     continue;
                 }
                 MyShip myShip = MyShipManager.INSTANCE.getMyShip(shipId.get(i - 1));
-                MstShip mstShip = ShipMap.INSTANCE.getMstShip(shipId.get(i - 1));
+                MstShip mstShip = MstShipManager.INSTANCE.getMstShip(myShip.getShipId());
                 sb.append(mstShip.getName());
                 sb.append("(Lv");
                 sb.append(myShip.getLv());
