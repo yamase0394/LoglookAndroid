@@ -18,11 +18,8 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.Basic;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Material;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MstShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
-import jp.gr.java_conf.snake0394.loglook_android.bean.ShipMap;
 import jp.gr.java_conf.snake0394.loglook_android.logger.MaterialLogger;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.RequestMetaData;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;
@@ -123,15 +120,9 @@ public class ApiPortPort implements APIListenerSpi {
                 myShip.setSallyArea(-1);
             }
             idList.add(myShip.getId());
-            ShipMap.INSTANCE.put(myShip.getId(), MstShipManager.INSTANCE.getMstShip(myShip.getShipId()));
             MyShipManager.INSTANCE.put(myShip.getId(), myShip);
         }
         MyShipManager.INSTANCE.delete(idList);
-        MstShip mstShip = new MstShip();
-        mstShip.setId(-1);
-        mstShip.setName("");
-        mstShip.setYomi("");
-        ShipMap.INSTANCE.put(-1, mstShip);
     }
 
     private void apiBasic(JsonObject obj) {
