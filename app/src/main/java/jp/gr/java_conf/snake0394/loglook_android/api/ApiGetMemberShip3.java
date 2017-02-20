@@ -5,10 +5,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import jp.gr.java_conf.snake0394.loglook_android.bean.MstShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
-import jp.gr.java_conf.snake0394.loglook_android.bean.ShipMap;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.RequestMetaData;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;
 
@@ -29,7 +27,6 @@ public class ApiGetMemberShip3 implements APIListenerSpi {
                   .has("api_sally_area")) {
                 myShip.setSallyArea(-1);
             }
-            ShipMap.INSTANCE.put(myShip.getId(), MstShipManager.INSTANCE.getMstShip(myShip.getShipId()));
             MyShipManager.INSTANCE.put(myShip.getId(), myShip);
         }
     }
