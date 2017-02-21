@@ -7,7 +7,6 @@ import android.app.usage.UsageStatsManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.hardware.Sensor;
@@ -17,7 +16,6 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Vibrator;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -30,6 +28,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
+import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
+import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.DialogActivity;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity;
 
@@ -41,7 +41,7 @@ public class SlantLauncher extends Service implements SensorEventListener {
     private boolean isTouching = false; //指定箇所がタップされているか
     private SensorManager sm;
     private WindowManager wm;
-    private SharedPreferences sp;
+    private GeneralPrefs prefs;
     //タップ検出領域
     private View v;
     //加速度センサの値から重力を取り除くのに使用
@@ -78,11 +78,13 @@ public class SlantLauncher extends Service implements SensorEventListener {
 
         //タッチイベントを取得するためのviewを作る
         wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-        sp = PreferenceManager.getDefaultSharedPreferences(this);
+
+        this.prefs = GeneralPrefsSpotRepository.getEntity(getApplicationContext());
+
         v = new View(this);
         //検出領域の透明度を設定
         int transparent;
-        if (sp.getBoolean("showView", true)) {
+        if (prefs.showsView) {
             //不透明
             transparent = PixelFormat.OPAQUE;
             //黄色
@@ -94,11 +96,11 @@ public class SlantLauncher extends Service implements SensorEventListener {
         Point point = getDisplaySize();
         //座標
         //初期位置は、端末を横にした時左上
-        int viewX = sp.getInt("viewX", point.x / -2);
-        int viewY = sp.getInt("viewY", point.y / -2);
+        int viewX = prefs.viewX;
+        int viewY = prefs.viewY;
         //大きさ
-        int viewWidth = sp.getInt("viewWidth", 20);
-        int viewHeight = sp.getInt("viewHeight", 50);
+        int viewWidth = prefs.viewWidth;
+        int viewHeight = prefs.viewHeight;
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(viewWidth, viewHeight, viewY, viewX, WindowManager.LayoutParams.TYPE_SYSTEM_ERROR, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, transparent);
         v.setOnTouchListener(new FlickTouchListener(getApplicationContext()));
         wm.addView(v, params);
@@ -316,7 +318,7 @@ public class SlantLauncher extends Service implements SensorEventListener {
                     isTouching = true;
 
                     //振動させる
-                    if (sp.getBoolean("touchVibration", true)) {
+                    if (prefs.vibratesWhenViewTouched) {
                         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
                         vibrator.vibrate(30);
                     }

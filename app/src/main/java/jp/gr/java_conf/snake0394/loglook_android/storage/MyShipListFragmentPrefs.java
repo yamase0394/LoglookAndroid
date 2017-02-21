@@ -10,9 +10,8 @@ import jp.gr.java_conf.snake0394.loglook_android.storage.converter.LabelMapTypeC
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.MyShipListRecyclerViewAdapter;
 
 /**
- * Created by snake0394 on 2017/02/10.
+ * {@link jp.gr.java_conf.snake0394.loglook_android.view.fragment.MyShipListFragment}
  */
-
 @Pref(name = "pref_my_ship_list_fragment")
 public class MyShipListFragmentPrefs {
 
