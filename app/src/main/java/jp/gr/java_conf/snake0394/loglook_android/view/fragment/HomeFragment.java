@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.util.List;
@@ -72,15 +71,12 @@ public class HomeFragment extends Fragment {
                         getActivity().startService(intent);
                         intent = new Intent(getActivity(), SlantLauncher.class);
                         getActivity().startService(intent);
-                        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                        Toast.makeText(getActivity(), "起動 port:" + sp.getString("port", "8080"), Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Intent intent = new Intent(getActivity(), LittleProxyServerService.class);
                     getActivity().stopService(intent);
                     intent = new Intent(getActivity(), SlantLauncher.class);
                     getActivity().stopService(intent);
-                    Toast.makeText(getActivity(), "停止", Toast.LENGTH_SHORT).show();
                 }
             }
         });

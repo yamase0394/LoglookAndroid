@@ -4,10 +4,8 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
@@ -53,13 +51,14 @@ import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
+import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
+import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity;
 
 public class LittleProxyServerService extends Service implements Runnable {
 
     private HttpProxyServer server;
     private final Handler handler = new Handler();
-    //private Server jettyServer;
 
     public LittleProxyServerService() {
     }
@@ -103,55 +102,31 @@ public class LittleProxyServerService extends Service implements Runnable {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        server.abort();
-        //jettyServer.stop();
+        if(server != null) {
+            server.abort();
+        }
         stopForeground(true);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), "プロキシ停止", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
     public void run() {
-        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
-        //System.setProperty("http.keepAlive", "false");
-
-        /*
-        jettyServer = new Server();
-        ServerConnector serverConnector = new ServerConnector(jettyServer);
-
-        // リクエストを待ち受けるポート番号を設定
-        serverConnector.setHost("127.0.0.1");
-        Log.d("server", sp.getString("port", "8080"));
-
-        serverConnector.setPort(10000);
-
-        jettyServer.addConnector(serverConnector);
-
-        // HTTPS接続をプロキシするため、CONNECTメソッドを処理するハンドラーを設定
-        ConnectHandler connectHandler = new MyConnectHandler();
-        jettyServer.setHandler(connectHandler);
-
-        // HTTP接続をプロキシするため、ProxyServletを設定
-        ServletContextHandler contextHandler = new ServletContextHandler(connectHandler, "/", ServletContextHandler.SESSIONS);
-
-        ServletHolder holder = new ServletHolder(MyAsyncMiddleManServlet.class);
-        holder.setInitParameter("timeout", "300000");
-
-        contextHandler.addServlet(holder, "/*");
-
-        try {
-            jettyServer.start();
-        } catch (Exception e) {
-        }
-        */
+        final GeneralPrefs prefs = GeneralPrefsSpotRepository.getEntity(getApplicationContext());
 
         HttpProxyServerBootstrap serverBuilder = DefaultHttpProxyServer.bootstrap()
-                                                                       .withPort(Integer.parseInt(sp.getString("port", "8080")))
+                                                                       .withPort(prefs.port)
                                                                        .withConnectTimeout(30000)
                                                                        .withAllowLocalOnly(true)
                                                                        .withFiltersSource(new CaptureAdapter());
 
         //上流プロキシの設定
-        if (sp.getBoolean("useProxy", false)) {
+        if (prefs.usesProxy) {
             serverBuilder.withChainProxyManager(new ChainedProxyManager() {
                 @Override
                 public void lookupChainedProxies(HttpRequest req, Queue<ChainedProxy> proxies) {
@@ -159,8 +134,8 @@ public class LittleProxyServerService extends Service implements Runnable {
                         ChainedProxy proxy = new ChainedProxyAdapter() {
                             @Override
                             public InetSocketAddress getChainedProxyAddress() {
-                                String host = sp.getString("proxyHost", "");
-                                int port = Integer.parseInt(sp.getString("proxyPort", ""));
+                                String host = prefs.proxyHost;
+                                int port = prefs.proxyPort;
                                 return new InetSocketAddress(host, port);
                             }
                         };
@@ -173,11 +148,18 @@ public class LittleProxyServerService extends Service implements Runnable {
 
         try {
             server = serverBuilder.start();
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(), "プロキシ起動 port:" + String.valueOf(prefs.port), Toast.LENGTH_SHORT)
+                         .show();
+                }
+            });
         } catch (final Exception e) {
             if (e.getCause() instanceof BindException) {
                 handler.post(new Runnable() {
                     public void run() {
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG)
+                        Toast.makeText(getApplicationContext(), "既に使用されているポートです。ポート番号を変更してください。", Toast.LENGTH_LONG)
                              .show();
                     }
                 });
@@ -185,6 +167,8 @@ public class LittleProxyServerService extends Service implements Runnable {
                 ErrorLogger.writeLog(e);
             }
             e.printStackTrace();
+
+            stopSelf();
         }
     }
 
@@ -207,19 +191,19 @@ public class LittleProxyServerService extends Service implements Runnable {
             try {
                 for (final ContentListenerSpi listener : this.listeners) {
                     final RequestMetaData requestMetaData = RequestMetaDataWrapper.build(req, resbody);
-                    if (listener.test(requestMetaData)) {
-                        final ResponseMetaData responseMetaData = ResponseMetaDataWrapper.build(res, reqbody);
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    listener.accept(requestMetaData, responseMetaData);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
+                    //if (listener.test(requestMetaData)) {
+                    final ResponseMetaData responseMetaData = ResponseMetaDataWrapper.build(res, reqbody);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                listener.accept(requestMetaData, responseMetaData);
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        }).start();
-                    }
+                        }
+                    }).start();
+                    //}
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -228,7 +212,7 @@ public class LittleProxyServerService extends Service implements Runnable {
     }
 
 
-    private class CaptureAdapter extends HttpFiltersSourceAdapter {
+    private static class CaptureAdapter extends HttpFiltersSourceAdapter {
 
         private Interceptor interceptor = new Interceptor();
 
@@ -244,7 +228,8 @@ public class LittleProxyServerService extends Service implements Runnable {
         }
     }
 
-    private class CaptureFilters extends HttpFiltersAdapter {
+    private static class CaptureFilters extends HttpFiltersAdapter {
+
         private Interceptor interceptor;
 
         private boolean released;

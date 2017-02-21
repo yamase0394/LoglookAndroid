@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,18 +22,23 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 import jp.gr.java_conf.snake0394.loglook_android.R;
+import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
+import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.ConfigFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DamagedShipFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DeckFragment;
@@ -180,6 +186,55 @@ public class MainActivity extends AppCompatActivity {
                 selectItem(present);
             }
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        if(sp.getBoolean("isConfigExported", false)){
+            return;
+        }
+
+        WindowManager wm = (WindowManager) getApplicationContext().getSystemService(WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point point = new Point(0, 0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            // Android 4.2以上
+            display.getRealSize(point);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            // Android 3.2以上
+            try {
+                Method getRawWidth = Display.class.getMethod("getRawWidth");
+                Method getRawHeight = Display.class.getMethod("getRawHeight");
+                int width = (Integer) getRawWidth.invoke(display);
+                int height = (Integer) getRawHeight.invoke(display);
+                point.set(width, height);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        GeneralPrefs prefs = GeneralPrefsSpotRepository.getEntity(getApplicationContext());
+        prefs.port = Integer.parseInt(sp.getString("port", "8000"));
+        prefs.showsView = sp.getBoolean("showView", true);
+        prefs.viewX = sp.getInt("viewX", point.x / -2);
+        prefs.viewY = sp.getInt("viewY", point.y / -2);
+        prefs.viewWidth = sp.getInt("viewWidth", 20);
+        prefs.viewHeight = sp.getInt("viewHeight", 50);
+        prefs.vibratesWhenViewTouched = sp.getBoolean("touchVibration", true);
+        prefs.usesProxy = sp.getBoolean("useProxy", false);
+        prefs.proxyHost = sp.getString("proxyHost", "localhost");
+        prefs.proxyPort = Integer.parseInt(sp.getString("proxyPort", "8080"));
+        prefs.logsJson = sp.getBoolean("saveJson", false);
+        prefs.logsRequest = sp.getBoolean("saveRequest", false);
+        GeneralPrefsSpotRepository.putEntity(getApplicationContext(), prefs);
+
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean("isConfigExported", true);
+        editor.apply();
     }
 
     @Override

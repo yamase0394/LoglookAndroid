@@ -14,9 +14,6 @@ import jp.gr.java_conf.snake0394.loglook_android.storage.converter.MstShipMapTyp
 import jp.gr.java_conf.snake0394.loglook_android.storage.converter.MstSlotitemMapTypeConverter;
 import jp.gr.java_conf.snake0394.loglook_android.storage.converter.MstUseitemMapTypeConverter;
 
-/**
- * Created by snake0394 on 2017/02/20.
- */
 @Pref(name = "storage_mst_data")
 public class MstDataStorage {
 
