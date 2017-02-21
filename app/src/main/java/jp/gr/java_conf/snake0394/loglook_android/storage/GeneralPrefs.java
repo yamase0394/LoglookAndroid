@@ -90,7 +90,7 @@ public class GeneralPrefs {
 
     /**
      * リクエストボディを記録するか。
-     * defauleValue = false
+     * defaultValue = false
      */
     @PrefBoolean(name = "logsRequest")
     public boolean logsRequest;
