@@ -2,9 +2,6 @@ package jp.gr.java_conf.snake0394.loglook_android.api;
 
 import com.google.gson.JsonObject;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import jp.gr.java_conf.snake0394.loglook_android.EquipType2;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitem;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitemManager;
@@ -20,31 +17,10 @@ public class ApiReqKousyouCreateitem implements APIListenerSpi {
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
 
-        String requestBody = req.getRequestBody();
-
-        String regex = "item1=(\\d+)";
-        Pattern p = Pattern.compile(regex);
-        Matcher m = p.matcher(requestBody);
-        m.find();
-        int fuel = Integer.parseInt(m.group(1));
-
-        regex = "item2=(\\d+)";
-        p = Pattern.compile(regex);
-        m = p.matcher(requestBody);
-        m.find();
-        int bullet = Integer.parseInt(m.group(1));
-
-        regex = "item3=(\\d+)";
-        p = Pattern.compile(regex);
-        m = p.matcher(requestBody);
-        m.find();
-        int steel = Integer.parseInt(m.group(1));
-
-        regex = "item4=(\\d+)";
-        p = Pattern.compile(regex);
-        m = p.matcher(requestBody);
-        m.find();
-        int bauxite = Integer.parseInt(m.group(1));
+        int fuel = Integer.parseInt(req.getParameterMap().get("api_item1").get(0));
+        int bullet = Integer.parseInt(req.getParameterMap().get("api_item2").get(0));
+        int steel = Integer.parseInt(req.getParameterMap().get("api_item3").get(0));
+        int bauxite = Integer.parseInt(req.getParameterMap().get("api_item4").get(0));
 
         CreateItemLogger.INSTANCE.ready(fuel, bullet, steel, bauxite);
 

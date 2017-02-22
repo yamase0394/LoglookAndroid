@@ -4,6 +4,9 @@ import android.util.Log;
 
 import com.google.gson.JsonObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 import jp.gr.java_conf.snake0394.loglook_android.api.API;
 import jp.gr.java_conf.snake0394.loglook_android.api.APIListenerSpi;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.RequestMetaData;
@@ -18,7 +21,13 @@ public class ApiLogger implements APIListenerSpi {
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
         Log.d("uri", req.getRequestURI());
-        Log.d("request", req.getRequestBody());
+        try {
+            Log.d("request", URLDecoder.decode(req.getRequestBody(),"UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        Log.d("paramMap", req.getParameterMap()
+                             .toString());
         Log.d("response", json.toString());
     }
 }

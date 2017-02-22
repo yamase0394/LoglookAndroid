@@ -2,9 +2,6 @@ package jp.gr.java_conf.snake0394.loglook_android.api;
 
 import com.google.gson.JsonObject;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import jp.gr.java_conf.snake0394.loglook_android.App;
 import jp.gr.java_conf.snake0394.loglook_android.MissionTimer;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.RequestMetaData;
@@ -18,19 +15,8 @@ public class ApiReqMissionStart implements APIListenerSpi {
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
 
-        String requestBody = req.getRequestBody();
-
-        String regex = "Fdeck%5Fid=(\\d+)";
-        Pattern p = Pattern.compile(regex);
-        Matcher m = p.matcher(requestBody);
-        m.find();
-        int deckId = Integer.parseInt(m.group(1));
-
-        regex = "Fmission%5Fid=(\\d+)";
-        p = Pattern.compile(regex);
-        m = p.matcher(requestBody);
-        m.find();
-        int missionId = Integer.parseInt(m.group(1));
+        int deckId = Integer.parseInt(req.getParameterMap().get("api_deck_id").get(0));
+        int missionId = Integer.parseInt(req.getParameterMap().get("api_mission_id").get(0));
         MissionTimer.INSTANCE.ready(deckId, missionId);
 
 

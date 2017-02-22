@@ -3,8 +3,6 @@ package jp.gr.java_conf.snake0394.loglook_android.api;
 import com.google.gson.JsonObject;
 
 import java.util.Calendar;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import jp.gr.java_conf.snake0394.loglook_android.App;
 import jp.gr.java_conf.snake0394.loglook_android.DockTimer;
@@ -20,23 +18,9 @@ public class ApiReqNyukyoStart implements APIListenerSpi {
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
 
-        String requestBody = req.getRequestBody();
-
-        String regex = "api%5Fhighspeed=(\\d+)";
-        Pattern p = Pattern.compile(regex);
-        Matcher m = p.matcher(requestBody);
-        m.find();
-        if (Integer.parseInt(m.group(1)) == 0) {
-            regex = "api%5Fndock%5Fid=(\\d+)";
-            p = Pattern.compile(regex);
-            m = p.matcher(requestBody);
-            m.find();
-            int dockId = Integer.parseInt(m.group(1));
-            regex = "api%5Fship%5Fid=(\\d+)";
-            p = Pattern.compile(regex);
-            m = p.matcher(requestBody);
-            m.find();
-            int shipId = Integer.parseInt(m.group(1));
+        if (Integer.parseInt(req.getParameterMap().get("api_highspeed").get(0)) == 0) {
+            int dockId = Integer.parseInt(req.getParameterMap().get("api_ndock_id").get(0));
+            int shipId = Integer.parseInt(req.getParameterMap().get("api_ship_id").get(0));
             DockTimer.INSTANCE.startTimer(App.getInstance(), dockId, shipId, Calendar.getInstance().getTimeInMillis() + MyShipManager.INSTANCE.getMyShip(shipId).getNdockTime());
         }
     }

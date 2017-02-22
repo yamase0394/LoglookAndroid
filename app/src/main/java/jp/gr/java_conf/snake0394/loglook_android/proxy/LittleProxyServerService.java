@@ -32,8 +32,11 @@ import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -102,14 +105,15 @@ public class LittleProxyServerService extends Service implements Runnable {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(server != null) {
+        if (server != null) {
             server.abort();
         }
         stopForeground(true);
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(getApplicationContext(), "プロキシ停止", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "プロキシ停止", Toast.LENGTH_SHORT)
+                     .show();
             }
         });
     }
@@ -387,11 +391,13 @@ public class LittleProxyServerService extends Service implements Runnable {
 
         private String method;
 
+        private Map<String, List<String>> parameterMap;
+
         private String queryString;
 
         private String requestURI;
 
-        private String requestBody;
+        private Optional<InputStream> requestBody;
 
         @Override
         public String getContentType() {
@@ -418,7 +424,11 @@ public class LittleProxyServerService extends Service implements Runnable {
 
         @Override
         public Map<String, List<String>> getParameterMap() {
-            throw new UnsupportedOperationException();
+            return this.parameterMap;
+        }
+
+        void setParameterMap(Map<String, List<String>> parameterMap) {
+            this.parameterMap = parameterMap;
         }
 
         @Override
@@ -475,11 +485,11 @@ public class LittleProxyServerService extends Service implements Runnable {
         }
 
         @Override
-        public String getRequestBody() {
+        public Optional<InputStream> getRequestBody() {
             return this.requestBody;
         }
 
-        void setRequestBody(String requestBody) {
+        void setRequestBody(Optional<InputStream> requestBody) {
             this.requestBody = requestBody;
         }
 
@@ -491,20 +501,33 @@ public class LittleProxyServerService extends Service implements Runnable {
             meta.setMethod(req.getMethod()
                               .toString());
 
+            String bodyStr = URLDecoder.decode(new String(body, "UTF-8"), "UTF-8");
+            String[] params = bodyStr.split("&");
+            Map<String, List<String>> parameterMap = new HashMap<>();
+            for (String param : params) {
+                String[] keyValuePair = param.split("=");
+                String key = keyValuePair[0];
+                String value = "";
+                if (keyValuePair.length == 2) {
+                    value = keyValuePair[1];
+                }
+                if (parameterMap.containsKey(key)) {
+                    parameterMap.get(key)
+                                .add(value);
+                } else {
+                    parameterMap.put(key, new ArrayList<>(Arrays.asList(value)));
+                }
+            }
+            meta.setParameterMap(parameterMap);
+
             URI url = new URI(req.getUri());
             meta.setQueryString(url.getQuery());
             meta.setRequestURI(url.getPath());
-            try {
-                meta.setRequestBody(IOUtils.toString(body, "UTF-8"));
-            } catch (IOException e) {
-                e.printStackTrace();
-                meta.setRequestBody("");
-            }
+            meta.setRequestBody(Optional.<InputStream>of(new ByteArrayInputStream(body)));
 
             return meta;
         }
     }
-
 
     static class ResponseMetaDataWrapper implements ResponseMetaData {
 

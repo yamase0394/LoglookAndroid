@@ -1,23 +1,27 @@
 package jp.gr.java_conf.snake0394.loglook_android.proxy;
 
+import com.google.common.base.Optional;
+
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 /**
  * リクエストに含まれている情報を ContentListener に提供するオブジェクト
- *
  */
 public interface RequestMetaData {
 
     /**
      * リクエストに含まれるメッセージボディの MIME タイプを返します
+     *
      * @return メッセージボディの MIME タイプ
      */
     String getContentType();
 
     /**
      * リクエストヘッダを返します
+     *
      * @return リクエストヘッダのMap
      */
     @Deprecated
@@ -25,19 +29,21 @@ public interface RequestMetaData {
 
     /**
      * このリクエストを生成した HTTP メソッドの名前を返します
+     *
      * @return HTTP メソッド
      */
     String getMethod();
 
     /**
      * このリクエストから取得できるパラメータを返します
+     *
      * @return パラメータのMap
      */
-    @Deprecated
     Map<String, List<String>> getParameterMap();
 
     /**
      * リクエストのプロトコル名とバージョンを返します
+     *
      * @return リクエストのプロトコル名とバージョン
      */
     @Deprecated
@@ -45,12 +51,14 @@ public interface RequestMetaData {
 
     /**
      * リクエストされた URL のパスの後ろに含まれているクエリ文字列を返します
+     *
      * @return クエリ文字列
      */
     String getQueryString();
 
     /**
      * リクエストを送ってきたクライアントまたは最後のプロキシの IP アドレスを返します
+     *
      * @return リクエストを送ってきたクライアントの IP アドレス
      */
     @Deprecated
@@ -58,6 +66,7 @@ public interface RequestMetaData {
 
     /**
      * リクエストを送ったクライアントまたは最後のプロキシの送信元 IP ポートを返します
+     *
      * @return リクエストを送ってきたクライアントの IP ポート
      */
     @Deprecated
@@ -65,12 +74,14 @@ public interface RequestMetaData {
 
     /**
      * この HTTP リクエストの最初の行にある、リクエストの URL のうちプロトコル名からクエリ文字列までの部分を返します
+     *
      * @return URI
      */
     String getRequestURI();
 
     /**
      * クライアントがこのリクエストを生成するのに使ったURLを返します
+     *
      * @return URL
      */
     @Deprecated
@@ -78,6 +89,7 @@ public interface RequestMetaData {
 
     /**
      * リクエストのスキーム名を返します
+     *
      * @return リクエストのスキーム名
      */
     @Deprecated
@@ -85,6 +97,7 @@ public interface RequestMetaData {
 
     /**
      * リクエストが送られたサーバのホスト名を返します
+     *
      * @return リクエストが送られたサーバのホスト名
      */
     @Deprecated
@@ -92,6 +105,7 @@ public interface RequestMetaData {
 
     /**
      * リクエストが送られたサーバのポート番号を返します
+     *
      * @return リクエストが送られたサーバのポート番号
      */
     @Deprecated
@@ -99,7 +113,8 @@ public interface RequestMetaData {
 
     /**
      * リクエストに含まれるメッセージボディを返します
+     *
      * @return リクエストに含まれるメッセージボディ
      */
-    String  getRequestBody();
+    Optional<InputStream> getRequestBody();
 }

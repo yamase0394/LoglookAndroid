@@ -6,8 +6,6 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import jp.gr.java_conf.snake0394.loglook_android.App;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
@@ -27,13 +25,7 @@ public class ApiReqMapStart implements APIListenerSpi {
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
 
-        String requestBody = req.getRequestBody();
-
-        String regex = "Fdeck%5Fid=(\\d+)";
-        Pattern p = Pattern.compile(regex);
-        Matcher m = p.matcher(requestBody);
-        m.find();
-        int deckId = Integer.parseInt(m.group(1));
+        int deckId = Integer.parseInt(req.getParameterMap().get("api_deck_id").get(0));
         Deck deck = DeckManager.INSTANCE.getDeck(deckId);
         List<Integer> shipIdList = deck.getShipId();
         ArrayList<Integer> heavyDamaged = new ArrayList<>();
@@ -53,6 +45,7 @@ public class ApiReqMapStart implements APIListenerSpi {
             App.getInstance()
                .startActivity(intent);
         }
+
 
         JsonObject data = json.getAsJsonObject("api_data");
 
