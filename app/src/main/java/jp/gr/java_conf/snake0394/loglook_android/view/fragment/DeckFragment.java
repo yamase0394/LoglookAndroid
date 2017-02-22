@@ -48,14 +48,16 @@ public class DeckFragment extends Fragment implements DeckTabsRecyclerViewAdapte
         super.onCreate(savedInstanceState);
         view = inflater.inflate(R.layout.fragment_deck_manager_new, container, false);
         unbinder = ButterKnife.bind(this, view);
-git
-        LoopRecyclerViewPager viewPager = ButterKnife.findById(view, R.id.viewpager);
+
+        LoopRecyclerViewPager viewPager = findById(view, R.id.viewpager);
 
         LinearLayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         viewPager.setLayoutManager(layout);
+
         DeckTabsRecyclerViewAdapter recyclerAdapter = new DeckTabsRecyclerViewAdapter(this);
         recyclerAdapter.setItems(DeckManager.INSTANCE.getDeckList());
         viewPager.setAdapter(recyclerAdapter);
+
         TabLayout tabLayout = findById(view, R.id.tabs);
         TabLayoutSupport.setupWithViewPager(tabLayout, viewPager, new TabLayoutAdapter());
         tabLayout.getTabAt(0)

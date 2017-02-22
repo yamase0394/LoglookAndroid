@@ -1,9 +1,11 @@
 package jp.gr.java_conf.snake0394.loglook_android.view.fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.SpannableStringBuilder;
 import android.view.Display;
@@ -14,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.lang.reflect.Method;
 
@@ -214,6 +217,13 @@ public class ConfigFragment extends Fragment {
                 getActivity().stopService(intent);
                 intent = new Intent(getActivity(), SlantLauncher.class);
                 getActivity().stopService(intent);
+
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+                if (!sp.getBoolean("SystemAlertPermissionGranted", true) || !sp.getBoolean("UsageAccessPermissionGranted", true)) {
+                    Toast.makeText(getContext(), "端末の設定から権限の許可を行う必要があります。", Toast.LENGTH_LONG)
+                         .show();
+                    return;
+                }
 
                 intent = new Intent(getActivity(), LittleProxyServerService.class);
                 getActivity().startService(intent);

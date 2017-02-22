@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.util.List;
@@ -50,40 +51,75 @@ public class HomeFragment extends Fragment {
         tb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    ActivityManager am = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
-                    List<ActivityManager.RunningServiceInfo> listServiceInfo = am.getRunningServices(Integer.MAX_VALUE);
-                    boolean isProxyServerRunnning = false;
-                    boolean isMyServiceRunnning = false;
-                    for (ActivityManager.RunningServiceInfo curr : listServiceInfo) {
-                        // クラス名を比較
-                        if (curr.service.getClassName().equals(LittleProxyServerService.class.getName())) {
-                            // 実行中のサービスと一致
-                            isProxyServerRunnning = true;
-                        }
-                        if (curr.service.getClassName().equals(SlantLauncher.class.getName())) {
-                            // 実行中のサービスと一致
-                            isMyServiceRunnning = true;
-                        }
-                    }
-                    if (!isProxyServerRunnning || !isMyServiceRunnning) {
-                        Intent intent = new Intent(getActivity(), LittleProxyServerService.class);
-                        getActivity().startService(intent);
-                        intent = new Intent(getActivity(), SlantLauncher.class);
-                        getActivity().startService(intent);
-                    }
-                } else {
+
+                if(!isChecked){
                     Intent intent = new Intent(getActivity(), LittleProxyServerService.class);
                     getActivity().stopService(intent);
                     intent = new Intent(getActivity(), SlantLauncher.class);
                     getActivity().stopService(intent);
+                    return;
                 }
+
+                ActivityManager am = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+                List<ActivityManager.RunningServiceInfo> listServiceInfo = am.getRunningServices(Integer.MAX_VALUE);
+                boolean isProxyServerRunnning = false;
+                boolean isMyServiceRunnning = false;
+                for (ActivityManager.RunningServiceInfo curr : listServiceInfo) {
+                    // クラス名を比較
+                    if (curr.service.getClassName()
+                                    .equals(LittleProxyServerService.class.getName())) {
+                        // 実行中のサービスと一致
+                        isProxyServerRunnning = true;
+                    }
+                    if (curr.service.getClassName()
+                                    .equals(SlantLauncher.class.getName())) {
+                        // 実行中のサービスと一致
+                        isMyServiceRunnning = true;
+                    }
+                }
+                if (!isProxyServerRunnning || !isMyServiceRunnning) {
+                    Intent intent = new Intent(getActivity(), LittleProxyServerService.class);
+                    getActivity().stopService(intent);
+                    intent = new Intent(getActivity(), SlantLauncher.class);
+                    getActivity().stopService(intent);
+
+                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+                    if (!sp.getBoolean("SystemAlertPermissionGranted", true) || !sp.getBoolean("UsageAccessPermissionGranted", true)) {
+                        Toast.makeText(getContext(), "端末の設定から権限の許可を行う必要があります。", Toast.LENGTH_LONG)
+                             .show();
+                        return;
+                    }
+
+                    intent = new Intent(getActivity(), LittleProxyServerService.class);
+                    getActivity().startService(intent);
+                    intent = new Intent(getActivity(), SlantLauncher.class);
+                    getActivity().startService(intent);
+                }
+
+
             }
         });
 
-        //SystemAlert
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
-        if (sp.getBoolean("SystemAlertPermissionGranted", true) && sp.getBoolean("UsageAccessPermissionGranted", true)) {
+        ActivityManager am = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningServiceInfo> listServiceInfo = am.getRunningServices(Integer.MAX_VALUE);
+        boolean isProxyServerRunnning = false;
+        boolean isMyServiceRunnning = false;
+        for (ActivityManager.RunningServiceInfo curr : listServiceInfo) {
+            // クラス名を比較
+            if (curr.service.getClassName()
+                            .equals(LittleProxyServerService.class.getName())) {
+                // 実行中のサービスと一致
+                isProxyServerRunnning = true;
+            }
+            if (curr.service.getClassName()
+                            .equals(SlantLauncher.class.getName())) {
+                // 実行中のサービスと一致
+                isMyServiceRunnning = true;
+            }
+        }
+        if (!isProxyServerRunnning && !isMyServiceRunnning) {
+           tb.setChecked(false);
+        } else {
             tb.setChecked(true);
         }
     }

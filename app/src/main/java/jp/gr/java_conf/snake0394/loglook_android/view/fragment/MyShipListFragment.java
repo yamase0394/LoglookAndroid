@@ -403,7 +403,8 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0:
-                        DialogFragment dialogFragment = MyShipListAddLabelDialog.newInstance(position);
+                        MyShipListRecyclerViewAdapter adapter = (MyShipListRecyclerViewAdapter) recyclerView.getAdapter();
+                        DialogFragment dialogFragment = MyShipListAddLabelDialog.newInstance(position, adapter.getLabelList());
                         dialogFragment.setTargetFragment(MyShipListFragment.this, 0);
                         dialogFragment.show(getFragmentManager(), "addLabelDialog");
                         break;
