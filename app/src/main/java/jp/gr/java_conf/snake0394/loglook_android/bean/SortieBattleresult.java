@@ -77,7 +77,6 @@ public class SortieBattleresult {
         return apiGetShip.getShipName;
     }
 
-
     private class ApiEnemyInfo {
         /**
          * 敵艦隊名

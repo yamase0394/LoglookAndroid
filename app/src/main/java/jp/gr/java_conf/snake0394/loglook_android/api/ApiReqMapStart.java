@@ -4,9 +4,6 @@ import android.content.Intent;
 
 import com.google.gson.JsonObject;
 
-import org.apache.commons.io.IOUtils;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -30,38 +27,32 @@ public class ApiReqMapStart implements APIListenerSpi {
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
 
-        try {
-            String requestBody = IOUtils.toString(req.getRequestBody()
-                                                     .get(), "UTF-8");
+        String requestBody = req.getRequestBody();
 
-            String regex = "Fdeck%5Fid=(\\d+)";
-            Pattern p = Pattern.compile(regex);
-            Matcher m = p.matcher(requestBody);
-            m.find();
-            int deckId = Integer.parseInt(m.group(1));
-            Deck deck = DeckManager.INSTANCE.getDeck(deckId);
-            List<Integer> shipIdList = deck.getShipId();
-            ArrayList<Integer> heavyDamaged = new ArrayList<>();
-            for (int i = 0; i < shipIdList.size(); i++) {
-                MyShip myShip = MyShipManager.INSTANCE.getMyShip(shipIdList.get(i));
-                if (shipIdList.get(i) != -1 && myShip.getNowhp() <= myShip.getMaxhp() / 4) {
-                    heavyDamaged.add(myShip.getId());
-                }
+        String regex = "Fdeck%5Fid=(\\d+)";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(requestBody);
+        m.find();
+        int deckId = Integer.parseInt(m.group(1));
+        Deck deck = DeckManager.INSTANCE.getDeck(deckId);
+        List<Integer> shipIdList = deck.getShipId();
+        ArrayList<Integer> heavyDamaged = new ArrayList<>();
+        for (int i = 0; i < shipIdList.size(); i++) {
+            MyShip myShip = MyShipManager.INSTANCE.getMyShip(shipIdList.get(i));
+            if (shipIdList.get(i) != -1 && myShip.getNowhp() <= myShip.getMaxhp() / 4) {
+                heavyDamaged.add(myShip.getId());
             }
-            if (!heavyDamaged.isEmpty()) {
-                //大破進撃警告画面を表示
-                Intent intent = new Intent(App.getInstance(), HeavilyDamagedWarningActivity.class);
-                intent.putIntegerArrayListExtra("shipId", heavyDamaged);
-                intent.putExtra("first", true);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                App.getInstance()
-                   .startActivity(intent);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-
+        if (!heavyDamaged.isEmpty()) {
+            //大破進撃警告画面を表示
+            Intent intent = new Intent(App.getInstance(), HeavilyDamagedWarningActivity.class);
+            intent.putIntegerArrayListExtra("shipId", heavyDamaged);
+            intent.putExtra("first", true);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            App.getInstance()
+               .startActivity(intent);
+        }
 
         JsonObject data = json.getAsJsonObject("api_data");
 

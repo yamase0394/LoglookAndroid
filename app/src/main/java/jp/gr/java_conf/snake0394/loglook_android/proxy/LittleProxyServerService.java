@@ -387,13 +387,11 @@ public class LittleProxyServerService extends Service implements Runnable {
 
         private String method;
 
-        //private Map<String, List<String>> parameterMap;
-
         private String queryString;
 
         private String requestURI;
 
-        private Optional<InputStream> requestBody;
+        private String requestBody;
 
         @Override
         public String getContentType() {
@@ -422,12 +420,6 @@ public class LittleProxyServerService extends Service implements Runnable {
         public Map<String, List<String>> getParameterMap() {
             throw new UnsupportedOperationException();
         }
-
-        /*
-        void setParameterMap(Map<String, List<String>> parameterMap) {
-            this.parameterMap = parameterMap;
-        }
-        */
 
         @Override
         public String getProtocol() {
@@ -483,11 +475,11 @@ public class LittleProxyServerService extends Service implements Runnable {
         }
 
         @Override
-        public Optional<InputStream> getRequestBody() {
+        public String getRequestBody() {
             return this.requestBody;
         }
 
-        void setRequestBody(Optional<InputStream> requestBody) {
+        void setRequestBody(String requestBody) {
             this.requestBody = requestBody;
         }
 
@@ -499,31 +491,15 @@ public class LittleProxyServerService extends Service implements Runnable {
             meta.setMethod(req.getMethod()
                               .toString());
 
-            /*
-            BiConsumer<Map<String, List<String>>, String[]> accumulator = (m, v) -> {
-                if (v.length == 2) {
-                    m.computeIfAbsent(v[0], k -> new ArrayList<>())
-                     .add(v[1]);
-                }
-            };
-            BiConsumer<Map<String, List<String>>, Map<String, List<String>>> combiner = (m1, m2) -> {
-                m2.entrySet()
-                  .stream()
-                  .forEach(entry -> m1.merge(entry.getKey(), entry.getValue(), (l1, l2) -> {
-                      l1.addAll(l2);
-                      return l1;
-                  }));
-            };
-            String bodystr = URLDecoder.decode(new String(body, StandardCharsets.UTF_8), "UTF-8");
-            meta.setParameterMap(Arrays.stream(bodystr.split("&"))
-                                       .map(kv -> kv.split("="))
-                                       .collect(LinkedHashMap::new, accumulator, combiner));
-            */
-
             URI url = new URI(req.getUri());
             meta.setQueryString(url.getQuery());
             meta.setRequestURI(url.getPath());
-            meta.setRequestBody(Optional.of((InputStream) new ByteArrayInputStream(body)));
+            try {
+                meta.setRequestBody(IOUtils.toString(body, "UTF-8"));
+            } catch (IOException e) {
+                e.printStackTrace();
+                meta.setRequestBody("");
+            }
 
             return meta;
         }

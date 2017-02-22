@@ -2,9 +2,6 @@ package jp.gr.java_conf.snake0394.loglook_android.api;
 
 import com.google.gson.JsonObject;
 
-import org.apache.commons.io.IOUtils;
-
-import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,15 +17,7 @@ public class ApiReqKousyouCreateship implements APIListenerSpi {
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
 
-        String requestBody;
-        try {
-            requestBody = IOUtils.toString(req.getRequestBody()
-                                              .get(), "UTF-8");
-        } catch (IOException e) {
-            e.printStackTrace();
-
-            return;
-        }
+        String requestBody = req.getRequestBody();
 
         String regex = "Fkdock%5Fid=(\\d+)";
         Pattern p = Pattern.compile(regex);

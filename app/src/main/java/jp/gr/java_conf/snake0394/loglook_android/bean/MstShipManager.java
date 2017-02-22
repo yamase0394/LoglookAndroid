@@ -1,7 +1,6 @@
 package jp.gr.java_conf.snake0394.loglook_android.bean;
 
-import java.util.HashMap;
-import java.util.Map;
+import android.util.SparseArray;
 
 import jp.gr.java_conf.snake0394.loglook_android.App;
 import jp.gr.java_conf.snake0394.loglook_android.storage.MstDataStorage;
@@ -13,28 +12,28 @@ import jp.gr.java_conf.snake0394.loglook_android.storage.MstDataStorageSpotRepos
 public enum MstShipManager {
     INSTANCE;
 
-    private Map<Integer, MstShip> mstShipMap = new HashMap<>();
+    private SparseArray<MstShip> idToMstShipSparseArray;
 
     MstShipManager() {
         MstDataStorage storage = MstDataStorageSpotRepository.getEntity(App.getInstance());
-        this.mstShipMap = storage.mstShipMap;
+        this.idToMstShipSparseArray = storage.mstShipSparseArray;
     }
 
     public void put(MstShip mstShip) {
-        mstShipMap.put(mstShip.getId(), mstShip);
+        idToMstShipSparseArray.put(mstShip.getId(), mstShip);
     }
 
     public MstShip getMstShip(int id) {
-        return mstShipMap.get(id);
+        return idToMstShipSparseArray.get(id);
     }
 
     public boolean contains(int id) {
-        return mstShipMap.containsKey(id);
+        return idToMstShipSparseArray.indexOfKey(id) >= 0;
     }
 
     public void serialize() {
         MstDataStorage storage = MstDataStorageSpotRepository.getEntity(App.getInstance());
-        storage.mstShipMap = this.mstShipMap;
+        storage.mstShipSparseArray = this.idToMstShipSparseArray;
         MstDataStorageSpotRepository.putEntity(App.getInstance(), storage);
     }
 }
