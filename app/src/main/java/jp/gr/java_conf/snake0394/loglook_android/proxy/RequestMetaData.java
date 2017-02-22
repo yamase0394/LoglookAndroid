@@ -1,8 +1,5 @@
 package jp.gr.java_conf.snake0394.loglook_android.proxy;
 
-import com.google.common.base.Optional;
-
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -104,5 +101,5 @@ public interface RequestMetaData {
      * リクエストに含まれるメッセージボディを返します
      * @return リクエストに含まれるメッセージボディ
      */
-    Optional<InputStream> getRequestBody();
+    String  getRequestBody();
 }
