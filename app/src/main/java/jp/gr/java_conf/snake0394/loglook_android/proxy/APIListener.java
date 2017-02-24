@@ -1,8 +1,9 @@
 package jp.gr.java_conf.snake0394.loglook_android.proxy;
 
-import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -11,9 +12,7 @@ import org.atteo.classindex.ClassIndex;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,20 +25,18 @@ import jp.gr.java_conf.snake0394.loglook_android.api.APIListenerSpi;
 
 public class APIListener implements ContentListenerSpi {
 
-    private Map<String, List<APIListenerSpi>> listenerMap;
+    private Multimap<String, APIListenerSpi> listenerMap;
     private List<APIListenerSpi> allListenerList;
 
     public APIListener() {
-        this.listenerMap = new HashMap<>();
+        this.listenerMap = ArrayListMultimap.create();
         this.allListenerList = new ArrayList<>();
 
-        for (Class<?> clazz : ClassIndex.getAnnotated(API.class)) {
-            Log.d("annotated", clazz.getName());
-            API target = clazz.getAnnotation(API.class);
+        for (Class<? extends APIListenerSpi> clazz : ClassIndex.getSubclasses(APIListenerSpi.class)) {
+            Log.d("APIListener", clazz.getName());
             APIListenerSpi listener;
-
             try {
-                listener = (APIListenerSpi) clazz.newInstance();
+                listener = clazz.newInstance();
             } catch (InstantiationException e) {
                 e.printStackTrace();
                 continue;
@@ -48,20 +45,14 @@ public class APIListener implements ContentListenerSpi {
                 continue;
             }
 
-            if (TextUtils.isEmpty(target.value()[0])) {
+            API target = clazz.getAnnotation(API.class);
+            if (target == null) {
                 allListenerList.add(listener);
                 continue;
             }
 
             for (String uri : target.value()) {
-                if (listenerMap.containsKey(uri)) {
-                    listenerMap.get(uri)
-                               .add(listener);
-                } else {
-                    List<APIListenerSpi> list = new ArrayList<>();
-                    list.add(listener);
-                    listenerMap.put(uri, list);
-                }
+                listenerMap.put(uri, listener);
             }
         }
     }
@@ -75,7 +66,7 @@ public class APIListener implements ContentListenerSpi {
     public void accept(RequestMetaData reqMetaData, ResponseMetaData resMetaData) {
         try {
             String serverResBody = IOUtils.toString(resMetaData.getResponseBody()
-                                                                     .get(), "UTF-8");
+                                                               .get(), "UTF-8");
 
             //svdata=を削除
             String jsonStr;
@@ -98,7 +89,7 @@ public class APIListener implements ContentListenerSpi {
 
     private synchronized void send(JsonObject json, RequestMetaData reqMetaData, ResponseMetaData resMetaData) {
 
-        if(listenerMap.containsKey(reqMetaData.getRequestURI())) {
+        if (listenerMap.containsKey(reqMetaData.getRequestURI())) {
             for (APIListenerSpi listener : listenerMap.get(reqMetaData.getRequestURI())) {
                 if (listener != null) {
                     listener.accept(json, reqMetaData, resMetaData);
@@ -106,7 +97,7 @@ public class APIListener implements ContentListenerSpi {
             }
         }
 
-        if(!allListenerList.isEmpty()) {
+        if (!allListenerList.isEmpty()) {
             for (APIListenerSpi listener : this.allListenerList) {
                 if (listener != null) {
                     listener.accept(json, reqMetaData, resMetaData);

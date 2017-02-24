@@ -2,6 +2,8 @@ package jp.gr.java_conf.snake0394.loglook_android.api;
 
 import com.google.gson.JsonObject;
 
+import org.atteo.classindex.IndexSubclasses;
+
 import jp.gr.java_conf.snake0394.loglook_android.proxy.RequestMetaData;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;
 
@@ -12,6 +14,7 @@ import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;
  * 実装クラスが呼び出されるようにするには  META-INF/services/logbook.api.APIListenerSpi に
  * 実装クラスの完全修飾名を記述します
  */
+@IndexSubclasses
 public interface APIListenerSpi {
 
     /**

@@ -12,6 +12,7 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.design.widget.AppBarLayout;
@@ -32,6 +33,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -232,9 +234,20 @@ public class MainActivity extends AppCompatActivity {
         prefs.logsRequest = sp.getBoolean("saveRequest", false);
         GeneralPrefsSpotRepository.putEntity(getApplicationContext(), prefs);
 
+        File dataFile = new File(Environment.getExternalStorageDirectory().getPath() + "/泥提督支援アプリ/data");
+        if(dataFile.exists()) {
+            File[] files = dataFile.listFiles();
+            for (File file : files) {
+                file.delete();
+            }
+            dataFile.delete();
+        }
+
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean("isConfigExported", true);
         editor.apply();
+
+
     }
 
     @Override
