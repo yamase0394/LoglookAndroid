@@ -1,6 +1,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -20,7 +21,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
                 android:gravity="right"
                 android:orientation="horizontal"
                 app:layout_scrollFlags="scroll|enterAlways">
@@ -37,18 +37,20 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"/>
 
-                <Spinner
-                    android:id="@+id/orderSpinner"
+                <Button
+                    android:id="@+id/button_order"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    />
+                    android:background="@drawable/flat_button"
+                    android:text="Button"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"/>
 
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="5dp"
                 android:background="@color/colorAccent"
                 app:layout_scrollFlags="scroll|enterAlways"/>
 

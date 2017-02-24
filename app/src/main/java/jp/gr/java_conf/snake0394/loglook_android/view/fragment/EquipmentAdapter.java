@@ -2,25 +2,26 @@ package jp.gr.java_conf.snake0394.loglook_android.view.fragment;
 
 import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
+import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitem;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitemManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
+import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
 import jp.gr.java_conf.snake0394.loglook_android.view.EquipType3;
 
 /**
@@ -29,154 +30,167 @@ import jp.gr.java_conf.snake0394.loglook_android.view.EquipType3;
 
 public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.EquipmentViewHolder> {
 
-    private List<MySlotItem> mySlotItemList;
-    private final FragmentManager fragmentManager;
+    private SortedList<ListItem> itemList;
+    private SparseIntArray mountedEquip;
 
-    public EquipmentAdapter(FragmentManager fragmentManager) {
-        mySlotItemList = new ArrayList<>();
-        this.fragmentManager = fragmentManager;
+
+    public EquipmentAdapter(String sortType, String order) {
+        itemList = new SortedList<>(ListItem.class, new SortedListCallcack(this, sortType, order));
+
+        mountedEquip = new SparseIntArray();
+        for (MyShip myShip : MyShipManager.INSTANCE.getMyShips()) {
+            for (int id : myShip.getSlot()) {
+                if (id != -1 && MySlotItemManager.INSTANCE.contains(id)) {
+                    mountedEquip.append(id, myShip.getId());
+                }
+            }
+        }
     }
 
     @Override
     public EquipmentViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_equipment_cardview, viewGroup, false);
-        return new EquipmentViewHolder(itemView, fragmentManager);
+        View itemView = LayoutInflater.from(viewGroup.getContext())
+                                      .inflate(R.layout.layout_equipment_cardview, viewGroup, false);
+        return new EquipmentViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(EquipmentViewHolder sampleViewHolder, int i) {
-        MySlotItem data = mySlotItemList.get(i);
+        MySlotItem data = itemList.get(i).getMySlotItem();
         if (data != null) {
             sampleViewHolder.bind(data);
         }
     }
 
+
     @Override
     public int getItemCount() {
-        return mySlotItemList.size();
+        return itemList.size();
     }
 
-    public void addDataOf(List<MySlotItem> dataList) {
-        this.mySlotItemList.addAll(dataList);
-        notifyDataSetChanged();
-    }
+    public void setItems(List<MySlotItem> newItemList) {
 
-    public void removeDataOf(List<MySlotItem> dataList) {
-        for (MySlotItem data : dataList) {
-            mySlotItemList.remove(data);
-        }
-        notifyDataSetChanged();
-    }
-
-    public void clearData() {
-        mySlotItemList.clear();
-        notifyDataSetChanged();
-    }
-
-    public List<MySlotItem> getList() {
-        return mySlotItemList;
-    }
-
-    public void sort(String sortType, String order) {
-        switch (sortType) {
-            case "名前":
-                Collections.sort(mySlotItemList, new NameComparator(order));
-                break;
-            case "改修度":
-                Collections.sort(mySlotItemList, new ImprovementComparator(order));
-                break;
-            case "入手":
-                Collections.sort(mySlotItemList, new GetTimeComparator(order));
-                break;
-        }
-        notifyDataSetChanged();
-    }
-
-    private class NameComparator implements Comparator<MySlotItem> {
-        private String order;
-
-        public NameComparator(String order) {
-            super();
-            this.order = order;
-        }
-
-        public int compare(MySlotItem a, MySlotItem b) {
-            MstSlotitem mstSlotitemA = MstSlotitemManager.INSTANCE.getMstSlotitem(a.getMstId());
-            MstSlotitem mstSlotitemB = MstSlotitemManager.INSTANCE.getMstSlotitem(b.getMstId());
-            int result = mstSlotitemA.getName().compareTo(mstSlotitemB.getName());
-            if (order.equals("降順")) {
-                result *= -1;
+        //newItemListに含まれていない装備を削除
+        for(int i = itemList.size() - 1; i >= 0; i--){
+           MySlotItem  mySlotItem = itemList.get(i)
+                                            .getMySlotItem();
+            if (!newItemList.contains(mySlotItem)) {
+                itemList.removeItemAt(i);
             }
-            return result;
+        }
+
+        for (MySlotItem mySlotItem : newItemList) {
+            itemList.add(new ListItem(mySlotItem));
         }
     }
 
-    private class ImprovementComparator implements Comparator<MySlotItem> {
+    private static class ListItem {
+        private MySlotItem mySlotItem;
+
+        public ListItem(MySlotItem mySlotItem) {
+            this.mySlotItem = mySlotItem;
+        }
+
+        public int getId() {
+            return this.mySlotItem.getId();
+        }
+
+        public MySlotItem getMySlotItem() {
+            return mySlotItem;
+        }
+    }
+
+    private static class SortedListCallcack extends SortedList.Callback<ListItem> {
+
+        private RecyclerView.Adapter adapter;
+        private String sortType;
         private String order;
 
-        public ImprovementComparator(String order) {
-            super();
+        SortedListCallcack(@NonNull RecyclerView.Adapter adapter, String sortType, String order) {
+            this.adapter = adapter;
+            this.sortType = sortType;
             this.order = order;
         }
 
-        public int compare(MySlotItem a, MySlotItem b) {
-            MstSlotitem mstSlotitemA = MstSlotitemManager.INSTANCE.getMstSlotitem(a.getMstId());
-            MstSlotitem mstSlotitemB = MstSlotitemManager.INSTANCE.getMstSlotitem(b.getMstId());
-            int result = mstSlotitemA.getName().compareTo(mstSlotitemB.getName());
+        @Override
+        public int compare(ListItem item1, ListItem item2) {
+            MySlotItem data1 = item1.getMySlotItem();
+            MySlotItem data2 = item2.getMySlotItem();
+            int result = 0;
 
-            //同じ装備の場合は改修度でソート
-            if (result == 0) {
-                result = a.getLevel() - b.getLevel();
-                if (order.equals("降順")) {
+            switch (this.sortType) {
+                case "名前":
+                    MstSlotitem mst1 = MstSlotitemManager.INSTANCE.getMstSlotitem(data1.getMstId());
+                    MstSlotitem mst2 = MstSlotitemManager.INSTANCE.getMstSlotitem(data2.getMstId());
+                    result = mst1.getName()
+                                 .compareTo(mst2.getName());
+                    break;
+                case "改修度":
+                    result = data1.getLevel() - data2.getLevel();
+                    break;
+                case "new":
+                    result = data2.getId() - data1.getId();
+                    break;
+            }
+
+            switch (order) {
+                case "降順":
                     result *= -1;
-                }
-                //違う装備の場合
-                //安定ソートにするため0を返す
-            } else {
-                result = 0;
+                    break;
             }
 
             return result;
         }
-    }
 
-    private class GetTimeComparator implements Comparator<MySlotItem> {
-        private String order;
-
-        public GetTimeComparator(String order) {
-            super();
-            this.order = order;
+        @Override
+        public void onInserted(int position, int count) {
+            adapter.notifyItemRangeInserted(position, count);
         }
 
-        public int compare(MySlotItem a, MySlotItem b) {
-            int result = a.getId() - b.getId();
-            if (order.equals("降順")) {
-                result *= -1;
-            }
-            return result;
+        @Override
+        public void onRemoved(int position, int count) {
+            adapter.notifyItemRangeRemoved(position, count);
+        }
+
+        @Override
+        public void onMoved(int fromPosition, int toPosition) {
+            adapter.notifyItemMoved(fromPosition, toPosition);
+        }
+
+        @Override
+        public void onChanged(int position, int count) {
+            adapter.notifyItemRangeChanged(position, count);
+        }
+
+        @Override
+        public boolean areContentsTheSame(ListItem oldData, ListItem newData) {
+            return oldData.getId() == newData.getId();
+        }
+
+        @Override
+        public boolean areItemsTheSame(ListItem item1, ListItem item2) {
+            return item1.getId() == item2.getId();
         }
     }
 
+    public class EquipmentViewHolder extends RecyclerView.ViewHolder {
 
-    public static class EquipmentViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.equipment)
+        TextView equipment;
+        @BindView(R.id.equipIcon)
+        ImageView equipIcon;
+        @BindView(R.id.alv)
+        TextView alv;
+        @BindView(R.id.improvement)
+        TextView improvement;
+        @BindView(R.id.equipShipName)
+        TextView equipShipName;
+        @BindView(R.id.equipShipLv)
+        TextView equipShipLv;
 
-        private FragmentManager fragmentManager;
-        private TextView equipment;
-        private ImageView equipIcon;
-        private TextView alv;
-        private TextView improvement;
-        private TextView equipShipName;
-        private TextView equipShipLv;
-
-        public EquipmentViewHolder(View rootView, FragmentManager fragmentManager) {
+        public EquipmentViewHolder(View rootView) {
             super(rootView);
-            this.fragmentManager = fragmentManager;
-            equipment = (TextView) rootView.findViewById(R.id.equipment);
-            equipIcon = (ImageView) rootView.findViewById(R.id.equipIcon);
-            alv = (TextView) rootView.findViewById(R.id.alv);
-            improvement = (TextView) rootView.findViewById(R.id.improvement);
-            equipShipName = (TextView) rootView.findViewById(R.id.equipShipName);
-            equipShipLv = (TextView) rootView.findViewById(R.id.equipShipLv);
+            ButterKnife.bind(this, rootView);
         }
 
         public void bind(@NonNull final MySlotItem mySlotItem) {
@@ -184,7 +198,10 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Equi
 
             equipment.setText(mstSlotitem.getName());
 
-            equipIcon.setImageResource(EquipType3.toEquipType3(MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId()).getType().get(3)).getImageId());
+            equipIcon.setImageResource(EquipType3.toEquipType3(MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId())
+                                                                                          .getType()
+                                                                                          .get(3))
+                                                 .getImageId());
 
             switch (mySlotItem.getAlv()) {
                 case 0:
@@ -226,8 +243,9 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Equi
                 improvement.setText("★" + String.valueOf(mySlotItem.getLevel()));
             }
 
-            if (mySlotItem.getShipId() != -1) {
-                MyShip myShip = MyShipManager.INSTANCE.getMyShip(mySlotItem.getShipId());
+            int myShipId = mountedEquip.get(mySlotItem.getId(), -1);
+            if (myShipId != -1) {
+                MyShip myShip = MyShipManager.INSTANCE.getMyShip(myShipId);
                 equipShipName.setText(myShip.getName());
                 equipShipLv.setText("Lv" + myShip.getLv());
             } else {
