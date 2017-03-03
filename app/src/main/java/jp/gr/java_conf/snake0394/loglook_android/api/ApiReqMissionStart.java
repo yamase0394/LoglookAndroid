@@ -16,9 +16,12 @@ public class ApiReqMissionStart implements APIListenerSpi {
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
 
         int deckId = Integer.parseInt(req.getParameterMap().get("api_deck_id").get(0));
+        if (MissionTimer.INSTANCE.isRunning(deckId)) {
+            MissionTimer.INSTANCE.cancel(deckId);
+        }
+
         int missionId = Integer.parseInt(req.getParameterMap().get("api_mission_id").get(0));
         MissionTimer.INSTANCE.ready(deckId, missionId);
-
 
         JsonObject data = json.getAsJsonObject("api_data");
         MissionTimer.INSTANCE.startTimer(App.getInstance(), data.get("api_complatetime")
