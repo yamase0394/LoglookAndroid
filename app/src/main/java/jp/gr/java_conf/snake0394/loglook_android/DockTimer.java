@@ -1,10 +1,12 @@
 package jp.gr.java_conf.snake0394.loglook_android;
 
+import android.app.NotificationManager;
 import android.content.Context;
 
 import java.util.concurrent.TimeUnit;
 
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
+import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository;
 
 
 /**
@@ -52,6 +54,10 @@ public enum DockTimer {
             if (this == Timer.NULL) {
                 return;
             }
+            if (!GeneralPrefsSpotRepository.getEntity(context).usesDockNotification) {
+                return;
+            }
+
             this.shipId = shipId;
             //入渠は一分前に完了する
             completeTime -= TimeUnit.MINUTES.toMillis(1);
@@ -84,9 +90,10 @@ public enum DockTimer {
      *
      * @param dockId 艦隊ID
      */
-    public void stop(int dockId) {
+    public void cancel(int dockId) {
         Timer dock = getDock(dockId);
         dock.stop();
+        NotificationUtility.cancelNotification(App.getInstance(), dockId + 10);
     }
 
     /**
@@ -125,5 +132,14 @@ public enum DockTimer {
             default:
                 return Timer.NULL;
         }
+    }
+
+    public void clearNotifications() {
+        NotificationManager nm = (NotificationManager) App.getInstance()
+                                                          .getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.cancel(11);
+        nm.cancel(12);
+        nm.cancel(13);
+        nm.cancel(14);
     }
 }

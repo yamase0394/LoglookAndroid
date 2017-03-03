@@ -53,6 +53,7 @@ dependencies {
     compile 'com.github.lsjwzh.RecyclerViewPager:lib:v1.1.1'
     compile 'com.github.lsjwzh.RecyclerViewPager:tablayoutsupport:v1.1.1'
     compile group: 'org.atteo.classindex', name: 'classindex', version: '3.4'
+    compile 'com.google.android:flexbox:0.2.5'
 }
 
 // Package the preprocessed Annotations (ClassIndex) into the APK

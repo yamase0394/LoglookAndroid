@@ -39,6 +39,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.zip.GZIPInputStream;
 
@@ -191,7 +192,7 @@ public class LittleProxyServerService extends Service implements Runnable {
             }
         }
 
-        public void intercept(HttpResponse res, byte[] resbody, HttpRequest req, byte[] reqbody) {
+        public synchronized void intercept(HttpResponse res, byte[] resbody, HttpRequest req, byte[] reqbody) {
             try {
                 for (final ContentListenerSpi listener : this.listeners) {
                     final RequestMetaData requestMetaData = RequestMetaDataWrapper.build(req, resbody);
@@ -214,7 +215,6 @@ public class LittleProxyServerService extends Service implements Runnable {
             }
         }
     }
-
 
     private static class CaptureAdapter extends HttpFiltersSourceAdapter {
 
@@ -507,6 +507,11 @@ public class LittleProxyServerService extends Service implements Runnable {
             for (String param : params) {
                 String[] keyValuePair = param.split("=");
                 String key = keyValuePair[0];
+
+                if (Objects.equals(key, "api_verno") || Objects.equals(key, "api_token")) {
+                    continue;
+                }
+
                 String value = "";
                 if (keyValuePair.length == 2) {
                     value = keyValuePair[1];

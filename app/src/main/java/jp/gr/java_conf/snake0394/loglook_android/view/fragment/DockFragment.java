@@ -99,7 +99,7 @@ public class DockFragment extends Fragment {
                 }
                 switch (diff) {
                     case 0:
-                        text.setText("今日 " + sdf.format(finishTimeInMillis));
+                        text.setText(sdf.format(finishTimeInMillis));
                         break;
                     case 1:
                         text.setText("明日 " + sdf.format(finishTimeInMillis));
@@ -185,20 +185,5 @@ public class DockFragment extends Fragment {
 
             text.setText(sb.toString());
         }
-    }
-
-    /**
-     * 経過日数を取得する。
-     */
-    private static int getDiffDays(Calendar calendar1) {
-        //==== ミリ秒単位での差分算出 ====//
-        long diffTime = calendar1.getTimeInMillis() - Calendar.getInstance()
-                                                              .getTimeInMillis();
-
-        //==== 日単位に変換 ====//
-        int MILLIS_OF_DAY = 1000 * 60 * 60 * 24;
-        int diffDays = (int) (diffTime / MILLIS_OF_DAY);
-
-        return diffDays;
     }
 }
