@@ -13,7 +13,6 @@ import jp.gr.java_conf.snake0394.loglook_android.DeckUtility;
 import jp.gr.java_conf.snake0394.loglook_android.DockTimer;
 import jp.gr.java_conf.snake0394.loglook_android.Escape;
 import jp.gr.java_conf.snake0394.loglook_android.MissionTimer;
-import jp.gr.java_conf.snake0394.loglook_android.NotificationUtility;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Basic;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager;
@@ -44,6 +43,7 @@ public class ApiPortPort implements APIListenerSpi {
         this.apiNdock(data.getAsJsonArray("api_ndock"));
         this.apiBasic(data.getAsJsonObject("api_basic"));
 
+        MissionTimer.INSTANCE.clearNotifications();
         Escape.INSTANCE.close();
     }
 
@@ -89,8 +89,7 @@ public class ApiPortPort implements APIListenerSpi {
             } else if (mission.get(0) == 0) {
                 //指定された艦隊に対するタイマーが作動中
                 if (MissionTimer.INSTANCE.isRunning(deck.getId())) {
-                    //遠征タイマーを中断
-                    NotificationUtility.cancelNotification(App.getInstance(), deck.getId());
+                    MissionTimer.INSTANCE.cancel(deck.getId());
                 }
             }
         }

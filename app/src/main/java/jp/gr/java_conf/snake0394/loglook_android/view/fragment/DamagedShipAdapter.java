@@ -320,7 +320,7 @@ public class DamagedShipAdapter extends RecyclerView.Adapter<DamagedShipAdapter.
             }
             switch (diff) {
                 case 0:
-                    completeTime.setText("今日 "+ sdf.format(finishTimeInMillis));
+                    completeTime.setText(sdf.format(finishTimeInMillis));
                     break;
                 case 1:
                     completeTime.setText("明日 "+ sdf.format(finishTimeInMillis));

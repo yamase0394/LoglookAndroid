@@ -55,10 +55,10 @@ import static jp.gr.java_conf.snake0394.loglook_android.R.id.toolbar;
 import static jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity.Fragment.HOME;
 
 public class MainActivity extends AppCompatActivity {
-    private ActionBarDrawerToggle mDrawerToggle;
-    private DrawerLayout mDrawer;
+    private ActionBarDrawerToggle drawerToggle;
+    private DrawerLayout drawerLayout;
     private String[] mDrawerItemTitles;
-    private ListView mDrawerList;
+    private ListView leftDrawerListView;
     //画面回転時のfragmentの更新に使用
     private Fragment present;
 
@@ -132,30 +132,30 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         // Set DrawerToggle.
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open, R.string.drawer_open);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_open);
 
         // リスナー登録
-        mDrawer.setDrawerListener(mDrawerToggle);
+        drawerLayout.addDrawerListener(drawerToggle);
 
         // Drawerの矢印表示有り
-        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        drawerToggle.setDrawerIndicatorEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         // initialize drawer list.
         mDrawerItemTitles = getResources().getStringArray(R.array.title);
-        mDrawerList = (ListView) findViewById(R.id.slide_menu);
+        leftDrawerListView = (ListView) findViewById(R.id.slide_menu);
 
         //ヘッダー
-        mDrawerList.addHeaderView(LayoutInflater.from(this)
+        //ヘッダの分インデックスがずれる
+        leftDrawerListView.addHeaderView(LayoutInflater.from(this)
                                                 .inflate(R.layout.drawer_header, null));
 
         // Set the adapter for list view.
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mDrawerItemTitles));
-
+        leftDrawerListView.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mDrawerItemTitles));
         // Set the list's click listener
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        leftDrawerListView.setOnItemClickListener(new DrawerItemClickListener());
 
         Intent intent = getIntent();
 
@@ -278,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        mDrawerToggle.syncState();
+        drawerToggle.syncState();
     }
 
     @Override
@@ -286,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
     //ここでfragmentを画面に合ったものに更新する
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
+        drawerToggle.onConfigurationChanged(newConfig);
         selectItem(present);
     }
 
@@ -302,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Pass the event to ActionBarDrawerToggle, if it returns
         // true, then it has handled the app icon touch event
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
+        if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -327,9 +327,10 @@ public class MainActivity extends AppCompatActivity {
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appBar);
         appBarLayout.setExpanded(true, true);
 
+        ((AppBarLayout.LayoutParams) findViewById(toolbar).getLayoutParams()).setScrollFlags(0);
+
         switch (mf) {
             case HOME:
-                ((AppBarLayout.LayoutParams) findViewById(toolbar).getLayoutParams()).setScrollFlags(0);
                 fragment = HomeFragment.newInstance();
                 break;
             case DECK:
@@ -370,13 +371,13 @@ public class MainActivity extends AppCompatActivity {
         transaction.commitAllowingStateLoss();
 
         //選択されたDrawerListの位置ををハイライト
-        mDrawerList.setItemChecked(mf.getPosition(), true);
+        leftDrawerListView.setItemChecked(mf.getPosition(), true);
 
         //ツールバーのタイトルを更新
         getSupportActionBar().setTitle(mDrawerItemTitles[mf.getPosition() - 1]);
 
         //Drawerを閉じる
-        mDrawer.closeDrawer(mDrawerList);
+        drawerLayout.closeDrawer(leftDrawerListView);
 
         //現在のDrawerListの位置を記録
         present = mf;

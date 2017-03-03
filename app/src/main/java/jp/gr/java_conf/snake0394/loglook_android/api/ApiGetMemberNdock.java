@@ -7,13 +7,12 @@ import jp.gr.java_conf.snake0394.loglook_android.proxy.RequestMetaData;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;
 
 /**
- * Created by snake0394 on 2017/02/17.
+ * Created by snake0394 on 2017/03/02.
  */
-@API("/kcsapi/api_req_nyukyo/speedchange")
-public class ApiReqNyukyoSpeedchange implements APIListenerSpi {
+@API("/kcsapi/api_get_member/ndock")
+public class ApiGetMemberNdock implements APIListenerSpi{
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
-
-        DockTimer.INSTANCE.cancel(Integer.parseInt(req.getParameterMap().get("api_ndock_id").get(0)));
+        DockTimer.INSTANCE.clearNotifications();
     }
 }

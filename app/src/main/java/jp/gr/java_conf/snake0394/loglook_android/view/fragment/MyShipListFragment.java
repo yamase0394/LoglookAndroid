@@ -219,6 +219,11 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Spinner shipTypeFilterSpinner = (Spinner) parent;
+                if (shipTypeFilterSpinner.isFocusable() == false) {
+                    shipTypeFilterSpinner.setFocusable(true);
+                    return;
+                }
+
 
                 prefs.shipTypeFilter = (String) shipTypeFilterSpinner.getSelectedItem();
 
@@ -239,6 +244,7 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
         }
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
+        spinner.setFocusable(false);
         if (dataList == null) {
             try {
                 ShipType displayShipType = ShipType.valueOf(prefs.shipTypeFilter);
@@ -271,6 +277,9 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
             }
         });
         this.initLabelFilterSpinnerAdapter();
+
+        filterDataList();
+        recyclerView.scrollToPosition(0);
 
         return rootView;
     }

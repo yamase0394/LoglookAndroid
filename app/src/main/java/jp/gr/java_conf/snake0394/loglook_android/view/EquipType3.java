@@ -50,7 +50,7 @@ public enum EquipType3 {
     噴式戦闘爆撃機_噴式景雲改(39, R.drawable.jet_powered_fighter_bomber_icon_1),
     噴式戦闘爆撃機_橘花改(40, R.drawable.jet_powered_fighter_bomber_icon_2),
     輸送機材(41, R.drawable.unknown),
-    潜水艦装備(42, R.drawable.unknown),
+    潜水艦装備(42, R.drawable.submarine_radar_icon),
     UNKNOWN(300, R.drawable.unknown),
     EMPTY(301, R.drawable.empty),
     NOT_AVAILABLE(302, R.drawable.not_available);

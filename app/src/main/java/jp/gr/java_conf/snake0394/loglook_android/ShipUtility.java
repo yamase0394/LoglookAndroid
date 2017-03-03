@@ -11,7 +11,6 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitemManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
-import jp.gr.java_conf.snake0394.loglook_android.view.EquipType3;
 
 /**
  * Created by snake0394 on 2016/10/29.
@@ -149,34 +148,10 @@ public class ShipUtility {
             MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(id);
             MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
 
-            int slotitemBasicAA = mstSlotitem.getTyku();
-            equipmentBasicAASum += slotitemBasicAA;
+            equipmentBasicAASum += mstSlotitem.getTyku();
 
-            //装備倍率
-            switch (EquipType3.toEquipType3(mstSlotitem.getType().get(3))) {
-                case 高角砲:
-                case 高射装置:
-                    modifiedEquipmentAASum += slotitemBasicAA * 4;
-                    break;
-                case 対空機銃:
-                    modifiedEquipmentAASum += slotitemBasicAA * 6;
-                    break;
-                case 電探:
-                    modifiedEquipmentAASum += slotitemBasicAA * 3;
-                    break;
-            }
-
-            int level = mySlotItem.getLevel();
-
-            //改修係数
-            switch (EquipType3.toEquipType3(mstSlotitem.getType().get(3))) {
-                case 高角砲:
-                    modifiedEquipmentAASum += Math.sqrt(level) * 3;
-                    break;
-                case 対空機銃:
-                    modifiedEquipmentAASum += Math.sqrt(level) * 4;
-                    break;
-            }
+            modifiedEquipmentAASum += SlotItemUtility.getAdjustedAA(mstSlotitem);
+            modifiedEquipmentAASum += SlotItemUtility.getImprovementAdjustedAA(mstSlotitem, mySlotItem.getLevel());
         }
 
         float x = myShip.getTaiku().get(0) - equipmentBasicAASum + modifiedEquipmentAASum;
@@ -204,43 +179,9 @@ public class ShipUtility {
             }
             MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(slotitemId);
             MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-            int slotitemBasicAA = mstSlotitem.getTyku();
 
-            //装備倍率
-            switch (EquipType3.toEquipType3(mstSlotitem.getType().get(3))) {
-                case 小口径主砲:
-                case 中口径主砲:
-                case 大口径主砲:
-                case 副砲:
-                case 対空機銃:
-                case 艦上戦闘機:
-                case 艦上爆撃機:
-                case 水上機:
-                    modifiedEquipmentAA += slotitemBasicAA * 0.2;
-                    break;
-                case 高角砲:
-                case 高射装置:
-                    modifiedEquipmentAA += slotitemBasicAA * 0.35;
-                    break;
-                case 電探:
-                    modifiedEquipmentAA += slotitemBasicAA * 0.4;
-                    break;
-                case 対空強化弾:
-                    modifiedEquipmentAA += slotitemBasicAA * 0.6;
-                    break;
-            }
-
-            //改修係数
-            int level = mySlotItem.getLevel();
-            switch (EquipType3.toEquipType3(mstSlotitem.getType().get(3))) {
-                case 高角砲:
-                    modifiedEquipmentAA += Math.sqrt(level) * 3;
-                    break;
-                case 電探:
-                    modifiedEquipmentAA += Math.sqrt(level) * 1.5;
-                    break;
-            }
-
+            modifiedEquipmentAA += SlotItemUtility.getAdjustedFleetAA(mstSlotitem);
+            modifiedEquipmentAA += SlotItemUtility.getImprovementAdjustedFleetAA(mstSlotitem, mySlotItem.getLevel());
         }
         return Math.floor(modifiedEquipmentAA);
     }

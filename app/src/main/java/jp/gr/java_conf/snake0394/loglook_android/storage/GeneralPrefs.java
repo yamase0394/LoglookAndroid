@@ -85,14 +85,42 @@ public class GeneralPrefs {
      * Jsonを記録するか。
      * defaultValue = false
      */
-    @PrefBoolean(name = "logsJson")
+    @PrefBoolean(name = "logsJson", defaultValue = false)
     public boolean logsJson;
 
     /**
      * リクエストボディを記録するか。
      * defaultValue = false
      */
-    @PrefBoolean(name = "logsRequest")
+    @PrefBoolean(name = "logsRequest", defaultValue = false)
     public boolean logsRequest;
+
+    /**
+     * 遠征完了時に通知するか。
+     * defaultValue = true
+     */
+    @PrefBoolean(name = "usesMissionNotification", defaultValue = true)
+    public boolean usesMissionNotification;
+
+    /**
+     * 入渠完了時に通知するか。
+     * defaultValue = true
+     */
+    @PrefBoolean(name = "usesDockNotification", defaultValue = true)
+    public boolean usesDockNotification;
+
+    /**
+     * 通知時に音を鳴らすか。
+     * defaultValue = true
+     */
+    @PrefBoolean(name = "makesSoundWhenNotify", defaultValue = true)
+    public boolean makesSoundWhenNotify;
+
+    /**
+     * 通知時に振動させる。
+     * defaultValue = true
+     */
+    @PrefBoolean(name = "vibratesWhenNOtify", defaultValue = true)
+    public boolean vibratesWhenNOtify;
 
 }

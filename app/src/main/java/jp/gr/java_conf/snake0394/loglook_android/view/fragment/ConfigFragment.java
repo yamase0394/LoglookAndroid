@@ -20,6 +20,9 @@ import android.widget.Toast;
 
 import java.lang.reflect.Method;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.SlantLauncher;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.LittleProxyServerService;
@@ -29,6 +32,41 @@ import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotReposit
 import static android.content.Context.WINDOW_SERVICE;
 
 public class ConfigFragment extends Fragment {
+
+    private Unbinder unbinder;
+
+    @BindView(R.id.port)
+    EditText portEditText;
+    @BindView(R.id.showViewCheck)
+    CheckBox showsViewCheck;
+    @BindView(R.id.viewX)
+    EditText viewXEditText;
+    @BindView(R.id.viewY)
+    EditText viewYEditText;
+    @BindView(R.id.viewWidth)
+    EditText viewWidthEditText;
+    @BindView(R.id.viewHeight)
+    EditText viewHeightEditText;
+    @BindView(R.id.touchVibrationCheck)
+    CheckBox vibratesWhenViewTouchedCheck;
+    @BindView(R.id.useProxyCheck)
+    CheckBox usesProxyCheck;
+    @BindView(R.id.proxyHost)
+    EditText proxyHostEditText;
+    @BindView(R.id.proxyPort)
+    EditText proxyPortEditText;
+    @BindView(R.id.saveJsoncheck)
+    CheckBox logsJsonCheck;
+    @BindView(R.id.saveRequesstCheck)
+    CheckBox logsRequsetCheck;
+    @BindView(R.id.usesMissionNotification)
+    CheckBox usesMissionNotificationCheck;
+    @BindView(R.id.usesDockNotification)
+    CheckBox usesDockNotificationCheck;
+    @BindView(R.id.makesSoundWhenNotify)
+    CheckBox makesSoundWhenNotifyCheck;
+    @BindView(R.id.vibratesWhenNotify)
+    CheckBox vibratesWhenNotifyCheck;
 
     public ConfigFragment() {
         // Required empty public constructor
@@ -42,6 +80,7 @@ public class ConfigFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_config, container, false);
+        this.unbinder = ButterKnife.bind(this, rootView);
         return rootView;
     }
 
@@ -52,11 +91,9 @@ public class ConfigFragment extends Fragment {
         final GeneralPrefs prefs = GeneralPrefsSpotRepository.getEntity(getContext());
 
         //ポート番号
-        final EditText portEditText = (EditText) getActivity().findViewById(R.id.port);
         portEditText.setText(String.valueOf(prefs.port));
 
         //検出領域を可視化するか
-        final CheckBox showsViewCheck = (CheckBox) getActivity().findViewById(R.id.showViewCheck);
         if (prefs.showsView) {
             showsViewCheck.setChecked(true);
         } else {
@@ -65,25 +102,21 @@ public class ConfigFragment extends Fragment {
 
         //検出領域のx,y座標
         final Point point = getDisplaySize();
-        final EditText viewXEditText = (EditText) getActivity().findViewById(R.id.viewX);
         if (prefs.viewX == Short.MAX_VALUE) {
             prefs.viewX = point.x / -2;
         }
         viewXEditText.setText(String.valueOf(prefs.viewX));
-        final EditText viewYEditText = (EditText) getActivity().findViewById(R.id.viewY);
+
         if (prefs.viewY == Short.MAX_VALUE) {
             prefs.viewY = point.y / -2;
         }
         viewYEditText.setText(String.valueOf(prefs.viewY));
 
         //検出領域の大きさ
-        final EditText viewWidthEditText = (EditText) getActivity().findViewById(R.id.viewWidth);
         viewWidthEditText.setText(String.valueOf(prefs.viewWidth));
-        final EditText viewHeightEditText = (EditText) getActivity().findViewById(R.id.viewHeight);
         viewHeightEditText.setText(String.valueOf(prefs.viewHeight));
 
         //検出領域に触れたとき振動させるか
-        final CheckBox vibratesWhenViewTouchedCheck = (CheckBox) getActivity().findViewById(R.id.touchVibrationCheck);
         if (prefs.vibratesWhenViewTouched) {
             vibratesWhenViewTouchedCheck.setChecked(true);
         } else {
@@ -91,7 +124,6 @@ public class ConfigFragment extends Fragment {
         }
 
         //プロキシを使用するか
-        final CheckBox usesProxyCheck = (CheckBox) getActivity().findViewById(R.id.useProxyCheck);
         if (prefs.usesProxy) {
             usesProxyCheck.setChecked(true);
         } else {
@@ -99,30 +131,31 @@ public class ConfigFragment extends Fragment {
         }
 
         //ホスト名
-        final EditText proxyHostEditText = (EditText) getActivity().findViewById(R.id.proxyHost);
-            proxyHostEditText.setText(prefs.proxyHost);
+        proxyHostEditText.setText(prefs.proxyHost);
 
         //ポート番号
-        final EditText proxyPortEditText = (EditText) getActivity().findViewById(R.id.proxyPort);
-            proxyPortEditText.setText(String.valueOf(prefs.proxyPort));
+        proxyPortEditText.setText(String.valueOf(prefs.proxyPort));
 
         //jsonを保存するか
-        final CheckBox logsJsonCheck = (CheckBox) getActivity().findViewById(R.id.saveJsoncheck);
-            if (prefs.logsJson) {
-                logsJsonCheck.setChecked(true);
-            } else {
-                logsJsonCheck.setChecked(false);
-            }
+        if (prefs.logsJson) {
+            logsJsonCheck.setChecked(true);
+        } else {
+            logsJsonCheck.setChecked(false);
+        }
         logsJsonCheck.setVisibility(View.GONE);
 
         //リクエストを保存するか
-        final CheckBox logsRequsetCheck = (CheckBox) getActivity().findViewById(R.id.saveRequesstCheck);
-            if (prefs.logsRequest) {
-                logsRequsetCheck.setChecked(true);
-            } else {
-                logsRequsetCheck.setChecked(false);
-            }
+        if (prefs.logsRequest) {
+            logsRequsetCheck.setChecked(true);
+        } else {
+            logsRequsetCheck.setChecked(false);
+        }
         logsRequsetCheck.setVisibility(View.GONE);
+
+        usesMissionNotificationCheck.setChecked(prefs.usesMissionNotification);
+        usesDockNotificationCheck.setChecked(prefs.usesDockNotification);
+        makesSoundWhenNotifyCheck.setChecked(prefs.makesSoundWhenNotify);
+        vibratesWhenNotifyCheck.setChecked(prefs.vibratesWhenNOtify);
 
         //設定を保存するボタン
         Button tb = (Button) getActivity().findViewById(R.id.saveBtn);
@@ -210,6 +243,11 @@ public class ConfigFragment extends Fragment {
                 //リクエストボディを記録するか
                 prefs.logsRequest = logsRequsetCheck.isChecked();
 
+                prefs.usesMissionNotification = usesMissionNotificationCheck.isChecked();
+                prefs.usesDockNotification = usesDockNotificationCheck.isChecked();
+                prefs.makesSoundWhenNotify = makesSoundWhenNotifyCheck.isChecked();
+                prefs.vibratesWhenNOtify = vibratesWhenNotifyCheck.isChecked();
+
                 GeneralPrefsSpotRepository.putEntity(getContext(), prefs);
 
                 //稼働中のサービスを一度停止させてから再び起動させる
@@ -260,5 +298,11 @@ public class ConfigFragment extends Fragment {
         }
 
         return real;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        this.unbinder.unbind();
     }
 }

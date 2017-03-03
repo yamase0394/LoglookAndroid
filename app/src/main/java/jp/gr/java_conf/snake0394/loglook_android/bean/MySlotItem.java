@@ -44,11 +44,6 @@ public class MySlotItem implements Serializable {
     @SerializedName("api_alv")
     private int alv = 0;
 
-    /**
-     * 装備中の艦娘ID
-     */
-    private int shipId = -1;
-
     public int getId() {
         return id;
     }
@@ -87,14 +82,6 @@ public class MySlotItem implements Serializable {
 
     public void setAlv(int alv) {
         this.alv = alv;
-    }
-
-    public int getShipId() {
-        return shipId;
-    }
-
-    public void setShipId(int shipId) {
-        this.shipId = shipId;
     }
 
     @Override

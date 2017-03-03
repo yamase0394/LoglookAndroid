@@ -9,8 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.time.DateUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -96,11 +99,39 @@ public class MissionFragment extends Fragment {
                     text.setText(MstMissionManager.INSTANCE.getMstMission(missionId).getName());
                     text.setBackgroundColor(0x00000000);
 
-                    SimpleDateFormat sdf = new SimpleDateFormat("M月dd日 HH:mm:ss");
+
                     name = "time" + i;
                     strId = getResources().getIdentifier(name, "id", getActivity().getPackageName());
                     TextView conpTime = (TextView) getActivity().findViewById(strId);
-                    conpTime.setText(sdf.format(mission.get(2) - TimeUnit.MINUTES.toMillis(1)));
+                    long finishTimeInMillis = mission.get(2) - TimeUnit.MINUTES.toMillis(1);
+                    Date now = Calendar.getInstance()
+                                       .getTime();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(finishTimeInMillis);
+                    Date finish = calendar.getTime();
+                    int diff = 0;
+                    while (!org.apache.commons.lang3.time.DateUtils.isSameDay(now, finish)) {
+                        now = DateUtils.addDays(now, 1);
+                        diff++;
+                    }
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                    switch (diff) {
+                        case 0:
+                            conpTime.setText(sdf.format(finishTimeInMillis));
+                            break;
+                        case 1:
+                            conpTime.setText("明日 "+ sdf.format(finishTimeInMillis));
+                            break;
+                        case 2:
+                            conpTime.setText("明後日 "+ sdf.format(finishTimeInMillis));
+                            break;
+                        case 3:
+                            conpTime.setText("明々後日 "+ sdf.format(finishTimeInMillis));
+                            break;
+                        default:
+                            conpTime.setText(diff + "日後 "+ sdf.format(finishTimeInMillis));
+                            break;
+                    }
 
                     name = "remaining" + i;
                     strId = getResources().getIdentifier(name, "id", getActivity().getPackageName());
