@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
@@ -72,8 +73,10 @@ public enum MissionTimer {
         private void stop() {
             isRunning = false;
             Deck deck = DeckManager.INSTANCE.getDeck(deckId);
-            deck.getMission()
-                .set(0, (long) 2);
+            if (!Objects.equals(deck, null)) {
+                deck.getMission()
+                    .set(0, (long) 2);
+            }
         }
     }
 

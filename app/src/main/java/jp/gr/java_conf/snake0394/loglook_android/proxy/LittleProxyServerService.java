@@ -22,6 +22,7 @@ import org.littleshoot.proxy.HttpFiltersSourceAdapter;
 import org.littleshoot.proxy.HttpProxyServer;
 import org.littleshoot.proxy.HttpProxyServerBootstrap;
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
+import org.littleshoot.proxy.impl.ThreadPoolConfiguration;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -124,11 +125,17 @@ public class LittleProxyServerService extends Service implements Runnable {
 
         final GeneralPrefs prefs = GeneralPrefsSpotRepository.getEntity(getApplicationContext());
 
+        ThreadPoolConfiguration conf = new ThreadPoolConfiguration().withAcceptorThreads(1)
+                                                                    .withClientToProxyWorkerThreads(2)
+                                                                    .withProxyToServerWorkerThreads(2);
+
         HttpProxyServerBootstrap serverBuilder = DefaultHttpProxyServer.bootstrap()
                                                                        .withPort(prefs.port)
                                                                        .withConnectTimeout(30000)
                                                                        .withAllowLocalOnly(true)
-                                                                       .withFiltersSource(new CaptureAdapter());
+                                                                       .withThreadPoolConfiguration(conf)
+                                                                       .withFiltersSource(new CaptureAdapter())
+                                                                       .withProxyAlias("doro-proxy");
 
         //上流プロキシの設定
         if (prefs.usesProxy) {
@@ -266,8 +273,8 @@ public class LittleProxyServerService extends Service implements Runnable {
             }
 
             if (httpObject instanceof HttpRequest) {
-                //((HttpRequest) httpObject).headers().add("Connection", "close");
                 HttpHeaders.setKeepAlive((HttpRequest) httpObject, false);
+                //Log.d("proxyToServerReqest", httpObject.toString());
             }
             //Log.d("proxyToServerReq", httpObject.toString());
             //sb.append("--------proxyToServerReq\r\n");
@@ -281,7 +288,10 @@ public class LittleProxyServerService extends Service implements Runnable {
             if (!this.released) {
                 this.add(this.responseBuf, httpObject);
             }
-            //Log.d("serverToProxyRes", httpObject.toString());
+
+            if(httpObject instanceof HttpResponse){
+                //Log.d("serverToProxyResponse", httpObject.toString());
+            }
             //sb.append("--------serverToProxyRes\r\n");
             //sb.append(httpObject.toString());
             //sb.append("\r\n");
@@ -297,10 +307,9 @@ public class LittleProxyServerService extends Service implements Runnable {
                     if (!HttpResponseStatus.OK.equals(res.getStatus())) {
                         this.release();
                     }
-                    HttpHeaders.setKeepAlive((HttpResponse) httpObject, false);
+                    //Log.d("proxyToClientResponse", httpObject.toString());
                 }
             }
-            //Log.d("proxyToClientRes", httpObject.toString());
             //sb.append("--------proxyToClientRes\r\n");
             //sb.append(httpObject.toString());
             //sb.append("\r\n");
@@ -310,11 +319,10 @@ public class LittleProxyServerService extends Service implements Runnable {
         @Override
         public HttpResponse clientToProxyRequest(HttpObject httpObject) {
             if (httpObject instanceof HttpRequest) {
-                HttpHeaders.setKeepAlive((HttpRequest) httpObject, false);
-                HttpHeaders.removeHeader((HttpRequest) httpObject, "Proxy-Connection");
+                //HttpHeaders.setKeepAlive((HttpRequest) httpObject, false);
                 this.request = (HttpRequest) httpObject;
+                //Log.d("clientToProxyRequest", httpObject.toString());
             }
-            //Log.d("clientToProxyReq", httpObject.toString());
             //sb.append("--------clientToProxyReq\r\n");
             //sb.append(httpObject.toString());
             //sb.append("\r\n");
