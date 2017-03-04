@@ -308,6 +308,7 @@ public class LittleProxyServerService extends Service implements Runnable {
                         this.release();
                     }
                     //Log.d("proxyToClientResponse", httpObject.toString());
+                    HttpHeaders.setKeepAlive((HttpResponse) httpObject, false);
                 }
             }
             //sb.append("--------proxyToClientRes\r\n");
@@ -319,7 +320,8 @@ public class LittleProxyServerService extends Service implements Runnable {
         @Override
         public HttpResponse clientToProxyRequest(HttpObject httpObject) {
             if (httpObject instanceof HttpRequest) {
-                //HttpHeaders.setKeepAlive((HttpRequest) httpObject, false);
+                HttpHeaders.setKeepAlive((HttpRequest) httpObject, false);
+                HttpHeaders.removeHeader((HttpRequest) httpObject, "Proxy-Connection");
                 this.request = (HttpRequest) httpObject;
                 //Log.d("clientToProxyRequest", httpObject.toString());
             }
