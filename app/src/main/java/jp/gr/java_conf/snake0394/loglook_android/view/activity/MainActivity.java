@@ -110,21 +110,31 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         if (!canGetUsageStats()) {
-            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-            startActivityForResult(intent, USAGE_ACCESS_REQ_CODE);
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("UsageAccessPermissionGranted", false);
+            editor.apply();
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            startActivityForResult(intent, USAGE_ACCESS_REQ_CODE);
+        } else {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("UsageAccessPermissionGranted", true);
             editor.apply();
         }
 
         //Android6以降の端末でランチャーのオーバーレイ用の権限を取得する
         if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(this)) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent, OVERLAY_REQ_CODE);
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("SystemAlertPermissionGranted", false);
+            editor.apply();
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, OVERLAY_REQ_CODE);
+        } else {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("SystemAlertPermissionGranted", true);
             editor.apply();
         }
 
@@ -220,7 +230,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         GeneralPrefs prefs = GeneralPrefsSpotRepository.getEntity(getApplicationContext());
-        prefs.port = Integer.parseInt(sp.getString("port", "8000"));
+        try {
+            prefs.port = Integer.parseInt(sp.getString("port", "8000"));
+        } catch (NumberFormatException e) {
+            prefs.port = 8000;
+        }
         prefs.showsView = sp.getBoolean("showView", true);
         prefs.viewX = sp.getInt("viewX", point.x / -2);
         prefs.viewY = sp.getInt("viewY", point.y / -2);
@@ -229,7 +243,11 @@ public class MainActivity extends AppCompatActivity {
         prefs.vibratesWhenViewTouched = sp.getBoolean("touchVibration", true);
         prefs.usesProxy = sp.getBoolean("useProxy", false);
         prefs.proxyHost = sp.getString("proxyHost", "localhost");
-        prefs.proxyPort = Integer.parseInt(sp.getString("proxyPort", "8080"));
+        try {
+            prefs.proxyPort = Integer.parseInt(sp.getString("proxyPort", "8080"));
+        } catch (NumberFormatException e) {
+            prefs.proxyPort = 8080;
+        }
         prefs.logsJson = sp.getBoolean("saveJson", false);
         prefs.logsRequest = sp.getBoolean("saveRequest", false);
         GeneralPrefsSpotRepository.putEntity(getApplicationContext(), prefs);
