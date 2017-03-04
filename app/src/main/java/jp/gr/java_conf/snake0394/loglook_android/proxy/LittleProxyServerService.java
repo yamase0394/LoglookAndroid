@@ -229,10 +229,13 @@ public class LittleProxyServerService extends Service implements Runnable {
 
         @Override
         public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
-
+            
             if (originalRequest.getUri()
-                               .contains("kcsapi")) {
+                               .contains("/kcsapi/")) {
                 return new CaptureFilters(originalRequest, ctx, this.interceptor);
+            } else if (originalRequest.getUri()
+                                      .contains("/kcs/")) {
+                return new RewriteHeaderFilters(originalRequest, ctx);
             }
 
             return new HttpFiltersAdapter(originalRequest, ctx);
@@ -289,7 +292,7 @@ public class LittleProxyServerService extends Service implements Runnable {
                 this.add(this.responseBuf, httpObject);
             }
 
-            if(httpObject instanceof HttpResponse){
+            if (httpObject instanceof HttpResponse) {
                 //Log.d("serverToProxyResponse", httpObject.toString());
             }
             //sb.append("--------serverToProxyRes\r\n");
@@ -394,6 +397,51 @@ public class LittleProxyServerService extends Service implements Runnable {
             return out.toByteArray();
         }
     }
+
+    private static class RewriteHeaderFilters extends HttpFiltersAdapter {
+
+
+        RewriteHeaderFilters(HttpRequest originalRequest, ChannelHandlerContext ctx) {
+            super(originalRequest, ctx);
+            //Log.d("CaptureFilter", "start");
+            //sb.append("**********");
+            //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            //sb.append(sdf.format(Calendar.getInstance().getTime()) + "\r\n");
+        }
+
+        @Override
+        public HttpResponse proxyToServerRequest(HttpObject httpObject) {
+
+            if (httpObject instanceof HttpRequest) {
+                HttpHeaders.setKeepAlive((HttpRequest) httpObject, false);
+                //Log.d("proxyToServerReqest", httpObject.toString());
+            }
+
+            return super.proxyToServerRequest(httpObject);
+        }
+
+
+        @Override
+        public HttpObject proxyToClientResponse(HttpObject httpObject) {
+
+            if (httpObject instanceof HttpResponse) {
+                HttpHeaders.setKeepAlive((HttpResponse) httpObject, false);
+            }
+
+            return super.proxyToClientResponse(httpObject);
+        }
+
+        @Override
+        public HttpResponse clientToProxyRequest(HttpObject httpObject) {
+            if (httpObject instanceof HttpRequest) {
+                HttpHeaders.setKeepAlive((HttpRequest) httpObject, false);
+                HttpHeaders.removeHeader((HttpRequest) httpObject, "Proxy-Connection");
+            }
+
+            return super.clientToProxyRequest(httpObject);
+        }
+    }
+
 
     static class RequestMetaDataWrapper implements RequestMetaData {
 
