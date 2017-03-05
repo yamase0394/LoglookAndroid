@@ -229,7 +229,7 @@ public class LittleProxyServerService extends Service implements Runnable {
 
         @Override
         public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
-            
+
             if (originalRequest.getUri()
                                .contains("/kcsapi/")) {
                 return new CaptureFilters(originalRequest, ctx, this.interceptor);
