@@ -55,16 +55,17 @@ import static jp.gr.java_conf.snake0394.loglook_android.R.id.toolbar;
 import static jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity.Fragment.HOME;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String[] drawerItemTitles = new String[]{"ホーム", "艦隊", "遠征", "入渠", "損傷艦", "艦娘一覧", "装備一覧", "戦況", "設定"};
+
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
-    private String[] mDrawerItemTitles;
     private ListView leftDrawerListView;
     //画面回転時のfragmentの更新に使用
     private Fragment present;
 
     private final int OVERLAY_REQ_CODE = 1234;
     private final int USAGE_ACCESS_REQ_CODE = 2222;
-
 
     /**
      * このアクティビティが持つfragment
@@ -153,8 +154,6 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        // initialize drawer list.
-        mDrawerItemTitles = getResources().getStringArray(R.array.title);
         leftDrawerListView = (ListView) findViewById(R.id.slide_menu);
 
         //ヘッダー
@@ -163,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
                                                 .inflate(R.layout.drawer_header, null));
 
         // Set the adapter for list view.
-        leftDrawerListView.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mDrawerItemTitles));
+        leftDrawerListView.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, drawerItemTitles));
         // Set the list's click listener
         leftDrawerListView.setOnItemClickListener(new DrawerItemClickListener());
 
@@ -392,7 +391,7 @@ public class MainActivity extends AppCompatActivity {
         leftDrawerListView.setItemChecked(mf.getPosition(), true);
 
         //ツールバーのタイトルを更新
-        getSupportActionBar().setTitle(mDrawerItemTitles[mf.getPosition() - 1]);
+        getSupportActionBar().setTitle(drawerItemTitles[mf.getPosition() - 1]);
 
         //Drawerを閉じる
         drawerLayout.closeDrawer(leftDrawerListView);
