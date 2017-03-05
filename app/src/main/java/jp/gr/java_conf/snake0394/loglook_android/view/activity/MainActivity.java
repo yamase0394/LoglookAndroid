@@ -52,7 +52,7 @@ import jp.gr.java_conf.snake0394.loglook_android.view.fragment.MyShipListFragmen
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.TacticalSituationFragment;
 
 import static jp.gr.java_conf.snake0394.loglook_android.R.id.toolbar;
-import static jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity.Fragment.HOME;
+import static jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity.Screens.HOME;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ListView leftDrawerListView;
     //画面回転時のfragmentの更新に使用
-    private Fragment present;
+    private Screens present;
 
     private final int OVERLAY_REQ_CODE = 1234;
     private final int USAGE_ACCESS_REQ_CODE = 2222;
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * このアクティビティが持つfragment
      */
-    public enum Fragment {
+    public enum Screens {
         NULL(0),
         HOME(1),
         DECK(2),
@@ -84,19 +84,19 @@ public class MainActivity extends AppCompatActivity {
 
         private int position;
 
-        Fragment(int id) {
+        Screens(int id) {
             this.position = id;
         }
 
-        private static final Map<Integer, Fragment> toMainFragmentMap = new HashMap<>();
+        private static final Map<Integer, Screens> toMainFragmentMap = new HashMap<>();
 
         static {
-            for (Fragment entry : values()) {
+            for (Screens entry : values()) {
                 toMainFragmentMap.put(entry.position, entry);
             }
         }
 
-        public static Fragment toMainFragment(int id) {
+        public static Screens toMainFragment(int id) {
             return toMainFragmentMap.get(id);
         }
 
@@ -179,9 +179,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //表示するfragment
-        Fragment mf = Fragment.toMainFragment(intent.getIntExtra("position", Fragment.NULL.getPosition()));
-        if (mf != Fragment.NULL) {
-            intent.putExtra("position", Fragment.NULL.getPosition());
+        Screens mf = Screens.toMainFragment(intent.getIntExtra("position", Screens.NULL.getPosition()));
+        if (mf != Screens.NULL) {
+            intent.putExtra("position", Screens.NULL.getPosition());
             present = mf;
             selectItem(mf);
             return;
@@ -328,12 +328,12 @@ public class MainActivity extends AppCompatActivity {
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
-            selectItem(Fragment.toMainFragment(position));
+            selectItem(Screens.toMainFragment(position));
         }
     }
 
     //DrawerListのpositionに該当するfragmentを表示
-    private void selectItem(Fragment mf) {
+    private void selectItem(Screens mf) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         android.support.v4.app.Fragment fragment;
 
@@ -412,10 +412,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //表示するfragment
-        Fragment mf = Fragment.toMainFragment(intent.getIntExtra("position", Fragment.NULL.getPosition()));
-        if (mf != Fragment.NULL) {
+        Screens mf = Screens.toMainFragment(intent.getIntExtra("position", Screens.NULL.getPosition()));
+        if (mf != Screens.NULL) {
             Log.d("MainActivity", "fragment");
-            intent.putExtra("position", Fragment.NULL.getPosition());
+            intent.putExtra("position", Screens.NULL.getPosition());
             present = mf;
         }
     }
