@@ -6,9 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
+import android.view.Window;
 import android.view.WindowManager;
 
-import jp.gr.java_conf.snake0394.loglook_android.view.activity.DialogActivity;
+import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity;
 
 /**
@@ -31,7 +32,6 @@ public class LauncherDialogFragment extends android.support.v4.app.DialogFragmen
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(getContext(), MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("usesLandscape", true);
                 intent.putExtra("position", MainActivity.Screen.toScreen(launcherItems[which]).getPosition());
                 startActivity(intent);
@@ -68,8 +68,18 @@ public class LauncherDialogFragment extends android.support.v4.app.DialogFragmen
 
     @Override
     public void onPause() {
+        Logger.d("LauncherDialogFragment", "onPause");
         super.onPause();
-        ((DialogActivity) getActivity()).onDialogDissmissed();
+        //((DialogActivity) getActivity()).onDialogDissmissed();
         dismiss();
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        Dialog dialog = getDialog();
+        Window window = dialog.getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
     }
 }

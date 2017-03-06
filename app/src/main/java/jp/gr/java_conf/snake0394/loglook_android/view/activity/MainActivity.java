@@ -344,6 +344,8 @@ public class MainActivity extends AppCompatActivity {
             mf = HOME;
         }
 
+        Logger.d("MainActivity:selectItem", mf.name + " was selected");
+
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appBar);
         appBarLayout.setExpanded(true, true);
 

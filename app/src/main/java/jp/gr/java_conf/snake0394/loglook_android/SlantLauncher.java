@@ -186,7 +186,8 @@ public class SlantLauncher extends Service implements SensorEventListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             List<ComponentName> list = getForegroundAppList(1);
             for (ComponentName name : list) {
-                if (name.getPackageName().equals(packageName)) {
+                if (name.getPackageName()
+                        .equals(packageName)) {
                     return true;
                 }
             }
@@ -313,17 +314,13 @@ public class SlantLauncher extends Service implements SensorEventListener {
                                 if (startTouchY > nowTouchedY + adjust) {
                                     //Log.v("Flick", "左上上");
                                     // 上フリック時の処理を記述する
-                                    Intent i = new Intent(context, DialogActivity.class);
-                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    context.startActivity(i);
+                                    this.startActivity();
                                 }
                             } else if ((startTouchY - nowTouchedY) < (startTouchX - nowTouchedX)) {
                                 if (startTouchX > nowTouchedX + adjust) {
                                     //Log.v("Flick", "左上左");
                                     // 左フリック時の処理を記述する
-                                    Intent i = new Intent(context, DialogActivity.class);
-                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    context.startActivity(i);
+                                    this.startActivity();
                                 }
                             }
                             //右
@@ -332,17 +329,13 @@ public class SlantLauncher extends Service implements SensorEventListener {
                                 if (startTouchY > nowTouchedY + adjust) {
                                     //Log.v("Flick", "右上上");
                                     // 上フリック時の処理を記述する
-                                    Intent i = new Intent(context, DialogActivity.class);
-                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    context.startActivity(i);
+                                    this.startActivity();
                                 }
                             } else if ((startTouchY - nowTouchedY) < (nowTouchedX - startTouchX)) {
                                 if (startTouchX + adjust < nowTouchedX) {
                                     //Log.v("Flick", "右上右");
                                     // 右フリック時の処理を記述する
-                                    Intent i = new Intent(context, DialogActivity.class);
-                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    context.startActivity(i);
+                                    this.startActivity();
                                 }
                             }
                         }
@@ -354,17 +347,13 @@ public class SlantLauncher extends Service implements SensorEventListener {
                                 if (startTouchY + adjust < nowTouchedY) {
                                     //Log.v("Flick", "左下下");
                                     // 下フリック時の処理を記述する
-                                    Intent i = new Intent(context, DialogActivity.class);
-                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    context.startActivity(i);
+                                    this.startActivity();
                                 }
                             } else if ((nowTouchedY - startTouchY) < (startTouchX - nowTouchedX)) {
                                 if (startTouchX > nowTouchedX + adjust) {
                                     //Log.v("Flick", "左下左");
                                     // 左フリック時の処理を記述する
-                                    Intent i = new Intent(context, DialogActivity.class);
-                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    context.startActivity(i);
+                                    this.startActivity();
                                 }
                             }
                             //右
@@ -373,17 +362,13 @@ public class SlantLauncher extends Service implements SensorEventListener {
                                 if (startTouchY + adjust < nowTouchedY) {
                                     //Log.v("Flick", "右下下");
                                     // 下フリック時の処理を記述する
-                                    Intent i = new Intent(context, DialogActivity.class);
-                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    context.startActivity(i);
+                                    this.startActivity();
                                 }
                             } else if ((nowTouchedY - startTouchY) < (nowTouchedX - startTouchX)) {
                                 if (startTouchX + adjust < nowTouchedX) {
                                     //Log.v("Flick", "右下右");
                                     // 右フリック時の処理を記述する
-                                    Intent i = new Intent(context, DialogActivity.class);
-                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    context.startActivity(i);
+                                    this.startActivity();
                                 }
                             }
                         }
@@ -405,6 +390,12 @@ public class SlantLauncher extends Service implements SensorEventListener {
                     break;
             }
             return true;
+        }
+
+        private void startActivity() {
+            Intent i = new Intent(context, DialogActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            context.startActivity(i);
         }
     }
 
