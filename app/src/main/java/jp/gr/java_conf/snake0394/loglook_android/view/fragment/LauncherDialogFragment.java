@@ -33,7 +33,7 @@ public class LauncherDialogFragment extends android.support.v4.app.DialogFragmen
                 Intent intent = new Intent(getContext(), MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("usesLandscape", true);
-                intent.putExtra("position", MainActivity.Screens.toMainFragment(which + 2).getPosition());
+                intent.putExtra("position", MainActivity.Screen.toScreen(launcherItems[which]).getPosition());
                 startActivity(intent);
             }
         });
