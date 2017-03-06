@@ -65,9 +65,6 @@ public class MainActivity extends AppCompatActivity {
     //画面回転時のfragmentの更新に使用
     private Screen present;
 
-    private final int OVERLAY_REQ_CODE = 1234;
-    private final int USAGE_ACCESS_REQ_CODE = 2222;
-
     /**
      * このアクティビティが持つfragment
      */
@@ -129,33 +126,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (!canGetUsageStats()) {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("UsageAccessPermissionGranted", false);
-            editor.apply();
+        if (!canGetUsageStats(getApplicationContext())) {
             Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-            startActivityForResult(intent, USAGE_ACCESS_REQ_CODE);
-        } else {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("UsageAccessPermissionGranted", true);
-            editor.apply();
+            startActivity(intent);
         }
 
         //Android6以降の端末でランチャーのオーバーレイ用の権限を取得する
         if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(this)) {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("SystemAlertPermissionGranted", false);
-            editor.apply();
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent, OVERLAY_REQ_CODE);
-        } else {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("SystemAlertPermissionGranted", true);
-            editor.apply();
+            startActivity(intent);
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -208,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (savedInstanceState == null) {
-            Logger.d("MainActivity:onCreate", "savedInstanceState != null");
+            Logger.d("MainActivity:onCreate", "savedInstanceState == null");
     
             //画面回転を自動に設定
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
@@ -444,30 +423,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == OVERLAY_REQ_CODE) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
-                //権限が得られなかった
-            } else {
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean("SystemAlertPermissionGranted", true);
-                editor.apply();
-            }
-        } else if (requestCode == USAGE_ACCESS_REQ_CODE) {
-            if (checkPermission(getApplicationContext())) {
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean("UsageAccessPermissionGranted", true);
-                editor.apply();
-            } else {
-
-            }
-        }
-    }
-
-    private static boolean checkPermission(Context context) {
+    public static boolean canGetUsageStats(Context context) {
         // Lollipop以前は使えないAPIが含まれています。
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             return true;
@@ -482,16 +438,6 @@ public class MainActivity extends AppCompatActivity {
             return context.checkPermission("android.permission.PACKAGE_USAGE_STATS", android.os.Process.myPid(), android.os.Process.myUid()) == PackageManager.PERMISSION_GRANTED;
         }
         // AppOpsの状態がデフォルトでないならallowedのみtrue
-        return mode == AppOpsManager.MODE_ALLOWED;
-    }
-
-    private boolean canGetUsageStats() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            return true;
-        }
-        AppOpsManager aom = (AppOpsManager) getSystemService(APP_OPS_SERVICE);
-        int uid = android.os.Process.myUid();
-        int mode = aom.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, uid, getPackageName());
         return mode == AppOpsManager.MODE_ALLOWED;
     }
 }
