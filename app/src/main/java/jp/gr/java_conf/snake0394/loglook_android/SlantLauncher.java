@@ -137,7 +137,7 @@ public class SlantLauncher extends Service implements SensorEventListener {
                             Intent intent = new Intent(SlantLauncher.this, MainActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.putExtra("usesLandscape", true);
-                            intent.putExtra("position", MainActivity.Screens.DECK.getPosition());
+                            intent.putExtra("position", MainActivity.Screen.DECK.getPosition());
                             startActivity(intent);
                             try {
                                 Thread.sleep(TimeUnit.SECONDS.toMillis(3));
@@ -157,7 +157,7 @@ public class SlantLauncher extends Service implements SensorEventListener {
                             Intent intent = new Intent(SlantLauncher.this, MainActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.putExtra("usesLandscape", true);
-                            intent.putExtra("position", MainActivity.Screens.TACTICAL_SITUATION.getPosition());
+                            intent.putExtra("position", MainActivity.Screen.TACTICAL_SITUATION.getPosition());
                             startActivity(intent);
                             try {
                                 Thread.sleep(TimeUnit.SECONDS.toMillis(3));

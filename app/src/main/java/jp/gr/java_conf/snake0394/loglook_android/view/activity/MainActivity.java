@@ -22,7 +22,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.util.SparseArray;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jp.gr.java_conf.snake0394.loglook_android.R;
+import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
 import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.ConfigFragment;
@@ -52,17 +53,17 @@ import jp.gr.java_conf.snake0394.loglook_android.view.fragment.MyShipListFragmen
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.TacticalSituationFragment;
 
 import static jp.gr.java_conf.snake0394.loglook_android.R.id.toolbar;
-import static jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity.Screens.HOME;
+import static jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity.Screen.HOME;
+import static jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity.Screen.drawerItemTitles;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String[] drawerItemTitles = new String[]{"ホーム", "艦隊", "遠征", "入渠", "損傷艦", "艦娘一覧", "装備一覧", "戦況", "設定"};
 
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
     private ListView leftDrawerListView;
     //画面回転時のfragmentの更新に使用
-    private Screens present;
+    private Screen present;
 
     private final int OVERLAY_REQ_CODE = 1234;
     private final int USAGE_ACCESS_REQ_CODE = 2222;
@@ -70,34 +71,52 @@ public class MainActivity extends AppCompatActivity {
     /**
      * このアクティビティが持つfragment
      */
-    public enum Screens {
-        NULL(0),
-        HOME(1),
-        DECK(2),
-        MISSION(3),
-        DOCK(4),
-        DAMAGED_SHIP(5),
-        MY_SHIP_LIST(6),
-        EQUIPMENT(7),
-        TACTICAL_SITUATION(8),
-        CONFIG(9);
+    public enum Screen {
+        HOME(0, "ホーム"),
+        DECK(1, "艦隊"),
+        MISSION(2, "遠征"),
+        DOCK(3, "入渠"),
+        DAMAGED_SHIP(4, "損傷艦"),
+        MY_SHIP_LIST(5, "艦娘一覧"),
+        EQUIPMENT(6, "装備一覧"),
+        TACTICAL_SITUATION(7, "戦況"),
+        CONFIG(8, "設定");
 
         private int position;
+        private String name;
 
-        Screens(int id) {
+        Screen(int id, String name) {
             this.position = id;
+            this.name = name;
         }
 
-        private static final Map<Integer, Screens> toMainFragmentMap = new HashMap<>();
-
+        static final String[] drawerItemTitles  = new String[Screen.values().length];
         static {
-            for (Screens entry : values()) {
-                toMainFragmentMap.put(entry.position, entry);
+            for (Screen screen : values()) {
+                drawerItemTitles[screen.getPosition()] = screen.name;
             }
         }
 
-        public static Screens toMainFragment(int id) {
-            return toMainFragmentMap.get(id);
+        private static final SparseArray<Screen> positionToScreenSparseArray = new SparseArray<>();
+        static {
+            for (Screen entry : values()) {
+                positionToScreenSparseArray.put(entry.position, entry);
+            }
+        }
+    
+        private static final Map<String , Screen> nameToScreenMap = new HashMap<>();
+        static {
+            for (Screen entry : values()) {
+                nameToScreenMap.put(entry.name, entry);
+            }
+        }
+
+        public static Screen toScreen(int id) {
+            return positionToScreenSparseArray.get(id);
+        }
+    
+        public static Screen toScreen(String name) {
+            return nameToScreenMap.get(name);
         }
 
         public int getPosition() {
@@ -168,32 +187,37 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        Log.d("MainActivity", "onCreate");
+        Logger.d("MainActivity", "onCreate");
 
         //画面の向き
         boolean usesLandscape = intent.getBooleanExtra("usesLandscape", false);
         if (usesLandscape) {
-            Log.d("MainActivity", "横");
+            Logger.d("MainActivity", "横");
             intent.putExtra("usesLandscape", false);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
 
         //表示するfragment
-        Screens mf = Screens.toMainFragment(intent.getIntExtra("position", Screens.NULL.getPosition()));
-        if (mf != Screens.NULL) {
-            intent.putExtra("position", Screens.NULL.getPosition());
+        int position = intent.getIntExtra("position", -1);
+        if (position != -1) {
+            Screen mf = Screen.toScreen(position);
+            Logger.d("MainActivity:onCreate", mf.name + " was selected");
             present = mf;
             selectItem(mf);
             return;
         }
 
         if (savedInstanceState == null) {
+            Logger.d("MainActivity:onCreate", "savedInstanceState != null");
+    
             //画面回転を自動に設定
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             // デフォルトはHomeFragment
             if (present == null) {
+                Logger.d("MainActivity:onCreate", "present = null");
                 selectItem(HOME);
             } else {
+                Logger.d("MainActivity:onCreate", present.name + " was selected");
                 selectItem(present);
             }
         }
@@ -270,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d("MainActivity", "onStop");
+        Logger.d("MainActivity", "onStop");
         /*
         if (present != Fragment.TACTICAL_SITUATION) {
             //画面回転を自動に設定
@@ -282,11 +306,11 @@ public class MainActivity extends AppCompatActivity {
         Configuration config = resources.getConfiguration();
         switch (config.orientation) {
             case Configuration.ORIENTATION_PORTRAIT:
-                Log.d("MainActivity", "縦");
+                Logger.d("MainActivity", "縦");
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
                 break;
             case Configuration.ORIENTATION_LANDSCAPE:
-                Log.d("MainActivity", "横");
+                Logger.d("MainActivity", "横");
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 break;
         }
@@ -328,12 +352,12 @@ public class MainActivity extends AppCompatActivity {
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
-            selectItem(Screens.toMainFragment(position));
+            selectItem(Screen.toScreen(position - 1));
         }
     }
 
     //DrawerListのpositionに該当するfragmentを表示
-    private void selectItem(Screens mf) {
+    private void selectItem(Screen mf) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         android.support.v4.app.Fragment fragment;
 
@@ -388,10 +412,10 @@ public class MainActivity extends AppCompatActivity {
         transaction.commitAllowingStateLoss();
 
         //選択されたDrawerListの位置ををハイライト
-        leftDrawerListView.setItemChecked(mf.getPosition(), true);
+        leftDrawerListView.setItemChecked(mf.getPosition() + 1, true);
 
         //ツールバーのタイトルを更新
-        getSupportActionBar().setTitle(drawerItemTitles[mf.getPosition() - 1]);
+        getSupportActionBar().setTitle(mf.name);
 
         //Drawerを閉じる
         drawerLayout.closeDrawer(leftDrawerListView);
@@ -402,20 +426,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        Log.d("MainActivity", "onNewIntent");
+        Logger.d("MainActivity", "onNewIntent");
         //画面の向き
         boolean usesLandscape = intent.getBooleanExtra("usesLandscape", false);
         if (usesLandscape) {
-            Log.d("onNewIntent", "横");
+            Logger.d("onNewIntent", "横");
             intent.putExtra("usesLandscape", false);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
 
         //表示するfragment
-        Screens mf = Screens.toMainFragment(intent.getIntExtra("position", Screens.NULL.getPosition()));
-        if (mf != Screens.NULL) {
-            Log.d("MainActivity", "fragment");
-            intent.putExtra("position", Screens.NULL.getPosition());
+        int position = intent.getIntExtra("position", -1);
+        if (position != -1) {
+            Screen mf = Screen.toScreen(position);
+            Logger.d("MainActivity:onCreate", mf.name + " was selected");
             present = mf;
         }
     }

@@ -57,7 +57,7 @@ public class HeavilyDamagedWarningActivity extends AppCompatActivity {
                 // クリック時の処理
                 Intent sendIntent = new Intent(getBaseContext(), MainActivity.class);
                 sendIntent.putExtra("usesLandscape", true);
-                sendIntent.putExtra("position", MainActivity.Screens.DECK.getPosition());
+                sendIntent.putExtra("position", MainActivity.Screen.DECK.getPosition());
                 startActivity(sendIntent);
             }
         });
