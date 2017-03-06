@@ -1,11 +1,11 @@
 package jp.gr.java_conf.snake0394.loglook_android.view.fragment;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.text.SpannableStringBuilder;
 import android.view.Display;
@@ -16,7 +16,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.lang.reflect.Method;
 
@@ -25,9 +24,11 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.SlantLauncher;
+import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.LittleProxyServerService;
 import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
 import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository;
+import jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity;
 
 import static android.content.Context.WINDOW_SERVICE;
 
@@ -256,10 +257,17 @@ public class ConfigFragment extends Fragment {
                 intent = new Intent(getActivity(), SlantLauncher.class);
                 getActivity().stopService(intent);
 
-                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
-                if (!sp.getBoolean("SystemAlertPermissionGranted", true) || !sp.getBoolean("UsageAccessPermissionGranted", true)) {
-                    Toast.makeText(getContext(), "端末の設定から権限の許可を行う必要があります。", Toast.LENGTH_LONG)
-                         .show();
+                if (!MainActivity.canGetUsageStats(getContext())) {
+                    Logger.d("ConfigFragment", "can't get usage stats");
+                    intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+                    startActivity(intent);
+                    return;
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(getContext())) {
+                    Logger.d("ConfigFragment", "can't display system alart");
+                    intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getContext().getPackageName()));
+                    startActivity(intent);
                     return;
                 }
 
