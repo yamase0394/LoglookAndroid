@@ -376,8 +376,8 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
     public void onDestroyView() {
         //検索ボックスを削除
         Toolbar toolbar = ButterKnife.findById(getActivity(), R.id.toolbar);
-        toolbar.getMenu()
-               .clear();
+
+        toolbar.getMenu().removeGroup(R.id.search_group);
 
         unbinder.unbind();
 
