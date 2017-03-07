@@ -25,7 +25,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.Display;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -168,11 +167,6 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         leftDrawerListView = (ListView) findViewById(R.id.slide_menu);
-
-        //ヘッダー
-        //ヘッダの分インデックスがずれる
-        leftDrawerListView.addHeaderView(LayoutInflater.from(this)
-                                                       .inflate(R.layout.drawer_header, null));
 
         // Set the adapter for list view.
         leftDrawerListView.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, drawerItemTitles));
@@ -340,6 +334,14 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Pass the event to ActionBarDrawerToggle, if it returns
         // true, then it has handled the app icon touch event
+        if (item.getItemId() == R.id.open_kancolle) {
+            String packageName = "com.dmm.dmmlabo.kancolle";
+            PackageManager pm = getPackageManager();
+            Intent sendIntent = pm.getLaunchIntentForPackage(packageName);
+            startActivity(sendIntent);
+            finish();
+            overridePendingTransition(R.animator.fade_in, R.animator.fade_out);
+        }
         if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
@@ -349,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
-            selectItem(Screen.toScreen(position - 1));
+            selectItem(Screen.toScreen(position));
         }
     }
 
@@ -411,7 +413,7 @@ public class MainActivity extends AppCompatActivity {
         transaction.commitAllowingStateLoss();
 
         //選択されたDrawerListの位置ををハイライト
-        leftDrawerListView.setItemChecked(mf.getPosition() + 1, true);
+        leftDrawerListView.setItemChecked(mf.getPosition(), true);
 
         //ツールバーのタイトルを更新
         getSupportActionBar().setTitle(mf.name);
