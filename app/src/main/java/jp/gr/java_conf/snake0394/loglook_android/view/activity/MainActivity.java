@@ -88,7 +88,8 @@ public class MainActivity extends AppCompatActivity {
             this.name = name;
         }
 
-        static final String[] drawerItemTitles  = new String[Screen.values().length];
+        static final String[] drawerItemTitles = new String[Screen.values().length];
+
         static {
             for (Screen screen : values()) {
                 drawerItemTitles[screen.getPosition()] = screen.name;
@@ -96,13 +97,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private static final SparseArray<Screen> positionToScreenSparseArray = new SparseArray<>();
+
         static {
             for (Screen entry : values()) {
                 positionToScreenSparseArray.put(entry.position, entry);
             }
         }
-    
-        private static final Map<String , Screen> nameToScreenMap = new HashMap<>();
+
+        private static final Map<String, Screen> nameToScreenMap = new HashMap<>();
+
         static {
             for (Screen entry : values()) {
                 nameToScreenMap.put(entry.name, entry);
@@ -112,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         public static Screen toScreen(int id) {
             return positionToScreenSparseArray.get(id);
         }
-    
+
         public static Screen toScreen(String name) {
             return nameToScreenMap.get(name);
         }
@@ -138,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             MediaProjectionManager mMediaProjectionManager;
             mMediaProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
 
@@ -169,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
         //ヘッダー
         //ヘッダの分インデックスがずれる
         leftDrawerListView.addHeaderView(LayoutInflater.from(this)
-                                                .inflate(R.layout.drawer_header, null));
+                                                       .inflate(R.layout.drawer_header, null));
 
         // Set the adapter for list view.
         leftDrawerListView.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, drawerItemTitles));
@@ -200,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             Logger.d("MainActivity:onCreate", "savedInstanceState == null");
-    
+
             //画面回転を自動に設定
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             // デフォルトはHomeFragment
@@ -220,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        if(sp.getBoolean("isConfigExported", false)){
+        if (sp.getBoolean("isConfigExported", false)) {
             return;
         }
 
@@ -266,11 +269,14 @@ public class MainActivity extends AppCompatActivity {
         prefs.logsRequest = sp.getBoolean("saveRequest", false);
         GeneralPrefsSpotRepository.putEntity(getApplicationContext(), prefs);
 
-        File dataFile = new File(Environment.getExternalStorageDirectory().getPath() + "/泥提督支援アプリ/data");
-        if(dataFile.exists()) {
+        File dataFile = new File(Environment.getExternalStorageDirectory()
+                                            .getPath() + "/泥提督支援アプリ/data");
+        if (dataFile.exists()) {
             File[] files = dataFile.listFiles();
-            for (File file : files) {
-                file.delete();
+            if (files != null) {
+                for (File file : files) {
+                    file.delete();
+                }
             }
             dataFile.delete();
         }
