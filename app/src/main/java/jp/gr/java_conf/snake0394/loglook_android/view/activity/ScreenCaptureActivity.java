@@ -12,7 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 
-import jp.gr.java_conf.snake0394.loglook_android.DeckListCaptureService;
+import jp.gr.java_conf.snake0394.loglook_android.ScreenShotService;
 import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 
 /**
@@ -78,7 +78,7 @@ public class ScreenCaptureActivity extends AppCompatActivity {
             mediaProjection =
                 mMediaProjectionManager.getMediaProjection(resultCode, intent);
 
-            Intent serviceIntent = new Intent(getApplicationContext(), DeckListCaptureService.class);
+            Intent serviceIntent = new Intent(getApplicationContext(), ScreenShotService.class);
             startService(serviceIntent);
 
             String packageName = "com.dmm.dmmlabo.kancolle";

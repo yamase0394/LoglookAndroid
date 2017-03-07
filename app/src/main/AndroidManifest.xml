@@ -70,6 +70,11 @@
             android:name=".DeckListCaptureService"
             android:exported="false">
         </service>
+
+        <service
+            android:name=".ScreenShotService"
+            android:exported="false">
+        </service>
     </application>
 
 </manifest>
