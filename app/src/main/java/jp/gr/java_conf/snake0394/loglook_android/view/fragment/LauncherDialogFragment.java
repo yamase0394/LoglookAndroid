@@ -3,6 +3,7 @@ package jp.gr.java_conf.snake0394.loglook_android.view.fragment;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -33,10 +34,16 @@ public class LauncherDialogFragment extends android.support.v4.app.DialogFragmen
         builder.setItems(launcherItems, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (which == 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    Intent intent = new Intent(getActivity(), ScreenCaptureActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                    getContext().startActivity(intent);
+                if (which == 0 ) {
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        Intent intent = new Intent(getActivity(), ScreenCaptureActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                        getContext().startActivity(intent);
+                    }
+                    String packageName = "com.dmm.dmmlabo.kancolle";
+                    PackageManager pm = getActivity().getPackageManager();
+                    Intent sendIntent = pm.getLaunchIntentForPackage(packageName);
+                    startActivity(sendIntent);
                     dismiss();
                     return;
                 }
