@@ -1,12 +1,12 @@
 package jp.gr.java_conf.snake0394.loglook_android.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 
 import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
-import jp.gr.java_conf.snake0394.loglook_android.view.fragment.LauncherDialogFragment;
 
 /**
  * Serviceからダイアログを表示するためのActivity
@@ -16,8 +16,14 @@ public class DialogActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        android.support.v4.app.DialogFragment dialogFragment = LauncherDialogFragment.newInstance();
-        dialogFragment.show(getSupportFragmentManager(), "fragment_dialog");
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("usesLandscape", getIntent().getBooleanExtra("usesLandscape", true));
+        intent.putExtra("position", getIntent().getIntExtra("position", 0));
+        startActivity(intent);
+        finish();
+
+        //android.support.v4.app.DialogFragment dialogFragment = LauncherDialogFragment.newInstance();
+        //dialogFragment.show(getSupportFragmentManager(), "fragment_dialog");
     }
 
     @Override

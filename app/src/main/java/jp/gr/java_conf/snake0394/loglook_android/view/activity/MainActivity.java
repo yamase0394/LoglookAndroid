@@ -127,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.animator.fade_in, R.animator.fade_out);
         setContentView(R.layout.activity_main);
 
         if (!canGetUsageStats(getApplicationContext())) {
@@ -339,8 +340,8 @@ public class MainActivity extends AppCompatActivity {
             PackageManager pm = getPackageManager();
             Intent sendIntent = pm.getLaunchIntentForPackage(packageName);
             startActivity(sendIntent);
-            finish();
             overridePendingTransition(R.animator.fade_in, R.animator.fade_out);
+            finish();
         }
         if (drawerToggle.onOptionsItemSelected(item)) {
             return true;

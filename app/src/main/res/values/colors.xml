@@ -44,4 +44,5 @@
     <color name="adjusted_aa">#1e83e7</color>
 
     <color name="equip_ship">#969696</color>
+    <color name="launcherItemBackground">#c3307ad9</color>
 </resources>
