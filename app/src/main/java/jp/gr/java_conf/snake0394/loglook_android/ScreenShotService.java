@@ -155,14 +155,6 @@ public class ScreenShotService extends Service {
                                                      // 保存処理終了
                                                      fos.close();
 
-                                                     handler.post(new Runnable() {
-                                                         @Override
-                                                         public void run() {
-                                                             Toast.makeText(getApplicationContext(), "保存完了", Toast.LENGTH_SHORT)
-                                                                  .show();
-                                                         }
-                                                     });
-
                                                  } catch (Exception e) {
                                                      handler.post(new Runnable() {
                                                          @Override

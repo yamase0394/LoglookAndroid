@@ -15,19 +15,30 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import butterknife.ButterKnife;
 import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
 import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.DialogActivity;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity;
+import jp.gr.java_conf.snake0394.loglook_android.view.activity.ScreenCaptureActivity;
 
 
 /**
@@ -393,9 +404,135 @@ public class SlantLauncher extends Service implements SensorEventListener {
         }
 
         private void startActivity() {
+
+            /*
             Intent i = new Intent(context, DialogActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
             context.startActivity(i);
+            */
+
+
+            final View launcherLayout = View.inflate(getApplicationContext(), R.layout.layout_launcher, null);
+            launcherLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    wm.removeView(launcherLayout);
+                }
+            });
+
+            ListView screenListview = ButterKnife.findById(launcherLayout, R.id.list_screen);
+            String[] launcherItems = new String[]{"艦隊", "遠征", "入渠", "損傷艦", "艦娘一覧", "装備一覧", "戦況"};
+            CustomAdapter customAdapter = new CustomAdapter(context, 0, launcherItems);
+            screenListview.setAdapter(customAdapter);
+            screenListview.setDivider(null);
+            screenListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    /*
+                    wm.removeView(launcherLayout);
+                    Intent intent = new Intent(context, MainActivity.class);
+                    intent.putExtra("usesLandscape", true);
+                    intent.putExtra("position", MainActivity.Screen.toScreen((String)adapterView.getItemAtPosition(i))
+                                                                   .getPosition());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |  Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                    context.startActivity(intent);
+                    */
+                    //そのまま支援アプリを起動すると艦これがブラックアウトするため透明なアクティビティを間に挟む
+                    wm.removeView(launcherLayout);
+                    Intent intent = new Intent(context, DialogActivity.class);
+                    intent.putExtra("usesLandscape", true);
+                    intent.putExtra("position", MainActivity.Screen.toScreen((String) adapterView.getItemAtPosition(i))
+                                                                   .getPosition());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                    context.startActivity(intent);
+                }
+            });
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                screenListview = ButterKnife.findById(launcherLayout, R.id.list_sub);
+                launcherItems = new String[]{"スクリーンショット", "編成記録"};
+                customAdapter = new CustomAdapter(context, 0, launcherItems);
+                screenListview.setAdapter(customAdapter);
+                screenListview.setDivider(null);
+                screenListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        wm.removeView(launcherLayout);
+                        Intent intent = new Intent(context, ScreenCaptureActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                        switch (i) {
+                            case 0:
+                                intent.putExtra("class", ScreenShotService.class.getSimpleName());
+                                break;
+                            case 1:
+                                intent.putExtra("class", DeckListCaptureService.class.getSimpleName());
+                                break;
+                        }
+                        context.startActivity(intent);
+                    }
+                });
+            }
+
+            WindowManager.LayoutParams params = new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.TYPE_SYSTEM_ERROR, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
+            wm.addView(launcherLayout, params);
+
+        }
+
+        class CustomAdapter extends ArrayAdapter<String> {
+
+            class ViewHolder {
+                TextView labelText;
+            }
+
+            private LayoutInflater inflater;
+
+            // コンストラクタ
+            public CustomAdapter(Context context, int textViewResourceId, String[] labelList) {
+                super(context, textViewResourceId, labelList);
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+
+                ViewHolder holder;
+                View view = convertView;
+
+                // Viewを再利用している場合は新たにViewを作らない
+                if (view == null) {
+                    inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    view = inflater.inflate(R.layout.layout_launcher_item, null);
+                    TextView label = (TextView) view.findViewById(R.id.name);
+                    holder = new ViewHolder();
+                    holder.labelText = label;
+                    view.setTag(holder);
+                } else {
+                    holder = (ViewHolder) view.getTag();
+                }
+
+                // 特定の行のデータを取得
+                String str = getItem(position);
+
+                if (!TextUtils.isEmpty(str)) {
+                    // テキストビューにラベルをセット
+                    holder.labelText.setText(str);
+                }
+
+                /*
+                // 行毎に背景色を変える
+                if (position % 2 == 0) {
+                    holder.labelText.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
+                } else {
+                    holder.labelText.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+                }
+                */
+
+                // XMLで定義したアニメーションを読み込む
+                Animation anim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in_from_left);
+                // リストアイテムのアニメーションを開始
+                view.startAnimation(anim);
+
+                return view;
+            }
         }
     }
 
