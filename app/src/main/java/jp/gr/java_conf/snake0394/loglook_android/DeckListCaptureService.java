@@ -5,7 +5,10 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.graphics.Rect;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
 import android.media.Image;
@@ -21,9 +24,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.io.File;
@@ -59,9 +64,11 @@ public class DeckListCaptureService extends Service {
     private int displayHeight;
     private Bitmap listBitmap;
     private List<Bitmap> bitmapList;
+    private List<String> listNameList;
     private int shipNum;
     private int shipDataWidth;
     private ImageView preview;
+    private Spinner fleetNameSpinner;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -109,6 +116,7 @@ public class DeckListCaptureService extends Service {
         mVirtualDisplay = mediaProjection.createVirtualDisplay("Capturing Display", displayWidth, displayHeight, density, DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR, mImageReader.getSurface(), null, null);
 
         bitmapList = new ArrayList<>();
+        listNameList = new ArrayList<>();
     }
 
     @Override
@@ -118,7 +126,8 @@ public class DeckListCaptureService extends Service {
         LayoutInflater layoutInflater = LayoutInflater.from(this);
         linearLayout = (LinearLayout) layoutInflater.inflate(R.layout.layout_capture_screen, null);
 
-        params = new WindowManager.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, -(int)(displayWidth / 3.5), 0, WindowManager.LayoutParams.TYPE_SYSTEM_ERROR, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
+
+        params = new WindowManager.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, -(int) (displayWidth / 3.5), 0, WindowManager.LayoutParams.TYPE_SYSTEM_ERROR, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
 
         Button captureButton = (Button) linearLayout.findViewById(R.id.button_cap);
         captureButton.setOnTouchListener(new View.OnTouchListener() {
@@ -183,18 +192,80 @@ public class DeckListCaptureService extends Service {
                     }
                 } else {
                     bitmapList.add(listBitmap);
+                    listNameList.add((String) fleetNameSpinner.getSelectedItem());
+                }
+
+
+                for (int i = 0; i < bitmapList.size(); i++) {
+                    String txt = listNameList.get(i);
+                    int color = Color.BLACK;
+                    switch (txt) {
+                        case "なし":
+                            continue;
+                        case "第一艦隊":
+                            color = Color.rgb(255, 0, 0);
+                            break;
+                        case "第二艦隊":
+                            color = Color.rgb(0, 0, 255);
+                            break;
+                        case "ボス支援":
+                            color = Color.rgb(32, 172, 76);
+                            break;
+                        case "道中支援":
+                            color = Color.rgb(224, 96, 32);
+                            break;
+                    }
+
+                    Bitmap base = bitmapList.get(i);
+
+                    //文字の縁
+                    Paint paint = new Paint();
+                    paint.setAntiAlias(true);       // アンチエイリアス
+                    paint.setStrokeWidth(6);                // 描画の幅
+                    paint.setColor(Color.WHITE);             // 縁取り色のセット
+                    paint.setTextSize(45);           // テキストサイズ
+                    paint.setStyle(Paint.Style.STROKE);
+                    //文字本隊
+                    Paint w_paint = new Paint();
+                    w_paint.setAntiAlias(true);
+                    w_paint.setColor(color);
+                    w_paint.setTextSize(45);
+                    w_paint.setStrokeWidth(0);
+                    w_paint.setStyle(Paint.Style.FILL);
+
+                    w_paint.getTextBounds(txt, 0, txt.length(), new Rect());
+                    Paint.FontMetrics fm = w_paint.getFontMetrics();//フォントマトリックス
+                    int mtw = (int) w_paint.measureText(txt);//幅
+                    int fmHeight = (int) (Math.abs(fm.top) + fm.bottom);//高さ
+                    Bitmap bmp = Bitmap.createBitmap(mtw + 1 * 2, fmHeight + 1 * 2, Bitmap.Config.ARGB_8888);
+                    Canvas cv = new Canvas(bmp);
+                    cv.drawText(txt, 1, Math.abs(fm.ascent) + 1, paint);
+                    cv.drawText(txt, 1, Math.abs(fm.ascent) + 1, w_paint);
+
+                    Bitmap containTxt = Bitmap.createBitmap(base.getWidth(), base.getHeight(), Bitmap.Config.ARGB_8888);
+                    cv = new Canvas(containTxt);
+                    cv.drawBitmap(base, 0, 0, null);
+                    cv.drawBitmap(bmp, shipDataWidth / 2, 0, null);
+                    bitmapList.set(i, containTxt);
                 }
 
                 listBitmap = bitmapList.get(0);
+
                 for (int i = 1; i < bitmapList.size(); i++) {
                     Bitmap bitmap = bitmapList.get(i);
                     int newwidth = shipDataWidth * 2 * (i + 1);
                     int newheight = Math.max(listBitmap.getHeight(), bitmap.getHeight());
                     Bitmap newList = Bitmap.createBitmap(newwidth, newheight, Bitmap.Config.ARGB_8888);
 
+                    Paint paint = new Paint();
+                    paint.setColor(Color.rgb(32,32,192));
+                    paint.setStyle(Paint.Style.FILL);
+                    paint.setAntiAlias(true);
+
                     Canvas offScreen = new Canvas(newList);
                     offScreen.drawBitmap(listBitmap, 0, 0, null);
                     offScreen.drawBitmap(bitmap, newwidth - 2 * shipDataWidth, 0, null);
+                    offScreen.drawRect((newwidth - shipDataWidth*2) - (shipDataWidth / 200), 0, (newwidth - shipDataWidth*2) + (shipDataWidth / 200), newheight, paint);
                     listBitmap = newList;
                 }
 
@@ -269,12 +340,20 @@ public class DeckListCaptureService extends Service {
                 }
                 shipNum = 0;
                 bitmapList.add(listBitmap);
+                listNameList.add((String) fleetNameSpinner.getSelectedItem());
                 listBitmap = null;
                 preview.setImageResource(android.R.color.transparent);
             }
         });
 
         preview = ButterKnife.findById(linearLayout, R.id.imageView);
+
+        fleetNameSpinner = ButterKnife.findById(linearLayout, R.id.spinner_fleet_name);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item);
+        arrayAdapter.addAll(new String[]{"なし", "第一艦隊", "第二艦隊", "ボス支援", "道中支援"});
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        fleetNameSpinner.setAdapter(arrayAdapter);
+        fleetNameSpinner.setSelection(0);
 
         View dragHandle = ButterKnife.findById(linearLayout, R.id.view_drag_handle);
         dragHandle.setOnTouchListener(new View.OnTouchListener() {
@@ -360,7 +439,7 @@ public class DeckListCaptureService extends Service {
             int blackHeight = (displayHeight - kcsHeight) / 2;
             int[] newPixcels = new int[displayWidth * kcsHeight];
             for (int y = 0; y < height; y++) {
-                if(y < blackHeight || y > kcsHeight +  blackHeight - 1){
+                if (y < blackHeight || y > kcsHeight + blackHeight - 1) {
                     continue;
                 }
                 for (int x = 0; x < width; x++) {
