@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#307ad9</color>
     <color name="colorAccent">#ffb300</color>
 
+    <color name="imageButtonHighLight">#89ffb300</color>
+
     <color name="transparent">#00aaaaaa</color>
 
     <color name="listBackground">#ded9c3</color>
@@ -45,4 +47,5 @@
 
     <color name="equip_ship">#969696</color>
     <color name="launcherItemBackground">#c3307ad9</color>
+    <color name="overlay_background">#70000000</color>
 </resources>

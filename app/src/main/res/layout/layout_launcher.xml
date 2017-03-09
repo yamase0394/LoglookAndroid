@@ -2,7 +2,7 @@
 <android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                                android:layout_height="match_parent"
                                                xmlns:app="http://schemas.android.com/apk/res-auto"
-                                               android:background="@android:color/transparent"
+                                               android:background="@color/overlay_background"
                                                android:layout_width="match_parent"
                                                android:id="@+id/layout_root"
                                                android:paddingBottom="20dp"

@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -29,6 +31,8 @@ public class SaveFleetCaptureActivity extends AppCompatActivity {
     private Bitmap bitmap;
     private String filename;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     @BindView(R.id.imageView)
     ImageView imageView;
     @BindView(R.id.edit_name)
@@ -38,7 +42,13 @@ public class SaveFleetCaptureActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_save_fleet_capture);
+        overridePendingTransition(R.animator.fade_in, R.animator.fade_out);
         ButterKnife.bind(this);
+
+        toolbar.setTitle("画像保存");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String s = sp.getString("deckCaptureBitmap", "");
@@ -96,5 +106,29 @@ public class SaveFleetCaptureActivity extends AppCompatActivity {
     @OnClick(R.id.button_cancel)
     void cancel() {
         finish();
+        overridePendingTransition(R.animator.fade_in, R.animator.fade_out);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        boolean result = true;
+
+        switch (id) {
+            case android.R.id.home:
+                finish();
+                break;
+            default:
+                result = super.onOptionsItemSelected(item);
+        }
+
+        return result;
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.animator.fade_in, R.animator.fade_out);
     }
 }

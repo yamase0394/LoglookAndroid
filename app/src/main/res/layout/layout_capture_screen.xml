@@ -1,37 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              android:layout_height="match_parent"
               android:layout_width="match_parent"
-              android:background="@color/adjusted_aa">
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end">
+        android:background="@color/adjusted_aa"
+        android:layout_gravity="end"
+        android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
 
-            <TextView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+            <ImageButton
                 android:id="@+id/view_drag_handle"
-                android:background="@drawable/ic_drag_handle"
-                android:focusable="true"
-                android:clickable="true"/>
-
-            <Button
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:background="@drawable/ic_drag_handle"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/selector_imagebutton"/>
+
+            <ImageButton
                 android:id="@+id/button_close"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignRight="@+id/imageView"
                 android:background="@drawable/ic_close"
-                android:minWidth="20dp"
                 android:minHeight="20dp"
-                android:layout_alignRight="@+id/imageView"/>
+                android:minWidth="20dp"
+                android:src="@drawable/selector_imagebutton"/>
 
             <ImageView
                 android:id="@+id/imageView"
@@ -41,52 +43,55 @@
         </RelativeLayout>
 
         <CheckBox
-            android:text="艦隊区切り線"
+            android:id="@+id/check_uses_fleet_divider"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/check_uses_fleet_divider"/>
+            android:text="艦隊区切り線"/>
 
         <Spinner
+            android:id="@+id/spinner_fleet_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/spinner_fleet_name"
             android:popupBackground="@color/equip_ship"/>
 
 
         <android.support.percent.PercentRelativeLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="30dp">
+            android:layout_height="30dp"
+            android:orientation="horizontal">
 
-            <Button
+            <ImageButton
+                android:id="@+id/button_cap"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                app:layout_marginLeftPercent="40%"
-                android:id="@+id/button_cap"
                 android:background="@drawable/ic_camera"
+                android:maxHeight="30dp"
+                android:maxWidth="30dp"
                 android:minHeight="28dp"
                 android:minWidth="28dp"
-                android:maxWidth="30dp"
-                android:maxHeight="30dp"/>
+                android:src="@drawable/selector_imagebutton"
+                app:layout_marginLeftPercent="40%"/>
 
-            <Button
+            <ImageButton
+                android:id="@+id/button_save"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                app:layout_marginLeftPercent="8%"
-                android:id="@+id/button_save"
                 android:background="@drawable/ic_save"
                 android:minHeight="25dp"
                 android:minWidth="25dp"
+                android:src="@drawable/selector_imagebutton"
+                app:layout_marginLeftPercent="8%"
                 />
 
-            <Button
+            <ImageButton
+                android:id="@+id/button_next"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                app:layout_marginLeftPercent="70%"
-                android:id="@+id/button_next"
+                android:background="@drawable/ic_add"
                 android:minHeight="30dp"
                 android:minWidth="30dp"
-                android:background="@drawable/ic_add"/>
+                android:src="@drawable/selector_imagebutton"
+                app:layout_marginLeftPercent="70%"/>
         </android.support.percent.PercentRelativeLayout>
 
     </LinearLayout>

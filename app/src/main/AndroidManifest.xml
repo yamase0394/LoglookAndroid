@@ -79,6 +79,7 @@
         <activity
             android:name=".view.activity.SaveFleetCaptureActivity"
             android:launchMode="singleInstance"
+            android:hardwareAccelerated="false"
             android:screenOrientation="landscape">
         </activity>
     </application>

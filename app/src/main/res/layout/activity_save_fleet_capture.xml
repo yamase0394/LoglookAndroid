@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
-
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -12,41 +11,50 @@
         android:layout_height="40dp"
         android:background="?attr/colorPrimary"
         android:minHeight="40dp"
+        app:layout_scrollFlags="scroll|enterAlways"
         app:titleTextAppearance="@style/Toolbar.TitleText"/>
 
-    <ImageView
+    <android.support.percent.PercentRelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:srcCompat="@android:color/transparent"
-        android:id="@+id/imageView"/>
+        android:layout_height="match_parent">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/edit_name"/>
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_heightPercent="70%"/>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:text="保存"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/edit_name"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/button_save"
-            android:background="@drawable/flat_button"
-            android:layout_weight="1"/>
+            android:inputType="textPersonName"
+            android:layout_below="@+id/imageView"/>
 
-        <Button
-            android:text="キャンセル"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/button_cancel"
-            android:background="@drawable/flat_button"
-            android:layout_weight="1"/>
-    </LinearLayout>
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:layout_below="@+id/edit_name">
+
+            <Button
+                android:id="@+id/button_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/flat_button"
+                android:text="保存"/>
+
+            <Button
+                android:id="@+id/button_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/flat_button"
+                android:text="キャンセル"/>
+        </LinearLayout>
+
+    </android.support.percent.PercentRelativeLayout>
 
 </LinearLayout>
