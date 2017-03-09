@@ -75,6 +75,12 @@
             android:name=".ScreenShotService"
             android:exported="false">
         </service>
+
+        <activity
+            android:name=".view.activity.SaveFleetCaptureActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape">
+        </activity>
     </application>
 
 </manifest>

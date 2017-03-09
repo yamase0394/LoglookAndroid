@@ -15,7 +15,6 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.media.projection.MediaProjection;
 import android.os.Build;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
@@ -32,17 +31,14 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
 import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
+import jp.gr.java_conf.snake0394.loglook_android.view.activity.SaveFleetCaptureActivity;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.ScreenCaptureActivity;
 
 
@@ -54,19 +50,22 @@ public class DeckListCaptureService extends Service {
 
     private final Handler handler = new Handler();
 
+    private MediaProjection mediaProjection;
     private ImageReader mImageReader;
     private VirtualDisplay mVirtualDisplay;
+
     private WindowManager wm;
-    private MediaProjection mediaProjection;
     private WindowManager.LayoutParams params;
+
     private int displayWidth;
     private int displayHeight;
+
     private Bitmap listBitmap;
     private List<Bitmap> bitmapList;
     private List<String> listNameList;
     private int shipNum;
     private int shipDataWidth;
-    //タップ検出領域
+
     private LinearLayout linearLayout;
     private ImageView preview;
     private Spinner fleetNameSpinner;
@@ -127,7 +126,6 @@ public class DeckListCaptureService extends Service {
         //タッチイベントを取得するためのviewを作る
         LayoutInflater layoutInflater = LayoutInflater.from(this);
         linearLayout = (LinearLayout) layoutInflater.inflate(R.layout.layout_capture_screen, null);
-
 
         params = new WindowManager.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, -(int) (displayWidth / 3.5), 0, WindowManager.LayoutParams.TYPE_SYSTEM_ERROR, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
 
@@ -275,44 +273,12 @@ public class DeckListCaptureService extends Service {
                     listBitmap = newList;
                 }
 
-                try {
-                    File sdcard_path = new File(Environment.getExternalStorageDirectory()
-                                                           .getPath() + "/泥提督支援アプリ/capture/list");
+                Intent intent = new Intent(getApplicationContext(), SaveFleetCaptureActivity.class);
+                intent.putExtra("bitmap", listBitmap);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
 
-                    if (!sdcard_path.exists()) {
-                        sdcard_path.mkdirs();
-                    }
-
-                    Date mDate = new Date();
-                    SimpleDateFormat fileName = new SimpleDateFormat("yyyyMMdd_HHmmss");
-
-                    FileOutputStream fos = new FileOutputStream(new File(sdcard_path, fileName.format(mDate) + ".jpg"));
-
-                    listBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                    
-                    fos.close();
-                    bitmapList = new ArrayList<>();
-                    listBitmap = null;
-                    shipNum = 0;
-                    preview.setImageResource(android.R.color.transparent);
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(), "保存完了", Toast.LENGTH_SHORT)
-                                 .show();
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(), "保存失敗。エラーログを記録しました。", Toast.LENGTH_SHORT)
-                                 .show();
-                        }
-                    });
-                    ErrorLogger.writeLog(e);
-                }
+                stopSelf();
             }
         });
 
@@ -410,18 +376,10 @@ public class DeckListCaptureService extends Service {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         int[] pixels = new int[width * height];
-        // Bitmap から Pixel を取得
         bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
-        // Pixel 操作部分
-        Logger.d("mwidth", String.valueOf(displayWidth));
-        Logger.d("mheight", String.valueOf(displayHeight));
-        Logger.d("width", String.valueOf(width));
-        Logger.d("height", String.valueOf(height));
         int kcsWidth = height * 5 / 3;
         if (kcsWidth < displayWidth) {
-            Logger.d("kcswidth", String.valueOf(kcsWidth));
             int blackWidth = (displayWidth - kcsWidth) / 2;
-            Logger.d("minX", String.valueOf(blackWidth));
             int[] newPixcels = new int[kcsWidth * height];
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
@@ -432,7 +390,6 @@ public class DeckListCaptureService extends Service {
                     newPixcels[(x - blackWidth) + y * kcsWidth] = pixel;
                 }
             }
-
             return Bitmap.createBitmap(newPixcels, kcsWidth, height, Bitmap.Config.ARGB_8888);
         } else if (kcsWidth == displayWidth) {
             return bitmap;
@@ -449,7 +406,6 @@ public class DeckListCaptureService extends Service {
                     newPixcels[(y - blackHeight) + y * displayWidth] = pixel;
                 }
             }
-
             return Bitmap.createBitmap(newPixcels, displayWidth, kcsHeight, Bitmap.Config.ARGB_8888);
         }
     }
@@ -462,10 +418,6 @@ public class DeckListCaptureService extends Service {
         bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
         int unnecessaryWidth = width - 470 * height / 480;
         int unnecessaryHeight = height - 378 * height / 480;
-        Logger.d("width", String.valueOf(width));
-        Logger.d("height", String.valueOf(height));
-        Logger.d("unwidth", String.valueOf(unnecessaryWidth));
-        Logger.d("unheight", String.valueOf(unnecessaryHeight));
         int[] newPixcels = new int[(width - unnecessaryWidth - 20) * (height - unnecessaryHeight - 20)];
         for (int y = 0; y < height; y++) {
             if (y < unnecessaryHeight || y > height - 20 - 1) {
@@ -489,11 +441,6 @@ public class DeckListCaptureService extends Service {
             listBitmap = bitmap;
             return;
         }
-
-        Logger.d("shipW", String.valueOf(bitmap.getWidth()));
-        Logger.d("shipH", String.valueOf(bitmap.getHeight()));
-        Logger.d("deckW", String.valueOf(listBitmap.getWidth()));
-        Logger.d("deckH", String.valueOf(listBitmap.getHeight()));
 
         Bitmap newDeck;
         if (shipNum == 2) {
