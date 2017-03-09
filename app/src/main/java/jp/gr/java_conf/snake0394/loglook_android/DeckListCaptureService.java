@@ -3,6 +3,7 @@ package jp.gr.java_conf.snake0394.loglook_android;
 import android.annotation.TargetApi;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -17,6 +18,8 @@ import android.media.projection.MediaProjection;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -31,6 +34,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -273,8 +277,15 @@ public class DeckListCaptureService extends Service {
                     listBitmap = newList;
                 }
 
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                listBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                String bitmapStr = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString("deckCaptureBitmap", bitmapStr);
+                editor.commit();
+
                 Intent intent = new Intent(getApplicationContext(), SaveFleetCaptureActivity.class);
-                intent.putExtra("bitmap", listBitmap);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
 

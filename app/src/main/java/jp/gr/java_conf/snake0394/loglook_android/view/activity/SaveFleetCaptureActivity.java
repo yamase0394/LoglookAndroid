@@ -1,9 +1,13 @@
 package jp.gr.java_conf.snake0394.loglook_android.view.activity;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -16,6 +20,7 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.netty.util.internal.StringUtil;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
 
@@ -35,8 +40,17 @@ public class SaveFleetCaptureActivity extends AppCompatActivity {
         setContentView(R.layout.activity_save_fleet_capture);
         ButterKnife.bind(this);
 
-        this.bitmap = (Bitmap) getIntent().getExtras()
-                                          .get("bitmap");
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String s = sp.getString("deckCaptureBitmap", "");
+        if (StringUtil.isNullOrEmpty(s)) {
+            finish();
+            return;
+        }
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        byte[] b = Base64.decode(s, Base64.DEFAULT);
+        this.bitmap = BitmapFactory.decodeByteArray(b, 0, b.length)
+                                   .copy(Bitmap.Config.ARGB_8888, true);
         imageView.setImageBitmap(bitmap);
 
         Date mDate = new Date();
