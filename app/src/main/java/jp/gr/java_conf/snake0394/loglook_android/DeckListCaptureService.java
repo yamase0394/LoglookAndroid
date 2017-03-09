@@ -27,8 +27,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -133,7 +133,7 @@ public class DeckListCaptureService extends Service {
 
         params = new WindowManager.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, -(int) (displayWidth / 3.5), 0, WindowManager.LayoutParams.TYPE_SYSTEM_ERROR, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
 
-        Button captureButton = (Button) linearLayout.findViewById(R.id.button_cap);
+        ImageButton captureButton = ButterKnife.findById(linearLayout, R.id.button_cap);
         captureButton.setOnTouchListener(new View.OnTouchListener() {
                                              @Override
                                              public boolean onTouch(View v, MotionEvent event) {
@@ -179,7 +179,7 @@ public class DeckListCaptureService extends Service {
 
         );
 
-        Button saveButton = ButterKnife.findById(linearLayout, R.id.button_save);
+        ImageButton saveButton = ButterKnife.findById(linearLayout, R.id.button_save);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -285,15 +285,15 @@ public class DeckListCaptureService extends Service {
                 editor.putString("deckCaptureBitmap", bitmapStr);
                 editor.commit();
 
-                Intent intent = new Intent(getApplicationContext(), SaveFleetCaptureActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-
                 stopSelf();
+
+                Intent intent = new Intent(getApplicationContext(), SaveFleetCaptureActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                startActivity(intent);
             }
         });
 
-        Button closeButton = ButterKnife.findById(linearLayout, R.id.button_close);
+        ImageButton closeButton = ButterKnife.findById(linearLayout, R.id.button_close);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -301,7 +301,7 @@ public class DeckListCaptureService extends Service {
             }
         });
 
-        Button nextDeckButton = ButterKnife.findById(linearLayout, R.id.button_next);
+        ImageButton nextDeckButton = ButterKnife.findById(linearLayout, R.id.button_next);
         nextDeckButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -334,7 +334,7 @@ public class DeckListCaptureService extends Service {
         fleetNameSpinner.setAdapter(arrayAdapter);
         fleetNameSpinner.setSelection(0);
 
-        View dragHandle = ButterKnife.findById(linearLayout, R.id.view_drag_handle);
+        ImageView dragHandle = ButterKnife.findById(linearLayout, R.id.view_drag_handle);
         dragHandle.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -401,7 +401,7 @@ public class DeckListCaptureService extends Service {
                     newPixcels[(x - blackWidth) + y * kcsWidth] = pixel;
                 }
             }
-            return Bitmap.createBitmap(newPixcels, kcsWidth, height, Bitmap.Config.ARGB_8888);
+            return Bitmap.createBitmap(newPixcels, kcsWidth, displayHeight, Bitmap.Config.ARGB_8888);
         } else if (kcsWidth == displayWidth) {
             return bitmap;
         } else {
