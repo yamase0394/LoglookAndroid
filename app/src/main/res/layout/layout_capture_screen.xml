@@ -40,6 +40,12 @@
                 android:layout_below="@+id/view_drag_handle"/>
         </RelativeLayout>
 
+        <CheckBox
+            android:text="艦隊区切り線"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/check_uses_fleet_divider"/>
+
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
