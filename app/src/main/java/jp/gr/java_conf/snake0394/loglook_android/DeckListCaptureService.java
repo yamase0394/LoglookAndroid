@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -57,8 +58,6 @@ public class DeckListCaptureService extends Service {
     private VirtualDisplay mVirtualDisplay;
     private WindowManager wm;
     private MediaProjection mediaProjection;
-    //タップ検出領域
-    private LinearLayout linearLayout;
     private WindowManager.LayoutParams params;
     private int displayWidth;
     private int displayHeight;
@@ -67,8 +66,11 @@ public class DeckListCaptureService extends Service {
     private List<String> listNameList;
     private int shipNum;
     private int shipDataWidth;
+    //タップ検出領域
+    private LinearLayout linearLayout;
     private ImageView preview;
     private Spinner fleetNameSpinner;
+    private CheckBox usesFleetDividerCheck;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -195,7 +197,6 @@ public class DeckListCaptureService extends Service {
                     listNameList.add((String) fleetNameSpinner.getSelectedItem());
                 }
 
-
                 for (int i = 0; i < bitmapList.size(); i++) {
                     String txt = listNameList.get(i);
                     int color = Color.BLACK;
@@ -220,10 +221,11 @@ public class DeckListCaptureService extends Service {
 
                     //文字の縁
                     Paint paint = new Paint();
-                    paint.setAntiAlias(true);       // アンチエイリアス
-                    paint.setStrokeWidth(6);                // 描画の幅
-                    paint.setColor(Color.WHITE);             // 縁取り色のセット
-                    paint.setTextSize(45);           // テキストサイズ
+                    paint.setAntiAlias(true);
+                    // 描画の幅
+                    paint.setStrokeWidth(6);
+                    paint.setColor(Color.WHITE);
+                    paint.setTextSize(45);
                     paint.setStyle(Paint.Style.STROKE);
                     //文字本隊
                     Paint w_paint = new Paint();
@@ -232,20 +234,21 @@ public class DeckListCaptureService extends Service {
                     w_paint.setTextSize(45);
                     w_paint.setStrokeWidth(0);
                     w_paint.setStyle(Paint.Style.FILL);
-
                     w_paint.getTextBounds(txt, 0, txt.length(), new Rect());
                     Paint.FontMetrics fm = w_paint.getFontMetrics();//フォントマトリックス
                     int mtw = (int) w_paint.measureText(txt);//幅
                     int fmHeight = (int) (Math.abs(fm.top) + fm.bottom);//高さ
-                    Bitmap bmp = Bitmap.createBitmap(mtw + 1 * 2, fmHeight + 1 * 2, Bitmap.Config.ARGB_8888);
-                    Canvas cv = new Canvas(bmp);
+
+                    Bitmap txtBitmap = Bitmap.createBitmap(mtw + 1 * 2, fmHeight + 1 * 2, Bitmap.Config.ARGB_8888);
+                    Canvas cv = new Canvas(txtBitmap);
                     cv.drawText(txt, 1, Math.abs(fm.ascent) + 1, paint);
                     cv.drawText(txt, 1, Math.abs(fm.ascent) + 1, w_paint);
 
                     Bitmap containTxt = Bitmap.createBitmap(base.getWidth(), base.getHeight(), Bitmap.Config.ARGB_8888);
                     cv = new Canvas(containTxt);
                     cv.drawBitmap(base, 0, 0, null);
-                    cv.drawBitmap(bmp, shipDataWidth / 2, 0, null);
+                    cv.drawBitmap(txtBitmap, shipDataWidth / 2, 0, null);
+
                     bitmapList.set(i, containTxt);
                 }
 
@@ -257,39 +260,36 @@ public class DeckListCaptureService extends Service {
                     int newheight = Math.max(listBitmap.getHeight(), bitmap.getHeight());
                     Bitmap newList = Bitmap.createBitmap(newwidth, newheight, Bitmap.Config.ARGB_8888);
 
-                    Paint paint = new Paint();
-                    paint.setColor(Color.rgb(32,32,192));
-                    paint.setStyle(Paint.Style.FILL);
-                    paint.setAntiAlias(true);
-
                     Canvas offScreen = new Canvas(newList);
                     offScreen.drawBitmap(listBitmap, 0, 0, null);
                     offScreen.drawBitmap(bitmap, newwidth - 2 * shipDataWidth, 0, null);
-                    offScreen.drawRect((newwidth - shipDataWidth*2) - (shipDataWidth / 200), 0, (newwidth - shipDataWidth*2) + (shipDataWidth / 200), newheight, paint);
+
+                    if (usesFleetDividerCheck.isChecked()) {
+                        Paint paint = new Paint();
+                        paint.setColor(Color.rgb(32, 32, 192));
+                        paint.setStyle(Paint.Style.FILL);
+                        paint.setAntiAlias(true);
+                        offScreen.drawRect((newwidth - shipDataWidth * 2) - (shipDataWidth / 200), 0, (newwidth - shipDataWidth * 2) + (shipDataWidth / 200), newheight, paint);
+                    }
+
                     listBitmap = newList;
                 }
 
                 try {
-                    //SDカードのディレクトリパス
                     File sdcard_path = new File(Environment.getExternalStorageDirectory()
                                                            .getPath() + "/泥提督支援アプリ/capture/list");
 
-                    //フォルダがなければ作成
                     if (!sdcard_path.exists()) {
                         sdcard_path.mkdirs();
                     }
 
-                    // 日付でファイル名を作成
                     Date mDate = new Date();
                     SimpleDateFormat fileName = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
-                    // 保存処理開始
                     FileOutputStream fos = new FileOutputStream(new File(sdcard_path, fileName.format(mDate) + ".jpg"));
 
-                    // jpegで保存
                     listBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-
-                    // 保存処理終了
+                    
                     fos.close();
                     bitmapList = new ArrayList<>();
                     listBitmap = null;
@@ -347,6 +347,8 @@ public class DeckListCaptureService extends Service {
         });
 
         preview = ButterKnife.findById(linearLayout, R.id.imageView);
+
+        usesFleetDividerCheck = ButterKnife.findById(linearLayout, R.id.check_uses_fleet_divider);
 
         fleetNameSpinner = ButterKnife.findById(linearLayout, R.id.spinner_fleet_name);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item);
