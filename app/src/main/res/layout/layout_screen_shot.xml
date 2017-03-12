@@ -1,58 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:background="@color/adjusted_aa">
+              android:background="@color/adjusted_aa"
+              android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="130dp"
-        android:layout_height="wrap_content"
-        app:srcCompat="@android:color/transparent"
-        android:id="@+id/imageView"
-        android:adjustViewBounds= "true"
-        android:layout_weight="1"
-        android:maxHeight="78dp"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="130dp"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+        <ImageButton
             android:id="@+id/view_drag_handle"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginRight="20dp"
             android:background="@drawable/ic_drag_handle"
-            android:focusable="true"
-            android:clickable="true"
-            android:gravity="center_vertical|center_horizontal"
-            android:layout_marginRight="20dp"
+            android:src="@drawable/selector_imagebutton"
             />
 
-        <Button
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/button_cap"
-            android:background="@drawable/ic_camera"
-            android:minHeight="28dp"
-            android:minWidth="28dp"
-            android:maxWidth="30dp"
-            android:maxHeight="30dp"
-            android:layout_marginRight="20dp"
-            />
-
-        <Button
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+        <ImageButton
             android:id="@+id/button_close"
-            android:background="@drawable/ic_close"
-            android:minWidth="20dp"
-            android:minHeight="20dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_alignRight="@+id/imageView"
+            android:background="@drawable/ic_close"
+            android:minHeight="20dp"
+            android:minWidth="20dp"
+            android:src="@drawable/selector_imagebutton"
             />
-    </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="130dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/view_drag_handle"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:maxHeight="78dp"
+            app:srcCompat="@android:color/transparent"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="130dp"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/button_edit"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="6dp"
+            android:background="@drawable/ic_launch"
+            android:maxHeight="30dp"
+            android:maxWidth="30dp"
+            android:src="@drawable/selector_imagebutton"/>
+
+        <ImageButton
+            android:id="@+id/button_cap"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_camera"
+            android:maxHeight="30dp"
+            android:maxWidth="30dp"
+            android:src="@drawable/selector_imagebutton"
+            android:layout_centerHorizontal="true"/>
+
+        <ImageButton
+            android:id="@+id/button_share"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginRight="6dp"
+            android:background="@drawable/ic_share"
+            android:maxHeight="30dp"
+            android:maxWidth="30dp"
+            android:src="@drawable/selector_imagebutton"/>
+
+    </RelativeLayout>
 
 
 </LinearLayout>

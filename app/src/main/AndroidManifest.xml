@@ -82,6 +82,13 @@
             android:hardwareAccelerated="false"
             android:screenOrientation="landscape">
         </activity>
+
+        <activity
+            android:name=".view.activity.SaveScreenShotActivity"
+            android:launchMode="singleInstance"
+            android:hardwareAccelerated="false"
+            android:screenOrientation="landscape">
+        </activity>
     </application>
 
 </manifest>

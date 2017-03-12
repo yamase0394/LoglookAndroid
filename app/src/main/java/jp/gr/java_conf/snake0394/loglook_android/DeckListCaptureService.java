@@ -3,7 +3,6 @@ package jp.gr.java_conf.snake0394.loglook_android;
 import android.annotation.TargetApi;
 import android.app.Service;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -15,11 +14,11 @@ import android.hardware.display.VirtualDisplay;
 import android.media.Image;
 import android.media.ImageReader;
 import android.media.projection.MediaProjection;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
-import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -34,15 +33,17 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
 import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
-import jp.gr.java_conf.snake0394.loglook_android.view.activity.SaveFleetCaptureActivity;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.ScreenCaptureActivity;
 
 
@@ -131,7 +132,7 @@ public class DeckListCaptureService extends Service {
         LayoutInflater layoutInflater = LayoutInflater.from(this);
         linearLayout = (LinearLayout) layoutInflater.inflate(R.layout.layout_capture_screen, null);
 
-        params = new WindowManager.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, -(int) (displayWidth / 3.5), 0, WindowManager.LayoutParams.TYPE_SYSTEM_ERROR, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
+        params = new WindowManager.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, -(displayWidth / 2), displayHeight/2, WindowManager.LayoutParams.TYPE_SYSTEM_ERROR, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
 
         ImageButton captureButton = ButterKnife.findById(linearLayout, R.id.button_cap);
         captureButton.setOnTouchListener(new View.OnTouchListener() {
@@ -276,20 +277,39 @@ public class DeckListCaptureService extends Service {
 
                     listBitmap = newList;
                 }
-
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                listBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                String bitmapStr = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
-                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putString("deckCaptureBitmap", bitmapStr);
-                editor.commit();
-
-                stopSelf();
-
-                Intent intent = new Intent(getApplicationContext(), SaveFleetCaptureActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                startActivity(intent);
+    
+                try {
+                    File sdcard_path = new File(Environment.getExternalStorageDirectory()
+                                                           .getPath() + "/泥提督支援アプリ/capture/list");
+        
+                    if (!sdcard_path.exists()) {
+                        sdcard_path.mkdirs();
+                    }
+    
+                    Date mDate = new Date();
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                    File file = new File(sdcard_path, simpleDateFormat.format(mDate) + ".jpg");
+                    FileOutputStream fos = new FileOutputStream(file);
+        
+                    listBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+        
+                    fos.close();
+                    
+                    stopSelf();
+                    
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.setDataAndType(Uri.fromFile(file), "image/jpg");
+                    intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+                    startActivity(intent);
+        
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "保存失敗。エラーログを記録しました。", Toast.LENGTH_SHORT)
+                         .show();
+                    ErrorLogger.writeLog(e);
+                }
             }
         });
 
@@ -328,9 +348,9 @@ public class DeckListCaptureService extends Service {
         usesFleetDividerCheck = ButterKnife.findById(linearLayout, R.id.check_uses_fleet_divider);
 
         fleetNameSpinner = ButterKnife.findById(linearLayout, R.id.spinner_fleet_name);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.spinner_item);
         arrayAdapter.addAll(new String[]{"なし", "第一艦隊", "第二艦隊", "ボス支援", "道中支援"});
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        arrayAdapter.setDropDownViewResource(R.layout.spinner_drop_item);
         fleetNameSpinner.setAdapter(arrayAdapter);
         fleetNameSpinner.setSelection(0);
 
@@ -361,7 +381,7 @@ public class DeckListCaptureService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        wm.removeView(linearLayout);
+        wm.removeViewImmediate(linearLayout);
         mVirtualDisplay.release();
         mediaProjection.stop();
         Logger.d("ScrennCaptureService", "onDestroy");

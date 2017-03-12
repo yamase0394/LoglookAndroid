@@ -48,4 +48,5 @@
     <color name="equip_ship">#969696</color>
     <color name="launcherItemBackground">#c3307ad9</color>
     <color name="overlay_background">#70000000</color>
+    <color name="close_overlay_bar">#cf003a75</color>
 </resources>
