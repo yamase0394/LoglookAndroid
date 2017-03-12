@@ -68,6 +68,8 @@ public class ConfigFragment extends Fragment {
     CheckBox makesSoundWhenNotifyCheck;
     @BindView(R.id.vibratesWhenNotify)
     CheckBox vibratesWhenNotifyCheck;
+    @BindView(R.id.forceLandscapeCheck)
+    CheckBox forceLandscapeCheck;
 
     public ConfigFragment() {
         // Required empty public constructor
@@ -157,6 +159,7 @@ public class ConfigFragment extends Fragment {
         usesDockNotificationCheck.setChecked(prefs.usesDockNotification);
         makesSoundWhenNotifyCheck.setChecked(prefs.makesSoundWhenNotify);
         vibratesWhenNotifyCheck.setChecked(prefs.vibratesWhenNOtify);
+        forceLandscapeCheck.setChecked(prefs.forcesLandscape);
 
         //設定を保存するボタン
         Button tb = (Button) getActivity().findViewById(R.id.saveBtn);
@@ -248,6 +251,7 @@ public class ConfigFragment extends Fragment {
                 prefs.usesDockNotification = usesDockNotificationCheck.isChecked();
                 prefs.makesSoundWhenNotify = makesSoundWhenNotifyCheck.isChecked();
                 prefs.vibratesWhenNOtify = vibratesWhenNotifyCheck.isChecked();
+                prefs.forcesLandscape = forceLandscapeCheck.isChecked();
 
                 GeneralPrefsSpotRepository.putEntity(getContext(), prefs);
 
