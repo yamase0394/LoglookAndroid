@@ -10,6 +10,7 @@ import android.hardware.display.VirtualDisplay;
 import android.media.Image;
 import android.media.ImageReader;
 import android.media.projection.MediaProjection;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -20,7 +21,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -32,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import butterknife.ButterKnife;
+import io.netty.util.internal.StringUtil;
 import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
 import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.ScreenCaptureActivity;
@@ -55,6 +57,7 @@ public class ScreenShotService extends Service {
     private int displayWidth;
     private int displayHeight;
     private ImageView preview;
+    private String filePath;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -111,7 +114,7 @@ public class ScreenShotService extends Service {
 
         params = new WindowManager.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, displayWidth / 2, displayHeight / 2, WindowManager.LayoutParams.TYPE_SYSTEM_ERROR, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
 
-        Button captureButton = (Button) linearLayout.findViewById(R.id.button_cap);
+        ImageButton captureButton = ButterKnife.findById(linearLayout, R.id.button_cap);
         captureButton.setOnTouchListener(new View.OnTouchListener() {
                                              @Override
                                              public boolean onTouch(View v, MotionEvent event) {
@@ -132,7 +135,7 @@ public class ScreenShotService extends Service {
                                                      Bitmap screenShot = removeBlank(bitmap);
 
                                                      preview.setImageBitmap(screenShot);
-
+                                                     
                                                      //SDカードのディレクトリパス
                                                      File sdcard_path = new File(Environment.getExternalStorageDirectory()
                                                                                             .getPath() + "/泥提督支援アプリ/capture/screenShot");
@@ -145,9 +148,15 @@ public class ScreenShotService extends Service {
                                                      // 日付でファイル名を作成
                                                      Date mDate = new Date();
                                                      SimpleDateFormat fileName = new SimpleDateFormat("yyyyMMdd_HHmmss");
+    
+                                                     //パス区切り用セパレータ
+                                                     String Fs = File.separator;
+    
+                                                     //テキストファイル保存先のファイルパス
+                                                     filePath = sdcard_path + Fs + fileName.format(mDate) + ".jpg";
 
                                                      // 保存処理開始
-                                                     FileOutputStream fos = new FileOutputStream(new File(sdcard_path, fileName.format(mDate) + ".jpg"));
+                                                     FileOutputStream fos = new FileOutputStream(new File(filePath));
 
                                                      // jpegで保存
                                                      screenShot.compress(Bitmap.CompressFormat.JPEG, 100, fos);
@@ -173,8 +182,62 @@ public class ScreenShotService extends Service {
                                          }
 
         );
+    
+        ImageButton editButton = ButterKnife.findById(linearLayout, R.id.button_edit);
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(StringUtil.isNullOrEmpty(filePath)) {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "画像が空です", Toast.LENGTH_SHORT)
+                                 .show();
+                        }
+                    });
+                    return;
+                }
+    
+                stopSelf();
+    
+                File file = new File(filePath);
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setDataAndType(Uri.fromFile(file), "image/jpg");
+                intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+                startActivity(intent);
+            }
+        });
+    
+        ImageButton shareButton = ButterKnife.findById(linearLayout, R.id.button_share);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(StringUtil.isNullOrEmpty(filePath)) {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "画像が空です", Toast.LENGTH_SHORT)
+                                 .show();
+                        }
+                    });
+                    return;
+                }
+            
+                stopSelf();
+            
+                File file = new File(filePath);
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_SEND);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setDataAndType(Uri.fromFile(file), "image/jpg");
+                intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+                startActivity(intent);
+            }
+        });
 
-        Button closeButton = ButterKnife.findById(linearLayout, R.id.button_close);
+        ImageButton closeButton = ButterKnife.findById(linearLayout, R.id.button_close);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -184,7 +247,7 @@ public class ScreenShotService extends Service {
 
         preview = ButterKnife.findById(linearLayout, R.id.imageView);
 
-        View dragHandle = ButterKnife.findById(linearLayout, R.id.view_drag_handle);
+        ImageButton dragHandle = ButterKnife.findById(linearLayout, R.id.view_drag_handle);
         dragHandle.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -211,7 +274,7 @@ public class ScreenShotService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        wm.removeView(linearLayout);
+        wm.removeViewImmediate(linearLayout);
         mVirtualDisplay.release();
         mediaProjection.stop();
         Logger.d("ScreenShotService", "onDestroy");
@@ -268,7 +331,7 @@ public class ScreenShotService extends Service {
             int blackHeight = (displayHeight - kcsHeight) / 2;
             int[] newPixcels = new int[displayWidth * kcsHeight];
             for (int y = 0; y < height; y++) {
-                if(y < blackHeight || y > kcsHeight +  blackHeight - 1){
+                if (y < blackHeight || y > kcsHeight + blackHeight - 1) {
                     continue;
                 }
                 for (int x = 0; x < width; x++) {
