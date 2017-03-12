@@ -122,5 +122,12 @@ public class GeneralPrefs {
      */
     @PrefBoolean(name = "vibratesWhenNOtify", defaultValue = true)
     public boolean vibratesWhenNOtify;
+    
+    /**
+     * 横画面固定。
+     * defaultValue = false
+     */
+    @PrefBoolean(name = "forcesLandscape", defaultValue = false)
+    public boolean forcesLandscape;
 
 }

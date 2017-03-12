@@ -274,6 +274,14 @@
                 android:text="通知時に端末を振動させる"
                 android:textSize="15dp"/>
 
+            <CheckBox
+                android:id="@+id/forceLandscapeCheck"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="横画面固定"
+                android:textSize="15dp"/>
+
             <Button
                 android:id="@+id/saveBtn"
                 android:layout_width="wrap_content"
