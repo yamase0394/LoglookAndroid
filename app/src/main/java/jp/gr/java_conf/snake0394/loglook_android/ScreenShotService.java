@@ -153,7 +153,7 @@ public class ScreenShotService extends Service {
                                                      String Fs = File.separator;
     
                                                      //テキストファイル保存先のファイルパス
-                                                     filePath = sdcard_path + Fs + fileName.format(mDate) + ".jpg";
+                                                     filePath = sdcard_path + Fs + "kancolle_" + fileName.format(mDate) + ".jpg";
 
                                                      // 保存処理開始
                                                      FileOutputStream fos = new FileOutputStream(new File(filePath));

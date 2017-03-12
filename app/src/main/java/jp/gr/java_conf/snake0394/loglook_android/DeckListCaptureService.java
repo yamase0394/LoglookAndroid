@@ -288,7 +288,7 @@ public class DeckListCaptureService extends Service {
     
                     Date mDate = new Date();
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
-                    File file = new File(sdcard_path, simpleDateFormat.format(mDate) + ".jpg");
+                    File file = new File(sdcard_path, "攻略編成_" + simpleDateFormat.format(mDate) + ".jpg");
                     FileOutputStream fos = new FileOutputStream(file);
         
                     listBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
