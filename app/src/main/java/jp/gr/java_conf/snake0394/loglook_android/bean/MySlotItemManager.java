@@ -60,4 +60,15 @@ public enum MySlotItemManager {
         storage.mySlotitemSparseArray = this.sparseArray;
         UserDataStorageSpotRepository.putEntity(App.getInstance(), storage);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < sparseArray.size(); i++) {
+            sb.append("key:" + sparseArray.keyAt(i) + ",id:" + sparseArray.valueAt(i)
+                                                                          .getId() + ",mst:" + sparseArray.valueAt(i)
+                                                                                                          .getMstId() + "\r\n");
+        }
+        return sb.toString();
+    }
 }

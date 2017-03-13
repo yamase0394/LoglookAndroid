@@ -1,5 +1,7 @@
 package jp.gr.java_conf.snake0394.loglook_android.bean;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 /**
@@ -10,9 +12,11 @@ public class MstUseitem implements Serializable{
     private static final long serialVersionUID = 7817017144727754805L;
 
     /**アイテムID*/
+    @SerializedName("api_id")
     private int id;
 
     /**アイテム名*/
+    @SerializedName("api_name")
     private String name;
 
     public MstUseitem(){}

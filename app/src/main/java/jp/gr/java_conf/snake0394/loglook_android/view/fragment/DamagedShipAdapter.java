@@ -13,8 +13,11 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.time.DateUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -297,10 +300,41 @@ public class DamagedShipAdapter extends RecyclerView.Adapter<DamagedShipAdapter.
                 sb.append(minute + "分");
                 millisUntilFinished -= TimeUnit.MINUTES.toMillis(minute);
             }
+            long second = TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished);
+            if (second != 0) {
+                sb.append(second + "秒");
+            }
             repairTime.setText(sb.toString());
 
-            SimpleDateFormat sdf = new SimpleDateFormat("dd日 HH:mm");
-            completeTime.setText(sdf.format(Calendar.getInstance().getTimeInMillis() + myShip.getNdockTime()));
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            long finishTimeInMillis = System.currentTimeMillis() + myShip.getNdockTime();
+            Date now = Calendar.getInstance()
+                               .getTime();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(finishTimeInMillis);
+            Date finish = calendar.getTime();
+            int diff = 0;
+            while (!org.apache.commons.lang3.time.DateUtils.isSameDay(now, finish)) {
+                now = DateUtils.addDays(now, 1);
+                diff++;
+            }
+            switch (diff) {
+                case 0:
+                    completeTime.setText(sdf.format(finishTimeInMillis));
+                    break;
+                case 1:
+                    completeTime.setText("明日 "+ sdf.format(finishTimeInMillis));
+                    break;
+                case 2:
+                    completeTime.setText("明後日 "+ sdf.format(finishTimeInMillis));
+                    break;
+                case 3:
+                    completeTime.setText("明々後日 "+ sdf.format(finishTimeInMillis));
+                    break;
+                default:
+                    completeTime.setText(diff + "日後 "+ sdf.format(finishTimeInMillis));
+                    break;
+            }
         }
     }
 

@@ -10,8 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.time.DateUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import jp.gr.java_conf.snake0394.loglook_android.DockTimer;
@@ -75,18 +78,46 @@ public class DockFragment extends Fragment {
                 String name = "name" + i;
                 int strId = getResources().getIdentifier(name, "id", getActivity().getPackageName());
                 TextView text = (TextView) getActivity().findViewById(strId);
-                text.setText(MyShipManager.INSTANCE.getMyShip(DockTimer.INSTANCE.getShipId(i)).getName());
+                text.setText(MyShipManager.INSTANCE.getMyShip(DockTimer.INSTANCE.getShipId(i))
+                                                   .getName());
                 text.setBackgroundColor(0x00000000);
 
-                SimpleDateFormat sdf = new SimpleDateFormat("M月dd日 HH:mm:ss");
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
                 name = "time" + i;
                 strId = getResources().getIdentifier(name, "id", getActivity().getPackageName());
                 text = (TextView) getActivity().findViewById(strId);
-                text.setText(sdf.format(DockTimer.INSTANCE.getCompleteTime(i)));
+                long finishTimeInMillis = DockTimer.INSTANCE.getCompleteTime(i);
+                Date now = Calendar.getInstance()
+                                   .getTime();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(finishTimeInMillis);
+                Date finish = calendar.getTime();
+                int diff = 0;
+                while (!org.apache.commons.lang3.time.DateUtils.isSameDay(now, finish)) {
+                    now = DateUtils.addDays(now, 1);
+                    diff++;
+                }
+                switch (diff) {
+                    case 0:
+                        text.setText(sdf.format(finishTimeInMillis));
+                        break;
+                    case 1:
+                        text.setText("明日 " + sdf.format(finishTimeInMillis));
+                        break;
+                    case 2:
+                        text.setText("明後日 " + sdf.format(finishTimeInMillis));
+                        break;
+                    case 3:
+                        text.setText("明々後日 " + sdf.format(finishTimeInMillis));
+                        break;
+                    default:
+                        text.setText(diff + "日後 " + sdf.format(finishTimeInMillis));
+                        break;
+                }
 
                 name = "until" + i;
                 strId = getResources().getIdentifier(name, "id", getActivity().getPackageName());
-                long millsInFuture = DockTimer.INSTANCE.getCompleteTime(i) - Calendar.getInstance().getTimeInMillis();
+                long millsInFuture = DockTimer.INSTANCE.getCompleteTime(i) - System.currentTimeMillis();
                 text = (TextView) getActivity().findViewById(strId);
                 CountDown countDown = new CountDown(millsInFuture, 100, text, i);
                 countDown.start();
@@ -99,7 +130,7 @@ public class DockFragment extends Fragment {
         }
     }
 
-   private class CountDown extends CountDownTimer {
+    private class CountDown extends CountDownTimer {
         TextView text;
         int dockId;
 

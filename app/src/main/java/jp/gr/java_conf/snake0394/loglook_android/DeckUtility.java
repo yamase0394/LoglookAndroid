@@ -15,7 +15,7 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
 
-import static jp.gr.java_conf.snake0394.loglook_android.SlotItemUtility.getjukurenSeiku;
+import static jp.gr.java_conf.snake0394.loglook_android.SlotItemUtility.getImprovementLOS;
 
 /**
  * Created by snake0394 on 2016/08/29.
@@ -37,26 +37,17 @@ public class DeckUtility {
 
             //有効なスロットの装備を一つずつ見る
             for (int j = 0; j < myShip.getSlotnum(); j++) {
-                int slotitemId = myShip.getSlot().get(j);
+                int slotitemId = myShip.getSlot()
+                                       .get(j);
                 //所有装備に無いIDの場合は繰り返しを終える
                 if (!MySlotItemManager.INSTANCE.contains(slotitemId) || slotitemId == -1) {
                     break;
                 }
                 MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(slotitemId);
                 MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-                //制空に関係のある装備のみ制空値を求める
-                switch (EquipType2.toEquipType2(mstSlotitem.getType().get(2))) {
-                    case 艦上戦闘機:
-                        seiku += (int) ((mstSlotitem.getTyku() + 0.2 * mySlotItem.getLevel()) * Math.sqrt(myShip.getOnslot().get(j)) + getjukurenSeiku(mySlotItem));
-                        break;
-                    case 水上戦闘機:
-                    case 艦上攻撃機:
-                    case 水上爆撃機:
-                        seiku += (int) (mstSlotitem.getTyku() * Math.sqrt(myShip.getOnslot().get(j)) + getjukurenSeiku(mySlotItem));
-                        break;
-                    case 艦上爆撃機:
-                        seiku += (int) ((mstSlotitem.getTyku() + 0.25 * mySlotItem.getLevel()) * Math.sqrt(myShip.getOnslot().get(j)) + getjukurenSeiku(mySlotItem));
-                }
+
+                seiku += SlotItemUtility.getFighterPower(mstSlotitem, myShip.getOnslot()
+                                                                            .get(j), mySlotItem.getLevel(), mySlotItem.getAlv());
             }
         }
         return seiku;
@@ -77,18 +68,21 @@ public class DeckUtility {
             MyShip myShip = MyShipManager.INSTANCE.getMyShip(shipId.get(i));
             float rate = 0;
             for (int j = 0; j < myShip.getSlotnum(); j++) {
-                int slotitemId = myShip.getSlot().get(j);
+                int slotitemId = myShip.getSlot()
+                                       .get(j);
                 if (!MySlotItemManager.INSTANCE.contains(slotitemId)) {
                     break;
                 }
                 MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(slotitemId);
                 MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-                EquipType2 et = EquipType2.toEquipType2(mstSlotitem.getType().get(2));
+                EquipType2 et = EquipType2.toEquipType2(mstSlotitem.getType()
+                                                                   .get(2));
                 switch (et) {
                     case 水上偵察機:
                     case 艦上偵察機:
                     case 大型飛行艇:
-                        rate += 0.04 * mstSlotitem.getSaku() * Math.sqrt(myShip.getOnslot().get(j));
+                        rate += 0.04 * mstSlotitem.getSaku() * Math.sqrt(myShip.getOnslot()
+                                                                               .get(j));
                 }
             }
             touchStartRate += rate;
@@ -101,30 +95,37 @@ public class DeckUtility {
      * @param deck
      * @return 艦隊の判定式(33)の索敵値
      */
-    public static float getSakuteki33(Deck deck,float junctionCoefficient) {
+    public static float getSakuteki33(Deck deck, float junctionCoefficient) {
         float sakuteki = 0;
         float adjustedEquipsearch = 0;
         //艦隊の空き数
         int empty = 0;
-        for (int i = 0; i < deck.getShipId().size(); i++) {
-            int shipId = deck.getShipId().get(i);
+        for (int i = 0; i < deck.getShipId()
+                                .size(); i++) {
+            int shipId = deck.getShipId()
+                             .get(i);
             if (!MyShipManager.INSTANCE.contains(shipId) || shipId == -1) {
-                empty = deck.getShipId().size() - i;
+                empty = deck.getShipId()
+                            .size() - i;
                 break;
             }
             MyShip myShip = MyShipManager.INSTANCE.getMyShip(shipId);
             int equipSakuSum = 0;
             for (int j = 0; j < myShip.getSlotnum(); j++) {
-                int mySlotItemId = myShip.getSlot().get(j);
+                int mySlotItemId = myShip.getSlot()
+                                         .get(j);
                 if (!MySlotItemManager.INSTANCE.contains(mySlotItemId)) {
                     break;
                 }
+
                 MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(mySlotItemId);
-                int mstSlotItemId = mySlotItem.getMstId();
-                MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mstSlotItemId);
+                MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
+
                 equipSakuSum += mstSlotitem.getSaku();
+
                 EquipType2 et = EquipType2.toEquipType2(mstSlotitem.getType().get(2));
-                //改修と係数を考慮した装備の索敵値を足す
+                float basicSlotLOS = mstSlotitem.getSaku() + getImprovementLOS(mstSlotitem, mySlotItem.getLevel());
+                //係数を考慮した装備の索敵値を足す
                 switch (et) {
                     case 艦上戦闘機:
                     case 艦上爆撃機:
@@ -138,34 +139,28 @@ public class DeckUtility {
                     case 大型探照灯:
                     case 水上戦闘機:
                     case 噴式戦闘爆撃機:
-                        adjustedEquipsearch += mstSlotitem.getSaku() * 0.6;
-                        break;
                     case 小型電探:
-                        float tempSakuteki = (float) (mstSlotitem.getSaku() + 1.25 * Math.sqrt(mySlotItem.getLevel()));
-                        adjustedEquipsearch += tempSakuteki * 0.6;
-                        break;
                     case 大型電探:
-                        tempSakuteki = (float) (mstSlotitem.getSaku() + 1.4 * Math.sqrt(mySlotItem.getLevel()));
-                        adjustedEquipsearch += tempSakuteki * 0.6;
+                        adjustedEquipsearch += basicSlotLOS * 0.6;
                         break;
                     case 艦上攻撃機:
-                        adjustedEquipsearch += mstSlotitem.getSaku() * 0.8;
+                        adjustedEquipsearch += basicSlotLOS * 0.8;
                         break;
                     case 艦上偵察機:
                     case 艦上偵察機Ⅱ:
-                        adjustedEquipsearch += mstSlotitem.getSaku();
+                        adjustedEquipsearch += basicSlotLOS;
                         break;
                     case 水上偵察機:
-                        tempSakuteki = (float) (mstSlotitem.getSaku() + 1.2 * Math.sqrt(mySlotItem.getLevel()));
-                        adjustedEquipsearch += tempSakuteki * 1.2;
+                        adjustedEquipsearch += basicSlotLOS * 1.2;
                         break;
                     case 水上爆撃機:
-                        adjustedEquipsearch += mstSlotitem.getSaku() * 1.1;
+                        adjustedEquipsearch += basicSlotLOS * 1.1;
                         break;
                 }
             }
             //艦船の素敵値を足す
-            sakuteki += Math.sqrt(myShip.getSakuteki().get(0) - equipSakuSum);
+            sakuteki += Math.sqrt(myShip.getSakuteki()
+                                        .get(0) - equipSakuSum);
         }
         adjustedEquipsearch *= junctionCoefficient;
         sakuteki += adjustedEquipsearch;
@@ -182,15 +177,18 @@ public class DeckUtility {
      */
     public static float getSakuteki25(Deck deck) {
         double sakuteki = 0;
-        for (int i = 0; i < deck.getShipId().size(); i++) {
-            int shipId = deck.getShipId().get(i);
+        for (int i = 0; i < deck.getShipId()
+                                .size(); i++) {
+            int shipId = deck.getShipId()
+                             .get(i);
             if (!MyShipManager.INSTANCE.contains(shipId) || shipId == -1) {
                 break;
             }
             MyShip myShip = MyShipManager.INSTANCE.getMyShip(shipId);
             int equipSakuSum = 0;
             for (int j = 0; j < myShip.getSlotnum(); j++) {
-                int mySlotItemId = myShip.getSlot().get(j);
+                int mySlotItemId = myShip.getSlot()
+                                         .get(j);
                 if (!MySlotItemManager.INSTANCE.contains(mySlotItemId)) {
                     break;
                 }
@@ -198,7 +196,8 @@ public class DeckUtility {
                 int mstSlotItemId = mySlotItem.getMstId();
                 MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mstSlotItemId);
                 equipSakuSum += mstSlotitem.getSaku();
-                EquipType2 et = EquipType2.toEquipType2(mstSlotitem.getType().get(2));
+                EquipType2 et = EquipType2.toEquipType2(mstSlotitem.getType()
+                                                                   .get(2));
                 //改修と係数を考慮した装備の索敵値を足す
                 switch (et) {
                     case 艦上爆撃機:
@@ -228,7 +227,8 @@ public class DeckUtility {
                 }
             }
             //艦船の素敵値を足す
-            sakuteki += Math.sqrt(myShip.getSakuteki().get(0) - equipSakuSum) * 1.6841056;
+            sakuteki += Math.sqrt(myShip.getSakuteki()
+                                        .get(0) - equipSakuSum) * 1.6841056;
         }
         double sirei = Basic.INSTANCE.getLevel();
         if (sirei % 5 != 0) {
@@ -295,7 +295,7 @@ public class DeckUtility {
      * @return 艦隊防空値
      */
     public static float getAdjustedFleetAA(Deck deck, String formation) {
-        if(deck == null) {
+        if (deck == null) {
             return 0;
         }
 

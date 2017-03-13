@@ -1,14 +1,17 @@
 package jp.gr.java_conf.snake0394.loglook_android;
 
+import android.app.NotificationManager;
 import android.content.Context;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstMission;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstMissionManager;
+import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository;
 
 /**
  * 遠征タイマー
@@ -41,6 +44,10 @@ public enum MissionTimer {
                 return;
             }
 
+            if (!GeneralPrefsSpotRepository.getEntity(context).usesMissionNotification) {
+                return;
+            }
+
             //Deckに遠征情報を反映
             Deck deck = DeckManager.INSTANCE.getDeck(deckId);
             List<Long> mission = deck.getMission();
@@ -66,7 +73,10 @@ public enum MissionTimer {
         private void stop() {
             isRunning = false;
             Deck deck = DeckManager.INSTANCE.getDeck(deckId);
-            deck.getMission().set(0, (long) 2);
+            if (!Objects.equals(deck, null)) {
+                deck.getMission()
+                    .set(0, (long) 2);
+            }
         }
     }
 
@@ -102,9 +112,11 @@ public enum MissionTimer {
      *
      * @param deckId 艦隊ID
      */
-    public void stop(int deckId) {
+    public void cancel(int deckId) {
         Timer timer = getTimer(deckId);
         timer.stop();
+        //遠征タイマーを中断
+        NotificationUtility.cancelNotification(App.getInstance(), deckId);
     }
 
     /**
@@ -135,6 +147,14 @@ public enum MissionTimer {
             default:
                 return Timer.NULL;
         }
+    }
+
+    public void clearNotifications() {
+        NotificationManager nm = (NotificationManager) App.getInstance()
+                                                          .getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.cancel(2);
+        nm.cancel(3);
+        nm.cancel(4);
     }
 
 }

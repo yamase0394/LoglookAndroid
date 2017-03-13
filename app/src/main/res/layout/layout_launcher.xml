@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                               android:layout_height="match_parent"
+                                               xmlns:app="http://schemas.android.com/apk/res-auto"
+                                               android:background="@color/overlay_background"
+                                               android:layout_width="match_parent"
+                                               android:id="@+id/layout_root"
+                                               android:paddingBottom="20dp"
+                                               android:paddingTop="20dp">
+
+    <ListView
+        app:layout_widthPercent="30%"
+        app:layout_marginLeftPercent ="17%"
+        android:layout_height="wrap_content"
+        android:id="@+id/list_screen"
+        android:scrollbars="none"/>
+
+    <ListView
+        app:layout_widthPercent="30%"
+        app:layout_marginLeftPercent ="50%"
+        android:layout_height="wrap_content"
+        android:id="@+id/list_sub"/>
+
+</android.support.percent.PercentRelativeLayout>

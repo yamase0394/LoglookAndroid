@@ -1,7 +1,6 @@
 package jp.gr.java_conf.snake0394.loglook_android.bean;
 
-import java.util.HashMap;
-import java.util.Map;
+import android.util.SparseArray;
 
 import jp.gr.java_conf.snake0394.loglook_android.App;
 import jp.gr.java_conf.snake0394.loglook_android.storage.MstDataStorage;
@@ -13,24 +12,24 @@ import jp.gr.java_conf.snake0394.loglook_android.storage.MstDataStorageSpotRepos
 public enum MstSlotitemManager {
     INSTANCE;
 
-    private Map<Integer, MstSlotitem> mstSlotitemMap = new HashMap<>();
+    private SparseArray<MstSlotitem> idToMstSlotitemSparseArray;
 
      MstSlotitemManager() {
          MstDataStorage storage = MstDataStorageSpotRepository.getEntity(App.getInstance());
-         this.mstSlotitemMap = storage.mstSlotitemMap;
+         this.idToMstSlotitemSparseArray = storage.mstSlotitemSparseArray;
     }
 
     public void put(MstSlotitem mstSlotitem) {
-        mstSlotitemMap.put(mstSlotitem.getId(), mstSlotitem);
+        idToMstSlotitemSparseArray.put(mstSlotitem.getId(), mstSlotitem);
     }
 
     public MstSlotitem getMstSlotitem(int id) {
-        return mstSlotitemMap.get(id);
+        return idToMstSlotitemSparseArray.get(id);
     }
 
     public void serialize() {
         MstDataStorage storage = MstDataStorageSpotRepository.getEntity(App.getInstance());
-        storage.mstSlotitemMap = this.mstSlotitemMap;
+        storage.mstSlotitemSparseArray = this.idToMstSlotitemSparseArray;
         MstDataStorageSpotRepository.putEntity(App.getInstance(), storage);
     }
 }

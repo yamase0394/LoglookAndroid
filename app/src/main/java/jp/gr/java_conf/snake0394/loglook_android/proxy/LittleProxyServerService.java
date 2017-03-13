@@ -4,14 +4,12 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.widget.Toast;
 
+import com.google.common.base.Optional;
 import com.google.common.primitives.Shorts;
 
 import org.apache.commons.io.IOUtils;
@@ -24,17 +22,26 @@ import org.littleshoot.proxy.HttpFiltersSourceAdapter;
 import org.littleshoot.proxy.HttpProxyServer;
 import org.littleshoot.proxy.HttpProxyServerBootstrap;
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
+import org.littleshoot.proxy.impl.ThreadPoolConfiguration;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.BindException;
 import java.net.InetSocketAddress;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 import io.netty.buffer.ByteBuf;
@@ -47,17 +54,16 @@ import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import jp.gr.java_conf.snake0394.loglook_android.JsonParser;
 import jp.gr.java_conf.snake0394.loglook_android.R;
-import jp.gr.java_conf.snake0394.loglook_android.RequestParser;
 import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
+import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
+import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity;
 
 public class LittleProxyServerService extends Service implements Runnable {
 
     private HttpProxyServer server;
     private final Handler handler = new Handler();
-    //private Server jettyServer;
 
     public LittleProxyServerService() {
     }
@@ -101,55 +107,38 @@ public class LittleProxyServerService extends Service implements Runnable {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        server.abort();
-        //jettyServer.stop();
+        if (server != null) {
+            server.abort();
+        }
         stopForeground(true);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), "プロキシ停止", Toast.LENGTH_SHORT)
+                     .show();
+            }
+        });
     }
 
     @Override
     public void run() {
-        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
-        //System.setProperty("http.keepAlive", "false");
+        final GeneralPrefs prefs = GeneralPrefsSpotRepository.getEntity(getApplicationContext());
 
-        /*
-        jettyServer = new Server();
-        ServerConnector serverConnector = new ServerConnector(jettyServer);
-
-        // リクエストを待ち受けるポート番号を設定
-        serverConnector.setHost("127.0.0.1");
-        Log.d("server", sp.getString("port", "8080"));
-
-        serverConnector.setPort(10000);
-
-        jettyServer.addConnector(serverConnector);
-
-        // HTTPS接続をプロキシするため、CONNECTメソッドを処理するハンドラーを設定
-        ConnectHandler connectHandler = new MyConnectHandler();
-        jettyServer.setHandler(connectHandler);
-
-        // HTTP接続をプロキシするため、ProxyServletを設定
-        ServletContextHandler contextHandler = new ServletContextHandler(connectHandler, "/", ServletContextHandler.SESSIONS);
-
-        ServletHolder holder = new ServletHolder(MyAsyncMiddleManServlet.class);
-        holder.setInitParameter("timeout", "300000");
-
-        contextHandler.addServlet(holder, "/*");
-
-        try {
-            jettyServer.start();
-        } catch (Exception e) {
-        }
-        */
+        ThreadPoolConfiguration conf = new ThreadPoolConfiguration().withAcceptorThreads(1)
+                                                                    .withClientToProxyWorkerThreads(2)
+                                                                    .withProxyToServerWorkerThreads(2);
 
         HttpProxyServerBootstrap serverBuilder = DefaultHttpProxyServer.bootstrap()
-                                                                       .withPort(Integer.parseInt(sp.getString("port", "8080")))
+                                                                       .withPort(prefs.port)
                                                                        .withConnectTimeout(30000)
                                                                        .withAllowLocalOnly(true)
-                                                                       .withFiltersSource(new CaptureAdapter());
+                                                                       .withThreadPoolConfiguration(conf)
+                                                                       .withFiltersSource(new CaptureAdapter())
+                                                                       .withProxyAlias("doro-proxy");
 
         //上流プロキシの設定
-        if (sp.getBoolean("useProxy", false)) {
+        if (prefs.usesProxy) {
             serverBuilder.withChainProxyManager(new ChainedProxyManager() {
                 @Override
                 public void lookupChainedProxies(HttpRequest req, Queue<ChainedProxy> proxies) {
@@ -157,8 +146,8 @@ public class LittleProxyServerService extends Service implements Runnable {
                         ChainedProxy proxy = new ChainedProxyAdapter() {
                             @Override
                             public InetSocketAddress getChainedProxyAddress() {
-                                String host = sp.getString("proxyHost", "");
-                                int port = Integer.parseInt(sp.getString("proxyPort", ""));
+                                String host = prefs.proxyHost;
+                                int port = prefs.proxyPort;
                                 return new InetSocketAddress(host, port);
                             }
                         };
@@ -171,11 +160,18 @@ public class LittleProxyServerService extends Service implements Runnable {
 
         try {
             server = serverBuilder.start();
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(), "プロキシ起動 port:" + String.valueOf(prefs.port), Toast.LENGTH_SHORT)
+                         .show();
+                }
+            });
         } catch (final Exception e) {
             if (e.getCause() instanceof BindException) {
                 handler.post(new Runnable() {
                     public void run() {
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG)
+                        Toast.makeText(getApplicationContext(), "既に使用されているポートです。ポート番号を変更してください。", Toast.LENGTH_LONG)
                              .show();
                     }
                 });
@@ -183,23 +179,73 @@ public class LittleProxyServerService extends Service implements Runnable {
                 ErrorLogger.writeLog(e);
             }
             e.printStackTrace();
+
+            stopSelf();
         }
     }
 
-    private class CaptureAdapter extends HttpFiltersSourceAdapter {
+    private static class Interceptor {
+
+        private List<ContentListenerSpi> listeners;
+
+        public Interceptor() {
+            listeners = new ArrayList<>();
+            try {
+                listeners.add(APIListener.class.newInstance());
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public synchronized void intercept(HttpResponse res, byte[] resbody, HttpRequest req, byte[] reqbody) {
+            try {
+                for (final ContentListenerSpi listener : this.listeners) {
+                    final RequestMetaData requestMetaData = RequestMetaDataWrapper.build(req, resbody);
+                    //if (listener.test(requestMetaData)) {
+                    final ResponseMetaData responseMetaData = ResponseMetaDataWrapper.build(res, reqbody);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                listener.accept(requestMetaData, responseMetaData);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                    //}
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static class CaptureAdapter extends HttpFiltersSourceAdapter {
+
+        private Interceptor interceptor = new Interceptor();
 
         @Override
         public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
+
             if (originalRequest.getUri()
-                               .contains("kcsapi")) {
-                return new CaptureFilters(originalRequest, ctx);
+                               .contains("/kcsapi/")) {
+                return new CaptureFilters(originalRequest, ctx, this.interceptor);
+            } else if (originalRequest.getUri()
+                                      .contains("/kcs/")) {
+                return new RewriteHeaderFilters(originalRequest, ctx);
             }
 
             return new HttpFiltersAdapter(originalRequest, ctx);
         }
     }
 
-    private class CaptureFilters extends HttpFiltersAdapter {
+    private static class CaptureFilters extends HttpFiltersAdapter {
+
+        private Interceptor interceptor;
+
         private boolean released;
 
         private CompositeByteBuf requestBuf = this.ctx.alloc()
@@ -208,19 +254,19 @@ public class LittleProxyServerService extends Service implements Runnable {
         private CompositeByteBuf responseBuf = this.ctx.alloc()
                                                        .compositeBuffer();
 
-        private StringBuilder sb = new StringBuilder();
+        //private StringBuilder sb = new StringBuilder();
 
         private HttpRequest request;
 
         private HttpResponse response;
 
-        CaptureFilters(HttpRequest originalRequest, ChannelHandlerContext ctx) {
+        CaptureFilters(HttpRequest originalRequest, ChannelHandlerContext ctx, Interceptor interceptor) {
             super(originalRequest, ctx);
+            this.interceptor = interceptor;
             //Log.d("CaptureFilter", "start");
-            sb.append("**********");
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            sb.append(sdf.format(Calendar.getInstance()
-                                         .getTime()) + "\r\n");
+            //sb.append("**********");
+            //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            //sb.append(sdf.format(Calendar.getInstance().getTime()) + "\r\n");
         }
 
         @Override
@@ -230,13 +276,13 @@ public class LittleProxyServerService extends Service implements Runnable {
             }
 
             if (httpObject instanceof HttpRequest) {
-                //((HttpRequest) httpObject).headers().add("Connection", "close");
                 HttpHeaders.setKeepAlive((HttpRequest) httpObject, false);
+                //Log.d("proxyToServerReqest", httpObject.toString());
             }
             //Log.d("proxyToServerReq", httpObject.toString());
-            sb.append("--------proxyToServerReq\r\n");
-            sb.append(httpObject.toString());
-            sb.append("\r\n");
+            //sb.append("--------proxyToServerReq\r\n");
+            //sb.append(httpObject.toString());
+            //sb.append("\r\n");
             return super.proxyToServerRequest(httpObject);
         }
 
@@ -245,10 +291,13 @@ public class LittleProxyServerService extends Service implements Runnable {
             if (!this.released) {
                 this.add(this.responseBuf, httpObject);
             }
-            //Log.d("serverToProxyRes", httpObject.toString());
-            sb.append("--------serverToProxyRes\r\n");
-            sb.append(httpObject.toString());
-            sb.append("\r\n");
+
+            if (httpObject instanceof HttpResponse) {
+                //Log.d("serverToProxyResponse", httpObject.toString());
+            }
+            //sb.append("--------serverToProxyRes\r\n");
+            //sb.append(httpObject.toString());
+            //sb.append("\r\n");
             return super.serverToProxyResponse(httpObject);
         }
 
@@ -261,13 +310,13 @@ public class LittleProxyServerService extends Service implements Runnable {
                     if (!HttpResponseStatus.OK.equals(res.getStatus())) {
                         this.release();
                     }
+                    //Log.d("proxyToClientResponse", httpObject.toString());
                     HttpHeaders.setKeepAlive((HttpResponse) httpObject, false);
                 }
             }
-            //Log.d("proxyToClientRes", httpObject.toString());
-            sb.append("--------proxyToClientRes\r\n");
-            sb.append(httpObject.toString());
-            sb.append("\r\n");
+            //sb.append("--------proxyToClientRes\r\n");
+            //sb.append(httpObject.toString());
+            //sb.append("\r\n");
             return super.proxyToClientResponse(httpObject);
         }
 
@@ -277,11 +326,11 @@ public class LittleProxyServerService extends Service implements Runnable {
                 HttpHeaders.setKeepAlive((HttpRequest) httpObject, false);
                 HttpHeaders.removeHeader((HttpRequest) httpObject, "Proxy-Connection");
                 this.request = (HttpRequest) httpObject;
+                //Log.d("clientToProxyRequest", httpObject.toString());
             }
-            //Log.d("clientToProxyReq", httpObject.toString());
-            sb.append("--------clientToProxyReq\r\n");
-            sb.append(httpObject.toString());
-            sb.append("\r\n");
+            //sb.append("--------clientToProxyReq\r\n");
+            //sb.append(httpObject.toString());
+            //sb.append("\r\n");
             return super.clientToProxyRequest(httpObject);
         }
 
@@ -290,72 +339,15 @@ public class LittleProxyServerService extends Service implements Runnable {
             if (!this.released) {
                 try {
                     if (this.request != null && this.response != null) {
-                        String regex = "/kcsapi/(.+)";
-                        Pattern p = Pattern.compile(regex);
-                        Matcher m = p.matcher(this.request.getUri());
-                        if (m.find()) {
-                            byte[] resbody = this.toByteArray(this.requestBuf.duplicate());
-                            byte[] reqbody = this.toByteArray(this.responseBuf.duplicate());
-                            final String uri = m.group(1);
-                            final String clientReqest = new String(resbody, "UTF-8");
-                            final String serverResponse = new String(reqbody, "UTF-8");
-                            //タイムアウトを避けるため別スレッドで処理
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    RequestParser.parse(uri, clientReqest);
-
-                                    String jsonStr;
-                                    String regex = "svdata=(.+)";
-                                    Pattern p = Pattern.compile(regex);
-                                    Matcher m = p.matcher(serverResponse);
-                                    if (m.find()) {
-                                        jsonStr = m.group(1);
-                                        JsonParser.parse(uri, jsonStr);
-                                        //Log.d("uri", uri);
-                                        Log.d("clientReq", clientReqest);
-                                        Log.d("serverRes", jsonStr);
-                                    } else {
-                                        //"svdata="が無い場合不必要なデータと判断
-                                    }
-                                }
-                            }).start();
-                            sb.append("--------request\r\n");
-                            sb.append(clientReqest);
-                            sb.append("\r\n");
-                            sb.append("--------response\r\n");
-                            sb.append(serverResponse);
-                            sb.append("\r\n");
-                            //System.out.println(sb.toString());
-
-                            /*
-                            //SDカードのディレクトリパス
-                            File sdcard_path = new File(Environment.getExternalStorageDirectory()
-                                                                   .getPath() + "/泥提督支援アプリ/");
-
-                            //パス区切り用セパレータ
-                            String Fs = File.separator;
-
-                            //テキストファイル保存先のファイルパス
-                            String filePath = sdcard_path + Fs + "log_littleProxy.txt";
-
-                            //フォルダがなければ作成
-                            if (!sdcard_path.exists()) {
-                                sdcard_path.mkdir();
-                            }
-
-                            try {
-                                BufferedWriter pw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath, true), "SJIS"));
-                                pw.write(sb.toString());
-                                pw.flush();
-                                pw.close();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                ErrorLogger.writeLog(e);
-                            }
-                            */
-
-                        }
+                        byte[] resbody = this.toByteArray(this.requestBuf.duplicate());
+                        byte[] reqbody = this.toByteArray(this.responseBuf.duplicate());
+                        this.interceptor.intercept(this.response, resbody, this.request, reqbody);
+                        //sb.append("--------request\r\n");
+                        //sb.append(clientReqest);
+                        //sb.append("\r\n");
+                        //sb.append("--------response\r\n");
+                        //sb.append(serverResponse);
+                        //sb.append("\r\n");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -403,6 +395,253 @@ public class LittleProxyServerService extends Service implements Runnable {
                 }
             }
             return out.toByteArray();
+        }
+    }
+
+    private static class RewriteHeaderFilters extends HttpFiltersAdapter {
+
+
+        RewriteHeaderFilters(HttpRequest originalRequest, ChannelHandlerContext ctx) {
+            super(originalRequest, ctx);
+            //Log.d("CaptureFilter", "start");
+            //sb.append("**********");
+            //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            //sb.append(sdf.format(Calendar.getInstance().getTime()) + "\r\n");
+        }
+
+        @Override
+        public HttpResponse proxyToServerRequest(HttpObject httpObject) {
+
+            if (httpObject instanceof HttpRequest) {
+                HttpHeaders.setKeepAlive((HttpRequest) httpObject, false);
+                //Log.d("proxyToServerReqest", httpObject.toString());
+            }
+
+            return super.proxyToServerRequest(httpObject);
+        }
+
+
+        @Override
+        public HttpObject proxyToClientResponse(HttpObject httpObject) {
+
+            if (httpObject instanceof HttpResponse) {
+                HttpHeaders.setKeepAlive((HttpResponse) httpObject, false);
+            }
+
+            return super.proxyToClientResponse(httpObject);
+        }
+
+        @Override
+        public HttpResponse clientToProxyRequest(HttpObject httpObject) {
+            if (httpObject instanceof HttpRequest) {
+                HttpHeaders.setKeepAlive((HttpRequest) httpObject, false);
+                HttpHeaders.removeHeader((HttpRequest) httpObject, "Proxy-Connection");
+            }
+
+            return super.clientToProxyRequest(httpObject);
+        }
+    }
+
+
+    static class RequestMetaDataWrapper implements RequestMetaData {
+
+        private String contentType;
+
+        private String method;
+
+        private Map<String, List<String>> parameterMap;
+
+        private String queryString;
+
+        private String requestURI;
+
+        private Optional<InputStream> requestBody;
+
+        @Override
+        public String getContentType() {
+            return this.contentType;
+        }
+
+        void setContentType(String contentType) {
+            this.contentType = contentType;
+        }
+
+        @Override
+        public Map<String, Collection<String>> getHeaders() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getMethod() {
+            return this.method;
+        }
+
+        void setMethod(String method) {
+            this.method = method;
+        }
+
+        @Override
+        public Map<String, List<String>> getParameterMap() {
+            return this.parameterMap;
+        }
+
+        void setParameterMap(Map<String, List<String>> parameterMap) {
+            this.parameterMap = parameterMap;
+        }
+
+        @Override
+        public String getProtocol() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getQueryString() {
+            return this.queryString;
+        }
+
+        void setQueryString(String queryString) {
+            this.queryString = queryString;
+        }
+
+        @Override
+        public String getRemoteAddr() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int getRemotePort() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getRequestURI() {
+            return this.requestURI;
+        }
+
+        void setRequestURI(String requestURI) {
+            this.requestURI = requestURI;
+        }
+
+        @Override
+        public String getRequestURL() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getScheme() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getServerName() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int getServerPort() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Optional<InputStream> getRequestBody() {
+            return this.requestBody;
+        }
+
+        void setRequestBody(Optional<InputStream> requestBody) {
+            this.requestBody = requestBody;
+        }
+
+        static RequestMetaData build(HttpRequest req, byte[] body) throws UnsupportedEncodingException, URISyntaxException {
+            HttpHeaders header = req.headers();
+            RequestMetaDataWrapper meta = new RequestMetaDataWrapper();
+
+            meta.setContentType(header.get(HttpHeaders.Names.CONTENT_TYPE));
+            meta.setMethod(req.getMethod()
+                              .toString());
+
+            String bodyStr = URLDecoder.decode(new String(body, "UTF-8"), "UTF-8");
+            String[] params = bodyStr.split("&");
+            Map<String, List<String>> parameterMap = new HashMap<>();
+            for (String param : params) {
+                String[] keyValuePair = param.split("=");
+                String key = keyValuePair[0];
+
+                if (Objects.equals(key, "api_verno") || Objects.equals(key, "api_token")) {
+                    continue;
+                }
+
+                String value = "";
+                if (keyValuePair.length == 2) {
+                    value = keyValuePair[1];
+                }
+                if (parameterMap.containsKey(key)) {
+                    parameterMap.get(key)
+                                .add(value);
+                } else {
+                    parameterMap.put(key, new ArrayList<>(Arrays.asList(value)));
+                }
+            }
+            meta.setParameterMap(parameterMap);
+
+            URI url = new URI(req.getUri());
+            meta.setQueryString(url.getQuery());
+            meta.setRequestURI(url.getPath());
+            meta.setRequestBody(Optional.<InputStream>of(new ByteArrayInputStream(body)));
+
+            return meta;
+        }
+    }
+
+    static class ResponseMetaDataWrapper implements ResponseMetaData {
+
+        private int status;
+
+        private String contentType;
+
+        private Optional<InputStream> responseBody;
+
+        @Override
+        public int getStatus() {
+            return this.status;
+        }
+
+        void setStatus(int status) {
+            this.status = status;
+        }
+
+        @Override
+        public String getContentType() {
+            return this.contentType;
+        }
+
+        void setContentType(String contentType) {
+            this.contentType = contentType;
+        }
+
+        @Override
+        public Map<String, Collection<String>> getHeaders() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Optional<InputStream> getResponseBody() {
+            return this.responseBody;
+        }
+
+        void setResponseBody(Optional<InputStream> responseBody) {
+            this.responseBody = responseBody;
+        }
+
+        static ResponseMetaData build(HttpResponse res, byte[] body) throws UnsupportedEncodingException, URISyntaxException {
+            HttpHeaders header = res.headers();
+            ResponseMetaDataWrapper meta = new ResponseMetaDataWrapper();
+
+            meta.setStatus(res.getStatus()
+                              .code());
+            meta.setContentType(header.get(HttpHeaders.Names.CONTENT_TYPE));
+            meta.setResponseBody(Optional.of((InputStream) new ByteArrayInputStream(body)));
+
+            return meta;
         }
     }
 }

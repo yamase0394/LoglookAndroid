@@ -1,5 +1,7 @@
 package jp.gr.java_conf.snake0394.loglook_android.bean;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -13,141 +15,169 @@ public class MstSlotitem implements Serializable {
     /**
      * id
      */
+    @SerializedName("api_id")
     private Integer id;
 
     /**
      * 名前
      */
+    @SerializedName("api_name")
     private String name;
 
     /**
      * 並び替え順
      */
+    @SerializedName("api_sortno")
     private int sortno;
 
     /**
      * 装備タイプ [0]=大分類、[1]=図鑑表示、[2]=カテゴリ、[3]=アイコンID
      */
+    @SerializedName("api_type")
     private List<Integer> type;
 
     /**
      * 耐久(0)
      */
+    @SerializedName("api_taik")
     private int taik;
 
     /**
      * 装甲
      */
+    @SerializedName("api_souk")
     private int souk;
 
     /**
      * 火力
      */
+    @SerializedName("api_houg")
     private int houg;
 
     /**
      * 雷装
      */
+    @SerializedName("api_raig")
     private int raig;
 
     /**
      * 速力
      */
+    @SerializedName("api_soku")
     private int soku;
 
     /**
      * 爆装
      */
+    @SerializedName("api_baku")
     private int baku;
 
     /**
      * 対空
      */
+    @SerializedName("api_tyku")
     private int tyku;
 
     /**
      * 対潜
      */
+    @SerializedName("api_tais")
     private int tais;
 
     /**
      * ?(0)
      */
+    @SerializedName("api_atap")
     private int atap;
 
     /**
      * 命中
      */
+    @SerializedName("api_houm")
     private int houm;
 
     /**
      * 雷撃命中
      */
+    @SerializedName("api_raim")
     private int raim;
 
     /**
      * 回避
      */
+    @SerializedName("api_houk")
     private int houk;
 
     /**
      * 雷撃回避(0)
      */
+    @SerializedName("api_raik")
     private int raik;
 
     /**
      * 爆撃回避(0)
      */
+    @SerializedName("api_bakk")
     private int bakk;
 
     /**
      * 索敵
      */
+    @SerializedName("api_saku")
     private int saku;
 
     /**
      * 索敵妨害(0)
      */
+    @SerializedName("api_sakb")
     private int sakb;
 
     /**
      * 運(0)
      */
+    @SerializedName("api_luck")
     private int luck;
 
     /**
      * 射程
      */
+    @SerializedName("api_leng")
     private int leng;
 
     /**
      * レアリティ
      */
+    @SerializedName("api_rare")
     private int rare;
 
     /**
      * 廃棄資材
      */
+    @SerializedName("api_broken")
     private List<Integer> broken;
 
     /**
      * 図鑑情報
      */
+    @SerializedName("api_info")
     private String info;
 
     /**
      * ?
      */
+    @SerializedName("api_usebull")
     private String usebull;
 
     /**
      * 航空機コスト
      */
+    @SerializedName("api_cost")
     private int cost;
 
     /**
      * 航続距離
      */
+    @SerializedName("api_distance")
     private int distance;
 
 

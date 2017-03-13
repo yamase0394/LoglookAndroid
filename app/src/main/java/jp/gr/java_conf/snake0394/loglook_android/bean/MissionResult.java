@@ -1,5 +1,7 @@
 package jp.gr.java_conf.snake0394.loglook_android.bean;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -9,57 +11,45 @@ public class MissionResult {
     /**
      * 艦船IDのリスト。[0]=-1、[1]～[6]=保有艦船ID。リストの長さは出撃艦数+1
      */
+    @SerializedName("api_ship_id")
     private List<Integer> shipId;
 
     /**
      * 遠征結果。[0]=失敗、[1]=成功、[2]=大成功
      */
+    @SerializedName("api_clear_result")
     private int clearResult;
 
     /**
      * 海域カテゴリ名
      */
+    @SerializedName("api_maparea_name")
     private String mapareaName;
 
     /**
      * 遠征名
      */
+    @SerializedName("api_quest_name")
     private String questName;
+
+    /**
+     * 取得アイテムの存在フラグ [n]=0ならapi_get_item<n+1>は存在しない
+     * 0=なし, 1=高速修復材, 2=高速建造材, 3=開発資材, 4=アイテム, 5=家具コイン
+     */
+    @SerializedName("api_useitem_flag")
+    private List<Integer> useitemFlag;
 
     /**
      * 獲得資源
      */
+    @SerializedName("api_get_material")
     private List<Integer> gainMaterial;
 
-    /**
-     * 取得アイテムID(1)
-     */
-    private int useitemId1 = -1;
+    @SerializedName("api_get_item1")
+    private ApiGetItem item1;
 
-    /**
-     * 取得アイテム名(1)
-     */
-    private String useitemName1 = "";
-
-    /**
-     * 取得アイテム数(1)
-     */
-    private int useitemCount1 = -1;
-
-    /**
-     * 取得アイテムID(2)
-     */
-    private int useitemId2 = -1;
-
-    /**
-     * 取得アイテム名(2)
-     */
-    private String useitemName2 = "";
-
-    /**
-     * 取得アイテム数(2)
-     */
-    private int useitemCount2 = -1;
+    @SerializedName("api_get_item2")
+    private ApiGetItem item2;
 
     /**
      * 獲得経験値合計
@@ -112,52 +102,78 @@ public class MissionResult {
         this.gainMaterial = gainMaterial;
     }
 
-    public int getUseitemId1() {
-        return useitemId1;
+    public List<Integer> getUseitemFlag() {
+        return useitemFlag;
     }
 
-    public void setUseitemId1(int useitemId1) {
-        this.useitemId1 = useitemId1;
+    public int getUseitemId1() {
+        if (item1 == null) {
+            return -1;
+        }
+        return item1.id;
+    }
+
+    public void setUseitemId1(int id) {
+        if (item1 == null) {
+            return;
+        }
+        this.item1.id = id;
     }
 
     public String getUseitemName1() {
-        return useitemName1;
+        if (item1 == null) {
+            return "";
+        }
+        return item1.name;
     }
 
-    public void setUseitemName1(String useitemName1) {
-        this.useitemName1 = useitemName1;
+    public void setUseitemName1(String name) {
+        if (this.item1 == null) {
+            return;
+        }
+        this.item1.name = name;
     }
 
     public int getUseitemCount1() {
-        return useitemCount1;
-    }
-
-    public void setUseitemCount1(int useitemCount1) {
-        this.useitemCount1 = useitemCount1;
+        if (item1 == null) {
+            return 0;
+        }
+        return item1.count;
     }
 
     public int getUseitemId2() {
-        return useitemId2;
+        if (item2 == null) {
+            return -1;
+        }
+        return item2.id;
     }
 
-    public void setUseitemId2(int useitemId2) {
-        this.useitemId2 = useitemId2;
+    public void setUseitemId2(int id) {
+        if (item2 == null) {
+            return;
+        }
+        this.item2.id = id;
     }
 
     public String getUseitemName2() {
-        return useitemName2;
+        if (item2 == null) {
+            return "";
+        }
+        return item2.name;
     }
 
-    public void setUseitemName2(String useitemName2) {
-        this.useitemName2 = useitemName2;
+    public void setUseitemName2(String name) {
+        if (this.item2 == null) {
+            return;
+        }
+        this.item2.name = name;
     }
 
     public int getUseitemCount2() {
-        return useitemCount2;
-    }
-
-    public void setUseitemCount2(int useitemCount2) {
-        this.useitemCount2 = useitemCount2;
+        if (item2 == null) {
+            return 0;
+        }
+        return item2.count;
     }
 
     public int getExpSum() {
@@ -166,5 +182,20 @@ public class MissionResult {
 
     public void setExpSum(int expSum) {
         this.expSum = expSum;
+    }
+
+    private class ApiGetItem {
+
+        @SerializedName("api_useitem_id")
+        private int id = -1;
+
+        @SerializedName("api_useitem_name")
+        private String name = "";
+
+        @SerializedName("api_useitem_count")
+        private int count = 0;
+
+        ApiGetItem() {
+        }
     }
 }

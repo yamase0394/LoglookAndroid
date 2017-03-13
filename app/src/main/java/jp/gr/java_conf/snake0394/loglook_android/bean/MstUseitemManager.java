@@ -1,7 +1,6 @@
 package jp.gr.java_conf.snake0394.loglook_android.bean;
 
-import java.util.HashMap;
-import java.util.Map;
+import android.util.SparseArray;
 
 import jp.gr.java_conf.snake0394.loglook_android.App;
 import jp.gr.java_conf.snake0394.loglook_android.storage.MstDataStorage;
@@ -13,24 +12,24 @@ import jp.gr.java_conf.snake0394.loglook_android.storage.MstDataStorageSpotRepos
 public enum MstUseitemManager {
     INSTANCE;
 
-    private Map<Integer, MstUseitem> mstUseitemMap = new HashMap<>();
+    private SparseArray<MstUseitem> idToMstUseitemSparseArray;
 
     MstUseitemManager() {
         MstDataStorage storage = MstDataStorageSpotRepository.getEntity(App.getInstance());
-        this.mstUseitemMap = storage.mstUseitemMap;
+        this.idToMstUseitemSparseArray = storage.mstUseitemSparseArray;
     }
 
     public void put(MstUseitem mstUseitem) {
-        mstUseitemMap.put(mstUseitem.getId(), mstUseitem);
+        idToMstUseitemSparseArray.put(mstUseitem.getId(), mstUseitem);
     }
 
     public MstUseitem getMstUseitem(int id) {
-        return mstUseitemMap.get(id);
+        return idToMstUseitemSparseArray.get(id);
     }
 
     public void serialize() {
         MstDataStorage storage = MstDataStorageSpotRepository.getEntity(App.getInstance());
-        storage.mstUseitemMap = this.mstUseitemMap;
+        storage.mstUseitemSparseArray = this.idToMstUseitemSparseArray;
         MstDataStorageSpotRepository.putEntity(App.getInstance(), storage);
     }
 }
