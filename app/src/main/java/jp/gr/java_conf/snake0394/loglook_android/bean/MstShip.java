@@ -1,7 +1,5 @@
 package jp.gr.java_conf.snake0394.loglook_android.bean;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 
 /**
@@ -15,39 +13,33 @@ public class MstShip implements Serializable {
      * 艦娘固有id
      * api_id
      */
-    @SerializedName("api_id")
     private Integer id;
 
     /**
      * 名前
      * api_name
      */
-    @SerializedName("api_name")
     private String name;
 
     /**
      * ふりがな(深海棲艦の場合はflagship、elite）
      * api_yomi
      */
-    @SerializedName("api_yomi")
     private String yomi;
 
     /**api_stype 艦種*/
-    @SerializedName("api_stype")
     private int stype;
 
     /**
      * 最大搭載燃料
      * api_fuel_max
      */
-    @SerializedName("api_fuel_max")
     private int fuelMax;
 
     /**
      * 最大搭載弾薬
      * api_bull_max
      */
-    @SerializedName("api_bull_max")
     private int bullMax;
 
     public MstShip() {

@@ -1,31 +1,22 @@
 package jp.gr.java_conf.snake0394.loglook_android.bean;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
  * Created by snake0394 on 2016/11/16.
  */
 
 public class Kdock {
-
     private int id;
 
-    @SerializedName("api_created_ship_id")
     private int mstShipId;
 
-    @SerializedName("api_item1")
     private int fuel;
 
-    @SerializedName("api_item2")
     private int bullet;
 
-    @SerializedName("api_item3")
     private int steel;
 
-    @SerializedName("api_item4")
     private int bauxite;
 
-    @SerializedName("api_item5")
     private int developmentMaterial;
 
     public Kdock(){
@@ -86,4 +77,6 @@ public class Kdock {
     public void setDevelopmentMaterial(int developmentMaterial) {
         this.developmentMaterial = developmentMaterial;
     }
+
+
 }

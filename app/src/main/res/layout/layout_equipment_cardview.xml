@@ -8,484 +8,119 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="3dp"
-        >
+        android:layout_margin="3dp">
 
-        <LinearLayout
+        <android.support.percent.PercentRelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:gravity="top">
 
             <LinearLayout
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                app:layout_widthPercent="50%">
 
                 <ImageView
                     android:id="@+id/equipIcon"
                     android:layout_width="18dp"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/not_available"
-                    android:layout_marginLeft="5dp"/>
-
-                <TextView
-                    android:id="@+id/equipment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="TextView"
-                    android:textSize="17sp"
-                    android:gravity="center_vertical"
-                    android:layout_marginLeft="5dp"
-                    android:layout_margin="3dp"
                     />
+
+                <HorizontalScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fadingEdgeLength="5dp"
+                    android:fillViewport="false"
+                    android:requiresFadingEdge="horizontal"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/equipment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:ellipsize="end"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:isScrollContainer="false"
+                            android:maxLines="1"
+                            android:scrollHorizontally="false"
+                            android:text="TextView"
+                            android:textSize="17sp"/>
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_marginLeftPercent="50%"
+                app:layout_widthPercent="20%"
+                >
 
                 <TextView
                     android:id="@+id/alv"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:text="|"
-                    android:textSize="18sp"
-                    android:gravity="center_vertical"/>
+                    android:textSize="18sp"/>
 
                 <TextView
                     android:id="@+id/improvement"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:text="★"
-                    android:textSize="14sp"
-                    android:gravity="center_vertical"/>
-
-                <TextView
-                    android:id="@+id/textview_num"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="×100"
-                    android:gravity="bottom|right"
-                    android:layout_marginRight="8dp"
-                    android:textSize="17sp"/>
-
-
+                    android:textSize="14sp"/>
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorAccent"
-                android:layout_marginBottom="3dp"/>
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:layout_width="match_parent"
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="5dp"
-                app:flexDirection="row"
-                app:flexWrap="wrap"
-                >
-
-                <LinearLayout
-                    android:id="@+id/layout_firepower"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="3dp"
-                        android:textSize="12sp"
-                        android:background="@color/firepower"
-                        android:text="火力"
-                        android:textColor="@color/cardview_light_background"/>
-
-                    <TextView
-                        android:id="@+id/text_firepower"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+55"/>
-
-                    <TextView
-                        android:id="@+id/text_firepower_improve"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+55"
-                        android:textColor="@color/improved"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_torpedo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="3dp"
-                        android:background="@color/torpedo"
-                        android:text="雷装"
-                        android:textSize="12sp"
-                        android:textColor="@color/cardview_light_background"/>
-
-                    <TextView
-                        android:id="@+id/text_torpedo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+55"/>
-
-                    <TextView
-                        android:id="@+id/text_torpedo_improve"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+55"
-                        android:textColor="@color/improved"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_divebomb"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="3dp"
-                        android:background="@color/divebomb"
-                        android:text="爆装"
-                        android:textSize="12sp"
-                        android:textColor="@color/cardview_light_background"/>
-
-                    <TextView
-                        android:id="@+id/text_divebomb"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+55"/>
-
-                    <TextView
-                        android:id="@+id/text_divebomb_improve"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+55"
-                        android:textColor="@color/improved"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_aa"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="3dp"
-                        android:background="@color/aa"
-                        android:text="対空"
-                        android:textSize="12sp"
-                        android:textColor="@color/cardview_light_background"/>
-
-                    <TextView
-                        android:id="@+id/text_aa"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+55"/>
-
-                    <TextView
-                        android:id="@+id/text_aa_improve"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+55"
-                        android:textColor="@color/improved"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_asw"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="3dp"
-                        android:background="@color/asw"
-                        android:text="対潜"
-                        android:textSize="12sp"
-                        android:textColor="@color/cardview_light_background"/>
-
-                    <TextView
-                        android:id="@+id/text_asw"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+55"/>
-
-                    <TextView
-                        android:id="@+id/text_asw_improve"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+55"
-                        android:textColor="@color/improved"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_los"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="3dp"
-                        android:background="@color/los"
-                        android:text="索敵"
-                        android:textSize="12sp"
-                        android:textColor="@color/cardview_light_background"/>
-
-                    <TextView
-                        android:id="@+id/text_los"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+55"/>
-
-                    <TextView
-                        android:id="@+id/text_los_improve"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+55"
-                        android:textColor="@color/improved"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_accuracy"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="3dp"
-                        android:background="@color/accuracy"
-                        android:text="命中"
-                        android:textSize="12sp"
-                        android:textColor="@color/cardview_light_background"/>
-
-                    <TextView
-                        android:id="@+id/text_accuracy"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+55"/>
-
-                    <TextView
-                        android:id="@+id/text_accuracy_improve"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+55"
-                        android:textColor="@color/improved"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_evation"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="3dp"
-                        android:background="@color/evation"
-                        android:text="回避"
-                        android:textSize="12sp"
-                        android:textColor="@color/cardview_light_background"/>
-
-                    <TextView
-                        android:id="@+id/text_evation"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+55"/>
-
-                    <TextView
-                        android:id="@+id/text_evation_improve"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+55"
-                        android:textColor="@color/improved"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_range"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="3dp"
-                        android:background="@color/range"
-                        android:text="射程"
-                        android:textSize="12sp"
-                        android:textColor="@color/cardview_light_background"/>
-
-                    <TextView
-                        android:id="@+id/text_range"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="長超"/>
-
-                    <TextView
-                        android:id="@+id/text_range_improve"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+"
-                        android:textColor="@color/improved"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_armor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="3dp"
-                        android:background="@color/armor"
-                        android:text="装甲"
-                        android:textSize="12sp"
-                        android:textColor="@color/cardview_light_background"/>
-
-                    <TextView
-                        android:id="@+id/text_armor"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+55"/>
-
-                    <TextView
-                        android:id="@+id/text_armor_improve"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+55"
-                        android:textColor="@color/improved"/>
-
-                </LinearLayout>
-
-            </com.google.android.flexbox.FlexboxLayout>
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="5dp"
-                app:flexDirection="row"
-                app:flexWrap="wrap">
-
-                <LinearLayout
-                    android:id="@+id/layout_adjusted_aa"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="3dp"
-                        android:background="@color/adjusted_aa"
-                        android:text="加重対空"
-                        android:textSize="12sp"
-                        android:textColor="@color/cardview_light_background"/>
-
-                    <TextView
-                        android:id="@+id/text_adjusted_aa"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+55"/>
-
-                    <TextView
-                        android:id="@+id/text_adjusted_aa_improve"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+55"
-                        android:textColor="@color/improved"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_adjusted_fleet_aa"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="3dp"
-                        android:background="@color/adjusted_aa"
-                        android:text="艦隊対空"
-                        android:textSize="12sp"
-                        android:textColor="@color/cardview_light_background"/>
-
-                    <TextView
-                        android:id="@+id/text_adjusted_fleet_aa"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+55"/>
-
-                    <TextView
-                        android:id="@+id/text_adjusted_fleet_aa_improve"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+55"
-                        android:textColor="@color/improved"/>
-
-                </LinearLayout>
-
-            </com.google.android.flexbox.FlexboxLayout>
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/layout_ships"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:flexDirection="row"
-                app:flexWrap="wrap"
-                android:layout_marginBottom="2dp"
-                android:layout_marginLeft="5dp"
+                android:fadingEdgeLength="5dp"
+                android:fillViewport="false"
+                android:layout_marginTop="4dp"
+                android:requiresFadingEdge="horizontal"
+                app:layout_marginLeftPercent="70%"
+                android:scrollbars="none"
                 android:layout_marginRight="5dp">
 
-            </com.google.android.flexbox.FlexboxLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                   >
 
-        </LinearLayout>
+                    <TextView
+                        android:id="@+id/equipShipName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TextView"
+                        />
+
+                    <TextView
+                        android:id="@+id/equipShipLv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="3dp"
+                        android:text="TextView"
+                        android:textSize="12sp"
+                        android:layout_marginTop="1dp"/>
+                </LinearLayout>
+            </HorizontalScrollView>
+
+        </android.support.percent.PercentRelativeLayout>
 
     </android.support.v7.widget.CardView>
 

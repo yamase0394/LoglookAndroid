@@ -1,21 +1,20 @@
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                tools:context=".view.fragment.ConfigFragment">
 
     <ScrollView
-        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView2">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="15dp"
             android:orientation="vertical"
             android:weightSum="1">
 
@@ -53,93 +52,93 @@
                 android:textSize="15dp"/>
 
             <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
                 >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="40dp"
                     android:text="x座標"
-                    android:textSize="15dp"/>
+                    android:textSize="15dp"
+                    android:paddingLeft="40dp"/>
 
                 <EditText
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberSigned"
+                    android:ems="10"
                     android:id="@+id/viewX"
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:inputType="numberSigned"
                     />
 
             </LinearLayout>
 
             <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
                 >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="40dp"
                     android:text="y座標"
-                    android:textSize="15dp"/>
+                    android:textSize="15dp"
+                    android:paddingLeft="40dp"/>
 
                 <EditText
-                    android:id="@+id/viewY"
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
-                    android:ems="10"
                     android:inputType="numberSigned"
+                    android:ems="10"
+                    android:id="@+id/viewY"
                     />
 
             </LinearLayout>
 
             <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
                 >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="40dp"
                     android:text="幅"
-                    android:textSize="15dp"/>
+                    android:textSize="15dp"
+                    android:paddingLeft="40dp"/>
 
                 <EditText
-                    android:id="@+id/viewWidth"
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
-                    android:ems="10"
                     android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/viewWidth"
                     />
 
             </LinearLayout>
 
             <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
                 >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="40dp"
                     android:text="高さ"
-                    android:textSize="15dp"/>
+                    android:textSize="15dp"
+                    android:paddingLeft="40dp"/>
 
                 <EditText
-                    android:id="@+id/viewHeight"
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
-                    android:ems="10"
                     android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/viewHeight"
                     />
 
             </LinearLayout>
@@ -240,62 +239,20 @@
                 android:text="リクエストを保存する"
                 android:textSize="15dp"/>
 
-            <CheckBox
-                android:id="@+id/usesMissionNotification"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:layout_marginTop="5dp"
-                android:text="遠征完了時に通知する"
-                android:textSize="15dp"/>
-
-            <CheckBox
-                android:id="@+id/usesDockNotification"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="入渠完了時に通知する"
-                android:textSize="15dp"/>
-
-            <CheckBox
-                android:id="@+id/makesSoundWhenNotify"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:layout_marginTop="5dp"
-                android:text="通知時に音で知らせる"
-                android:textSize="15dp"/>
-
-            <CheckBox
-                android:id="@+id/vibratesWhenNotify"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="通知時に端末を振動させる"
-                android:textSize="15dp"/>
-
-            <CheckBox
-                android:id="@+id/forceLandscapeCheck"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="横画面固定"
-                android:textSize="15dp"/>
-
             <Button
                 android:id="@+id/saveBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="20dp"
                 android:layout_marginTop="20dp"
                 android:text="設定を保存"
-                android:textSize="18dp"/>
+                android:textSize="18dp"
+                android:layout_marginBottom="20dp"/>
 
 
         </LinearLayout>
     </ScrollView>
 
-</FrameLayout>
+</RelativeLayout>
 
 

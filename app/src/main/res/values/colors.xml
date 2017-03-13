@@ -3,13 +3,6 @@
     <color name="colorPrimary">#82c1ff</color>
     <color name="colorPrimaryDark">#307ad9</color>
     <color name="colorAccent">#ffb300</color>
-
-    <color name="imageButtonHighLight">#89ffb300</color>
-
-    <color name="transparent">#00aaaaaa</color>
-
-    <color name="listBackground">#ded9c3</color>
-
     <color name="windowBackground">#ffffff</color>
     <color name="textColorPrimary">#565656</color>
     <color name="drawer_slider_back">#FFFFFF</color>
@@ -31,22 +24,4 @@
     <color name="slightly_fatigued">#edb918</color>
     <color name="moderately_fatigued">#ff8c00</color>
     <color name="seriously_fatigued">#ffff0000</color>
-
-    <color name="los">#8ECE9A</color>
-    <color name="aa">#65CD74</color>
-    <color name="firepower">#cf3c3c</color>
-    <color name="torpedo">#5885a9</color>
-    <color name="asw">#7DCEDA</color>
-    <color name="accuracy">#E89934</color>
-    <color name="evation">#FDC24C</color>
-    <color name="armor">#9b7bac</color>
-    <color name="divebomb">#e46a69</color>
-    <color name="range">#e2c092</color>
-    <color name="improved">#20cec9</color>
-    <color name="adjusted_aa">#1e83e7</color>
-
-    <color name="equip_ship">#969696</color>
-    <color name="launcherItemBackground">#c3307ad9</color>
-    <color name="overlay_background">#70000000</color>
-    <color name="close_overlay_bar">#cf003a75</color>
 </resources>

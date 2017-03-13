@@ -7,7 +7,9 @@ import android.app.usage.UsageStatsManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
+import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -15,30 +17,21 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Vibrator;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
+import android.preference.PreferenceManager;
+import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.ButterKnife;
-import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
-import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
-import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository;
+import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.DialogActivity;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity;
-import jp.gr.java_conf.snake0394.loglook_android.view.activity.ScreenCaptureActivity;
 
 
 /**
@@ -48,7 +41,7 @@ public class SlantLauncher extends Service implements SensorEventListener {
     private boolean isTouching = false; //指定箇所がタップされているか
     private SensorManager sm;
     private WindowManager wm;
-    private GeneralPrefs prefs;
+    private SharedPreferences sp;
     //タップ検出領域
     private View v;
     //加速度センサの値から重力を取り除くのに使用
@@ -65,12 +58,12 @@ public class SlantLauncher extends Service implements SensorEventListener {
     @Override
     public void onCreate() {
         super.onCreate();
-        Logger.d("SlantLauncher", "onCreate");
+        Log.d("SlantLauncher", "onCreate");
     }
 
     @Override
     public int onStartCommand(Intent intent, final int flags, int startId) {
-        Logger.d("SlantLauncher", "onStartCommand");
+        Log.d("SlantLauncher", "onStartCommand");
 
         //センサ情報を取得する
         sm = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -85,13 +78,11 @@ public class SlantLauncher extends Service implements SensorEventListener {
 
         //タッチイベントを取得するためのviewを作る
         wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-
-        this.prefs = GeneralPrefsSpotRepository.getEntity(getApplicationContext());
-
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
         v = new View(this);
         //検出領域の透明度を設定
         int transparent;
-        if (prefs.showsView) {
+        if (sp.getBoolean("showView", true)) {
             //不透明
             transparent = PixelFormat.OPAQUE;
             //黄色
@@ -100,8 +91,15 @@ public class SlantLauncher extends Service implements SensorEventListener {
             //透明
             transparent = PixelFormat.TRANSPARENT;
         }
-
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams(prefs.viewWidth, prefs.viewHeight, prefs.viewY, prefs.viewX, WindowManager.LayoutParams.TYPE_SYSTEM_ERROR, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, transparent);
+        Point point = getDisplaySize();
+        //座標
+        //初期位置は、端末を横にした時左上
+        int viewX = sp.getInt("viewX", point.x / -2);
+        int viewY = sp.getInt("viewY", point.y / -2);
+        //大きさ
+        int viewWidth = sp.getInt("viewWidth", 20);
+        int viewHeight = sp.getInt("viewHeight", 50);
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams(viewWidth, viewHeight, viewY, viewX, WindowManager.LayoutParams.TYPE_SYSTEM_ERROR, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, transparent);
         v.setOnTouchListener(new FlickTouchListener(getApplicationContext()));
         wm.addView(v, params);
 
@@ -113,7 +111,7 @@ public class SlantLauncher extends Service implements SensorEventListener {
         super.onDestroy();
         sm.unregisterListener(this);
         wm.removeView(v);
-        Logger.d("SlantLauncher", "onDestroy");
+        //Log.d("SlantLauncher", "onDestroy");
     }
 
     @Override
@@ -140,7 +138,6 @@ public class SlantLauncher extends Service implements SensorEventListener {
                 //設定により左右どちらに振ったとき発動するか区別
                 //処理の重複を避けるため、スレッドを使用
                 if (linear_acceleration[1] < -1) {
-                    //左に傾けた
                     new Thread() {
                         @Override
                         public void run() {
@@ -148,7 +145,7 @@ public class SlantLauncher extends Service implements SensorEventListener {
                             Intent intent = new Intent(SlantLauncher.this, MainActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.putExtra("usesLandscape", true);
-                            intent.putExtra("position", MainActivity.Screen.DECK.getPosition());
+                            intent.putExtra("position", MainActivity.Fragment.DECK.getPosition());
                             startActivity(intent);
                             try {
                                 Thread.sleep(TimeUnit.SECONDS.toMillis(3));
@@ -160,7 +157,6 @@ public class SlantLauncher extends Service implements SensorEventListener {
                         }
                     }.start();
                 } else if (linear_acceleration[1] > 1) {
-                    //右に傾けた
                     new Thread() {
                         @Override
                         public void run() {
@@ -168,7 +164,7 @@ public class SlantLauncher extends Service implements SensorEventListener {
                             Intent intent = new Intent(SlantLauncher.this, MainActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.putExtra("usesLandscape", true);
-                            intent.putExtra("position", MainActivity.Screen.TACTICAL_SITUATION.getPosition());
+                            intent.putExtra("position", MainActivity.Fragment.TACTICAL_SITUATION.getPosition());
                             startActivity(intent);
                             try {
                                 Thread.sleep(TimeUnit.SECONDS.toMillis(3));
@@ -189,16 +185,42 @@ public class SlantLauncher extends Service implements SensorEventListener {
 
     }
 
+    //画面のサイズを求める
+    private Point getDisplaySize() {
+        Display display = wm.getDefaultDisplay();
+        Point real = new Point(0, 0);
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                // Android 4.2以上
+                display.getRealSize(real);
+                return real;
+
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+                // Android 3.2以上
+                Method getRawWidth = Display.class.getMethod("getRawWidth");
+                Method getRawHeight = Display.class.getMethod("getRawHeight");
+                int width = (Integer) getRawWidth.invoke(display);
+                int height = (Integer) getRawHeight.invoke(display);
+                real.set(width, height);
+                return real;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            ErrorLogger.writeLog(e);
+        }
+
+        return real;
+    }
 
     //艦これがフォアグラウンドか確認する
     private boolean isForeground() {
         String packageName = "com.dmm.dmmlabo.kancolle";
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            List<ComponentName> list = getForegroundAppList(1);
+            List<ComponentName> list = getForegroundAppList(getApplicationContext(), 1);
             for (ComponentName name : list) {
-                if (name.getPackageName()
-                        .equals(packageName)) {
+                if (name.getPackageName().equals(packageName)) {
                     return true;
                 }
             }
@@ -214,10 +236,11 @@ public class SlantLauncher extends Service implements SensorEventListener {
                 }
             }
         }
+
         return false;
     }
 
-    private List<ComponentName> getForegroundAppList(int size) {
+    private List<ComponentName> getForegroundAppList(Context context, int size) {
         List<ComponentName> nameList = new ArrayList<>();
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -293,7 +316,7 @@ public class SlantLauncher extends Service implements SensorEventListener {
                     isTouching = true;
 
                     //振動させる
-                    if (prefs.vibratesWhenViewTouched) {
+                    if (sp.getBoolean("touchVibration", true)) {
                         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
                         vibrator.vibrate(30);
                     }
@@ -325,13 +348,17 @@ public class SlantLauncher extends Service implements SensorEventListener {
                                 if (startTouchY > nowTouchedY + adjust) {
                                     //Log.v("Flick", "左上上");
                                     // 上フリック時の処理を記述する
-                                    this.startActivity();
+                                    Intent i = new Intent(context, DialogActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    context.startActivity(i);
                                 }
                             } else if ((startTouchY - nowTouchedY) < (startTouchX - nowTouchedX)) {
                                 if (startTouchX > nowTouchedX + adjust) {
                                     //Log.v("Flick", "左上左");
                                     // 左フリック時の処理を記述する
-                                    this.startActivity();
+                                    Intent i = new Intent(context, DialogActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    context.startActivity(i);
                                 }
                             }
                             //右
@@ -340,13 +367,17 @@ public class SlantLauncher extends Service implements SensorEventListener {
                                 if (startTouchY > nowTouchedY + adjust) {
                                     //Log.v("Flick", "右上上");
                                     // 上フリック時の処理を記述する
-                                    this.startActivity();
+                                    Intent i = new Intent(context, DialogActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    context.startActivity(i);
                                 }
                             } else if ((startTouchY - nowTouchedY) < (nowTouchedX - startTouchX)) {
                                 if (startTouchX + adjust < nowTouchedX) {
                                     //Log.v("Flick", "右上右");
                                     // 右フリック時の処理を記述する
-                                    this.startActivity();
+                                    Intent i = new Intent(context, DialogActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    context.startActivity(i);
                                 }
                             }
                         }
@@ -358,13 +389,17 @@ public class SlantLauncher extends Service implements SensorEventListener {
                                 if (startTouchY + adjust < nowTouchedY) {
                                     //Log.v("Flick", "左下下");
                                     // 下フリック時の処理を記述する
-                                    this.startActivity();
+                                    Intent i = new Intent(context, DialogActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    context.startActivity(i);
                                 }
                             } else if ((nowTouchedY - startTouchY) < (startTouchX - nowTouchedX)) {
                                 if (startTouchX > nowTouchedX + adjust) {
                                     //Log.v("Flick", "左下左");
                                     // 左フリック時の処理を記述する
-                                    this.startActivity();
+                                    Intent i = new Intent(context, DialogActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    context.startActivity(i);
                                 }
                             }
                             //右
@@ -373,13 +408,17 @@ public class SlantLauncher extends Service implements SensorEventListener {
                                 if (startTouchY + adjust < nowTouchedY) {
                                     //Log.v("Flick", "右下下");
                                     // 下フリック時の処理を記述する
-                                    this.startActivity();
+                                    Intent i = new Intent(context, DialogActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    context.startActivity(i);
                                 }
                             } else if ((nowTouchedY - startTouchY) < (nowTouchedX - startTouchX)) {
                                 if (startTouchX + adjust < nowTouchedX) {
                                     //Log.v("Flick", "右下右");
                                     // 右フリック時の処理を記述する
-                                    this.startActivity();
+                                    Intent i = new Intent(context, DialogActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    context.startActivity(i);
                                 }
                             }
                         }
@@ -401,138 +440,6 @@ public class SlantLauncher extends Service implements SensorEventListener {
                     break;
             }
             return true;
-        }
-
-        private void startActivity() {
-
-            /*
-            Intent i = new Intent(context, DialogActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-            context.startActivity(i);
-            */
-
-
-            final View launcherLayout = View.inflate(getApplicationContext(), R.layout.layout_launcher, null);
-            launcherLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    wm.removeView(launcherLayout);
-                }
-            });
-
-            ListView screenListview = ButterKnife.findById(launcherLayout, R.id.list_screen);
-            String[] launcherItems = new String[]{"艦隊", "遠征", "入渠", "損傷艦", "艦娘一覧", "装備一覧", "戦況"};
-            CustomAdapter customAdapter = new CustomAdapter(context, 0, launcherItems);
-            screenListview.setAdapter(customAdapter);
-            screenListview.setDivider(null);
-            screenListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    /*
-                    wm.removeView(launcherLayout);
-                    Intent intent = new Intent(context, MainActivity.class);
-                    intent.putExtra("usesLandscape", true);
-                    intent.putExtra("position", MainActivity.Screen.toScreen((String)adapterView.getItemAtPosition(i))
-                                                                   .getPosition());
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |  Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                    context.startActivity(intent);
-                    */
-                    //そのまま支援アプリを起動すると艦これがブラックアウトするため透明なアクティビティを間に挟む
-                    wm.removeView(launcherLayout);
-                    Intent intent = new Intent(context, DialogActivity.class);
-                    intent.putExtra("usesLandscape", true);
-                    intent.putExtra("position", MainActivity.Screen.toScreen((String) adapterView.getItemAtPosition(i))
-                                                                   .getPosition());
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                    context.startActivity(intent);
-                }
-            });
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                screenListview = ButterKnife.findById(launcherLayout, R.id.list_sub);
-                launcherItems = new String[]{"スクリーンショット", "攻略編成"};
-                customAdapter = new CustomAdapter(context, 0, launcherItems);
-                screenListview.setAdapter(customAdapter);
-                screenListview.setDivider(null);
-                screenListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        wm.removeView(launcherLayout);
-                        Intent intent = new Intent(context, ScreenCaptureActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                        switch (i) {
-                            case 0:
-                                intent.putExtra("class", ScreenShotService.class.getSimpleName());
-                                break;
-                            case 1:
-                                intent.putExtra("class", DeckListCaptureService.class.getSimpleName());
-                                break;
-                        }
-                        context.startActivity(intent);
-                    }
-                });
-            }
-
-            WindowManager.LayoutParams params = new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.TYPE_SYSTEM_ERROR, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
-            wm.addView(launcherLayout, params);
-
-        }
-
-        class CustomAdapter extends ArrayAdapter<String> {
-
-            class ViewHolder {
-                TextView labelText;
-            }
-
-            private LayoutInflater inflater;
-
-            // コンストラクタ
-            public CustomAdapter(Context context, int textViewResourceId, String[] labelList) {
-                super(context, textViewResourceId, labelList);
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-
-                ViewHolder holder;
-                View view = convertView;
-
-                // Viewを再利用している場合は新たにViewを作らない
-                if (view == null) {
-                    inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    view = inflater.inflate(R.layout.layout_launcher_item, null);
-                    TextView label = (TextView) view.findViewById(R.id.name);
-                    holder = new ViewHolder();
-                    holder.labelText = label;
-                    view.setTag(holder);
-                } else {
-                    holder = (ViewHolder) view.getTag();
-                }
-
-                // 特定の行のデータを取得
-                String str = getItem(position);
-
-                if (!TextUtils.isEmpty(str)) {
-                    // テキストビューにラベルをセット
-                    holder.labelText.setText(str);
-                }
-
-                /*
-                // 行毎に背景色を変える
-                if (position % 2 == 0) {
-                    holder.labelText.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
-                } else {
-                    holder.labelText.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
-                }
-                */
-
-                // XMLで定義したアニメーションを読み込む
-                Animation anim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in_from_left);
-                // リストアイテムのアニメーションを開始
-                view.startAnimation(anim);
-
-                return view;
-            }
         }
     }
 

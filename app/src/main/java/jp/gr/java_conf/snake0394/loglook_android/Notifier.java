@@ -10,9 +10,6 @@ import android.content.pm.PackageManager;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
-import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
-import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository;
-
 /**
  * Created by snake0394 on 2016/08/09.
  */
@@ -26,31 +23,8 @@ public class Notifier extends BroadcastReceiver {
         Intent sendIntent = pm.getLaunchIntentForPackage(packageName);
         PendingIntent sender = PendingIntent.getActivity(context, 0, sendIntent, 0);
 
-
         //通知生成
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-            .setSmallIcon(R.drawable.noti)
-            .setTicker(intent.getStringExtra("ticker"))
-            .setContentTitle(intent.getStringExtra("title"))
-            .setContentText(intent.getStringExtra("text"))
-            .setAutoCancel(true)
-            .setContentIntent(sender);
-
-        GeneralPrefs prefs = GeneralPrefsSpotRepository.getEntity(context);
-        if(prefs.makesSoundWhenNotify){
-            if (prefs.vibratesWhenNOtify) {
-                builder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE |  Notification.DEFAULT_LIGHTS);
-            } else {
-                builder.setDefaults(Notification.DEFAULT_SOUND |  Notification.DEFAULT_LIGHTS);
-            }
-        } else {
-            if (prefs.vibratesWhenNOtify) {
-                builder.setDefaults(Notification.DEFAULT_VIBRATE |  Notification.DEFAULT_LIGHTS);
-            } else {
-                builder.setDefaults(Notification.DEFAULT_LIGHTS);
-            }
-        }
-
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context).setSmallIcon(R.drawable.noti).setTicker(intent.getStringExtra("ticker")).setContentTitle(intent.getStringExtra("title")).setContentText(intent.getStringExtra("text")).setAutoCancel(true).setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS).setContentIntent(sender);
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(intent.getIntExtra("id", 0), builder.build());
 
@@ -59,9 +33,9 @@ public class Notifier extends BroadcastReceiver {
 
         //タイマーを停止状態にする
         if (intent.getIntExtra("id", 0) > 10) {
-            DockTimer.INSTANCE.cancel(intent.getIntExtra("id", 0) - 10);
+            DockTimer.INSTANCE.stop(intent.getIntExtra("id", 0) - 10);
         } else {
-            MissionTimer.INSTANCE.cancel(intent.getIntExtra("id", 0));
+            MissionTimer.INSTANCE.stop(intent.getIntExtra("id", 0));
         }
     }
 }

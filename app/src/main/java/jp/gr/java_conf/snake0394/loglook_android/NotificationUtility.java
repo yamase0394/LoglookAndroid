@@ -43,11 +43,9 @@ public class NotificationUtility {
         PendingIntent sender = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        try {
-            alarmManager.cancel(sender);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        alarmManager.cancel(sender);
+
+        MissionTimer.INSTANCE.stop(id);
     }
 
 

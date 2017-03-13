@@ -1,7 +1,5 @@
 package jp.gr.java_conf.snake0394.loglook_android.bean;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -15,187 +13,156 @@ public class MyShip implements Serializable {
   /**
    * 艦娘ID
    */
-  @SerializedName("api_id")
   private int id;
 
   /**
    * 並び替え順？
    */
-  @SerializedName("api_sortno")
   private int sortno;
 
   /**
    * 艦娘マスターID
    */
-  @SerializedName("api_ship_id")
   private int shipId;
 
   /**
    * レベル
    */
-  @SerializedName("api_lv")
   private int lv;
 
   /**
    * [0]=累計経験値、[1]=次のレベルまでの経験値、[2]=経験値バーの割合
    */
-  @SerializedName("api_exp")
   private List<Integer> exp;
 
   /**
    * 現在のhp
    */
-  @SerializedName("api_nowhp")
   private int nowhp;
 
   /**
    * 最大hp
    */
-  @SerializedName("api_maxhp")
   private int maxhp;
 
   /**
    * 射程
    */
-  @SerializedName("api_leng")
   private int leng;
 
   /**
    * 装備スロット。装備idが各スロットの位置に入る。空きの場合は-1が入る。
    */
-  @SerializedName("api_slot")
   private List<Integer> slot;
 
   /**
    * 艦載機搭載数
    */
-  @SerializedName("api_onslot")
   private List<Integer> onslot;
 
   /**
    * 補強増設
    */
-  @SerializedName("api_slot_ex")
   private int slotEx;
 
   /**
    * 近代化改修状態。[0]=火力、[1]=雷装、[2]=対空、[3]=装甲、[4]=運。
    */
-  @SerializedName("api_kyouka")
   private List<Integer> kyouka;
 
   /**
    * レアリティ
    */
-  @SerializedName("api_backs")
   private int backs;
 
   /**
    * 搭載燃料
    */
-  @SerializedName("api_fuel")
   private int fuel;
 
   /**
    * 搭載弾薬
    */
-  @SerializedName("api_bull")
   private int bull;
 
   /**
    * 装備可能スロット数
    */
-  @SerializedName("api_slotnum")
   private int slotnum;
 
   /**
    * 入渠時間（ミリ秒）
    */
-  @SerializedName("api_ndock_time")
   private long ndockTime;
 
   /**
    * 入渠時の消費資材量。[0]=燃料、[1]=鋼材
    */
-  @SerializedName("api_ndock_item")
   private List<Integer> ndockItem;
 
   /**
    * 改装☆？
    */
-  @SerializedName("api_srate")
   private int srate;
 
   /**
    * コンディション
    */
-  @SerializedName("api_cond")
   private int cond;
 
   /**
    * 火力。[0]=現在値(装備込み)、[1]=最大値(Lv99時)。
    */
-  @SerializedName("api_karyoku")
   private List<Integer> karyoku;
 
   /**
    * 雷装。[0]=現在値(装備込み)、[1]=最大値(Lv99時)。
    */
-  @SerializedName("api_raisou")
   private List<Integer> raisou;
 
   /**
    * 対空。[0]=現在値(装備込み)、[1]=最大値(Lv99時)。
    */
-  @SerializedName("api_taiku")
   private List<Integer> taiku;
 
   /**
    * 装甲。[0]=現在値(装備込み)、[1]=最大値(Lv99時)。
    */
-  @SerializedName("api_soukou")
   private List<Integer> soukou;
 
   /**
    * 回避。[0]=現在値(装備込み)、[1]=最大値(Lv99時)。
    */
-  @SerializedName("api_kaihi")
   private List<Integer> kaihi;
 
   /**
    * 対潜。[0]=現在値(装備込み)、[1]=最大値(Lv99時)。
    */
-  @SerializedName("api_taisen")
   private List<Integer> taisen;
 
   /**
    * 索敵。[0]=現在値(装備込み)、[1]=最大値(Lv99時)。
    */
-  @SerializedName("api_sakuteki")
   private List<Integer> sakuteki;
 
   /**
    * 運。[0]=現在値(装備込み)、[1]=最大値(Lv99時)。
    */
-  @SerializedName("api_lucky")
   private List<Integer> lucky;
 
   /**
    * ロックされているか
    */
-  @SerializedName("api_locked")
-  private int locked;
+  private boolean locked;
 
   /**
    * ロックされている装備を装備しているか
    */
-  @SerializedName("api_locked_equip")
-  private int lockedEquip;
+  private boolean lockedEquip;
 
   /**
-   * 札。札がついていない場合は-1が入る
+   * 札
    */
-  @SerializedName("api_sally_area")
   private int sallyArea;
 
   public MyShip() {
@@ -443,20 +410,38 @@ public class MyShip implements Serializable {
     this.lucky = lucky;
   }
 
-  public int getLocked() {
+  public boolean isLocked() {
     return locked;
   }
 
   public void setLocked(int locked) {
-    this.locked = locked;
+    switch (locked) {
+      case 0:
+        this.locked = false;
+        break;
+      case 1:
+        this.locked = true;
+        break;
+      default:
+        this.locked = false;
+    }
   }
 
-  public int getLockedEquip() {
+  public boolean isLockedEquip() {
     return lockedEquip;
   }
 
   public void setLockedEquip(int lockedEquip) {
-    this.lockedEquip = lockedEquip;
+    switch (lockedEquip) {
+      case 0:
+        this.lockedEquip = false;
+        break;
+      case 1:
+        this.lockedEquip = true;
+        break;
+      default:
+        this.lockedEquip = false;
+    }
   }
 
   public int getSallyArea() {

@@ -1,15 +1,13 @@
-
-<android.support.v4.widget.DrawerLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:id="@+id/layout_drawer">
+    android:orientation="vertical">
 
     <jp.gr.java_conf.snake0394.loglook_android.view.NestedCoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:statusBarBackground="@android:color/white">
 
         <android.support.design.widget.AppBarLayout
@@ -22,6 +20,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
                 android:gravity="right"
                 android:orientation="horizontal"
                 app:layout_scrollFlags="scroll|enterAlways">
@@ -38,20 +37,18 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"/>
 
-                <Button
-                    android:id="@+id/button_order"
+                <Spinner
+                    android:id="@+id/orderSpinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/flat_button"
-                    android:text="Button"
-                    android:minHeight="0dp"
-                    android:minWidth="0dp"/>
+                    />
 
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:layout_marginTop="5dp"
                 android:background="@color/colorAccent"
                 app:layout_scrollFlags="scroll|enterAlways"/>
 
@@ -65,20 +62,8 @@
             android:scrollbarThumbVertical="?android:attr/fastScrollPreviewBackgroundRight"
             android:scrollbars="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:background="@color/listBackground"/>
+            />
 
     </jp.gr.java_conf.snake0394.loglook_android.view.NestedCoordinatorLayout>
+</LinearLayout>
 
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview_right_drawer"
-        android:layout_width="180dp"
-        android:layout_gravity="end"
-        android:layout_height="match_parent"
-        android:background="@color/cardview_light_background">
-
-
-    </android.support.v7.widget.RecyclerView>
-
-
-</android.support.v4.widget.DrawerLayout>

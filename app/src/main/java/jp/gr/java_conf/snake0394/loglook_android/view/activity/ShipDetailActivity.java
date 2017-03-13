@@ -38,7 +38,7 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
-import jp.gr.java_conf.snake0394.loglook_android.view.EquipType3;
+import jp.gr.java_conf.snake0394.loglook_android.view.EquipIconId;
 
 public class ShipDetailActivity extends AppCompatActivity {
 
@@ -243,9 +243,9 @@ public class ShipDetailActivity extends AppCompatActivity {
                 strId = getResources().getIdentifier(name, "id", getPackageName());
                 ImageView image = (ImageView) findViewById(strId);
                 if (i <= myShip.getSlotnum()) {
-                    image.setImageResource(EquipType3.EMPTY.getImageId());
+                    image.setImageResource(EquipIconId.EMPTY.getImageId());
                 } else {
-                    image.setImageResource(EquipType3.NOT_AVAILABLE.getImageId());
+                    image.setImageResource(EquipIconId.NOT_AVAILABLE.getImageId());
                 }
 
                 name = "equipment" + i;
@@ -281,7 +281,7 @@ public class ShipDetailActivity extends AppCompatActivity {
             name = "equipIcon" + i;
             strId = getResources().getIdentifier(name, "id", getPackageName());
             ImageView image = (ImageView) findViewById(strId);
-            image.setImageResource(EquipType3.toEquipType3(MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId()).getType().get(3)).getImageId());
+            image.setImageResource(EquipIconId.toEquipIconId(MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId()).getType().get(3)).getImageId());
 
             name = "equipment" + i;
             strId = getResources().getIdentifier(name, "id", getPackageName());
@@ -343,13 +343,13 @@ public class ShipDetailActivity extends AppCompatActivity {
 
         if (MySlotItemManager.INSTANCE.contains(myShip.getSlotEx())) {
             MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlotEx()).getMstId());
-            image.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType().get(3)).getImageId());
+            image.setImageResource(EquipIconId.toEquipIconId(mstSlotitem.getType().get(3)).getImageId());
             text.setText(mstSlotitem.getName());
         } else {
             if (myShip.getSlotEx() == 0) {
-                image.setImageResource(EquipType3.NOT_AVAILABLE.getImageId());
+                image.setImageResource(EquipIconId.NOT_AVAILABLE.getImageId());
             } else if (myShip.getSlotEx() == -1) {
-                image.setImageResource(EquipType3.EMPTY.getImageId());
+                image.setImageResource(EquipIconId.EMPTY.getImageId());
             }
 
             text.setText("");

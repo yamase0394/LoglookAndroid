@@ -5,13 +5,12 @@ import java.util.Map;
 
 import io.github.kobakei.spot.annotation.Pref;
 import io.github.kobakei.spot.annotation.PrefString;
-import jp.gr.java_conf.snake0394.loglook_android.storage.converter.LabelListTypeConverter;
-import jp.gr.java_conf.snake0394.loglook_android.storage.converter.LabelMapTypeConverter;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.MyShipListRecyclerViewAdapter;
 
 /**
- * {@link jp.gr.java_conf.snake0394.loglook_android.view.fragment.MyShipListFragment}
+ * Created by snake0394 on 2017/02/10.
  */
+
 @Pref(name = "pref_my_ship_list_fragment")
 public class MyShipListFragmentPrefs {
 

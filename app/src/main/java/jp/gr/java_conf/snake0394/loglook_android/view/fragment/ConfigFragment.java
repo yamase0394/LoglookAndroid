@@ -1,11 +1,11 @@
 package jp.gr.java_conf.snake0394.loglook_android.view.fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.SpannableStringBuilder;
 import android.view.Display;
@@ -16,74 +16,38 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.lang.reflect.Method;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.SlantLauncher;
-import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.LittleProxyServerService;
-import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
-import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository;
-import jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity;
 
 import static android.content.Context.WINDOW_SERVICE;
+import static jp.gr.java_conf.snake0394.loglook_android.R.id.viewX;
 
 public class ConfigFragment extends Fragment {
-
-    private Unbinder unbinder;
-
-    @BindView(R.id.port)
-    EditText portEditText;
-    @BindView(R.id.showViewCheck)
-    CheckBox showsViewCheck;
-    @BindView(R.id.viewX)
-    EditText viewXEditText;
-    @BindView(R.id.viewY)
-    EditText viewYEditText;
-    @BindView(R.id.viewWidth)
-    EditText viewWidthEditText;
-    @BindView(R.id.viewHeight)
-    EditText viewHeightEditText;
-    @BindView(R.id.touchVibrationCheck)
-    CheckBox vibratesWhenViewTouchedCheck;
-    @BindView(R.id.useProxyCheck)
-    CheckBox usesProxyCheck;
-    @BindView(R.id.proxyHost)
-    EditText proxyHostEditText;
-    @BindView(R.id.proxyPort)
-    EditText proxyPortEditText;
-    @BindView(R.id.saveJsoncheck)
-    CheckBox logsJsonCheck;
-    @BindView(R.id.saveRequesstCheck)
-    CheckBox logsRequsetCheck;
-    @BindView(R.id.usesMissionNotification)
-    CheckBox usesMissionNotificationCheck;
-    @BindView(R.id.usesDockNotification)
-    CheckBox usesDockNotificationCheck;
-    @BindView(R.id.makesSoundWhenNotify)
-    CheckBox makesSoundWhenNotifyCheck;
-    @BindView(R.id.vibratesWhenNotify)
-    CheckBox vibratesWhenNotifyCheck;
-    @BindView(R.id.forceLandscapeCheck)
-    CheckBox forceLandscapeCheck;
 
     public ConfigFragment() {
         // Required empty public constructor
     }
 
+    // TODO: Rename and change types and number of parameters
     public static ConfigFragment newInstance() {
         ConfigFragment fragment = new ConfigFragment();
         return fragment;
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_config, container, false);
-        this.unbinder = ButterKnife.bind(this, rootView);
+
         return rootView;
     }
 
@@ -91,194 +55,186 @@ public class ConfigFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        final GeneralPrefs prefs = GeneralPrefsSpotRepository.getEntity(getContext());
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        final SharedPreferences.Editor editor = sharedPreferences.edit();
 
         //ポート番号
-        portEditText.setText(String.valueOf(prefs.port));
+        EditText ed = (EditText) getActivity().findViewById(R.id.port);
+        ed.setText(sharedPreferences.getString("port", "8080"));
 
         //検出領域を可視化するか
-        if (prefs.showsView) {
-            showsViewCheck.setChecked(true);
+        CheckBox cb = (CheckBox) getActivity().findViewById(R.id.showViewCheck);
+        cb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // チェックボックスがクリックされた時に呼び出されます
+            public void onClick(View v) {
+                CheckBox cb = (CheckBox) v;
+                editor.putBoolean("showView", cb.isChecked());
+                editor.apply();
+            }
+        });
+        if (sharedPreferences.getBoolean("showView", true)) {
+            cb.setChecked(true);
         } else {
-            showsViewCheck.setChecked(false);
+            cb.setChecked(false);
         }
 
         //検出領域のx,y座標
-        final Point point = getDisplaySize();
-        if (prefs.viewX == Short.MAX_VALUE) {
-            prefs.viewX = point.x / -2;
-        }
-        viewXEditText.setText(String.valueOf(prefs.viewX));
-
-        if (prefs.viewY == Short.MAX_VALUE) {
-            prefs.viewY = point.y / -2;
-        }
-        viewYEditText.setText(String.valueOf(prefs.viewY));
+        Point point = getDisplaySize();
+        ed = (EditText) getActivity().findViewById(viewX);
+        ed.setText(String.valueOf(sharedPreferences.getInt("viewX", point.x / -2)));
+        ed = (EditText) getActivity().findViewById(R.id.viewY);
+        ed.setText(String.valueOf(sharedPreferences.getInt("viewY", point.y / -2)));
 
         //検出領域の大きさ
-        viewWidthEditText.setText(String.valueOf(prefs.viewWidth));
-        viewHeightEditText.setText(String.valueOf(prefs.viewHeight));
+        ed = (EditText) getActivity().findViewById(R.id.viewWidth);
+        ed.setText(String.valueOf(sharedPreferences.getInt("viewWidth", 20)));
+        ed = (EditText) getActivity().findViewById(R.id.viewHeight);
+        ed.setText(String.valueOf(sharedPreferences.getInt("viewHeight", 50)));
 
         //検出領域に触れたとき振動させるか
-        if (prefs.vibratesWhenViewTouched) {
-            vibratesWhenViewTouchedCheck.setChecked(true);
+        cb = (CheckBox) getActivity().findViewById(R.id.touchVibrationCheck);
+        cb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // チェックボックスがクリックされた時に呼び出されます
+            public void onClick(View v) {
+                CheckBox cb = (CheckBox) v;
+                editor.putBoolean("touchVibration", cb.isChecked());
+                editor.apply();
+            }
+        });
+        if (sharedPreferences.getBoolean("touchVibration", true)) {
+            cb.setChecked(true);
         } else {
-            vibratesWhenViewTouchedCheck.setChecked(false);
+            cb.setChecked(false);
         }
 
         //プロキシを使用するか
-        if (prefs.usesProxy) {
-            usesProxyCheck.setChecked(true);
+        cb = (CheckBox) getActivity().findViewById(R.id.useProxyCheck);
+        cb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // チェックボックスがクリックされた時に呼び出されます
+            public void onClick(View v) {
+                CheckBox cb = (CheckBox) v;
+                editor.putBoolean("useProxy", cb.isChecked());
+                editor.apply();
+            }
+        });
+        if (sharedPreferences.getBoolean("useProxy", false)) {
+            cb.setChecked(true);
         } else {
-            usesProxyCheck.setChecked(false);
+            cb.setChecked(false);
         }
 
         //ホスト名
-        proxyHostEditText.setText(prefs.proxyHost);
+        ed = (EditText) getActivity().findViewById(R.id.proxyHost);
+        ed.setText(sharedPreferences.getString("proxyHost", ""));
 
         //ポート番号
-        proxyPortEditText.setText(String.valueOf(prefs.proxyPort));
+        ed = (EditText) getActivity().findViewById(R.id.proxyPort);
+        ed.setText(sharedPreferences.getString("proxyPort", ""));
 
         //jsonを保存するか
-        if (prefs.logsJson) {
-            logsJsonCheck.setChecked(true);
+        cb = (CheckBox) getActivity().findViewById(R.id.saveJsoncheck);
+        cb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // チェックボックスがクリックされた時に呼び出されます
+            public void onClick(View v) {
+                CheckBox cb = (CheckBox) v;
+                editor.putBoolean("saveJson", cb.isChecked());
+                editor.apply();
+            }
+        });
+        if (sharedPreferences.getBoolean("saveJson", false)) {
+            cb.setChecked(true);
         } else {
-            logsJsonCheck.setChecked(false);
+            cb.setChecked(false);
         }
-        logsJsonCheck.setVisibility(View.GONE);
+        cb.setVisibility(View.GONE);
 
         //リクエストを保存するか
-        if (prefs.logsRequest) {
-            logsRequsetCheck.setChecked(true);
+        cb = (CheckBox) getActivity().findViewById(R.id.saveRequesstCheck);
+        cb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // チェックボックスがクリックされた時に呼び出されます
+            public void onClick(View v) {
+                CheckBox cb = (CheckBox) v;
+                editor.putBoolean("saveRequest", cb.isChecked());
+                editor.apply();
+            }
+        });
+        if (sharedPreferences.getBoolean("saveRequest", false)) {
+            cb.setChecked(true);
         } else {
-            logsRequsetCheck.setChecked(false);
+            cb.setChecked(false);
         }
-        logsRequsetCheck.setVisibility(View.GONE);
-
-        usesMissionNotificationCheck.setChecked(prefs.usesMissionNotification);
-        usesDockNotificationCheck.setChecked(prefs.usesDockNotification);
-        makesSoundWhenNotifyCheck.setChecked(prefs.makesSoundWhenNotify);
-        vibratesWhenNotifyCheck.setChecked(prefs.vibratesWhenNOtify);
-        forceLandscapeCheck.setChecked(prefs.forcesLandscape);
+        cb.setVisibility(View.GONE);
 
         //設定を保存するボタン
         Button tb = (Button) getActivity().findViewById(R.id.saveBtn);
         tb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //ポ―ト番号
-                SpannableStringBuilder sb = (SpannableStringBuilder) portEditText.getText();
+                EditText ed = (EditText) getActivity().findViewById(R.id.port);
+                SpannableStringBuilder sb = (SpannableStringBuilder) ed.getText();
+                editor.putString("port", sb.toString());
+
+                ed = (EditText) getActivity().findViewById(viewX);
+                sb = (SpannableStringBuilder) ed.getText();
+                int viewX = 0;
                 try {
-                    prefs.port = Integer.parseInt(sb.toString());
+                    viewX = Integer.parseInt(sb.toString());
                 } catch (Exception e) {
-                    prefs.port = 8000;
-                    portEditText.setText(String.valueOf(prefs.port));
                 }
+                editor.putInt("viewX",viewX );
 
-                //検出領域を可視化するか
-                prefs.showsView = showsViewCheck.isChecked();
-
-                //検出領域のX座標
-                sb = (SpannableStringBuilder) viewXEditText.getText();
+                ed = (EditText) getActivity().findViewById(R.id.viewY);
+                sb = (SpannableStringBuilder) ed.getText();
+                int viewY = 0;
                 try {
-                    prefs.viewX = Integer.parseInt(sb.toString());
+                    viewY = Integer.parseInt(sb.toString());
                 } catch (Exception e) {
-                    prefs.viewX = point.x / -2;
-                    viewXEditText.setText(String.valueOf(prefs.viewX));
                 }
+                editor.putInt("viewY", viewY);
 
-                //検出領域のY座標
-                sb = (SpannableStringBuilder) viewYEditText.getText();
-                try {
-                    prefs.viewY = Integer.parseInt(sb.toString());
-                } catch (Exception e) {
-                    prefs.viewY = point.y / -2;
-                    viewYEditText.setText(String.valueOf(prefs.viewY));
+                ed = (EditText) getActivity().findViewById(R.id.viewWidth);
+                sb = (SpannableStringBuilder) ed.getText();
+                int viewWidth = Integer.parseInt(sb.toString());
+                if (viewWidth > 150) {
+                    viewWidth = 150;
+                    ed.setText(String.valueOf(viewWidth));
                 }
+                editor.putInt("viewWidth", viewWidth);
 
-                //検出領域の幅
-                sb = (SpannableStringBuilder) viewWidthEditText.getText();
-                try {
-                    prefs.viewWidth = Integer.parseInt(sb.toString());
-                    if (prefs.viewWidth > 150) {
-                        prefs.viewWidth = 150;
-                        viewWidthEditText.setText(String.valueOf(prefs.viewWidth));
-                    }
-                } catch (Exception e) {
-                    prefs.viewWidth = 20;
-                    viewWidthEditText.setText(String.valueOf(prefs.viewWidth));
+                ed = (EditText) getActivity().findViewById(R.id.viewHeight);
+                sb = (SpannableStringBuilder) ed.getText();
+                int viewHeight = Integer.parseInt(sb.toString());
+                if (viewHeight > 150) {
+                    viewHeight = 150;
+                    ed.setText(String.valueOf(viewHeight));
                 }
+                editor.putInt("viewHeight", viewHeight);
 
-                //検出領域の高さ
-                sb = (SpannableStringBuilder) viewHeightEditText.getText();
-                try {
-                    prefs.viewHeight = Integer.parseInt(sb.toString());
-                    if (prefs.viewHeight > 150) {
-                        prefs.viewHeight = 150;
-                        viewHeightEditText.setText(String.valueOf(prefs.viewHeight));
-                    }
-                } catch (Exception e) {
-                    prefs.viewHeight = 50;
-                    viewHeightEditText.setText(String.valueOf(prefs.viewHeight));
-                }
+                ed = (EditText) getActivity().findViewById(R.id.proxyHost);
+                sb = (SpannableStringBuilder) ed.getText();
+                editor.putString("proxyHost", sb.toString());
 
-                //検出領域タッチ時に振動させるか
-                prefs.vibratesWhenViewTouched = vibratesWhenViewTouchedCheck.isChecked();
+                ed = (EditText) getActivity().findViewById(R.id.proxyPort);
+                sb = (SpannableStringBuilder) ed.getText();
+                editor.putString("proxyPort", sb.toString());
 
-                //上流プロキシを使用するか
-                prefs.usesProxy = usesProxyCheck.isChecked();
+                editor.commit();
 
-                //上流プロキシのホスト名
-                sb = (SpannableStringBuilder) proxyHostEditText.getText();
-                prefs.proxyHost = sb.toString();
-
-                //上流プロキシのポート番号
-                sb = (SpannableStringBuilder) proxyPortEditText.getText();
-                try {
-                    prefs.proxyPort = Integer.parseInt(sb.toString());
-                } catch (Exception e) {
-                    prefs.proxyPort = 8080;
-                    proxyPortEditText.setText(String.valueOf(prefs.proxyPort));
-                }
-
-                //Jsonを記録するか
-                prefs.logsJson = logsJsonCheck.isChecked();
-
-                //リクエストボディを記録するか
-                prefs.logsRequest = logsRequsetCheck.isChecked();
-
-                prefs.usesMissionNotification = usesMissionNotificationCheck.isChecked();
-                prefs.usesDockNotification = usesDockNotificationCheck.isChecked();
-                prefs.makesSoundWhenNotify = makesSoundWhenNotifyCheck.isChecked();
-                prefs.vibratesWhenNOtify = vibratesWhenNotifyCheck.isChecked();
-                prefs.forcesLandscape = forceLandscapeCheck.isChecked();
-
-                GeneralPrefsSpotRepository.putEntity(getContext(), prefs);
-
-                //稼働中のサービスを一度停止させてから再び起動させる
                 Intent intent = new Intent(getActivity(), LittleProxyServerService.class);
                 getActivity().stopService(intent);
                 intent = new Intent(getActivity(), SlantLauncher.class);
                 getActivity().stopService(intent);
-
-                if (!MainActivity.canGetUsageStats(getContext())) {
-                    Logger.d("ConfigFragment", "can't get usage stats");
-                    intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-                    startActivity(intent);
-                    return;
-                }
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(getContext())) {
-                    Logger.d("ConfigFragment", "can't display system alart");
-                    intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getContext().getPackageName()));
-                    startActivity(intent);
-                    return;
-                }
-
                 intent = new Intent(getActivity(), LittleProxyServerService.class);
                 getActivity().startService(intent);
                 intent = new Intent(getActivity(), SlantLauncher.class);
                 getActivity().startService(intent);
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                Toast.makeText(getActivity(), "起動 port:" + sp.getString("port", "8080"), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -310,11 +266,5 @@ public class ConfigFragment extends Fragment {
         }
 
         return real;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        this.unbinder.unbind();
     }
 }

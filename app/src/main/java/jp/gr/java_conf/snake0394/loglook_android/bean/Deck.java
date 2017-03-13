@@ -1,7 +1,5 @@
 package jp.gr.java_conf.snake0394.loglook_android.bean;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 
 /**
@@ -11,25 +9,21 @@ public class Deck {
     /**
      * 艦隊番号
      */
-    @SerializedName("api_id")
     private int id;
 
     /**
      * 艦隊名
      */
-    @SerializedName("api_name")
     private String name;
 
     /**
      * 遠征状況。[0]={0=未出撃, 1=遠征中, 2=遠征帰投, 3=強制帰投中}, [1]=遠征先ID, [2]=帰投時間, [3]=0
      */
-    @SerializedName("api_mission")
     private List<Long> mission;
 
     /**
      * 艦隊に配備中の艦の所有艦娘IDのリスト。空きの場合は-1。[0]からidが入っています。
      */
-    @SerializedName("api_ship")
     private List<Integer> shipId;
 
 

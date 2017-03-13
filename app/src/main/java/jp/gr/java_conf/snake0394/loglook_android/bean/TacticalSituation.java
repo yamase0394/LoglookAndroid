@@ -326,7 +326,7 @@ public enum TacticalSituation implements Serializable {
                 case COMBINED_EC:
                 case COMBINED_EACH:
                 case COMBINED_EACH_WATER:
-                    for (int i = 1; i <= enemyShipIdCombined.size(); i++) {
+                    for (int i = 1; i <= enemyShipId.size(); i++) {
                         int hp = enemyNowhpsCombined.get(i - 1);
                         hp -= enemyDamage.get(i + 6);
                         enemyNowhpsCombined.set(i - 1, hp);

@@ -1,8 +1,5 @@
 package jp.gr.java_conf.snake0394.loglook_android;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstShipManager;
@@ -11,6 +8,7 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitemManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
+import jp.gr.java_conf.snake0394.loglook_android.view.EquipIconId;
 
 /**
  * Created by snake0394 on 2016/10/29.
@@ -34,18 +32,15 @@ public class ShipUtility {
         float result = 0;
         result += myShip.getKaryoku().get(0) + 5;
 
-        List<Integer> slotItemIdList = new ArrayList<>();
-        slotItemIdList.addAll(myShip.getSlot());
-        slotItemIdList.add(myShip.getSlotEx());
-        for (int id : slotItemIdList) {
-            if (!MySlotItemManager.INSTANCE.contains(id) || id == 0 || id == -1) {
-                continue;
+        for (int id : myShip.getSlot()) {
+            if (!MySlotItemManager.INSTANCE.contains(id)) {
+                break;
             }
             MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(id);
 
             //速吸は艦攻を装備しているとき空母の計算式になる
             MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-            if (EquipType2.toEquipType2(mstSlotitem.getType().get(2)) == EquipType2.艦上攻撃機) {
+            if (EquipType.toEquipType(mstSlotitem.getType().get(2)) == EquipType.艦上攻撃機) {
                 return getShellingBasicAttackPowerCV(myShip);
             }
 
@@ -63,12 +58,9 @@ public class ShipUtility {
         float bomb = 0;
         float improvementFirePower = 0;
 
-        List<Integer> slotItemIdList = new ArrayList<>();
-        slotItemIdList.addAll(myShip.getSlot());
-        slotItemIdList.add(myShip.getSlotEx());
-        for (int id : slotItemIdList) {
-            if (!MySlotItemManager.INSTANCE.contains(id) || id == 0 || id == -1) {
-                continue;
+        for (int id : myShip.getSlot()) {
+            if (!MySlotItemManager.INSTANCE.contains(id)) {
+                break;
             }
 
             MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(id);
@@ -90,12 +82,9 @@ public class ShipUtility {
         float result = 0;
         result += myShip.getRaisou().get(0);
 
-        List<Integer> slotItemIdList = new ArrayList<>();
-        slotItemIdList.addAll(myShip.getSlot());
-        slotItemIdList.add(myShip.getSlotEx());
-        for (int id : slotItemIdList) {
-            if (!MySlotItemManager.INSTANCE.contains(id) || id == 0 || id == -1) {
-                continue;
+        for (int id : myShip.getSlot()) {
+            if (!MySlotItemManager.INSTANCE.contains(id)) {
+                break;
             }
 
             MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(id);
@@ -137,21 +126,42 @@ public class ShipUtility {
         int equipmentBasicAASum = 0;
         float modifiedEquipmentAASum = 0;
 
-        List<Integer> slotItemIdList = new ArrayList<>();
-        slotItemIdList.addAll(myShip.getSlot());
-        slotItemIdList.add(myShip.getSlotEx());
-        for (int id : slotItemIdList) {
-            if (!MySlotItemManager.INSTANCE.contains(id) || id == 0 || id == -1) {
-                continue;
+        for (int id : myShip.getSlot()) {
+            if (!MySlotItemManager.INSTANCE.contains(id)) {
+                break;
             }
 
             MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(id);
             MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
 
-            equipmentBasicAASum += mstSlotitem.getTyku();
+            int slotitemBasicAA = mstSlotitem.getTyku();
+            equipmentBasicAASum += slotitemBasicAA;
 
-            modifiedEquipmentAASum += SlotItemUtility.getAdjustedAA(mstSlotitem);
-            modifiedEquipmentAASum += SlotItemUtility.getImprovementAdjustedAA(mstSlotitem, mySlotItem.getLevel());
+            //装備倍率
+            switch (EquipIconId.toEquipIconId(mstSlotitem.getType().get(3))) {
+                case 高角砲:
+                case 高射装置:
+                    modifiedEquipmentAASum += slotitemBasicAA * 4;
+                    break;
+                case 対空機銃:
+                    modifiedEquipmentAASum += slotitemBasicAA * 6;
+                    break;
+                case 電探:
+                    modifiedEquipmentAASum += slotitemBasicAA * 3;
+                    break;
+            }
+
+            int level = mySlotItem.getLevel();
+
+            //改修係数
+            switch (EquipIconId.toEquipIconId(mstSlotitem.getType().get(3))) {
+                case 高角砲:
+                    modifiedEquipmentAASum += Math.sqrt(level) * 3;
+                    break;
+                case 対空機銃:
+                    modifiedEquipmentAASum += Math.sqrt(level) * 4;
+                    break;
+            }
         }
 
         float x = myShip.getTaiku().get(0) - equipmentBasicAASum + modifiedEquipmentAASum;
@@ -170,18 +180,49 @@ public class ShipUtility {
      */
     public static double getAdjustedFleetAA(MyShip myShip) {
         float modifiedEquipmentAA = 0;
-        List<Integer> slotItemIdList = new ArrayList<>();
-        slotItemIdList.addAll(myShip.getSlot());
-        slotItemIdList.add(myShip.getSlotEx());
-        for (int slotitemId : slotItemIdList) {
-            if (!MySlotItemManager.INSTANCE.contains(slotitemId) || slotitemId == -1 || slotitemId == 0) {
-                continue;
+        for (int slotitemId : myShip.getSlot()) {
+            if (!MySlotItemManager.INSTANCE.contains(slotitemId) || slotitemId == -1) {
+                break;
             }
             MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(slotitemId);
             MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
+            int slotitemBasicAA = mstSlotitem.getTyku();
 
-            modifiedEquipmentAA += SlotItemUtility.getAdjustedFleetAA(mstSlotitem);
-            modifiedEquipmentAA += SlotItemUtility.getImprovementAdjustedFleetAA(mstSlotitem, mySlotItem.getLevel());
+            //装備倍率
+            switch (EquipIconId.toEquipIconId(mstSlotitem.getType().get(3))) {
+                case 小口径主砲:
+                case 中口径主砲:
+                case 大口径主砲:
+                case 副砲:
+                case 対空機銃:
+                case 艦上戦闘機:
+                case 艦上爆撃機:
+                case 水上機:
+                    modifiedEquipmentAA += slotitemBasicAA * 0.2;
+                    break;
+                case 高角砲:
+                case 高射装置:
+                    modifiedEquipmentAA += slotitemBasicAA * 0.35;
+                    break;
+                case 電探:
+                    modifiedEquipmentAA += slotitemBasicAA * 0.4;
+                    break;
+                case 対空強化弾:
+                    modifiedEquipmentAA += slotitemBasicAA * 0.6;
+                    break;
+            }
+
+            //改修係数
+            int level = mySlotItem.getLevel();
+            switch (EquipIconId.toEquipIconId(mstSlotitem.getType().get(3))) {
+                case 高角砲:
+                    modifiedEquipmentAA += Math.sqrt(level) * 3;
+                    break;
+                case 電探:
+                    modifiedEquipmentAA += Math.sqrt(level) * 1.5;
+                    break;
+            }
+
         }
         return Math.floor(modifiedEquipmentAA);
     }

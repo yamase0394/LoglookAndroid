@@ -1,0 +1,268 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                tools:context=".view.fragment.ConfigFragment">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView2"
+        android:fillViewport="true"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false"
+        >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:orientation="vertical"
+                android:weightSum="1"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center_horizontal">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+
+                    <TextView
+                        android:id="@+id/textView12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ポート番号"
+                        android:textSize="15dp"/>
+
+                    <EditText
+                        android:id="@+id/port"
+                        android:layout_width="70dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="5dp"
+                        android:ems="10"
+                        android:inputType="text"
+                        />
+
+                </LinearLayout>
+
+                <CheckBox
+                    android:id="@+id/showViewCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:checked="false"
+                    android:text="タッチ検出領域を可視化"
+                    android:textSize="15dp"/>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="x座標"
+                        android:textSize="15dp"
+                        android:paddingLeft="40dp"/>
+
+                    <EditText
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberSigned"
+                        android:ems="10"
+                        android:id="@+id/viewX"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="y座標"
+                        android:textSize="15dp"
+                        android:paddingLeft="40dp"/>
+
+                    <EditText
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberSigned"
+                        android:ems="10"
+                        android:id="@+id/viewY"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="幅"
+                        android:textSize="15dp"
+                        android:paddingLeft="40dp"/>
+
+                    <EditText
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:ems="10"
+                        android:id="@+id/viewWidth"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="高さ"
+                        android:textSize="15dp"
+                        android:paddingLeft="40dp"/>
+
+                    <EditText
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:ems="10"
+                        android:id="@+id/viewHeight"
+                        />
+
+                </LinearLayout>
+
+                <CheckBox
+                    android:id="@+id/touchVibrationCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:checked="false"
+                    android:text="タッチ時に振動させる"
+                    android:textSize="15dp"/>
+
+                <CheckBox
+                    android:id="@+id/useProxyCheck"
+                    android:layout_width="291dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:checked="false"
+                    android:text="プロキシを使用する"
+                    android:textSize="15dp"
+                    />
+
+                <TextView
+                    android:id="@+id/textView15"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="35dp"
+                    android:text="(艦これ以外の通信のみ)"/>
+
+                <LinearLayout
+                    android:layout_width="226dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:orientation="horizontal"
+                    android:weightSum="1"
+                    >
+
+                    <TextView
+                        android:id="@+id/textView13"
+                        android:layout_width="75dp"
+                        android:layout_height="wrap_content"
+                        android:text="    ホスト"
+                        android:textSize="15dp"
+                        />
+
+                    <EditText
+                        android:id="@+id/proxyHost"
+                        android:layout_width="200dp"
+                        android:layout_height="40dp"
+                        android:inputType="text"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="179dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+
+                    <TextView
+                        android:id="@+id/textView14"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="ポート番号"
+                        android:textSize="15dp"/>
+
+                    <EditText
+                        android:id="@+id/proxyPort"
+                        android:layout_width="70dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="0.21"
+                        android:ems="10"
+                        android:inputType="text"
+                        />
+                </LinearLayout>
+
+                <CheckBox
+                    android:id="@+id/saveJsoncheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginTop="5dp"
+                    android:checked="false"
+                    android:text="JSONを保存する"
+                    android:textSize="15dp"/>
+
+                <CheckBox
+                    android:id="@+id/saveRequesstCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:checked="false"
+                    android:text="リクエストを保存する"
+                    android:textSize="15dp"/>
+
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/saveBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="設定を保存"
+                android:textSize="18dp"
+                android:layout_marginBottom="20dp"
+                android:layout_gravity="center_horizontal"/>
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>
+
+

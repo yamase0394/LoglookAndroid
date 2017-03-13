@@ -1,14 +1,19 @@
 package jp.gr.java_conf.snake0394.loglook_android.bean;
 
-import android.util.SparseArray;
+import android.os.Environment;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
-import jp.gr.java_conf.snake0394.loglook_android.App;
-import jp.gr.java_conf.snake0394.loglook_android.storage.UserDataStorage;
-import jp.gr.java_conf.snake0394.loglook_android.storage.UserDataStorageSpotRepository;
+import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
 
 /**
  * Created by snake0394 on 2016/08/22.
@@ -16,59 +21,103 @@ import jp.gr.java_conf.snake0394.loglook_android.storage.UserDataStorageSpotRepo
 public enum MySlotItemManager {
     INSTANCE;
 
-    private SparseArray<MySlotItem> sparseArray;
+    transient private boolean initialized = false;
+    private HashMap<Integer, MySlotItem> mySlotItemMap = new HashMap<>();
 
-    MySlotItemManager() {
-        UserDataStorage storage = UserDataStorageSpotRepository.getEntity(App.getInstance());
-        this.sparseArray = storage.mySlotitemSparseArray;
+    private MySlotItemManager() {
     }
 
     public void put(MySlotItem mySlotItem) {
-        this.sparseArray.put(mySlotItem.getId(), mySlotItem);
+        mySlotItemMap.put(mySlotItem.getId(), mySlotItem);
     }
 
     public MySlotItem getMySlotItem(int id) {
-        return sparseArray.get(id);
+        if (!initialized) {
+            //SDカードのディレクトリパス
+            File sdcard_path = new File(Environment.getExternalStorageDirectory().getPath() + "/泥提督支援アプリ/data/");
+
+            //パス区切り用セパレータ
+            String Fs = File.separator;
+
+            //テキストファイル保存先のファイルパス
+            String filePath = sdcard_path + Fs + "MySlotItemMap.obj";
+
+            try {
+                ObjectInputStream in = new ObjectInputStream(new FileInputStream(filePath));
+                mySlotItemMap = (HashMap<Integer, MySlotItem>) in.readObject();
+                in.close();
+                initialized = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                ErrorLogger.writeLog(e);
+            }
+        }
+        return mySlotItemMap.get(id);
     }
 
     public boolean contains(int id) {
-        return sparseArray.indexOfKey(id) >= 0;
+        if (!initialized) {
+            //SDカードのディレクトリパス
+            File sdcard_path = new File(Environment.getExternalStorageDirectory().getPath() + "/泥提督支援アプリ/data/");
+
+            //パス区切り用セパレータ
+            String Fs = File.separator;
+
+            //テキストファイル保存先のファイルパス
+            String filePath = sdcard_path + Fs + "MySlotItemMap.obj";
+
+            try {
+                ObjectInputStream in = new ObjectInputStream(new FileInputStream(filePath));
+                mySlotItemMap = (HashMap<Integer, MySlotItem>) in.readObject();
+                in.close();
+                initialized = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                ErrorLogger.writeLog(e);
+            }
+        }
+        return mySlotItemMap.containsKey(id);
     }
 
     public void delete(List<Integer> list) {
+        Set<Integer> set = mySlotItemMap.keySet();
         List<Integer> remove = new ArrayList<>();
-        for (int i = 0; i < sparseArray.size(); i++) {
-            if(!list.contains(sparseArray.keyAt(i))){
-                remove.add(sparseArray.keyAt(i));
+        for (int i : set) {
+            if (!list.contains(i)) {
+                remove.add(i);
             }
         }
-        for (int id : remove) {
-            sparseArray.remove(id);
+        for (int i : remove) {
+            mySlotItemMap.remove(i);
         }
     }
 
     public Collection<MySlotItem> getMySlotItems (){
-        Collection<MySlotItem> collection = new ArrayList<>();
-        for (int i = 0; i < sparseArray.size(); i++) {
-            collection.add(sparseArray.valueAt(i));
-        }
-        return collection;
+        return mySlotItemMap.values();
     }
 
     public void serialize() {
-        UserDataStorage storage = UserDataStorageSpotRepository.getEntity(App.getInstance());
-        storage.mySlotitemSparseArray = this.sparseArray;
-        UserDataStorageSpotRepository.putEntity(App.getInstance(), storage);
-    }
+        //SDカードのディレクトリパス
+        File sdcard_path = new File(Environment.getExternalStorageDirectory().getPath() + "/泥提督支援アプリ/data/");
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < sparseArray.size(); i++) {
-            sb.append("key:" + sparseArray.keyAt(i) + ",id:" + sparseArray.valueAt(i)
-                                                                          .getId() + ",mst:" + sparseArray.valueAt(i)
-                                                                                                          .getMstId() + "\r\n");
+        //パス区切り用セパレータ
+        String Fs = File.separator;
+
+        //テキストファイル保存先のファイルパス
+        String filePath = sdcard_path + Fs + "MySlotItemMap.obj";
+
+        //フォルダがなければ作成
+        if (!sdcard_path.exists()) {
+            sdcard_path.mkdir();
         }
-        return sb.toString();
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filePath));
+            out.writeObject(mySlotItemMap);
+            out.close();
+            initialized = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            ErrorLogger.writeLog(e);
+        }
     }
 }

@@ -1,10 +1,15 @@
 package jp.gr.java_conf.snake0394.loglook_android.bean;
 
-import android.util.SparseArray;
+import android.os.Environment;
 
-import jp.gr.java_conf.snake0394.loglook_android.App;
-import jp.gr.java_conf.snake0394.loglook_android.storage.MstDataStorage;
-import jp.gr.java_conf.snake0394.loglook_android.storage.MstDataStorageSpotRepository;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
+
+import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
 
 /**
  * Created by snake0394 on 2016/08/08.
@@ -12,24 +17,62 @@ import jp.gr.java_conf.snake0394.loglook_android.storage.MstDataStorageSpotRepos
 public enum MstUseitemManager {
     INSTANCE;
 
-    private SparseArray<MstUseitem> idToMstUseitemSparseArray;
+    transient private boolean initialized = false;
+    private HashMap<Integer, MstUseitem> mstUseitemMap = new HashMap<>();
 
     MstUseitemManager() {
-        MstDataStorage storage = MstDataStorageSpotRepository.getEntity(App.getInstance());
-        this.idToMstUseitemSparseArray = storage.mstUseitemSparseArray;
     }
 
     public void put(MstUseitem mstUseitem) {
-        idToMstUseitemSparseArray.put(mstUseitem.getId(), mstUseitem);
+        mstUseitemMap.put(mstUseitem.getId(), mstUseitem);
     }
 
     public MstUseitem getMstUseitem(int id) {
-        return idToMstUseitemSparseArray.get(id);
+        if (!initialized) {
+            //SDカードのディレクトリパス
+            File sdcard_path = new File(Environment.getExternalStorageDirectory().getPath() + "/泥提督支援アプリ/data/");
+
+            //パス区切り用セパレータ
+            String Fs = File.separator;
+
+            //テキストファイル保存先のファイルパス
+            String filePath = sdcard_path + Fs + "MstUseitemMap.obj";
+
+            try {
+                ObjectInputStream in = new ObjectInputStream(new FileInputStream(filePath));
+                mstUseitemMap = (HashMap<Integer, MstUseitem>) in.readObject();
+                in.close();
+                initialized = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                ErrorLogger.writeLog(e);
+            }
+        }
+        return mstUseitemMap.get(id);
     }
 
     public void serialize() {
-        MstDataStorage storage = MstDataStorageSpotRepository.getEntity(App.getInstance());
-        storage.mstUseitemSparseArray = this.idToMstUseitemSparseArray;
-        MstDataStorageSpotRepository.putEntity(App.getInstance(), storage);
+        //SDカードのディレクトリパス
+        File sdcard_path = new File(Environment.getExternalStorageDirectory().getPath() + "/泥提督支援アプリ/data/");
+
+        //パス区切り用セパレータ
+        String Fs = File.separator;
+
+        //テキストファイル保存先のファイルパス
+        String filePath = sdcard_path + Fs + "MstUseitemMap.obj";
+
+        //フォルダがなければ作成
+        if (!sdcard_path.exists()) {
+            sdcard_path.mkdir();
+        }
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filePath));
+            out.writeObject(mstUseitemMap);
+            out.close();
+            initialized = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            ErrorLogger.writeLog(e);
+        }
     }
 }

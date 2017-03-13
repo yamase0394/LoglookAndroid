@@ -1,10 +1,5 @@
 package jp.gr.java_conf.snake0394.loglook_android.bean;
 
-import com.google.gson.annotations.SerializedName;
-
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import java.io.Serializable;
 
 /**
@@ -17,32 +12,32 @@ public class MySlotItem implements Serializable {
     /**
      * 装備固有ID
      */
-    @SerializedName("api_id")
     private int id;
 
     /**
      * 装備ID
      */
-    @SerializedName("api_slotitem_id")
     private int mstId;
 
     /**
      * 装備ロック 1=ロック、0=ロックされていない
      */
-    @SerializedName("api_locked")
     private int locked;
 
     /**
      * 改修度。 0=未改修、1～10改修度
      */
-    @SerializedName("api_level")
     private int level;
 
     /**
      * 熟練度。熟練度がついていない場合元データは存在しない。0=熟練度なし。1～7=熟練度。
      */
-    @SerializedName("api_alv")
     private int alv = 0;
+
+    /**
+     * 装備中の艦娘ID
+     */
+    private int shipId = -1;
 
     public int getId() {
         return id;
@@ -84,25 +79,11 @@ public class MySlotItem implements Serializable {
         this.alv = alv;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        MySlotItem that = (MySlotItem) o;
-
-        return new EqualsBuilder().append(id, that.id)
-                                  .isEquals();
+    public int getShipId() {
+        return shipId;
     }
 
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id)
-                                          .toHashCode();
+    public void setShipId(int shipId) {
+        this.shipId = shipId;
     }
 }

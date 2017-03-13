@@ -23,7 +23,7 @@
 
             <LinearLayout
                 android:orientation="vertical"
-                app:layout_widthPercent="48%"
+                app:layout_widthPercent="50%"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="false"
                 android:layout_alignParentRight="false"
@@ -113,7 +113,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="3dp"
                         android:gravity="center_vertical"
-                        android:text="111/111"
+                        android:text="HP:111/111"
                         android:textSize="11sp"/>
 
                     <TextView
@@ -193,30 +193,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:orientation="vertical"
-                app:layout_marginLeftPercent="50%"
+                app:layout_marginLeftPercent="52%"
                 app:layout_widthPercent="50%">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="完了時刻:"
-                        />
-
-                    <TextView
-                        android:id="@+id/completeTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="TextView"
-                        android:textSize="14sp"/>
-                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -236,7 +214,29 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="TextView"
-                        android:textSize="14sp"/>
+                        android:textSize="16sp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="完了日時:"
+                        />
+
+                    <TextView
+                        android:id="@+id/completeTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="TextView"
+                        android:textSize="16sp"/>
                 </LinearLayout>
 
             </LinearLayout>

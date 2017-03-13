@@ -19,6 +19,7 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
+import jp.gr.java_conf.snake0394.loglook_android.bean.ShipMap;
 import jp.gr.java_conf.snake0394.loglook_android.bean.SortieBattleresult;
 
 /**
@@ -54,7 +55,7 @@ public enum BattleLogger {
         this.battle = battle;
     }
 
-    public void writeLog(SortieBattleresult battleresult) {
+    public void writeLog() {
         //SDカードのディレクトリパス
         File sdcard_path = new File(Environment.getExternalStorageDirectory().getPath() + "/泥提督支援アプリ/");
 
@@ -80,7 +81,7 @@ public enum BattleLogger {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             sb.append(sdf.format(Calendar.getInstance()
                                          .getTime()) + ",");
-            sb.append(battleresult.getQuestName() + ",");
+            sb.append(SortieBattleresult.INSTANCE.getQuestName() + ",");
             sb.append(cell + ",");
             if (isFirstBattle && eventId == 5) {
                 sb.append("出撃&ボス");
@@ -92,7 +93,7 @@ public enum BattleLogger {
                 sb.append("");
             }
             sb.append(",");
-            sb.append(battleresult.getRank());
+            sb.append(SortieBattleresult.INSTANCE.getRank());
             sb.append(",");
             sb.append(battle.getTactic());
             sb.append(",");
@@ -106,11 +107,11 @@ public enum BattleLogger {
             sb.append(",");
             sb.append(battle.getEtTouchPlane());
             sb.append(",");
-            sb.append(battleresult.geteFleetName());
+            sb.append(SortieBattleresult.INSTANCE.geteFleetName());
             sb.append(",");
-            sb.append(battleresult.getGetShipType());
+            sb.append(SortieBattleresult.INSTANCE.getGetShipType());
             sb.append(",");
-            sb.append(battleresult.getGetShipName());
+            sb.append(SortieBattleresult.INSTANCE.getGetShipName());
             sb.append(",");
 
             Deck deck = DeckManager.INSTANCE.getDeck(battle.getDeckId());
@@ -124,7 +125,7 @@ public enum BattleLogger {
                     continue;
                 }
                 MyShip myShip = MyShipManager.INSTANCE.getMyShip(shipId.get(i - 1));
-                MstShip mstShip = MstShipManager.INSTANCE.getMstShip(myShip.getShipId());
+                MstShip mstShip = ShipMap.INSTANCE.getMstShip(shipId.get(i - 1));
                 sb.append(mstShip.getName());
                 sb.append("(Lv");
                 sb.append(myShip.getLv());
