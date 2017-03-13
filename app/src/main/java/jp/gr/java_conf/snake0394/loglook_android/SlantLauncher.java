@@ -421,7 +421,7 @@ public class SlantLauncher extends Service implements SensorEventListener {
             });
 
             ListView screenListview = ButterKnife.findById(launcherLayout, R.id.list_screen);
-            String[] launcherItems = new String[]{"艦隊", "遠征", "入渠", "損傷艦", "艦娘一覧", "装備一覧", "戦況"};
+            String[] launcherItems = new String[]{"艦隊", "遠征", "入渠", "損傷艦", "艦娘一覧", "装備一覧", "戦況", "編成一覧"};
             CustomAdapter customAdapter = new CustomAdapter(context, 0, launcherItems);
             screenListview.setAdapter(customAdapter);
             screenListview.setDivider(null);
@@ -450,7 +450,7 @@ public class SlantLauncher extends Service implements SensorEventListener {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 screenListview = ButterKnife.findById(launcherLayout, R.id.list_sub);
-                launcherItems = new String[]{"スクリーンショット", "攻略編成"};
+                launcherItems = new String[]{"スクリーンショット", "編成記録"};
                 customAdapter = new CustomAdapter(context, 0, launcherItems);
                 screenListview.setAdapter(customAdapter);
                 screenListview.setDivider(null);

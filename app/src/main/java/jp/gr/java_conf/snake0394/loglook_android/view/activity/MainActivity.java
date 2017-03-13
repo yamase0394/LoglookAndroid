@@ -44,6 +44,7 @@ import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
 import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.ConfigFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DamagedShipFragment;
+import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DeckCaptureListFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DeckFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DockFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.EquipmentFragment;
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
      * このアクティビティが持つfragment
      */
     public enum Screen {
-        HOME(0, "ホーム"), DECK(1, "艦隊"), MISSION(2, "遠征"), DOCK(3, "入渠"), DAMAGED_SHIP(4, "損傷艦"), MY_SHIP_LIST(5, "艦娘一覧"), EQUIPMENT(6, "装備一覧"), TACTICAL_SITUATION(7, "戦況"), CONFIG(8, "設定");
+        HOME(0, "ホーム"), DECK(1, "艦隊"), MISSION(2, "遠征"), DOCK(3, "入渠"), DAMAGED_SHIP(4, "損傷艦"), MY_SHIP_LIST(5, "艦娘一覧"), EQUIPMENT(6, "装備一覧"), TACTICAL_SITUATION(7, "戦況"), DECK_CAPTURE_LIST(8, "編成一覧"), CONFIG(9, "設定");
         
         private int position;
         private String name;
@@ -199,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             Logger.d("MainActivity:onCreate", "savedInstanceState == null");
             
-            if(this.forcesLandscape){
+            if (this.forcesLandscape) {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             } else {
                 //画面回転を自動に設定
@@ -410,6 +411,9 @@ public class MainActivity extends AppCompatActivity {
             case MY_SHIP_LIST:
                 ((AppBarLayout.LayoutParams) findViewById(toolbar).getLayoutParams()).setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
                 fragment = MyShipListFragment.newInstance();
+                break;
+            case DECK_CAPTURE_LIST:
+                fragment = DeckCaptureListFragment.newInstance();
                 break;
             default:
                 return;
