@@ -76,19 +76,12 @@
             android:exported="false">
         </service>
 
-        <activity
-            android:name=".view.activity.SaveFleetCaptureActivity"
-            android:launchMode="singleInstance"
-            android:hardwareAccelerated="false"
-            android:screenOrientation="landscape">
-        </activity>
+        <service
+            android:name=".DeckListOverlayService"
+            android:exported="false">
+        </service>
 
-        <activity
-            android:name=".view.activity.SaveScreenShotActivity"
-            android:launchMode="singleInstance"
-            android:hardwareAccelerated="false"
-            android:screenOrientation="landscape">
-        </activity>
+
     </application>
 
 </manifest>
