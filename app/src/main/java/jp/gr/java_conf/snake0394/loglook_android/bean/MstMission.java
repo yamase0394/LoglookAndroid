@@ -1,5 +1,7 @@
 package jp.gr.java_conf.snake0394.loglook_android.bean;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -13,31 +15,37 @@ public class MstMission implements Serializable {
     /**
      * 遠征ID
      */
+    @SerializedName("api_id")
     private int id;
 
     /**
      * 海域カテゴリID
      */
+    @SerializedName("api_maparea_id")
     private int mapareaId;
 
     /**
      * 遠征名
      */
+    @SerializedName("api_name")
     private String name;
 
     /**
      * 遠征時間(分)
      */
+    @SerializedName("api_time")
     private int time;
 
     /**
      * 獲得アイテム1。[0]=アイテムID、[1]=入手個数
      */
+    @SerializedName("api_win_item1")
     private List<Integer> winItem1;
 
     /**
      * 獲得アイテム2。[0]=アイテムID、[1]=入手個数
      */
+    @SerializedName("api_win_item2")
     private List<Integer> winItem2;
 
     public MstMission() {

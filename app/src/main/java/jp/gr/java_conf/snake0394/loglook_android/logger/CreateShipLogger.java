@@ -1,6 +1,7 @@
 package jp.gr.java_conf.snake0394.loglook_android.logger;
 
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -149,6 +150,7 @@ public enum CreateShipLogger {
             pw.flush();
             pw.close();
 
+            Log.d("createship", sb.toString());
         } catch (Exception e) {
             e.printStackTrace();
             ErrorLogger.writeLog(e);

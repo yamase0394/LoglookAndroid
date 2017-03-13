@@ -21,7 +21,7 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
-import jp.gr.java_conf.snake0394.loglook_android.view.EquipIconId;
+import jp.gr.java_conf.snake0394.loglook_android.view.EquipType3;
 
 /**
  * Created by snake0394 on 2016/12/07.
@@ -67,9 +67,9 @@ public class EquipmentDialogFragment extends android.support.v4.app.DialogFragme
                 strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
                 ImageView image = (ImageView) rootView.findViewById(strId);
                 if (i <= myShip.getSlotnum()) {
-                    image.setImageResource(EquipIconId.EMPTY.getImageId());
+                    image.setImageResource(EquipType3.EMPTY.getImageId());
                 } else {
-                    image.setImageResource(EquipIconId.NOT_AVAILABLE.getImageId());
+                    image.setImageResource(EquipType3.NOT_AVAILABLE.getImageId());
                 }
 
                 name = "equipment" + i;
@@ -105,7 +105,7 @@ public class EquipmentDialogFragment extends android.support.v4.app.DialogFragme
             name = "equipIcon" + i;
             strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
             ImageView image = (ImageView) rootView.findViewById(strId);
-            image.setImageResource(EquipIconId.toEquipIconId(MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId()).getType().get(3)).getImageId());
+            image.setImageResource(EquipType3.toEquipType3(MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId()).getType().get(3)).getImageId());
 
             name = "equipment" + i;
             strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
@@ -167,13 +167,13 @@ public class EquipmentDialogFragment extends android.support.v4.app.DialogFragme
 
         if (MySlotItemManager.INSTANCE.contains(myShip.getSlotEx())) {
             MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlotEx()).getMstId());
-            image.setImageResource(EquipIconId.toEquipIconId(mstSlotitem.getType().get(3)).getImageId());
+            image.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType().get(3)).getImageId());
             text.setText(mstSlotitem.getName());
         } else {
             if (myShip.getSlotEx() == 0) {
-                image.setImageResource(EquipIconId.NOT_AVAILABLE.getImageId());
+                image.setImageResource(EquipType3.NOT_AVAILABLE.getImageId());
             } else if (myShip.getSlotEx() == -1) {
-                image.setImageResource(EquipIconId.EMPTY.getImageId());
+                image.setImageResource(EquipType3.EMPTY.getImageId());
             }
 
             text.setText("");

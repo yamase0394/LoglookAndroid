@@ -1,6 +1,7 @@
 package jp.gr.java_conf.snake0394.loglook_android.logger;
 
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -9,7 +10,7 @@ import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import jp.gr.java_conf.snake0394.loglook_android.EquipType;
+import jp.gr.java_conf.snake0394.loglook_android.EquipType2;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Basic;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager;
@@ -42,7 +43,7 @@ public enum CreateItemLogger {
         isReady = true;
     }
 
-    public void write(int createFlag, MstSlotitem mstSlotitem, EquipType equipType) {
+    public void write(int createFlag, MstSlotitem mstSlotitem, EquipType2 equipType2) {
         if (!isReady) {
             return;
         }
@@ -84,7 +85,7 @@ public enum CreateItemLogger {
                 case 1:
                     sb.append(mstSlotitem.getName());
                     sb.append(",");
-                    sb.append(equipType.toString());
+                    sb.append(equipType2.toString());
                     sb.append(",");
                     break;
                 default:
@@ -123,6 +124,7 @@ public enum CreateItemLogger {
             pw.flush();
             pw.close();
 
+            Log.d("createitem", sb.toString());
         } catch (Exception e) {
             e.printStackTrace();
             ErrorLogger.writeLog(e);

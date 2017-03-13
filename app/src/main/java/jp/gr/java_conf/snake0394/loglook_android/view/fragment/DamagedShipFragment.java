@@ -1,8 +1,6 @@
 package jp.gr.java_conf.snake0394.loglook_android.view.fragment;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
@@ -19,10 +18,13 @@ import java.util.ArrayList;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
+import jp.gr.java_conf.snake0394.loglook_android.storage.DamagedShipFragmentPrefs;
+import jp.gr.java_conf.snake0394.loglook_android.storage.DamagedShipFragmentPrefsSpotRepository;
 
 public class DamagedShipFragment extends Fragment {
 
     private RecyclerView recyclerView;
+    private DamagedShipFragmentPrefs prefs;
 
     public DamagedShipFragment() {
         // Required empty public constructor
@@ -36,6 +38,8 @@ public class DamagedShipFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        this.prefs = DamagedShipFragmentPrefsSpotRepository.getEntity(getContext());
     }
 
     @Override
@@ -49,18 +53,14 @@ public class DamagedShipFragment extends Fragment {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Spinner type = (Spinner) rootView.findViewById(R.id.sortSpinner);
+                Spinner type = (Spinner) parent;
                 // 初回起動時の動作
                 if (type.isFocusable() == false) {
                     type.setFocusable(true);
                     return;
                 }
-                final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                final SharedPreferences.Editor editor = sp.edit();
-                editor.putString("damagedShipSortType", (String) type.getSelectedItem());
-                editor.apply();
-                Spinner order = (Spinner) rootView.findViewById(R.id.orderSpinner);
-                DamagedShipAdapter adapter = new DamagedShipAdapter(getFragmentManager(), (String) type.getSelectedItem(), (String) order.getSelectedItem());
+                prefs.sortType = (String) type.getSelectedItem();
+                DamagedShipAdapter adapter = new DamagedShipAdapter(getFragmentManager(), prefs.sortType, prefs.order);
                 recyclerView.swapAdapter(adapter, false);
                 initDataList();
             }
@@ -69,61 +69,36 @@ public class DamagedShipFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item);
         adapter.add("修復時間");
         adapter.add("損傷度");
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setFocusable(false);
-        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        switch (sp.getString("damagedShipSortType", "修復時間")) {
-            case "修復時間":
-                spinner.setSelection(0);
-                break;
-            case "損傷度":
-                spinner.setSelection(1);
-                break;
-        }
+        spinner.setSelection(adapter.getPosition(prefs.sortType));
 
-        spinner = (Spinner) rootView.findViewById(R.id.orderSpinner);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+        Button orderButton = (Button) rootView.findViewById(R.id.button_order);
+        orderButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Spinner order = (Spinner) rootView.findViewById(R.id.orderSpinner);
-                // 初回起動時の動作
-                if (order.isFocusable() == false) {
-                    order.setFocusable(true);
-                    return;
+            public void onClick(View v) {
+                Button orderButton = (Button) v;
+                String buttonText = String.valueOf(orderButton.getText());
+                switch (buttonText) {
+                    case "降順":
+                        prefs.order = "昇順";
+                        break;
+                    case "昇順":
+                        prefs.order = "降順";
+                        break;
                 }
-                final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                final SharedPreferences.Editor editor = sp.edit();
-                editor.putString("damagedShipOrder", (String) order.getSelectedItem());
-                editor.apply();
-                Spinner type = (Spinner) rootView.findViewById(R.id.sortSpinner);
-                DamagedShipAdapter adapter = new DamagedShipAdapter(getFragmentManager(), (String) type.getSelectedItem(), (String) order.getSelectedItem());
+                orderButton.setText(prefs.order);
+                DamagedShipAdapter adapter = new DamagedShipAdapter(getFragmentManager(), prefs.sortType, prefs.order);
                 recyclerView.swapAdapter(adapter, false);
                 initDataList();
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
         });
-        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item);
-        adapter.add("昇順");
-        adapter.add("降順");
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setFocusable(false);
-        switch (sp.getString("damagedShipOrder", "降順")) {
-            case "昇順":
-                spinner.setSelection(0);
-                break;
-            case "降順":
-                spinner.setSelection(1);
-                break;
-        }
+        orderButton.setText(this.prefs.order);
 
         return rootView;
     }
@@ -135,8 +110,7 @@ public class DamagedShipFragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         if (recyclerView.getAdapter() == null) {
-            final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            DamagedShipAdapter adapter = new DamagedShipAdapter(getFragmentManager(), sp.getString("damagedShipSortType", "修復時間"), sp.getString("damagedShipOrder", "降順"));
+            DamagedShipAdapter adapter = new DamagedShipAdapter(getFragmentManager(), prefs.sortType, prefs.order);
             recyclerView.setAdapter(adapter);
             initDataList();
         }
@@ -158,7 +132,9 @@ public class DamagedShipFragment extends Fragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        DamagedShipFragmentPrefsSpotRepository.putEntity(getContext(), this.prefs);
     }
 }

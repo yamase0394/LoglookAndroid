@@ -27,10 +27,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import jp.gr.java_conf.snake0394.loglook_android.App;
 import jp.gr.java_conf.snake0394.loglook_android.R;
-import jp.gr.java_conf.snake0394.loglook_android.storage.MyShipListFragmentPrefs;
-import jp.gr.java_conf.snake0394.loglook_android.storage.MyShipListFragmentPrefsSpotRepository;
+import jp.gr.java_conf.snake0394.loglook_android.storage.converter.LabelListTypeConverter;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 /**
@@ -40,13 +38,15 @@ import yuku.ambilwarna.AmbilWarnaDialog;
 public class MyShipListAddLabelDialog extends android.support.v4.app.DialogFragment {
 
     private static final String ARG_POSITION = "position";
+    private static final String ARG_LABEL_LIST = "labelList";
 
     private OnFinishedListener listener;
 
-    public static DialogFragment newInstance(int position) {
+    public static DialogFragment newInstance(int position, List<MyShipListRecyclerViewAdapter.Label> labelList) {
         DialogFragment dialogFragment = new MyShipListAddLabelDialog();
         Bundle args = new Bundle();
         args.putInt(ARG_POSITION, position);
+        args.putString(ARG_LABEL_LIST, new LabelListTypeConverter().convertToSupportedType(labelList));
         dialogFragment.setArguments(args);
         return dialogFragment;
     }
@@ -54,8 +54,7 @@ public class MyShipListAddLabelDialog extends android.support.v4.app.DialogFragm
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        MyShipListFragmentPrefs prefs = MyShipListFragmentPrefsSpotRepository.getEntity(App.getInstance());
-        final List<MyShipListRecyclerViewAdapter.Label> labelList = prefs.labelList;
+        final List<MyShipListRecyclerViewAdapter.Label> labelList = new LabelListTypeConverter().convertFromSupportedType(getArguments().getString(ARG_LABEL_LIST));
         final Set<String> labelNameSet = new HashSet();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -101,7 +100,7 @@ public class MyShipListAddLabelDialog extends android.support.v4.app.DialogFragm
                                        nameTextInputLayout.setErrorEnabled(true);
                                        nameTextInputLayout.setError("必須");
                                        return;
-                                   } else if(labelNameSet.contains(editable.toString())){
+                                   } else if (labelNameSet.contains(editable.toString())) {
                                        nameTextInputLayout.setErrorEnabled(true);
                                        nameTextInputLayout.setError("既に存在するラベル名です。ラベルの色が上書きされます。");
                                        return;
@@ -160,7 +159,7 @@ public class MyShipListAddLabelDialog extends android.support.v4.app.DialogFragm
                .setPositiveButton("追加", new DialogInterface.OnClickListener() {
                    @Override
                    public void onClick(DialogInterface dialog, int which) {
-                       if(usesExistingLabelCheck.isChecked()){
+                       if (usesExistingLabelCheck.isChecked()) {
                            String selectedStr = String.valueOf(existingLabelSpinner.getSelectedItem());
                            for (MyShipListRecyclerViewAdapter.Label label : labelList) {
                                if (label.getName()
@@ -168,14 +167,16 @@ public class MyShipListAddLabelDialog extends android.support.v4.app.DialogFragm
                                    View colorSampleView = addLabelView.findViewById(R.id.view_color_sample);
                                    ColorDrawable colorDrawable = (ColorDrawable) colorSampleView.getBackground();
                                    int colorInt = colorDrawable.getColor();
-                                   listener.onAddLabelFinished(false, getArguments().getInt(ARG_POSITION),new MyShipListRecyclerViewAdapter.Label(label.getName(), colorInt));
+                                   listener.onAddLabelFinished(false, getArguments().getInt(ARG_POSITION), new MyShipListRecyclerViewAdapter.Label(label.getName(), colorInt));
                                    return;
                                }
                            }
                        }
 
                        TextInputLayout nameTextInputLayout = (TextInputLayout) addLabelView.findViewById(R.id.text_input_name);
-                       String labelName = nameTextInputLayout.getEditText().getEditableText().toString();
+                       String labelName = nameTextInputLayout.getEditText()
+                                                             .getEditableText()
+                                                             .toString();
                        if (labelName.length() == 0) {
                            listener.onAddLabelFinished(true, getArguments().getInt(ARG_POSITION), null);
                            return;

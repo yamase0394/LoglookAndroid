@@ -13,8 +13,11 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.time.DateUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -28,7 +31,7 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitemManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
-import jp.gr.java_conf.snake0394.loglook_android.view.EquipIconId;
+import jp.gr.java_conf.snake0394.loglook_android.view.EquipType3;
 
 /**
  * Created by snake0394 on 2016/12/08.
@@ -165,87 +168,87 @@ public class DamagedShipAdapter extends RecyclerView.Adapter<DamagedShipAdapter.
             MySlotItem mySlotItem;
             MstSlotitem mstSlotitem;
             if (1 > myShip.getSlotnum()) {
-                slot1.setImageResource(EquipIconId.NOT_AVAILABLE.getImageId());
+                slot1.setImageResource(EquipType3.NOT_AVAILABLE.getImageId());
             } else if (myShip.getSlot()
                              .get(0) == -1) {
-                slot1.setImageResource(EquipIconId.EMPTY.getImageId());
+                slot1.setImageResource(EquipType3.EMPTY.getImageId());
             } else {
                 //装備取得前に開くとmySlotItemがnullになる
                 mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlot()
                                                                             .get(0));
                 if (mySlotItem != null) {
                     mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-                    slot1.setImageResource(EquipIconId.toEquipIconId(mstSlotitem.getType()
-                                                                                .get(3))
-                                                      .getImageId());
+                    slot1.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType()
+                                                                              .get(3))
+                                                     .getImageId());
                 } else {
-                    slot1.setImageResource(EquipIconId.UNKNOWN.getImageId());
+                    slot1.setImageResource(EquipType3.UNKNOWN.getImageId());
                 }
             }
 
             if (2 > myShip.getSlotnum()) {
-                slot2.setImageResource(EquipIconId.NOT_AVAILABLE.getImageId());
+                slot2.setImageResource(EquipType3.NOT_AVAILABLE.getImageId());
             } else if (myShip.getSlot()
                              .get(1) == -1) {
-                slot2.setImageResource(EquipIconId.EMPTY.getImageId());
+                slot2.setImageResource(EquipType3.EMPTY.getImageId());
             } else {
                 mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlot()
                                                                             .get(1));
                 if (mySlotItem != null) {
                     mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-                    slot2.setImageResource(EquipIconId.toEquipIconId(mstSlotitem.getType()
-                                                                                .get(3))
-                                                      .getImageId());
+                    slot2.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType()
+                                                                              .get(3))
+                                                     .getImageId());
                 } else {
-                    slot2.setImageResource(EquipIconId.UNKNOWN.getImageId());
+                    slot2.setImageResource(EquipType3.UNKNOWN.getImageId());
                 }
             }
 
             if (3 > myShip.getSlotnum()) {
-                slot3.setImageResource(EquipIconId.NOT_AVAILABLE.getImageId());
+                slot3.setImageResource(EquipType3.NOT_AVAILABLE.getImageId());
             } else if (myShip.getSlot()
                              .get(2) == -1) {
-                slot3.setImageResource(EquipIconId.EMPTY.getImageId());
+                slot3.setImageResource(EquipType3.EMPTY.getImageId());
             } else {
                 mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlot()
                                                                             .get(2));
                 if (mySlotItem != null) {
                     mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-                    slot3.setImageResource(EquipIconId.toEquipIconId(mstSlotitem.getType()
-                                                                                .get(3))
-                                                      .getImageId());
+                    slot3.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType()
+                                                                              .get(3))
+                                                     .getImageId());
                 } else {
-                    slot3.setImageResource(EquipIconId.UNKNOWN.getImageId());
+                    slot3.setImageResource(EquipType3.UNKNOWN.getImageId());
                 }
             }
 
             if (4 > myShip.getSlotnum()) {
-                slot4.setImageResource(EquipIconId.NOT_AVAILABLE.getImageId());
+                slot4.setImageResource(EquipType3.NOT_AVAILABLE.getImageId());
             } else if (myShip.getSlot()
                              .get(3) == -1) {
-                slot4.setImageResource(EquipIconId.EMPTY.getImageId());
+                slot4.setImageResource(EquipType3.EMPTY.getImageId());
             } else {
                 mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlot()
                                                                             .get(3));
                 if (mySlotItem != null) {
                     mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-                    slot4.setImageResource(EquipIconId.toEquipIconId(mstSlotitem.getType()
-                                                                                .get(3))
-                                                      .getImageId());
+                    slot4.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType()
+                                                                              .get(3))
+                                                     .getImageId());
                 } else {
-                    slot4.setImageResource(EquipIconId.UNKNOWN.getImageId());
+                    slot4.setImageResource(EquipType3.UNKNOWN.getImageId());
                 }
             }
 
             if (MySlotItemManager.INSTANCE.contains(myShip.getSlotEx())) {
                 mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlotEx());
                 mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-                slotEx.setImageResource(EquipIconId.toEquipIconId(mstSlotitem.getType().get(3)).getImageId());
+                slotEx.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType().get(3)).getImageId());
             } else {
                 if (myShip.getSlotEx() == 0) {
-                    slotEx.setImageResource(EquipIconId.NOT_AVAILABLE.getImageId());
+                    slotEx.setImageResource(EquipType3.NOT_AVAILABLE.getImageId());
                 } else if (myShip.getSlotEx() == -1) {
-                    slotEx.setImageResource(EquipIconId.EMPTY.getImageId());
+                    slotEx.setImageResource(EquipType3.EMPTY.getImageId());
                 }
             }
 
@@ -297,10 +300,41 @@ public class DamagedShipAdapter extends RecyclerView.Adapter<DamagedShipAdapter.
                 sb.append(minute + "分");
                 millisUntilFinished -= TimeUnit.MINUTES.toMillis(minute);
             }
+            long second = TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished);
+            if (second != 0) {
+                sb.append(second + "秒");
+            }
             repairTime.setText(sb.toString());
 
-            SimpleDateFormat sdf = new SimpleDateFormat("dd日 HH:mm");
-            completeTime.setText(sdf.format(Calendar.getInstance().getTimeInMillis() + myShip.getNdockTime()));
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            long finishTimeInMillis = System.currentTimeMillis() + myShip.getNdockTime();
+            Date now = Calendar.getInstance()
+                               .getTime();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(finishTimeInMillis);
+            Date finish = calendar.getTime();
+            int diff = 0;
+            while (!org.apache.commons.lang3.time.DateUtils.isSameDay(now, finish)) {
+                now = DateUtils.addDays(now, 1);
+                diff++;
+            }
+            switch (diff) {
+                case 0:
+                    completeTime.setText(sdf.format(finishTimeInMillis));
+                    break;
+                case 1:
+                    completeTime.setText("明日 "+ sdf.format(finishTimeInMillis));
+                    break;
+                case 2:
+                    completeTime.setText("明後日 "+ sdf.format(finishTimeInMillis));
+                    break;
+                case 3:
+                    completeTime.setText("明々後日 "+ sdf.format(finishTimeInMillis));
+                    break;
+                default:
+                    completeTime.setText(diff + "日後 "+ sdf.format(finishTimeInMillis));
+                    break;
+            }
         }
     }
 
