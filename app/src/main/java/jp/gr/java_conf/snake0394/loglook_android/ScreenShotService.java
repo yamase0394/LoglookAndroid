@@ -282,6 +282,9 @@ public class ScreenShotService extends Service {
 
     private Bitmap getScreenshot() {
         Image image = mImageReader.acquireLatestImage();
+        if (image == null) {
+            return null;
+        }
         Image.Plane[] planes = image.getPlanes();
         ByteBuffer buffer = planes[0].getBuffer();
 

@@ -33,6 +33,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.LoaderCallbackInterface;
+import org.opencv.android.OpenCVLoader;
+
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -59,6 +63,21 @@ import static jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivi
 
 public class MainActivity extends AppCompatActivity {
     
+    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
+        @Override
+        public void onManagerConnected(int status) {
+            switch (status) {
+                case LoaderCallbackInterface.SUCCESS: {
+                    Logger.d("MainActivity", "OpenCV loaded successfully");
+                }
+                break;
+                default: {
+                    super.onManagerConnected(status);
+                }
+                break;
+            }
+        }
+    };
     
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
@@ -315,6 +334,12 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         }
+    }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_2_0, this, mLoaderCallback);
     }
     
     @Override
