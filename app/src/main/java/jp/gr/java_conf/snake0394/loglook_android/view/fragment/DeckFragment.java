@@ -7,6 +7,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +31,7 @@ import static io.netty.handler.codec.http.HttpMethod.HEAD;
 public class DeckFragment extends Fragment implements DeckTabsRecyclerViewAdapter.OnRecyclerViewClickListener{
     private View view;
     private Unbinder unbinder;
-    
+
     public DeckFragment() {
         // Required empty public constructor
     }
@@ -60,14 +61,14 @@ public class DeckFragment extends Fragment implements DeckTabsRecyclerViewAdapte
 
         TabLayout tabLayout = findById(view, R.id.tabs);
         TabLayoutSupport.setupWithViewPager(tabLayout, viewPager, new TabLayoutAdapter());
-        tabLayout.getTabAt(0)
-                 .select();
+
+        tabLayout.getTabAt(0).select();
         TabListener listener = new TabListener(tabLayout, viewPager, getFragmentManager());
         tabLayout.setOnTabSelectedListener(listener);
         viewPager.addOnPageChangedListener(listener);
         return view;
     }
-    
+
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
@@ -128,12 +129,11 @@ public class DeckFragment extends Fragment implements DeckTabsRecyclerViewAdapte
         public void onTabReselected(TabLayout.Tab tab) {
 
             if(pageChanged){
-
                 android.support.v4.app.DialogFragment dialogFragment = DeckMenuDialogFragment.newInstance(tab.getPosition() + 1);
                 dialogFragment.show(this.fragmentManager, "fragment_dialog");
             }
         }
-        
+
         @Override
         public void OnPageChanged(int oldPosition, int newPosition) {
             super.OnPageChanged(oldPosition, newPosition);

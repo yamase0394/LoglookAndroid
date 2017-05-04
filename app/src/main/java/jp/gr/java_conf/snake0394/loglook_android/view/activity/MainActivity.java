@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public enum Screen {
         HOME(0, "ホーム"), DECK(1, "艦隊"), MISSION(2, "遠征"), DOCK(3, "入渠"), DAMAGED_SHIP(4, "損傷艦"), MY_SHIP_LIST(5, "艦娘一覧"), EQUIPMENT(6, "装備一覧"), TACTICAL_SITUATION(7, "戦況"), DECK_CAPTURE_LIST(8, "編成一覧"), CONFIG(9, "設定");
-        
+
         private int position;
         private String name;
         

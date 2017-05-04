@@ -64,6 +64,31 @@
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
             android:theme="@style/TransparencyTheme">
+
+        </activity>
+
+        <service
+            android:name=".DeckListCaptureService"
+            android:exported="false">
+        </service>
+
+        <service
+            android:name=".ScreenShotService"
+            android:exported="false">
+        </service>
+
+        <activity
+            android:name=".view.activity.SaveFleetCaptureActivity"
+            android:launchMode="singleInstance"
+            android:hardwareAccelerated="false"
+            android:screenOrientation="landscape">
+        </activity>
+
+        <activity
+            android:name=".view.activity.SaveScreenShotActivity"
+            android:launchMode="singleInstance"
+            android:hardwareAccelerated="false"
+            android:screenOrientation="landscape">
         </activity>
 
         <service
