@@ -49,4 +49,13 @@
     <color name="launcherItemBackground">#c3307ad9</color>
     <color name="overlay_background">#70000000</color>
     <color name="close_overlay_bar">#cf003a75</color>
+
+    <color name="fuel">#33c41c</color>
+    <color name="bullet">#d7b752</color>
+    <color name="steel">#9EA19F</color>
+    <color name="bauxite">#be5835</color>
+    <color name="bucket">#55d2b9</color>
+    <color name="instant_construction">#764ebf</color>
+    <color name="development_material">#fa1100</color>
+    <color name="improvement_material">#303cc9</color>
 </resources>

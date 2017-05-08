@@ -49,6 +49,7 @@ import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DeckFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DockFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.EquipmentFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.HomeFragment;
+import jp.gr.java_conf.snake0394.loglook_android.view.fragment.MaterialChartFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.MissionFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.MyShipListFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.TacticalSituationFragment;
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
      * このアクティビティが持つfragment
      */
     public enum Screen {
-        HOME(0, "ホーム"), DECK(1, "艦隊"), MISSION(2, "遠征"), DOCK(3, "入渠"), DAMAGED_SHIP(4, "損傷艦"), MY_SHIP_LIST(5, "艦娘一覧"), EQUIPMENT(6, "装備一覧"), TACTICAL_SITUATION(7, "戦況"), DECK_CAPTURE_LIST(8, "編成一覧"), CONFIG(9, "設定");
+        HOME(0, "ホーム"), DECK(1, "艦隊"), MISSION(2, "遠征"), DOCK(3, "入渠"), DAMAGED_SHIP(4, "損傷艦"), MY_SHIP_LIST(5, "艦娘一覧"), EQUIPMENT(6, "装備一覧"), TACTICAL_SITUATION(7, "戦況"), DECK_CAPTURE_LIST(8, "編成一覧"), MATERIAL_CHART(9, "資材チャート"), CONFIG(10, "設定");
         
         private int position;
         private String name;
@@ -378,7 +379,7 @@ public class MainActivity extends AppCompatActivity {
         
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appBar);
         appBarLayout.setExpanded(true, true);
-        
+        //ツールバーが隠れないようにする
         ((AppBarLayout.LayoutParams) findViewById(toolbar).getLayoutParams()).setScrollFlags(0);
         
         switch (mf) {
@@ -414,6 +415,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case DECK_CAPTURE_LIST:
                 fragment = DeckCaptureListFragment.newInstance();
+                break;
+            case MATERIAL_CHART:
+                fragment = MaterialChartFragment.newInstance();
                 break;
             default:
                 return;
