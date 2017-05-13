@@ -7,7 +7,7 @@ import java.util.Map;
  * MstShip stype
  */
 public enum ShipType {
-    //海防艦(1),
+    海防艦(1),
     駆逐艦(2),
     軽巡洋艦(3),
     重雷装巡洋艦(4),
