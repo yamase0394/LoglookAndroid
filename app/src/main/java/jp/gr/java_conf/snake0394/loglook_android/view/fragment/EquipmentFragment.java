@@ -218,6 +218,7 @@ public class EquipmentFragment extends Fragment implements EquipmentDrawerRecycl
                             switch (type3) {
                                 case 水上機:
                                 case 大型飛行艇:
+                                case 水上戦闘機:
                                     newDataList.add(mySlotItem);
                             }
                             break;
@@ -241,6 +242,7 @@ public class EquipmentFragment extends Fragment implements EquipmentDrawerRecycl
                             switch (type3) {
                                 case 局地戦闘機:
                                 case 陸上攻撃機:
+                                case 陸軍戦闘機:
                                     newDataList.add(mySlotItem);
                             }
                             break;
