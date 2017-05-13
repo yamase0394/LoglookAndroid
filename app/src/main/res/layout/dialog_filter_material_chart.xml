@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <CheckBox
+        android:id="@+id/check_fuel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="燃料"/>
+
+    <CheckBox
+        android:id="@+id/check_bullet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="弾薬"/>
+
+    <CheckBox
+        android:id="@+id/check_steel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="鋼材"/>
+
+    <CheckBox
+        android:id="@+id/check_bauxite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ボーキサイト"/>
+
+    <CheckBox
+        android:id="@+id/check_bucket"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="高速修復材"/>
+
+    <CheckBox
+        android:id="@+id/check_instant_construction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="高速建造剤"/>
+
+    <CheckBox
+        android:id="@+id/check_development_material"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="開発資材"/>
+
+    <CheckBox
+        android:id="@+id/check_improvement_material"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="改修資材"/>
+
+</LinearLayout>
