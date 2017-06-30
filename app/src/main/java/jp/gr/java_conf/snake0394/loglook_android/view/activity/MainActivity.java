@@ -9,13 +9,10 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Point;
-import android.media.projection.MediaProjectionManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -32,6 +29,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -59,123 +57,110 @@ import static jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivi
 import static jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity.Screen.drawerItemTitles;
 
 public class MainActivity extends AppCompatActivity {
-    
-    
+
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
     private ListView leftDrawerListView;
     //画面回転時のfragmentの更新に使用
     private Screen present;
     private boolean forcesLandscape;
-    
+
     /**
      * このアクティビティが持つfragment
      */
     public enum Screen {
-        HOME(0, "ホーム"), DECK(1, "艦隊"), MISSION(2, "遠征"), DOCK(3, "入渠"), DAMAGED_SHIP(4, "損傷艦"), MY_SHIP_LIST(5, "艦娘一覧"), EQUIPMENT(6, "装備一覧"), TACTICAL_SITUATION(7, "戦況"), DECK_CAPTURE_LIST(8, "編成一覧"), MATERIAL_CHART(9, "資材チャート"), CONFIG(10, "設定");
-        
+        HOME(0, "ホーム"),
+        DECK(1, "艦隊"),
+        MISSION(2, "遠征"),
+        DOCK(3, "入渠"),
+        DAMAGED_SHIP(4, "損傷艦"),
+        MY_SHIP_LIST(5, "艦娘一覧"),
+        EQUIPMENT(6, "装備一覧"),
+        TACTICAL_SITUATION(7, "戦況"),
+        DECK_CAPTURE_LIST(8, "編成一覧"),
+        MATERIAL_CHART(9, "資材チャート"),
+        CONFIG(10, "設定");
+
         private int position;
         private String name;
-        
+
         Screen(int id, String name) {
             this.position = id;
             this.name = name;
         }
-        
+
         static final String[] drawerItemTitles = new String[Screen.values().length];
-        
+
         static {
             for (Screen screen : values()) {
                 drawerItemTitles[screen.getPosition()] = screen.name;
             }
         }
-        
+
         private static final SparseArray<Screen> positionToScreenSparseArray = new SparseArray<>();
-        
+
         static {
             for (Screen entry : values()) {
                 positionToScreenSparseArray.put(entry.position, entry);
             }
         }
-        
+
         private static final Map<String, Screen> nameToScreenMap = new HashMap<>();
-        
+
         static {
             for (Screen entry : values()) {
                 nameToScreenMap.put(entry.name, entry);
             }
         }
-        
+
         public static Screen toScreen(int id) {
             return positionToScreenSparseArray.get(id);
         }
-        
+
         public static Screen toScreen(String name) {
             return nameToScreenMap.get(name);
         }
-        
+
         public int getPosition() {
             return position;
         }
     }
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.animator.fade_in, R.animator.fade_out);
         setContentView(R.layout.activity_main);
-        
-        if (!canGetUsageStats(getApplicationContext())) {
-            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-            startActivity(intent);
-        }
-        
-        //Android6以降の端末でランチャーのオーバーレイ用の権限を取得する
-        if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(this)) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-            startActivity(intent);
-        }
-        
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            MediaProjectionManager mMediaProjectionManager;
-            mMediaProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-            
-            // MediaProjectionの利用にはパーミッションが必要。
-            // ユーザーへの問い合わせのため、Intentを発行
-            Intent permissionIntent = mMediaProjectionManager.createScreenCaptureIntent();
-            startActivity(permissionIntent);
-        }
-        
-        
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        
+
         // Set DrawerToggle.
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_open);
-        
+
         // リスナー登録
         drawerLayout.addDrawerListener(drawerToggle);
-        
+
         // Drawerの矢印表示有り
         drawerToggle.setDrawerIndicatorEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        
+
         leftDrawerListView = (ListView) findViewById(R.id.slide_menu);
-        
+
         // Set the adapter for list view.
         leftDrawerListView.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, drawerItemTitles));
         // Set the list's click listener
         leftDrawerListView.setOnItemClickListener(new DrawerItemClickListener());
-        
+
         Intent intent = getIntent();
-        
+
         Logger.d("MainActivity", "onCreate");
-        
+
         GeneralPrefs prefs = GeneralPrefsSpotRepository.getEntity(getApplicationContext());
         this.forcesLandscape = prefs.forcesLandscape;
-        
+
         if (this.forcesLandscape) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         } else {
@@ -187,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             }
         }
-        
+
         //表示するfragment
         int position = intent.getIntExtra("position", -1);
         if (position != -1) {
@@ -197,10 +182,10 @@ public class MainActivity extends AppCompatActivity {
             selectItem(mf);
             return;
         }
-        
+
         if (savedInstanceState == null) {
             Logger.d("MainActivity:onCreate", "savedInstanceState == null");
-            
+
             if (this.forcesLandscape) {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             } else {
@@ -217,17 +202,17 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    
+
     @Override
     protected void onStart() {
         super.onStart();
-        
+
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        
+
         if (sp.getBoolean("isConfigExported", false)) {
             return;
         }
-        
+
         WindowManager wm = (WindowManager) getApplicationContext().getSystemService(WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         Point point = new Point(0, 0);
@@ -246,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        
+
         GeneralPrefs prefs = GeneralPrefsSpotRepository.getEntity(getApplicationContext());
         try {
             prefs.port = Integer.parseInt(sp.getString("port", "8000"));
@@ -269,9 +254,9 @@ public class MainActivity extends AppCompatActivity {
         prefs.logsJson = sp.getBoolean("saveJson", false);
         prefs.logsRequest = sp.getBoolean("saveRequest", false);
         GeneralPrefsSpotRepository.putEntity(getApplicationContext(), prefs);
-        
+
         File dataFile = new File(Environment.getExternalStorageDirectory()
-                                            .getPath() + "/泥提督支援アプリ/data");
+                .getPath() + "/泥提督支援アプリ/data");
         if (dataFile.exists()) {
             File[] files = dataFile.listFiles();
             if (files != null) {
@@ -281,14 +266,12 @@ public class MainActivity extends AppCompatActivity {
             }
             dataFile.delete();
         }
-        
+
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean("isConfigExported", true);
         editor.apply();
-        
-        
     }
-    
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -317,13 +300,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         drawerToggle.syncState();
     }
-    
+
     @Override
     //画面回転時に呼ばれる
     //ここでfragmentを画面に合ったものに更新する
@@ -332,24 +315,29 @@ public class MainActivity extends AppCompatActivity {
         drawerToggle.onConfigurationChanged(newConfig);
         selectItem(present);
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Toolbarを使わない時と同じ
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
     }
-    
-    
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Pass the event to ActionBarDrawerToggle, if it returns
         // true, then it has handled the app icon touch event
         if (item.getItemId() == R.id.open_kancolle) {
-            String packageName = "com.dmm.dmmlabo.kancolle";
-            PackageManager pm = getPackageManager();
-            Intent sendIntent = pm.getLaunchIntentForPackage(packageName);
-            startActivity(sendIntent);
+            try {
+                String packageName = "com.dmm.dmmlabo.kancolle";
+                PackageManager pm = getPackageManager();
+                Intent sendIntent = pm.getLaunchIntentForPackage(packageName);
+                startActivity(sendIntent);
+            } catch (NullPointerException e) {
+                Toast.makeText(this, "艦これがインストールされていません", Toast.LENGTH_LONG)
+                        .show();
+            }
             overridePendingTransition(R.animator.fade_in, R.animator.fade_out);
             finish();
         }
@@ -358,30 +346,30 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    
+
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
             selectItem(Screen.toScreen(position));
         }
     }
-    
+
     //DrawerListのpositionに該当するfragmentを表示
     private void selectItem(Screen mf) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         android.support.v4.app.Fragment fragment;
-        
+
         if (mf == null) {
             mf = HOME;
         }
-        
+
         Logger.d("MainActivity:selectItem", mf.name + " was selected");
-        
+
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appBar);
         appBarLayout.setExpanded(true, true);
         //ツールバーが隠れないようにする
         ((AppBarLayout.LayoutParams) findViewById(toolbar).getLayoutParams()).setScrollFlags(0);
-        
+
         switch (mf) {
             case HOME:
                 fragment = HomeFragment.newInstance();
@@ -422,26 +410,26 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return;
         }
-        
+
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.body, fragment);
         //transaction.commit();
         //Il
         transaction.commitAllowingStateLoss();
-        
+
         //選択されたDrawerListの位置ををハイライト
         leftDrawerListView.setItemChecked(mf.getPosition(), true);
-        
+
         //ツールバーのタイトルを更新
         getSupportActionBar().setTitle(mf.name);
-        
+
         //Drawerを閉じる
         drawerLayout.closeDrawer(leftDrawerListView);
-        
+
         //現在のDrawerListの位置を記録
         present = mf;
     }
-    
+
     @Override
     protected void onNewIntent(Intent intent) {
         Logger.d("MainActivity", "onNewIntent");
@@ -456,7 +444,7 @@ public class MainActivity extends AppCompatActivity {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             }
         }
-        
+
         //表示するfragment
         int position = intent.getIntExtra("position", -1);
         if (position != -1) {
@@ -465,7 +453,7 @@ public class MainActivity extends AppCompatActivity {
             present = mf;
         }
     }
-    
+
     public static boolean canGetUsageStats(Context context) {
         // Lollipop以前は使えないAPIが含まれています。
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {

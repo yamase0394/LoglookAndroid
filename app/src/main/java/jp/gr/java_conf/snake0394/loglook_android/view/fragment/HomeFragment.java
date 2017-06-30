@@ -1,13 +1,19 @@
 package jp.gr.java_conf.snake0394.loglook_android.view.fragment;
 
+import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +24,6 @@ import java.util.List;
 
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.SlantLauncher;
-import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.LittleProxyServerService;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity;
 
@@ -69,12 +74,12 @@ public class HomeFragment extends Fragment {
                 for (ActivityManager.RunningServiceInfo curr : listServiceInfo) {
                     // クラス名を比較
                     if (curr.service.getClassName()
-                                    .equals(LittleProxyServerService.class.getName())) {
+                            .equals(LittleProxyServerService.class.getName())) {
                         // 実行中のサービスと一致
                         isProxyServerRunnning = true;
                     }
                     if (curr.service.getClassName()
-                                    .equals(SlantLauncher.class.getName())) {
+                            .equals(SlantLauncher.class.getName())) {
                         // 実行中のサービスと一致
                         isMyServiceRunnning = true;
                     }
@@ -87,20 +92,54 @@ public class HomeFragment extends Fragment {
                     getActivity().stopService(intent);
 
                     if (!MainActivity.canGetUsageStats(getContext())) {
-                        Logger.d("HomeFragment", "can't get usage stats");
-                        intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-                        startActivity(intent);
+                        new AlertDialog.Builder(getActivity()).setTitle("権限の説明")
+                                .setMessage("艦これがフォアグラウンドで起動しているか検知するために\"使用状況へのアクセス\"の権限が必要です")
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+                                        startActivity(intent);
+                                    }
+                                })
+                                .create()
+                                .show();
+
                         tb.setChecked(false);
                         return;
                     }
 
-                    //Android6以降の端末でランチャーのオーバーレイ用の権限を取得する
-                    if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(getContext())) {
-                        Logger.d("HomeFragment", "can't display system alart");
-                        intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getContext().getPackageName()));
-                        startActivity(intent);
-                        tb.setChecked(false);
-                        return;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        //Android6以降の端末でランチャーのオーバーレイ用の権限を取得する
+                        if (!Settings.canDrawOverlays(getContext())) {
+                            new AlertDialog.Builder(getActivity()).setTitle("権限の説明")
+                                    .setMessage("ランチャー、スクリーンショットを使用するために\"他のアプリに重ねて表示\"の権限が必要です")
+                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getContext().getPackageName()));
+                                            startActivity(intent);
+                                        }
+                                    })
+                                    .create()
+                                    .show();
+                            tb.setChecked(false);
+                            return;
+                        }
+
+                        if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                            new AlertDialog.Builder(getActivity()).setTitle("権限の説明")
+                                    .setMessage("スクリーンショット、戦闘ログの記録を行うためにに\"外部記憶領域への書き込み\"の権限が必要です")
+                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+                                        }
+                                    })
+                                    .create()
+                                    .show();
+                            tb.setChecked(false);
+                            return;
+                        }
                     }
 
                     intent = new Intent(getActivity(), LittleProxyServerService.class);
@@ -118,12 +157,12 @@ public class HomeFragment extends Fragment {
         for (ActivityManager.RunningServiceInfo curr : listServiceInfo) {
             // クラス名を比較
             if (curr.service.getClassName()
-                            .equals(LittleProxyServerService.class.getName())) {
+                    .equals(LittleProxyServerService.class.getName())) {
                 // 実行中のサービスと一致
                 isProxyServerRunnning = true;
             }
             if (curr.service.getClassName()
-                            .equals(SlantLauncher.class.getName())) {
+                    .equals(SlantLauncher.class.getName())) {
                 // 実行中のサービスと一致
                 isMyServiceRunnning = true;
             }

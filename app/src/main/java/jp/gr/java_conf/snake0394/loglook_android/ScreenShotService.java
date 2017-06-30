@@ -83,8 +83,7 @@ public class ScreenShotService extends Service {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(getApplicationContext(), "起動失敗", Toast.LENGTH_SHORT)
-                         .show();
+                    Toast.makeText(getApplicationContext(), "起動失敗", Toast.LENGTH_SHORT).show();
                 }
             });
             Logger.d("ScreenShotService", "mediaProjection = null");
@@ -94,8 +93,7 @@ public class ScreenShotService extends Service {
         wm = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         DisplayMetrics metrics = getResources().getDisplayMetrics();
-        wm.getDefaultDisplay()
-          .getMetrics(metrics);
+        wm.getDefaultDisplay().getMetrics(metrics);
         displayWidth = metrics.widthPixels;
         displayHeight = metrics.heightPixels;
         int density = metrics.densityDpi;
@@ -116,90 +114,85 @@ public class ScreenShotService extends Service {
 
         ImageButton captureButton = ButterKnife.findById(linearLayout, R.id.button_cap);
         captureButton.setOnTouchListener(new View.OnTouchListener() {
-                                             @Override
-                                             public boolean onTouch(View v, MotionEvent event) {
-                                                 if (event.getAction() != MotionEvent.ACTION_UP) {
-                                                     return false;
-                                                 }
-                                                 try {
-                                                     wm.removeViewImmediate(linearLayout);
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() != MotionEvent.ACTION_UP) {
+                    return false;
+                }
+                try {
+                    wm.removeViewImmediate(linearLayout);
 
-                                                     Thread.sleep(100);
+                    Thread.sleep(100);
 
-                                                     Bitmap bitmap = getScreenshot();
-                                                     wm.addView(linearLayout, params);
-                                                     if (bitmap == null) {
-                                                         return true;
-                                                     }
+                    Bitmap bitmap = getScreenshot();
+                    wm.addView(linearLayout, params);
+                    if (bitmap == null) {
+                        return true;
+                    }
 
-                                                     Bitmap screenShot = removeBlank(bitmap);
+                    Bitmap screenShot = removeBlank(bitmap);
 
-                                                     preview.setImageBitmap(screenShot);
-                                                     
-                                                     //SDカードのディレクトリパス
-                                                     File sdcard_path = new File(Environment.getExternalStorageDirectory()
-                                                                                            .getPath() + "/泥提督支援アプリ/capture/screenShot");
+                    preview.setImageBitmap(screenShot);
 
-                                                     //フォルダがなければ作成
-                                                     if (!sdcard_path.exists()) {
-                                                         sdcard_path.mkdirs();
-                                                     }
+                    //SDカードのディレクトリパス
+                    File sdcard_path = new File(Environment.getExternalStorageDirectory().getPath() + "/泥提督支援アプリ/capture/screenShot");
 
-                                                     // 日付でファイル名を作成
-                                                     Date mDate = new Date();
-                                                     SimpleDateFormat fileName = new SimpleDateFormat("yyyyMMdd_HHmmss");
-    
-                                                     //パス区切り用セパレータ
-                                                     String Fs = File.separator;
-    
-                                                     //テキストファイル保存先のファイルパス
-                                                     filePath = sdcard_path + Fs + "kancolle_" + fileName.format(mDate) + ".jpg";
+                    //フォルダがなければ作成
+                    if (!sdcard_path.exists()) {
+                        sdcard_path.mkdirs();
+                    }
 
-                                                     // 保存処理開始
-                                                     FileOutputStream fos = new FileOutputStream(new File(filePath));
+                    // 日付でファイル名を作成
+                    Date mDate = new Date();
+                    SimpleDateFormat fileName = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
-                                                     // jpegで保存
-                                                     screenShot.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                    //パス区切り用セパレータ
+                    String Fs = File.separator;
 
-                                                     // 保存処理終了
-                                                     fos.close();
+                    //テキストファイル保存先のファイルパス
+                    filePath = sdcard_path + Fs + "kancolle_" + fileName.format(mDate) + ".jpg";
 
-                                                 } catch (Exception e) {
-                                                     handler.post(new Runnable() {
-                                                         @Override
-                                                         public void run() {
-                                                             Toast.makeText(getApplicationContext(), "スクリーンショット失敗。エラーログを記録しました。", Toast.LENGTH_LONG)
-                                                                  .show();
-                                                         }
-                                                     });
-                                                     ErrorLogger.writeLog(e);
-                                                     e.printStackTrace();
-                                                     stopSelf();
-                                                 }
+                    // 保存処理開始
+                    FileOutputStream fos = new FileOutputStream(new File(filePath));
 
-                                                 return true;
-                                             }
-                                         }
+                    // jpegで保存
+                    screenShot.compress(Bitmap.CompressFormat.JPEG, 100, fos);
 
-        );
-    
+                    // 保存処理終了
+                    fos.close();
+
+                } catch (Exception e) {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "スクリーンショット失敗。エラーログを記録しました。", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    ErrorLogger.writeLog(e);
+                    e.printStackTrace();
+                    stopSelf();
+                }
+
+                return true;
+            }
+        });
+
         ImageButton editButton = ButterKnife.findById(linearLayout, R.id.button_edit);
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(StringUtil.isNullOrEmpty(filePath)) {
+                if (StringUtil.isNullOrEmpty(filePath)) {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(), "画像が空です", Toast.LENGTH_SHORT)
-                                 .show();
+                            Toast.makeText(getApplicationContext(), "画像が空です", Toast.LENGTH_SHORT).show();
                         }
                     });
                     return;
                 }
-    
+
                 stopSelf();
-    
+
                 File file = new File(filePath);
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
@@ -209,24 +202,23 @@ public class ScreenShotService extends Service {
                 startActivity(intent);
             }
         });
-    
+
         ImageButton shareButton = ButterKnife.findById(linearLayout, R.id.button_share);
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(StringUtil.isNullOrEmpty(filePath)) {
+                if (StringUtil.isNullOrEmpty(filePath)) {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(), "画像が空です", Toast.LENGTH_SHORT)
-                                 .show();
+                            Toast.makeText(getApplicationContext(), "画像が空です", Toast.LENGTH_SHORT).show();
                         }
                     });
                     return;
                 }
-            
+
                 stopSelf();
-            
+
                 File file = new File(filePath);
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_SEND);
