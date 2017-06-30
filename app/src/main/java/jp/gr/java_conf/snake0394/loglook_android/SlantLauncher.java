@@ -30,7 +30,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
 import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
@@ -45,6 +44,8 @@ import jp.gr.java_conf.snake0394.loglook_android.view.activity.ScreenCaptureActi
  * アプリを起動するランチャー
  */
 public class SlantLauncher extends Service implements SensorEventListener {
+    private static final String TAG = "SlantLauncher";
+
     private boolean isTouching = false; //指定箇所がタップされているか
     private SensorManager sm;
     private WindowManager wm;
@@ -130,57 +131,29 @@ public class SlantLauncher extends Service implements SensorEventListener {
         linear_acceleration[1] = event.values[1] - gravity[1];
         //linear_acceleration[2] = event.values[2] - gravity[2];
         //Log.d("liner",String.valueOf(linear_acceleration[0])+","+String.valueOf(linear_acceleration[1])+","+String.valueOf(linear_acceleration[2]));
-        if (isUsing) {
+
+        if (!isTouching) {
             return;
         }
-        //画面が指定箇所に触れている場合処理を行う
-        if (isTouching) {
-            //艦これがフォアグラウンドの場合
-            if (isForeground()) {
-                //設定により左右どちらに振ったとき発動するか区別
-                //処理の重複を避けるため、スレッドを使用
-                if (linear_acceleration[1] < -1) {
-                    //左に傾けた
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            isUsing = true;
-                            Intent intent = new Intent(SlantLauncher.this, MainActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.putExtra("usesLandscape", true);
-                            intent.putExtra("position", MainActivity.Screen.DECK.getPosition());
-                            startActivity(intent);
-                            try {
-                                Thread.sleep(TimeUnit.SECONDS.toMillis(3));
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            isUsing = false;
-                            isTouching = false;
-                        }
-                    }.start();
-                } else if (linear_acceleration[1] > 1) {
-                    //右に傾けた
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            isUsing = true;
-                            Intent intent = new Intent(SlantLauncher.this, MainActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.putExtra("usesLandscape", true);
-                            intent.putExtra("position", MainActivity.Screen.TACTICAL_SITUATION.getPosition());
-                            startActivity(intent);
-                            try {
-                                Thread.sleep(TimeUnit.SECONDS.toMillis(3));
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            isUsing = false;
-                            isTouching = false;
-                        }
-                    }.start();
-                }
-            }
+
+        if (linear_acceleration[1] < -1) {
+            //左に傾けた
+            isTouching = false;
+
+            Intent intent = new Intent(SlantLauncher.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("usesLandscape", true);
+            intent.putExtra("position", MainActivity.Screen.DECK.getPosition());
+            startActivity(intent);
+        } else if (linear_acceleration[1] > 1) {
+            //右に傾けた
+            isTouching = false;
+
+            Intent intent = new Intent(SlantLauncher.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("usesLandscape", true);
+            intent.putExtra("position", MainActivity.Screen.TACTICAL_SITUATION.getPosition());
+            startActivity(intent);
         }
     }
 
@@ -188,7 +161,6 @@ public class SlantLauncher extends Service implements SensorEventListener {
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
-
 
     //艦これがフォアグラウンドか確認する
     private boolean isForeground() {
@@ -270,12 +242,14 @@ public class SlantLauncher extends Service implements SensorEventListener {
         }
 
         @Override
-
         public boolean onTouch(View v_, MotionEvent event_) {
             // タッチされている指の本数
             //Log.v("motionEvent", "--touch_count = " + event_.getPointerCount());
 
             if (!isForeground()) {
+                if (event_.getAction() == MotionEvent.ACTION_DOWN) {
+                    isTouching = false;
+                }
                 return true;
             }
 
@@ -311,6 +285,11 @@ public class SlantLauncher extends Service implements SensorEventListener {
 
                 // タッチが離れた
                 case MotionEvent.ACTION_UP:
+                    if (!isTouching) {
+                        //傾きランチャーが起動している
+                        return true;
+                    }
+
                     //Log.v("motionEvent", "--ACTION_UP");
                     nowTouchedX = event_.getX();
                     nowTouchedY = event_.getY();
@@ -325,13 +304,13 @@ public class SlantLauncher extends Service implements SensorEventListener {
                                 if (startTouchY > nowTouchedY + adjust) {
                                     //Log.v("Flick", "左上上");
                                     // 上フリック時の処理を記述する
-                                    this.startActivity();
+                                    this.showLauncher();
                                 }
                             } else if ((startTouchY - nowTouchedY) < (startTouchX - nowTouchedX)) {
                                 if (startTouchX > nowTouchedX + adjust) {
                                     //Log.v("Flick", "左上左");
                                     // 左フリック時の処理を記述する
-                                    this.startActivity();
+                                    this.showLauncher();
                                 }
                             }
                             //右
@@ -340,13 +319,13 @@ public class SlantLauncher extends Service implements SensorEventListener {
                                 if (startTouchY > nowTouchedY + adjust) {
                                     //Log.v("Flick", "右上上");
                                     // 上フリック時の処理を記述する
-                                    this.startActivity();
+                                    this.showLauncher();
                                 }
                             } else if ((startTouchY - nowTouchedY) < (nowTouchedX - startTouchX)) {
                                 if (startTouchX + adjust < nowTouchedX) {
                                     //Log.v("Flick", "右上右");
                                     // 右フリック時の処理を記述する
-                                    this.startActivity();
+                                    this.showLauncher();
                                 }
                             }
                         }
@@ -358,13 +337,13 @@ public class SlantLauncher extends Service implements SensorEventListener {
                                 if (startTouchY + adjust < nowTouchedY) {
                                     //Log.v("Flick", "左下下");
                                     // 下フリック時の処理を記述する
-                                    this.startActivity();
+                                    this.showLauncher();
                                 }
                             } else if ((nowTouchedY - startTouchY) < (startTouchX - nowTouchedX)) {
                                 if (startTouchX > nowTouchedX + adjust) {
                                     //Log.v("Flick", "左下左");
                                     // 左フリック時の処理を記述する
-                                    this.startActivity();
+                                    this.showLauncher();
                                 }
                             }
                             //右
@@ -373,13 +352,13 @@ public class SlantLauncher extends Service implements SensorEventListener {
                                 if (startTouchY + adjust < nowTouchedY) {
                                     //Log.v("Flick", "右下下");
                                     // 下フリック時の処理を記述する
-                                    this.startActivity();
+                                    this.showLauncher();
                                 }
                             } else if ((nowTouchedY - startTouchY) < (nowTouchedX - startTouchX)) {
                                 if (startTouchX + adjust < nowTouchedX) {
                                     //Log.v("Flick", "右下右");
                                     // 右フリック時の処理を記述する
-                                    this.startActivity();
+                                    this.showLauncher();
                                 }
                             }
                         }
@@ -403,14 +382,12 @@ public class SlantLauncher extends Service implements SensorEventListener {
             return true;
         }
 
-        private void startActivity() {
-
+        private void showLauncher() {
             /*
             Intent i = new Intent(context, DialogActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-            context.startActivity(i);
+            context.showActivity(i);
             */
-
 
             final View launcherLayout = View.inflate(getApplicationContext(), R.layout.layout_launcher, null);
             launcherLayout.setOnClickListener(new View.OnClickListener() {
@@ -428,21 +405,12 @@ public class SlantLauncher extends Service implements SensorEventListener {
             screenListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    /*
-                    wm.removeView(launcherLayout);
-                    Intent intent = new Intent(context, MainActivity.class);
-                    intent.putExtra("usesLandscape", true);
-                    intent.putExtra("position", MainActivity.Screen.toScreen((String)adapterView.getItemAtPosition(i))
-                                                                   .getPosition());
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |  Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                    context.startActivity(intent);
-                    */
                     //そのまま支援アプリを起動すると艦これがブラックアウトするため透明なアクティビティを間に挟む
                     wm.removeView(launcherLayout);
                     Intent intent = new Intent(context, DialogActivity.class);
                     intent.putExtra("usesLandscape", true);
                     intent.putExtra("position", MainActivity.Screen.toScreen((String) adapterView.getItemAtPosition(i))
-                                                                   .getPosition());
+                            .getPosition());
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
                     context.startActivity(intent);
                 }
@@ -475,7 +443,6 @@ public class SlantLauncher extends Service implements SensorEventListener {
 
             WindowManager.LayoutParams params = new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.TYPE_SYSTEM_ERROR, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
             wm.addView(launcherLayout, params);
-
         }
 
         class CustomAdapter extends ArrayAdapter<String> {
