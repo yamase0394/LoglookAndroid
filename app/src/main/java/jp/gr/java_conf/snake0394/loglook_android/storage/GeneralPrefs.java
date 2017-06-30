@@ -54,6 +54,12 @@ public class GeneralPrefs {
     public int viewHeight;
 
     /**
+     * 検出領域の色
+     */
+    @PrefInt(name = "viewColor", defaultValue = 0xffff00)
+    public int viewColor;
+
+    /**
      * 検出領域がタッチされたとき振動させるか。
      * defaultValue = true
      */
@@ -122,7 +128,7 @@ public class GeneralPrefs {
      */
     @PrefBoolean(name = "vibratesWhenNOtify", defaultValue = true)
     public boolean vibratesWhenNOtify;
-    
+
     /**
      * 横画面固定。
      * defaultValue = false

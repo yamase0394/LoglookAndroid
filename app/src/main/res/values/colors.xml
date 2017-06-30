@@ -58,4 +58,6 @@
     <color name="instant_construction">#764ebf</color>
     <color name="development_material">#fa1100</color>
     <color name="improvement_material">#303cc9</color>
+
+    <color name="slant_launcher_default">#ffff00</color>
 </resources>

@@ -56,7 +56,6 @@ public class SlantLauncher extends Service implements SensorEventListener {
     final float alpha = (float) 0.8;
     private float[] gravity = new float[3];
     private float[] linear_acceleration = new float[3];
-    private boolean isUsing = false;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -96,7 +95,7 @@ public class SlantLauncher extends Service implements SensorEventListener {
             //不透明
             transparent = PixelFormat.OPAQUE;
             //黄色
-            v.setBackgroundColor(0xffffff00);
+            v.setBackgroundColor(prefs.viewColor);
         } else {
             //透明
             transparent = PixelFormat.TRANSPARENT;

@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,7 +14,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.text.SpannableStringBuilder;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.SlantLauncher;
@@ -34,6 +35,7 @@ import jp.gr.java_conf.snake0394.loglook_android.proxy.LittleProxyServerService;
 import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
 import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity;
+import yuku.ambilwarna.AmbilWarnaDialog;
 
 import static android.content.Context.WINDOW_SERVICE;
 
@@ -53,6 +55,8 @@ public class ConfigFragment extends Fragment {
     EditText viewWidthEditText;
     @BindView(R.id.viewHeight)
     EditText viewHeightEditText;
+    @BindView(R.id.view_color)
+    View viewColor;
     @BindView(R.id.touchVibrationCheck)
     CheckBox vibratesWhenViewTouchedCheck;
     @BindView(R.id.useProxyCheck)
@@ -124,6 +128,9 @@ public class ConfigFragment extends Fragment {
         viewWidthEditText.setText(String.valueOf(prefs.viewWidth));
         viewHeightEditText.setText(String.valueOf(prefs.viewHeight));
 
+        //検出領域の色
+        viewColor.setBackgroundColor(prefs.viewColor);
+
         //検出領域に触れたとき振動させるか
         if (prefs.vibratesWhenViewTouched) {
             vibratesWhenViewTouchedCheck.setChecked(true);
@@ -172,9 +179,8 @@ public class ConfigFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //ポ―ト番号
-                SpannableStringBuilder sb = (SpannableStringBuilder) portEditText.getText();
                 try {
-                    prefs.port = Integer.parseInt(sb.toString());
+                    prefs.port = Integer.parseInt(portEditText.getText().toString());
                 } catch (Exception e) {
                     prefs.port = 8000;
                     portEditText.setText(String.valueOf(prefs.port));
@@ -184,27 +190,24 @@ public class ConfigFragment extends Fragment {
                 prefs.showsView = showsViewCheck.isChecked();
 
                 //検出領域のX座標
-                sb = (SpannableStringBuilder) viewXEditText.getText();
                 try {
-                    prefs.viewX = Integer.parseInt(sb.toString());
+                    prefs.viewX = Integer.parseInt(viewXEditText.getText().toString());
                 } catch (Exception e) {
                     prefs.viewX = point.x / -2;
                     viewXEditText.setText(String.valueOf(prefs.viewX));
                 }
 
                 //検出領域のY座標
-                sb = (SpannableStringBuilder) viewYEditText.getText();
                 try {
-                    prefs.viewY = Integer.parseInt(sb.toString());
+                    prefs.viewY = Integer.parseInt(viewYEditText.getText().toString());
                 } catch (Exception e) {
                     prefs.viewY = point.y / -2;
                     viewYEditText.setText(String.valueOf(prefs.viewY));
                 }
 
                 //検出領域の幅
-                sb = (SpannableStringBuilder) viewWidthEditText.getText();
                 try {
-                    prefs.viewWidth = Integer.parseInt(sb.toString());
+                    prefs.viewWidth = Integer.parseInt(viewWidthEditText.getText().toString());
                     if (prefs.viewWidth > 150) {
                         prefs.viewWidth = 150;
                         viewWidthEditText.setText(String.valueOf(prefs.viewWidth));
@@ -215,9 +218,8 @@ public class ConfigFragment extends Fragment {
                 }
 
                 //検出領域の高さ
-                sb = (SpannableStringBuilder) viewHeightEditText.getText();
                 try {
-                    prefs.viewHeight = Integer.parseInt(sb.toString());
+                    prefs.viewHeight = Integer.parseInt( viewHeightEditText.getText().toString());
                     if (prefs.viewHeight > 150) {
                         prefs.viewHeight = 150;
                         viewHeightEditText.setText(String.valueOf(prefs.viewHeight));
@@ -227,6 +229,11 @@ public class ConfigFragment extends Fragment {
                     viewHeightEditText.setText(String.valueOf(prefs.viewHeight));
                 }
 
+                //検出領域の色
+                ColorDrawable colorDrawable = (ColorDrawable) viewColor.getBackground();
+                int colorInt = colorDrawable.getColor();
+                prefs.viewColor = colorInt;
+
                 //検出領域タッチ時に振動させるか
                 prefs.vibratesWhenViewTouched = vibratesWhenViewTouchedCheck.isChecked();
 
@@ -234,13 +241,11 @@ public class ConfigFragment extends Fragment {
                 prefs.usesProxy = usesProxyCheck.isChecked();
 
                 //上流プロキシのホスト名
-                sb = (SpannableStringBuilder) proxyHostEditText.getText();
-                prefs.proxyHost = sb.toString();
+                prefs.proxyHost = proxyHostEditText.getText().toString();
 
                 //上流プロキシのポート番号
-                sb = (SpannableStringBuilder) proxyPortEditText.getText();
                 try {
-                    prefs.proxyPort = Integer.parseInt(sb.toString());
+                    prefs.proxyPort = Integer.parseInt(proxyPortEditText.getText().toString());
                 } catch (Exception e) {
                     prefs.proxyPort = 8080;
                     proxyPortEditText.setText(String.valueOf(prefs.proxyPort));
@@ -320,6 +325,24 @@ public class ConfigFragment extends Fragment {
                 getActivity().startService(intent);
             }
         });
+    }
+
+    @OnClick(R.id.view_color)
+    void showColorPicker(){
+        //検出領域の色
+        ColorDrawable colorDrawable = (ColorDrawable) viewColor.getBackground();
+        new AmbilWarnaDialog(getContext(), colorDrawable.getColor(), new AmbilWarnaDialog.OnAmbilWarnaListener() {
+            @Override
+            public void onOk(AmbilWarnaDialog dialog, int color) {
+                // color is the color selected by the user.
+                viewColor.setBackgroundColor(color);
+            }
+
+            @Override
+            public void onCancel(AmbilWarnaDialog dialog) {
+                // cancel was selected by the user
+            }
+        }).show();
     }
 
     //検出領域を画面の左上に表示するために画面のサイズを求める
