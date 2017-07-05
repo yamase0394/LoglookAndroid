@@ -59,7 +59,6 @@ public class DeckListCaptureService extends Service {
     private ImageReader mImageReader;
     private VirtualDisplay mVirtualDisplay;
 
-    private WindowManager wm;
     private WindowManager.LayoutParams params;
 
     private int displayWidth;
@@ -101,18 +100,16 @@ public class DeckListCaptureService extends Service {
                 @Override
                 public void run() {
                     Toast.makeText(getApplicationContext(), "起動失敗", Toast.LENGTH_SHORT)
-                         .show();
+                            .show();
                 }
             });
             Logger.d("DeckListCaptureService", "mediaProjection = null");
             return;
         }
 
-        wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-
         DisplayMetrics metrics = getResources().getDisplayMetrics();
-        wm.getDefaultDisplay()
-          .getMetrics(metrics);
+        OverlayService.getDefaultDisplay()
+                .getMetrics(metrics);
         displayWidth = metrics.widthPixels;
         displayHeight = metrics.heightPixels;
         int density = metrics.densityDpi;
@@ -132,53 +129,51 @@ public class DeckListCaptureService extends Service {
         LayoutInflater layoutInflater = LayoutInflater.from(this);
         linearLayout = (LinearLayout) layoutInflater.inflate(R.layout.layout_capture_screen, null);
 
-        params = new WindowManager.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, -(displayWidth / 2), displayHeight/2, WindowManager.LayoutParams.TYPE_SYSTEM_ERROR, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
+        params = new WindowManager.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, -(displayWidth / 2), displayHeight / 2, WindowManager.LayoutParams.TYPE_SYSTEM_ERROR, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
 
         ImageButton captureButton = ButterKnife.findById(linearLayout, R.id.button_cap);
         captureButton.setOnTouchListener(new View.OnTouchListener() {
-                                             @Override
-                                             public boolean onTouch(View v, MotionEvent event) {
-                                                 if (event.getAction() != MotionEvent.ACTION_UP) {
-                                                     return false;
-                                                 }
-                                                 try {
-                                                     wm.removeViewImmediate(linearLayout);
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() != MotionEvent.ACTION_UP) {
+                    return false;
+                }
+                try {
+                    OverlayService.hideAllOverlayView();
 
-                                                     Thread.sleep(100);
+                    Bitmap bitmap = getScreenshot();
 
-                                                     Bitmap bitmap = getScreenshot();
-                                                     wm.addView(linearLayout, params);
-                                                     if (bitmap == null) {
-                                                         return true;
-                                                     }
+                    OverlayService.showAllOverlayView();
 
-                                                     Bitmap screenShot = removeBlank(bitmap);
+                    if (bitmap == null) {
+                        return true;
+                    }
 
-                                                     Bitmap shipData = trimShipDataArea(screenShot);
-                                                     shipDataWidth = shipData.getWidth();
+                    Bitmap screenShot = removeBlank(bitmap);
 
-                                                     arrangeShipData(shipData);
+                    Bitmap shipData = trimShipDataArea(screenShot);
+                    shipDataWidth = shipData.getWidth();
 
-                                                     preview.setImageBitmap(listBitmap);
+                    arrangeShipData(shipData);
 
-                                                 } catch (Exception e) {
-                                                     handler.post(new Runnable() {
-                                                         @Override
-                                                         public void run() {
-                                                             Toast.makeText(getApplicationContext(), "スクリーンショット失敗。エラーログを記録しました。", Toast.LENGTH_LONG)
-                                                                  .show();
-                                                         }
-                                                     });
-                                                     ErrorLogger.writeLog(e);
-                                                     e.printStackTrace();
-                                                     stopSelf();
-                                                 }
+                    preview.setImageBitmap(listBitmap);
 
-                                                 return true;
-                                             }
-                                         }
+                } catch (Exception e) {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "スクリーンショット失敗。エラーログを記録しました。", Toast.LENGTH_LONG)
+                                    .show();
+                        }
+                    });
+                    ErrorLogger.writeLog(e);
+                    e.printStackTrace();
+                    stopSelf();
+                }
 
-        );
+                return true;
+            }
+        });
 
         ImageButton saveButton = ButterKnife.findById(linearLayout, R.id.button_save);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -190,7 +185,7 @@ public class DeckListCaptureService extends Service {
                             @Override
                             public void run() {
                                 Toast.makeText(getApplicationContext(), "画像が空です", Toast.LENGTH_SHORT)
-                                     .show();
+                                        .show();
                             }
                         });
                         return;
@@ -277,37 +272,37 @@ public class DeckListCaptureService extends Service {
 
                     listBitmap = newList;
                 }
-    
+
                 try {
                     File sdcard_path = new File(Environment.getExternalStorageDirectory()
-                                                           .getPath() + "/泥提督支援アプリ/capture/list");
-        
+                            .getPath() + "/泥提督支援アプリ/capture/list");
+
                     if (!sdcard_path.exists()) {
                         sdcard_path.mkdirs();
                     }
-    
+
                     Date mDate = new Date();
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
                     File file = new File(sdcard_path, "攻略編成_" + simpleDateFormat.format(mDate) + ".jpg");
                     FileOutputStream fos = new FileOutputStream(file);
-        
+
                     listBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-        
+
                     fos.close();
-                    
+
                     stopSelf();
-                    
+
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_VIEW);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.setDataAndType(Uri.fromFile(file), "image/jpg");
                     intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
                     startActivity(intent);
-        
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(), "保存失敗。エラーログを記録しました。", Toast.LENGTH_SHORT)
-                         .show();
+                            .show();
                     ErrorLogger.writeLog(e);
                 }
             }
@@ -330,7 +325,7 @@ public class DeckListCaptureService extends Service {
                         @Override
                         public void run() {
                             Toast.makeText(getApplicationContext(), "画像が空です", Toast.LENGTH_SHORT)
-                                 .show();
+                                    .show();
                         }
                     });
                     return;
@@ -367,13 +362,13 @@ public class DeckListCaptureService extends Service {
                     params.x = centerX + linearLayout.getWidth() / 2 - 10;
                     params.y = centerY + linearLayout.getHeight() / 2 - 10;
 
-                    wm.updateViewLayout(linearLayout, params);
+                    OverlayService.updateOverlayViewLayout(linearLayout, params);
                 }
                 return false;
             }
         });
 
-        wm.addView(linearLayout, params);
+        OverlayService.addOverlayView(linearLayout, params);
 
         return START_STICKY;
     }
@@ -381,7 +376,7 @@ public class DeckListCaptureService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        wm.removeViewImmediate(linearLayout);
+        OverlayService.removeOverlayView(linearLayout);
         mVirtualDisplay.release();
         mediaProjection.stop();
         Logger.d("ScrennCaptureService", "onDestroy");

@@ -29,6 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import jp.gr.java_conf.snake0394.loglook_android.OverlayService;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.SlantLauncher;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.LittleProxyServerService;
@@ -266,10 +267,9 @@ public class ConfigFragment extends Fragment {
                 GeneralPrefsSpotRepository.putEntity(getContext(), prefs);
 
                 //稼働中のサービスを一度停止させてから再び起動させる
-                Intent intent = new Intent(getActivity(), LittleProxyServerService.class);
-                getActivity().stopService(intent);
-                intent = new Intent(getActivity(), SlantLauncher.class);
-                getActivity().stopService(intent);
+                getActivity().stopService(new Intent(getActivity().getApplicationContext(), LittleProxyServerService.class));
+                getActivity().stopService(new Intent(getActivity(), SlantLauncher.class));
+                getActivity().stopService(new Intent(getActivity().getApplicationContext(), OverlayService.class));
 
                 if (!MainActivity.canGetUsageStats(getContext())) {
                     new AlertDialog.Builder(getActivity()).setTitle("権限の説明")
@@ -319,10 +319,9 @@ public class ConfigFragment extends Fragment {
                     }
                 }
 
-                intent = new Intent(getActivity(), LittleProxyServerService.class);
-                getActivity().startService(intent);
-                intent = new Intent(getActivity(), SlantLauncher.class);
-                getActivity().startService(intent);
+                getActivity().startService(new Intent(getActivity().getApplicationContext(), OverlayService.class));
+                getActivity().startService(new Intent(getActivity().getApplicationContext(), LittleProxyServerService.class));
+                getActivity().startService(new Intent(getActivity(), SlantLauncher.class));
             }
         });
     }

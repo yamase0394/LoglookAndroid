@@ -48,7 +48,6 @@ public class SlantLauncher extends Service implements SensorEventListener {
 
     private boolean isTouching = false; //指定箇所がタップされているか
     private SensorManager sm;
-    private WindowManager wm;
     private GeneralPrefs prefs;
     //タップ検出領域
     private View v;
@@ -83,9 +82,6 @@ public class SlantLauncher extends Service implements SensorEventListener {
         final Sensor mag = sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         sm.registerListener(this, mag, SensorManager.SENSOR_DELAY_NORMAL);
 
-        //タッチイベントを取得するためのviewを作る
-        wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-
         this.prefs = GeneralPrefsSpotRepository.getEntity(getApplicationContext());
 
         v = new View(this);
@@ -94,7 +90,6 @@ public class SlantLauncher extends Service implements SensorEventListener {
         if (prefs.showsView) {
             //不透明
             transparent = PixelFormat.OPAQUE;
-            //黄色
             v.setBackgroundColor(prefs.viewColor);
         } else {
             //透明
@@ -103,7 +98,7 @@ public class SlantLauncher extends Service implements SensorEventListener {
 
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(prefs.viewWidth, prefs.viewHeight, prefs.viewY, prefs.viewX, WindowManager.LayoutParams.TYPE_SYSTEM_ERROR, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, transparent);
         v.setOnTouchListener(new FlickTouchListener(getApplicationContext()));
-        wm.addView(v, params);
+        OverlayService.addOverlayView(v,params);
 
         return START_STICKY;
     }
@@ -112,7 +107,7 @@ public class SlantLauncher extends Service implements SensorEventListener {
     public void onDestroy() {
         super.onDestroy();
         sm.unregisterListener(this);
-        wm.removeView(v);
+        OverlayService.removeOverlayView(v);
         Logger.d("SlantLauncher", "onDestroy");
     }
 
@@ -392,7 +387,7 @@ public class SlantLauncher extends Service implements SensorEventListener {
             launcherLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    wm.removeView(launcherLayout);
+                    OverlayService.removeOverlayView(launcherLayout);
                 }
             });
 
@@ -405,7 +400,7 @@ public class SlantLauncher extends Service implements SensorEventListener {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     //そのまま支援アプリを起動すると艦これがブラックアウトするため透明なアクティビティを間に挟む
-                    wm.removeView(launcherLayout);
+                    OverlayService.removeOverlayView(launcherLayout);
                     Intent intent = new Intent(context, DialogActivity.class);
                     intent.putExtra("usesLandscape", true);
                     intent.putExtra("position", MainActivity.Screen.toScreen((String) adapterView.getItemAtPosition(i))
@@ -424,7 +419,7 @@ public class SlantLauncher extends Service implements SensorEventListener {
                 screenListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        wm.removeView(launcherLayout);
+                        OverlayService.removeOverlayView(launcherLayout);
                         Intent intent = new Intent(context, ScreenCaptureActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
                         switch (i) {
@@ -441,7 +436,7 @@ public class SlantLauncher extends Service implements SensorEventListener {
             }
 
             WindowManager.LayoutParams params = new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.TYPE_SYSTEM_ERROR, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
-            wm.addView(launcherLayout, params);
+            OverlayService.addOverlayView(launcherLayout, params);
         }
 
         class CustomAdapter extends ArrayAdapter<String> {

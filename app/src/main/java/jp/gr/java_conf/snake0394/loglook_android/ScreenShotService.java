@@ -38,7 +38,6 @@ import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
 import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.ScreenCaptureActivity;
 
-
 /**
  * アプリを起動するランチャー
  */
@@ -49,7 +48,6 @@ public class ScreenShotService extends Service {
 
     private ImageReader mImageReader;
     private VirtualDisplay mVirtualDisplay;
-    private WindowManager wm;
     private MediaProjection mediaProjection;
     //タップ検出領域
     private LinearLayout linearLayout;
@@ -83,17 +81,17 @@ public class ScreenShotService extends Service {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(getApplicationContext(), "起動失敗", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "起動失敗", Toast.LENGTH_SHORT)
+                            .show();
                 }
             });
             Logger.d("ScreenShotService", "mediaProjection = null");
             return;
         }
 
-        wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-
         DisplayMetrics metrics = getResources().getDisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(metrics);
+        OverlayService.getDefaultDisplay()
+                .getMetrics(metrics);
         displayWidth = metrics.widthPixels;
         displayHeight = metrics.heightPixels;
         int density = metrics.densityDpi;
@@ -120,12 +118,11 @@ public class ScreenShotService extends Service {
                     return false;
                 }
                 try {
-                    wm.removeViewImmediate(linearLayout);
 
-                    Thread.sleep(100);
+                    OverlayService.hideAllOverlayView();
 
                     Bitmap bitmap = getScreenshot();
-                    wm.addView(linearLayout, params);
+                    OverlayService.showAllOverlayView();
                     if (bitmap == null) {
                         return true;
                     }
@@ -135,7 +132,8 @@ public class ScreenShotService extends Service {
                     preview.setImageBitmap(screenShot);
 
                     //SDカードのディレクトリパス
-                    File sdcard_path = new File(Environment.getExternalStorageDirectory().getPath() + "/泥提督支援アプリ/capture/screenShot");
+                    File sdcard_path = new File(Environment.getExternalStorageDirectory()
+                            .getPath() + "/泥提督支援アプリ/capture/screenShot");
 
                     //フォルダがなければ作成
                     if (!sdcard_path.exists()) {
@@ -165,7 +163,8 @@ public class ScreenShotService extends Service {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(), "スクリーンショット失敗。エラーログを記録しました。", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "スクリーンショット失敗。エラーログを記録しました。", Toast.LENGTH_LONG)
+                                    .show();
                         }
                     });
                     ErrorLogger.writeLog(e);
@@ -185,7 +184,8 @@ public class ScreenShotService extends Service {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(), "画像が空です", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "画像が空です", Toast.LENGTH_SHORT)
+                                    .show();
                         }
                     });
                     return;
@@ -211,7 +211,8 @@ public class ScreenShotService extends Service {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(), "画像が空です", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "画像が空です", Toast.LENGTH_SHORT)
+                                    .show();
                         }
                     });
                     return;
@@ -252,13 +253,13 @@ public class ScreenShotService extends Service {
                     params.x = centerX + linearLayout.getWidth() / 2 - 10;
                     params.y = centerY + linearLayout.getHeight() / 2 - 10;
 
-                    wm.updateViewLayout(linearLayout, params);
+                    OverlayService.updateOverlayViewLayout(linearLayout, params);
                 }
                 return false;
             }
         });
 
-        wm.addView(linearLayout, params);
+        OverlayService.addOverlayView(linearLayout, params);
 
         return START_STICKY;
     }
@@ -266,7 +267,7 @@ public class ScreenShotService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        wm.removeViewImmediate(linearLayout);
+        OverlayService.removeOverlayView(linearLayout);
         mVirtualDisplay.release();
         mediaProjection.stop();
         Logger.d("ScreenShotService", "onDestroy");

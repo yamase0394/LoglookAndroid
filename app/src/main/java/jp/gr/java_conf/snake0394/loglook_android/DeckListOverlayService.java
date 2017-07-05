@@ -27,7 +27,6 @@ public class DeckListOverlayService extends Service {
     
     private static final String TAG = "DeckListOverlayService";
     
-    private WindowManager wm;
     private WindowManager.LayoutParams params;
     
     private int displayWidth;
@@ -45,11 +44,9 @@ public class DeckListOverlayService extends Service {
         super.onCreate();
         
         Logger.d(TAG, "onCreate");
-        
-        wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-        
+
         DisplayMetrics metrics = getResources().getDisplayMetrics();
-        wm.getDefaultDisplay()
+        OverlayService.getDefaultDisplay()
           .getMetrics(metrics);
         displayWidth = metrics.widthPixels;
         displayHeight = metrics.heightPixels;
@@ -60,7 +57,7 @@ public class DeckListOverlayService extends Service {
         Logger.d(TAG, "onStartCommand");
         
         if(!Objects.equals(rootLayout, null)){
-            wm.removeViewImmediate(rootLayout);
+            OverlayService.removeOverlayView(rootLayout);
         }
         
         //タッチイベントを取得するためのviewを作る
@@ -99,7 +96,7 @@ public class DeckListOverlayService extends Service {
                 int y = (int) motionEvent.getRawY();
                 if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
                     DisplayMetrics metrics = getResources().getDisplayMetrics();
-                    wm.getDefaultDisplay()
+                    OverlayService.getDefaultDisplay()
                       .getMetrics(metrics);
                     displayWidth = metrics.widthPixels;
                     displayHeight = metrics.heightPixels;
@@ -110,13 +107,13 @@ public class DeckListOverlayService extends Service {
                     params.x = centerX + rootLayout.getWidth() / 2 - dragHandle.getWidth();
                     params.y = centerY + rootLayout.getHeight() / 2 - dragHandle.getHeight();
                     
-                    wm.updateViewLayout(rootLayout, params);
+                    OverlayService.updateOverlayViewLayout(rootLayout, params);
                 }
                 return false;
             }
         });
         
-        wm.addView(rootLayout, params);
+        OverlayService.addOverlayView(rootLayout, params);
         
         return START_NOT_STICKY;
     }
@@ -124,7 +121,7 @@ public class DeckListOverlayService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        wm.removeViewImmediate(rootLayout);
+        OverlayService.removeOverlayView(rootLayout);
     }
     
 }
