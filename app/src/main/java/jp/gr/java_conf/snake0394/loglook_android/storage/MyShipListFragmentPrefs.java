@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.kobakei.spot.annotation.Pref;
-import io.github.kobakei.spot.annotation.PrefString;
+import io.github.kobakei.spot.annotation.PrefField;
 import jp.gr.java_conf.snake0394.loglook_android.storage.converter.LabelListTypeConverter;
 import jp.gr.java_conf.snake0394.loglook_android.storage.converter.LabelMapTypeConverter;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.MyShipListRecyclerViewAdapter;
@@ -15,22 +15,22 @@ import jp.gr.java_conf.snake0394.loglook_android.view.fragment.MyShipListRecycle
 @Pref(name = "pref_my_ship_list_fragment")
 public class MyShipListFragmentPrefs {
 
-    @PrefString(name = "labelFilter", defaultValue = "すべて")
-    public String labelFilter;
+    @PrefField(name = "labelFilter")
+    public String labelFilter = "すべて";
 
-    @PrefString(name = "shipTypeFilter", defaultValue = "すべて")
-    public String shipTypeFilter;
+    @PrefField(name = "shipTypeFilter")
+    public String shipTypeFilter = "すべて";
 
-    @PrefString(name = "sortType", defaultValue = "Lv")
-    public String sortType;
+    @PrefField(name = "sortType")
+    public String sortType = "Lv";
 
-    @PrefString(name = "order", defaultValue = "降順")
-    public String order;
+    @PrefField(name = "order")
+    public String order = "降順";
 
-    @PrefString(name = "toLabelMap", converter = LabelMapTypeConverter.class)
+    @PrefField(name = "toLabelMap", converter = LabelMapTypeConverter.class)
     public Map<Integer, List<MyShipListRecyclerViewAdapter.Label>> toLabelMap;
 
-    @PrefString(name = "labelList", converter = LabelListTypeConverter.class)
+    @PrefField(name = "labelList", converter = LabelListTypeConverter.class)
     public List<MyShipListRecyclerViewAdapter.Label> labelList;
 
     public MyShipListFragmentPrefs() {

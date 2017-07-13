@@ -12,7 +12,6 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
-import jp.gr.java_conf.snake0394.loglook_android.logger.BattleLogger;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.RequestMetaData;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.HeavilyDamagedWarningActivity;
@@ -42,15 +41,7 @@ public class ApiReqMapStart implements APIListenerSpi {
             intent.putExtra("first", true);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-            App.getInstance()
-               .startActivity(intent);
+            App.getInstance().startActivity(intent);
         }
-
-
-        JsonObject data = json.getAsJsonObject("api_data");
-
-        BattleLogger.INSTANCE.start(data.get("api_no")
-                                        .getAsInt(), data.get("api_event_id")
-                                                         .getAsInt());
     }
 }

@@ -35,7 +35,7 @@ public enum MySlotItemManager {
         return sparseArray.indexOfKey(id) >= 0;
     }
 
-    public void delete(List<Integer> list) {
+    public void retainAll(List<Integer> list) {
         List<Integer> remove = new ArrayList<>();
         for (int i = 0; i < sparseArray.size(); i++) {
             if(!list.contains(sparseArray.keyAt(i))){

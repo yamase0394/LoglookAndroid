@@ -30,5 +30,5 @@ public enum BattleType {
     COMBINED_EACH_WATER,
     /**演習*/
     PRACTICE,
-    NULL;
+    MIDNIGHT
 }

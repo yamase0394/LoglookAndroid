@@ -36,7 +36,7 @@ public class ApiGetMemberRequireInfo implements APIListenerSpi {
             MySlotItemManager.INSTANCE.put(temp);
             idList.add(temp.getId());
         }
-        MySlotItemManager.INSTANCE.delete(idList);
+        MySlotItemManager.INSTANCE.retainAll(idList);
         MySlotItemManager.INSTANCE.serialize();
     }
 }

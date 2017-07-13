@@ -1,5 +1,7 @@
 package jp.gr.java_conf.snake0394.loglook_android.api;
 
+import android.content.Intent;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -12,6 +14,7 @@ import jp.gr.java_conf.snake0394.loglook_android.App;
 import jp.gr.java_conf.snake0394.loglook_android.DeckUtility;
 import jp.gr.java_conf.snake0394.loglook_android.DockTimer;
 import jp.gr.java_conf.snake0394.loglook_android.Escape;
+import jp.gr.java_conf.snake0394.loglook_android.HeavilyDamagedWarningService;
 import jp.gr.java_conf.snake0394.loglook_android.MissionTimer;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Basic;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
@@ -32,6 +35,8 @@ public class ApiPortPort implements APIListenerSpi {
 
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
+        App.getInstance().stopService(new Intent(App.getInstance().getApplicationContext(), HeavilyDamagedWarningService.class));
+
         this.gson = new Gson();
 
         JsonObject data = json.getAsJsonObject("api_data");
@@ -50,9 +55,7 @@ public class ApiPortPort implements APIListenerSpi {
     private void apiMaterial(JsonArray array) {
         List<Integer> materialList = new ArrayList<>();
         for (JsonElement e : array) {
-            materialList.add(e.getAsJsonObject()
-                              .get("api_value")
-                              .getAsInt());
+            materialList.add(e.getAsJsonObject().get("api_value").getAsInt());
         }
 
         //[4]高速建造剤と[5]高速修復材を入れ替える
@@ -74,8 +77,8 @@ public class ApiPortPort implements APIListenerSpi {
             DeckManager.INSTANCE.put(deck);
 
             //遠征タイマーを制御
-            List<Long> mission = DeckManager.INSTANCE.getDeck(deck.getId())
-                                                     .getMission();
+            List<Long> mission = DeckManager.INSTANCE.getDeck(deck.getId()).getMission();
+
             //艦隊が遠征中か強制帰投中
             if (mission.get(0) == 1 || mission.get(0) == 3) {
                 //指定された艦隊に対するタイマーが作動中でない

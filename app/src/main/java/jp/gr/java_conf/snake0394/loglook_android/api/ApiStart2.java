@@ -43,6 +43,7 @@ public class ApiStart2 implements APIListenerSpi {
         }
         //MstShipのnullオブジェクトをput
         MstShip mstShip = new MstShip();
+        //TODO ヤメロォ
         mstShip.setId(-1);
         mstShip.setName("");
         mstShip.setYomi("");
@@ -56,6 +57,7 @@ public class ApiStart2 implements APIListenerSpi {
             MstSlotitemManager.INSTANCE.put(gson.fromJson(e, MstSlotitem.class));
         }
         MstSlotitem ms = new MstSlotitem();
+        //TODO ヤメロォ
         ms.setId(-1);
         ms.setName("");
         MstSlotitemManager.INSTANCE.put(ms);

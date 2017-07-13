@@ -23,6 +23,11 @@ public enum MstShipManager {
         idToMstShipSparseArray.put(mstShip.getId(), mstShip);
     }
 
+    /**
+     * id=-1に対応するオブジェクトが何故か入ってる
+     * @param id
+     * @return
+     */
     public MstShip getMstShip(int id) {
         return idToMstShipSparseArray.get(id);
     }

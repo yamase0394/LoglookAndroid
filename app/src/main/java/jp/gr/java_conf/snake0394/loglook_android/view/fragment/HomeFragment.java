@@ -60,11 +60,31 @@ public class HomeFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                getActivity().stopService(new Intent(getActivity().getApplicationContext(), LittleProxyServerService.class));
-                getActivity().stopService(new Intent(getActivity(), SlantLauncher.class));
-                getActivity().stopService(new Intent(getActivity().getApplicationContext(), OverlayService.class));
-
                 if (!isChecked) {
+                    getActivity().stopService(new Intent(getActivity().getApplicationContext(), LittleProxyServerService.class));
+                    getActivity().stopService(new Intent(getActivity(), SlantLauncher.class));
+                    getActivity().stopService(new Intent(getActivity().getApplicationContext(), OverlayService.class));
+                    return;
+                }
+
+                ActivityManager am = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+                List<ActivityManager.RunningServiceInfo> listServiceInfo = am.getRunningServices(Integer.MAX_VALUE);
+                boolean isProxyServerRunnning = false;
+                boolean isMyServiceRunnning = false;
+                for (ActivityManager.RunningServiceInfo curr : listServiceInfo) {
+                    // クラス名を比較
+                    if (curr.service.getClassName()
+                            .equals(LittleProxyServerService.class.getName())) {
+                        // 実行中のサービスと一致
+                        isProxyServerRunnning = true;
+                    }
+                    if (curr.service.getClassName()
+                            .equals(SlantLauncher.class.getName())) {
+                        // 実行中のサービスと一致
+                        isMyServiceRunnning = true;
+                    }
+                }
+                if(isProxyServerRunnning && isMyServiceRunnning){
                     return;
                 }
 

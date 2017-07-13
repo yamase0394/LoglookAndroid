@@ -1,9 +1,7 @@
 package jp.gr.java_conf.snake0394.loglook_android.storage;
 
 import io.github.kobakei.spot.annotation.Pref;
-import io.github.kobakei.spot.annotation.PrefBoolean;
-import io.github.kobakei.spot.annotation.PrefInt;
-import io.github.kobakei.spot.annotation.PrefString;
+import io.github.kobakei.spot.annotation.PrefField;
 
 /**
  * {@link jp.gr.java_conf.snake0394.loglook_android.view.fragment.ConfigFragment}
@@ -13,127 +11,116 @@ public class GeneralPrefs {
 
     /**
      * プロキシが利用するポート番号。
-     * defaultValue = 8000
      **/
-    @PrefInt(name = "port", defaultValue = 8000)
-    public int port;
+    @PrefField(name = "port")
+    public int port = 8000;
 
     /**
      * 検出領域を可視化するか。
-     * defaultValue = true
      */
-    @PrefBoolean(name = "showsView", defaultValue = true)
-    public boolean showsView;
+    @PrefField(name = "showsView")
+    public boolean showsView = true;
 
     /**
      * 検出領域のx座標。
-     * defaultValue = Short.MAX_VALUE
      */
-    @PrefInt(name = "viewX", defaultValue = Short.MAX_VALUE)
-    public int viewX;
+    @PrefField(name = "viewX")
+    public int viewX = Short.MAX_VALUE;
 
     /**
      * 検出領域のy座標。
-     * defaultValue = Short.MAX_VALUE
      */
-    @PrefInt(name = "viewY", defaultValue = Short.MAX_VALUE)
-    public int viewY;
+    @PrefField(name = "viewY")
+    public int viewY = Short.MAX_VALUE;
 
     /*
      * 検出領域の幅。
-     * defaultValue = 20
      */
-    @PrefInt(name = "viewWidth", defaultValue = 20)
-    public int viewWidth;
+    @PrefField(name = "viewWidth")
+    public int viewWidth = 20;
 
     /**
      * 検出領域の高さ。
-     * defaultValue = 50
      */
-    @PrefInt(name = "viewHeight", defaultValue = 50)
-    public int viewHeight;
+    @PrefField(name = "viewHeight")
+    public int viewHeight = 50;
 
     /**
      * 検出領域の色
      */
-    @PrefInt(name = "viewColor", defaultValue = 0xffff00)
-    public int viewColor;
+    @PrefField(name = "viewColor")
+    public int viewColor =  0xffff00;
 
     /**
      * 検出領域がタッチされたとき振動させるか。
-     * defaultValue = true
      */
-    @PrefBoolean(name = "vibratesWhenViewTouched", defaultValue = true)
-    public boolean vibratesWhenViewTouched;
+    @PrefField(name = "vibratesWhenViewTouched")
+    public boolean vibratesWhenViewTouched = true;
 
     /**
      * 上流プロキシを使用するか。
-     * defaultValue = false
      */
-    @PrefBoolean(name = "usesProxy")
+    @PrefField(name = "usesProxy")
     public boolean usesProxy;
 
     /**
      * 上流プロキシのホスト名。
-     * defaultValue = localhost
      */
-    @PrefString(name = "proxyHost", defaultValue = "localhost")
-    public String proxyHost;
+    @PrefField(name = "proxyHost")
+    public String proxyHost = "localhost";
 
     /**
      * 上流プロキシのポート番号。
-     * defaultValue = 8080
      */
-    @PrefInt(name = "proxyPort", defaultValue = 8080)
-    public int proxyPort;
+    @PrefField(name = "proxyPort")
+    public int proxyPort = 8080;
 
     /**
      * Jsonを記録するか。
      * defaultValue = false
      */
-    @PrefBoolean(name = "logsJson", defaultValue = false)
+    @PrefField(name = "logsJson")
     public boolean logsJson;
 
     /**
      * リクエストボディを記録するか。
-     * defaultValue = false
      */
-    @PrefBoolean(name = "logsRequest", defaultValue = false)
+    @PrefField(name = "logsRequest")
     public boolean logsRequest;
 
     /**
      * 遠征完了時に通知するか。
-     * defaultValue = true
      */
-    @PrefBoolean(name = "usesMissionNotification", defaultValue = true)
-    public boolean usesMissionNotification;
+    @PrefField(name = "usesMissionNotification")
+    public boolean usesMissionNotification = true;
 
     /**
      * 入渠完了時に通知するか。
-     * defaultValue = true
      */
-    @PrefBoolean(name = "usesDockNotification", defaultValue = true)
-    public boolean usesDockNotification;
+    @PrefField(name = "usesDockNotification")
+    public boolean usesDockNotification = true;
 
     /**
      * 通知時に音を鳴らすか。
-     * defaultValue = true
      */
-    @PrefBoolean(name = "makesSoundWhenNotify", defaultValue = true)
-    public boolean makesSoundWhenNotify;
+    @PrefField(name = "makesSoundWhenNotify")
+    public boolean makesSoundWhenNotify = true;
 
     /**
      * 通知時に振動させる。
-     * defaultValue = true
      */
-    @PrefBoolean(name = "vibratesWhenNOtify", defaultValue = true)
-    public boolean vibratesWhenNOtify;
+    @PrefField(name = "vibratesWhenNOtify")
+    public boolean vibratesWhenNOtify = true;
 
     /**
      * 横画面固定。
-     * defaultValue = false
      */
-    @PrefBoolean(name = "forcesLandscape", defaultValue = false)
+    @PrefField(name = "forcesLandscape")
     public boolean forcesLandscape;
 
+    @PrefField(name = "showsWinRankOverlay")
+    public boolean showsWinRankOverlay;
+
+    @PrefField(name = "showsHeavilyDamagedOverlay")
+    public boolean showsHeavilyDamagedOverlay;
 }

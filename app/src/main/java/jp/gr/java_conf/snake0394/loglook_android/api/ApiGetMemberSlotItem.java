@@ -20,6 +20,7 @@ import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;
 public class ApiGetMemberSlotItem implements APIListenerSpi {
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
+        //App.getInstance().stopService(new Intent(App.getInstance().getApplicationContext(), HeavilyDamagedWarningService.class));
 
         JsonArray data = json.getAsJsonArray("api_data");
 
@@ -29,7 +30,7 @@ public class ApiGetMemberSlotItem implements APIListenerSpi {
             MySlotItemManager.INSTANCE.put(temp);
             idList.add(temp.getId());
         }
-        MySlotItemManager.INSTANCE.delete(idList);
+        MySlotItemManager.INSTANCE.retainAll(idList);
         MySlotItemManager.INSTANCE.serialize();
     }
 }

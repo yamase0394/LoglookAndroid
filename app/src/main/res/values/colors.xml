@@ -18,6 +18,7 @@
     <color name="drawer_header">#fff8eb</color>
     <color name="my_ship_list_header">#656565</color>
 
+    <color name="sank">#0066cc</color>
     <color name="expedition">#4e5a92</color>
     <color name="escort">#ffcccccc</color>
     <color name="docking">#33cccc</color>

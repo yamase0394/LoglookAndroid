@@ -1,0 +1,478 @@
+package jp.gr.java_conf.snake0394.loglook_android.view.fragment
+
+import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import jp.gr.java_conf.snake0394.loglook_android.BattleUtility
+import jp.gr.java_conf.snake0394.loglook_android.DeckUtility
+import jp.gr.java_conf.snake0394.loglook_android.Escape
+import jp.gr.java_conf.snake0394.loglook_android.R
+import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager
+import jp.gr.java_conf.snake0394.loglook_android.bean.MstShipManager
+import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitemManager
+import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager
+import jp.gr.java_conf.snake0394.loglook_android.bean.battle.*
+
+class TacticalSituationFragment : Fragment() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        // Inflate the layout for this fragment
+        return inflater!!.inflate(R.layout.fragment_tactical_situation, container, false)
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        var manager = childFragmentManager
+        var fragment = manager.findFragmentById(R.id.fragment) as ErrorFragment
+        var transaction: android.support.v4.app.FragmentTransaction = manager.beginTransaction()
+        transaction.hide(fragment)
+        transaction.commit()
+
+        try {
+            val ts = TacticalSituation
+            val battle = TacticalSituation.battle
+
+            val formation = TacticalSituation.battle as IFormation
+            var textView = activity.findViewById(R.id.tactic) as TextView
+            textView.text = BattleUtility.getTactic(formation.apiFormation[2])
+
+            textView = activity.findViewById(R.id.formation) as TextView
+            textView.text = BattleUtility.getFormation(formation.apiFormation[0])
+
+            textView = activity.findViewById(R.id.eFormation) as TextView
+            textView.text = BattleUtility.getFormation(formation.apiFormation[1])
+
+            val mainDeck = DeckManager.INSTANCE.getDeck(battle.apiDeckId)
+            when (battle) {
+                is IKouku -> {
+                    textView = activity.findViewById(R.id.seiku) as TextView
+                    textView.text = "${DeckUtility.getSeiku(mainDeck)}(${BattleUtility.getDispSeiku(battle.apiKouku.apiStage1!!.apiDispSeiku)})"
+
+                    textView = activity.findViewById(R.id.touchPlane) as TextView
+                    textView.text = MstSlotitemManager.INSTANCE.getMstSlotitem(battle.apiKouku.apiStage1!!.apiTouchPlane[0]).name.takeUnless { it.isEmpty() } ?: "なし"
+
+                    textView = activity.findViewById(R.id.enemyTouchPlane) as TextView
+                    textView.text = MstSlotitemManager.INSTANCE.getMstSlotitem(battle.apiKouku.apiStage1!!.apiTouchPlane[1]).name.takeUnless { it.isEmpty() } ?: "なし"
+                }
+                is IMidnightBattle -> {
+                    textView = activity.findViewById(R.id.seiku) as TextView
+                    textView.text = "${DeckUtility.getSeiku(mainDeck)}()"
+
+                    textView = activity.findViewById(R.id.touchPlane) as TextView
+                    textView.text = MstSlotitemManager.INSTANCE.getMstSlotitem(battle.apiTouchPlane[0]).name.takeUnless { it.isEmpty() } ?: "なし"
+
+                    textView = activity.findViewById(R.id.enemyTouchPlane) as TextView
+                    textView.text = MstSlotitemManager.INSTANCE.getMstSlotitem(battle.apiTouchPlane[1]).name.takeUnless { it.isEmpty() } ?: "なし"
+                }
+            }
+
+            val phaseList = TacticalSituation.phaseList
+            for (i in 1..6) {
+                //本隊
+                if (i > phaseList[0].fHp.size) {
+                    var name = "name" + i
+                    var strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.text = ""
+
+                    name = "lv" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.text = ""
+
+                    name = "state" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.text = ""
+
+                    name = "hp" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.text = ""
+
+                    name = "beforeHp" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.text = ""
+
+                    name = "damage" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.text = ""
+                } else {
+                    val id = mainDeck.shipId[i - 1]
+                    val myShip = MyShipManager.INSTANCE.getMyShip(id)
+
+                    var name = "name" + i
+                    var strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.text = myShip.name
+
+                    name = "lv" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.text = "(Lv${myShip.lv})"
+
+                    name = "state" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    (activity.findViewById(strId) as TextView).apply {
+                        val lastHp = phaseList.last().fHp[i - 1]
+                        setStateText(this, lastHp, myShip.maxhp, false, Escape.INSTANCE.isEscaped(myShip.id))
+                    }
+
+                    name = "beforeHp" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    (activity.findViewById(strId) as TextView).apply {
+                        text = "${TacticalSituation.phaseList.first().fHp[i - 1]}/${myShip.maxhp}→"
+                    }
+
+                    name = "hp" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    (activity.findViewById(strId) as TextView).apply {
+                        text = "${TacticalSituation.phaseList.last().fHp[i - 1]}/${myShip.maxhp}"
+                    }
+
+                    name = "damage" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    (activity.findViewById(strId) as TextView).apply {
+                        val damage = TacticalSituation.phaseList.last().fHp[i - 1] - TacticalSituation.phaseList.first().fHp[i - 1]
+                        text = damage.toString()
+                        if (damage == 0) {
+                            setTextColor(ContextCompat.getColor(context, R.color.undamaged))
+                        } else {
+                            setTextColor(ContextCompat.getColor(context, R.color.sank))
+                        }
+                    }
+                }
+
+                //敵艦隊
+                if (i > phaseList.first().eHp.size) {
+                    var name = "eName" + i
+                    var strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.text = ""
+
+                    name = "eLv" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.text = ""
+
+                    name = "eState" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.text = ""
+
+                    name = "eBeforeHp" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.text = ""
+
+                    name = "eHp" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.text = ""
+
+                    name = "eDamage" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.text = ""
+                } else {
+                    val id = battle.apiShipKe[i]
+                    val eShip = MstShipManager.INSTANCE.getMstShip(id)
+
+                    var name = "eName" + i
+                    var strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.text = eShip.name
+
+                    name = "eLv" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    (activity.findViewById(strId) as TextView).apply {
+                        if (battle is PracticeBattle) {
+                            text = "(Lv${battle.apiShipLv[i]})"
+                        } else {
+                            text = "${eShip.yomi}(Lv${TacticalSituation.battle.apiShipLv[i]})"
+                        }
+                    }
+
+                    var lastHp = phaseList.last().eHp[i - 1]
+                    var maxHp = battle.apiMaxhps[i + 6]
+                    name = "eState" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    (activity.findViewById(strId) as TextView).apply {
+                        setStateText(this, lastHp, maxHp, true)
+                    }
+
+                    name = "eBeforeHp" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.text = "${phaseList.first().eHp[i - 1]}/$maxHp→"
+
+                    name = "eHp" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.text = "${lastHp}/$maxHp"
+
+                    name = "eDamage" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    (activity.findViewById(strId) as TextView).apply {
+                        val damage = lastHp - phaseList.first().eHp[i - 1]
+                        text = damage.toString()
+                        if (damage == 0) {
+                            setTextColor(ContextCompat.getColor(context, R.color.undamaged))
+                        } else {
+                            setTextColor(ContextCompat.getColor(context, R.color.sank))
+                        }
+                    }
+                }
+
+                //第2艦隊
+                val deck2 = DeckManager.INSTANCE.getDeck(2)
+                if (i > phaseList.first().fHpCombined?.size ?: 0) {
+                    var name = "cName" + i
+                    var strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.visibility = View.GONE
+
+                    name = "cLv" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.visibility = View.GONE
+
+                    name = "cState" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.visibility = View.GONE
+
+                    name = "cBeforeHp" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.visibility = View.GONE
+
+                    name = "cHp" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.visibility = View.GONE
+
+                    name = "cDamage" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.visibility = View.GONE
+                } else {
+
+                    val id = deck2.shipId[i - 1]
+                    val myShip = MyShipManager.INSTANCE.getMyShip(id)
+
+                    var name = "cName" + i
+                    var strId = resources.getIdentifier(name, "id", activity.packageName)
+                    (activity.findViewById(strId) as TextView).apply {
+                        visibility = View.VISIBLE
+                        text = myShip.name
+                    }
+
+                    name = "cLv" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    (activity.findViewById(strId) as TextView).apply {
+                        visibility = View.VISIBLE
+                        text = "(Lv${myShip.lv})"
+                    }
+
+                    name = "cState" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    val lastHp = phaseList.last().fHpCombined!![i - 1]
+                    (activity.findViewById(strId) as TextView).apply {
+                        visibility = View.VISIBLE
+                        setStateText(this, lastHp, myShip.maxhp, false, Escape.INSTANCE.isEscaped(myShip.id))
+                    }
+
+                    name = "cBeforeHp" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    (activity.findViewById(strId) as TextView).apply {
+                        visibility = View.VISIBLE
+                        text = "${phaseList.first().fHpCombined!![i - 1]}/${myShip.maxhp}→"
+                    }
+
+                    name = "cHp" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    (activity.findViewById(strId) as TextView).apply {
+                        visibility = View.VISIBLE
+                        text = "$lastHp/${myShip.maxhp}"
+                    }
+
+                    name = "cDamage" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    (activity.findViewById(strId) as TextView).apply {
+                        val damage = lastHp - phaseList.first().fHpCombined!![i - 1]
+                        visibility = View.VISIBLE
+                        text = damage.toString()
+                        if (damage == 0) {
+                            setTextColor(ContextCompat.getColor(context, R.color.undamaged))
+                        } else {
+                            setTextColor(ContextCompat.getColor(context, R.color.sank))
+                        }
+                    }
+                }
+
+                //敵第2艦隊
+                if (i > phaseList.first().eHpCombined?.size ?: 0) {
+                    var name = "ecName" + i
+                    var strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.visibility = View.GONE
+
+                    name = "ecLv" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.visibility = View.GONE
+
+                    name = "ecState" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.visibility = View.GONE
+
+                    name = "ecBeforeHp" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.visibility = View.GONE
+
+                    name = "ecHp" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.visibility = View.GONE
+
+                    name = "ecDamage" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    textView = activity.findViewById(strId) as TextView
+                    textView.visibility = View.GONE
+                } else {
+
+                    val id = when (battle) {
+                        is IEnemyCombinedBattle -> battle.apiShipKeCombined[i]
+                        is IEachCombinedBattle -> battle.apiShipKeCombined[i]
+                        else -> throw IllegalArgumentException("${battle.javaClass.name}")
+                    }
+                    val eShip = MstShipManager.INSTANCE.getMstShip(id)
+
+                    var name = "ecName" + i
+                    var strId = resources.getIdentifier(name, "id", activity.packageName)
+                    (activity.findViewById(strId) as TextView).apply {
+                        visibility = View.VISIBLE
+                        text = eShip.name
+                    }
+
+                    name = "ecLv" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    (activity.findViewById(strId) as TextView).apply {
+                        val lv = when (battle) {
+                            is IEnemyCombinedBattle -> battle.apiShipLvCombined[i]
+                            is IEachCombinedBattle -> battle.apiShipLvCombined[i]
+                            else -> throw IllegalArgumentException("${battle.javaClass.name}")
+                        }
+                        visibility = View.VISIBLE
+                        text = "${eShip.yomi}(Lv$lv)"
+                    }
+
+                    val lastHp = phaseList.last().eHpCombined!![i - 1]
+                    val maxHp = when (battle) {
+                        is IEnemyCombinedBattle -> battle.apiMaxhpsCombined[i + 6]
+                        is IEachCombinedBattle -> battle.apiMaxhpsCombined[i + 6]
+                        else -> throw IllegalArgumentException("${battle.javaClass.name}")
+                    }
+                    name = "ecState" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    (activity.findViewById(strId) as TextView).apply {
+                        visibility = View.VISIBLE
+                        setStateText(this, lastHp, maxHp, true)
+                    }
+
+                    name = "ecBeforeHp" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    (activity.findViewById(strId) as TextView).apply {
+                        text = "${phaseList.first().eHpCombined!![i - 1]}/$maxHp→"
+                    }
+
+                    name = "ecHp" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    (activity.findViewById(strId) as TextView).apply {
+                        text = "$lastHp/$maxHp"
+                    }
+
+                    name = "ecDamage" + i
+                    strId = resources.getIdentifier(name, "id", activity.packageName)
+                    (activity.findViewById(strId) as TextView).apply {
+                        val damage = lastHp - phaseList.first().eHpCombined!![i - 1]
+                        if (damage == 0) {
+                            setTextColor(ContextCompat.getColor(context, R.color.undamaged))
+                        } else {
+                            setTextColor(ContextCompat.getColor(context, R.color.sank))
+                        }
+                    }
+                }
+            }
+
+            (activity.findViewById(R.id.rank) as TextView).apply {
+                text = TacticalSituation.winRank
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            manager = childFragmentManager
+            fragment = manager.findFragmentById(R.id.fragment) as ErrorFragment
+            transaction = manager.beginTransaction()
+            transaction.show(fragment)
+            transaction.commit()
+        }
+    }
+
+    private fun setStateText(textView: TextView, lastHp: Int, maxHp: Int, isEnemy: Boolean, isEscaped: Boolean = false) {
+        textView.run {
+            when {
+                isEscaped -> {
+                    text = "退避"
+                    setTextColor(ContextCompat.getColor(context, R.color.escort))
+                }
+                lastHp <= 0 -> {
+                    text = if (isEnemy) "撃沈" else "轟沈"
+                    setTextColor(ContextCompat.getColor(context, R.color.sank))
+                }
+                lastHp <= maxHp / 4 -> {
+                    text = "大破"
+                    setTextColor(ContextCompat.getColor(context, R.color.heavy_damage))
+                }
+                lastHp <= maxHp / 2 -> {
+                    text = "中破"
+                    setTextColor(ContextCompat.getColor(context, R.color.moderate_damage))
+                }
+                lastHp <= maxHp * 3 / 4 -> {
+                    text = "小破"
+                    setTextColor(ContextCompat.getColor(context, R.color.minor_damage))
+                }
+                lastHp < maxHp -> {
+                    text = "健在"
+                    setTextColor(ContextCompat.getColor(context, R.color.good_health))
+                }
+                else -> {
+                    text = "無傷"
+                    setTextColor(ContextCompat.getColor(context, R.color.undamaged))
+                }
+            }
+        }
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun newInstance(): TacticalSituationFragment {
+            val fragment = TacticalSituationFragment()
+            return fragment
+        }
+    }
+}

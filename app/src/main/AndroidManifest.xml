@@ -85,6 +85,8 @@
             android:name=".OverlayService">
         </service>
 
+        <service android:name=".WinRankOverlayService"/>
+        <service android:name=".HeavilyDamagedWarningService"/>
 
     </application>
 
