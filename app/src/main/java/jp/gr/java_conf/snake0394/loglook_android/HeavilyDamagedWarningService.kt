@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import jp.gr.java_conf.snake0394.loglook_android.logger.Logger
-import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository
 
 
 /**
@@ -27,10 +26,6 @@ class HeavilyDamagedWarningService : Service() {
         super.onCreate()
 
         Logger.d(TAG, "onCreate")
-        if (!GeneralPrefsSpotRepository.getEntity(applicationContext).showsHeavilyDamagedOverlay) {
-            stopSelf()
-            return
-        }
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {

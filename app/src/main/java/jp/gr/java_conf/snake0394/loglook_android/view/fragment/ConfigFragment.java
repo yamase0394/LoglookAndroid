@@ -34,7 +34,6 @@ import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.SlantLauncher;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.LittleProxyServerService;
 import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
-import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
@@ -101,13 +100,13 @@ public class ConfigFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        final GeneralPrefs prefs = GeneralPrefsSpotRepository.getEntity(getContext());
+        final GeneralPrefs prefs = new GeneralPrefs(getContext());
 
         //ポート番号
-        portEditText.setText(String.valueOf(prefs.port));
+        portEditText.setText(String.valueOf(prefs.getPort()));
 
         //検出領域を可視化するか
-        if (prefs.showsView) {
+        if (prefs.getShowsView()) {
             showsViewCheck.setChecked(true);
         } else {
             showsViewCheck.setChecked(false);
@@ -115,45 +114,45 @@ public class ConfigFragment extends Fragment {
 
         //検出領域のx,y座標
         final Point point = getDisplaySize();
-        if (prefs.viewX == Short.MAX_VALUE) {
-            prefs.viewX = point.x / -2;
+        if (prefs.getViewX() == Short.MAX_VALUE) {
+            prefs.setViewX(point.x / -2);
         }
-        viewXEditText.setText(String.valueOf(prefs.viewX));
+        viewXEditText.setText(String.valueOf(prefs.getViewX()));
 
-        if (prefs.viewY == Short.MAX_VALUE) {
-            prefs.viewY = point.y / -2;
+        if (prefs.getViewY() == Short.MAX_VALUE) {
+            prefs.setViewY(point.y / -2);
         }
-        viewYEditText.setText(String.valueOf(prefs.viewY));
+        viewYEditText.setText(String.valueOf(prefs.getViewY()));
 
         //検出領域の大きさ
-        viewWidthEditText.setText(String.valueOf(prefs.viewWidth));
-        viewHeightEditText.setText(String.valueOf(prefs.viewHeight));
+        viewWidthEditText.setText(String.valueOf(prefs.getViewWidth()));
+        viewHeightEditText.setText(String.valueOf(prefs.getViewHeight()));
 
         //検出領域の色
-        viewColor.setBackgroundColor(prefs.viewColor);
+        viewColor.setBackgroundColor(prefs.getViewColor());
 
         //検出領域に触れたとき振動させるか
-        if (prefs.vibratesWhenViewTouched) {
+        if (prefs.getVibratesWhenViewTouched()) {
             vibratesWhenViewTouchedCheck.setChecked(true);
         } else {
             vibratesWhenViewTouchedCheck.setChecked(false);
         }
 
         //プロキシを使用するか
-        if (prefs.usesProxy) {
+        if (prefs.getUsesProxy()) {
             usesProxyCheck.setChecked(true);
         } else {
             usesProxyCheck.setChecked(false);
         }
 
         //ホスト名
-        proxyHostEditText.setText(prefs.proxyHost);
+        proxyHostEditText.setText(prefs.getProxyHost());
 
         //ポート番号
-        proxyPortEditText.setText(String.valueOf(prefs.proxyPort));
+        proxyPortEditText.setText(String.valueOf(prefs.getProxyPort()));
 
         //jsonを保存するか
-        if (prefs.logsJson) {
+        if (prefs.getLogsJson()) {
             logsJsonCheck.setChecked(true);
         } else {
             logsJsonCheck.setChecked(false);
@@ -161,18 +160,18 @@ public class ConfigFragment extends Fragment {
         logsJsonCheck.setVisibility(View.GONE);
 
         //リクエストを保存するか
-        if (prefs.logsRequest) {
+        if (prefs.getLogsRequest()) {
             logsRequsetCheck.setChecked(true);
         } else {
             logsRequsetCheck.setChecked(false);
         }
         logsRequsetCheck.setVisibility(View.GONE);
 
-        usesMissionNotificationCheck.setChecked(prefs.usesMissionNotification);
-        usesDockNotificationCheck.setChecked(prefs.usesDockNotification);
-        makesSoundWhenNotifyCheck.setChecked(prefs.makesSoundWhenNotify);
-        vibratesWhenNotifyCheck.setChecked(prefs.vibratesWhenNOtify);
-        forceLandscapeCheck.setChecked(prefs.forcesLandscape);
+        usesMissionNotificationCheck.setChecked(prefs.getUsesMissionNotification());
+        usesDockNotificationCheck.setChecked(prefs.getUsesDockNotification());
+        makesSoundWhenNotifyCheck.setChecked(prefs.getMakesSoundWhenNotify());
+        vibratesWhenNotifyCheck.setChecked(prefs.getVibratesWhenNOtify());
+        forceLandscapeCheck.setChecked(prefs.getForcesLandscape());
 
         //設定を保存するボタン
         Button tb = (Button) getActivity().findViewById(R.id.saveBtn);
@@ -181,90 +180,95 @@ public class ConfigFragment extends Fragment {
             public void onClick(View view) {
                 //ポ―ト番号
                 try {
-                    prefs.port = Integer.parseInt(portEditText.getText().toString());
+                    prefs.setPort(Integer.parseInt(portEditText.getText()
+                            .toString()));
                 } catch (Exception e) {
-                    prefs.port = 8000;
-                    portEditText.setText(String.valueOf(prefs.port));
+                    prefs.setPort(8000);
+                    portEditText.setText(String.valueOf(prefs.getPort()));
                 }
 
                 //検出領域を可視化するか
-                prefs.showsView = showsViewCheck.isChecked();
+                prefs.setShowsView(showsViewCheck.isChecked());
 
                 //検出領域のX座標
                 try {
-                    prefs.viewX = Integer.parseInt(viewXEditText.getText().toString());
+                    prefs.setViewX(Integer.parseInt(viewXEditText.getText()
+                            .toString()));
                 } catch (Exception e) {
-                    prefs.viewX = point.x / -2;
-                    viewXEditText.setText(String.valueOf(prefs.viewX));
+                    prefs.setViewX(point.x / -2);
+                    viewXEditText.setText(String.valueOf(prefs.getViewX()));
                 }
 
                 //検出領域のY座標
                 try {
-                    prefs.viewY = Integer.parseInt(viewYEditText.getText().toString());
+                    prefs.setViewY(Integer.parseInt(viewYEditText.getText()
+                            .toString()));
                 } catch (Exception e) {
-                    prefs.viewY = point.y / -2;
-                    viewYEditText.setText(String.valueOf(prefs.viewY));
+                    prefs.setViewY(point.y / -2);
+                    viewYEditText.setText(String.valueOf(prefs.getViewY()));
                 }
 
                 //検出領域の幅
                 try {
-                    prefs.viewWidth = Integer.parseInt(viewWidthEditText.getText().toString());
-                    if (prefs.viewWidth > 150) {
-                        prefs.viewWidth = 150;
-                        viewWidthEditText.setText(String.valueOf(prefs.viewWidth));
+                    prefs.setViewWidth(Integer.parseInt(viewWidthEditText.getText()
+                            .toString()));
+                    if (prefs.getViewWidth() > 150) {
+                        prefs.setViewWidth(150);
+                        viewWidthEditText.setText(String.valueOf(prefs.getViewWidth()));
                     }
                 } catch (Exception e) {
-                    prefs.viewWidth = 20;
-                    viewWidthEditText.setText(String.valueOf(prefs.viewWidth));
+                    prefs.setViewWidth(20);
+                    viewWidthEditText.setText(String.valueOf(prefs.getViewWidth()));
                 }
 
                 //検出領域の高さ
                 try {
-                    prefs.viewHeight = Integer.parseInt( viewHeightEditText.getText().toString());
-                    if (prefs.viewHeight > 150) {
-                        prefs.viewHeight = 150;
-                        viewHeightEditText.setText(String.valueOf(prefs.viewHeight));
+                    prefs.setViewHeight(Integer.parseInt(viewHeightEditText.getText()
+                            .toString()));
+                    if (prefs.getViewHeight() > 150) {
+                        prefs.setViewHeight(150);
+                        viewHeightEditText.setText(String.valueOf(prefs.getViewHeight()));
                     }
                 } catch (Exception e) {
-                    prefs.viewHeight = 50;
-                    viewHeightEditText.setText(String.valueOf(prefs.viewHeight));
+                    prefs.setViewHeight(50);
+                    viewHeightEditText.setText(String.valueOf(prefs.getViewHeight()));
                 }
 
                 //検出領域の色
                 ColorDrawable colorDrawable = (ColorDrawable) viewColor.getBackground();
                 int colorInt = colorDrawable.getColor();
-                prefs.viewColor = colorInt;
+                prefs.setViewColor(colorInt);
 
                 //検出領域タッチ時に振動させるか
-                prefs.vibratesWhenViewTouched = vibratesWhenViewTouchedCheck.isChecked();
+                prefs.setVibratesWhenViewTouched(vibratesWhenViewTouchedCheck.isChecked());
 
                 //上流プロキシを使用するか
-                prefs.usesProxy = usesProxyCheck.isChecked();
+                prefs.setUsesProxy(usesProxyCheck.isChecked());
 
                 //上流プロキシのホスト名
-                prefs.proxyHost = proxyHostEditText.getText().toString();
+                prefs.setProxyHost(proxyHostEditText.getText()
+                        .toString());
 
                 //上流プロキシのポート番号
                 try {
-                    prefs.proxyPort = Integer.parseInt(proxyPortEditText.getText().toString());
+                    prefs.setProxyPort(Integer.parseInt(proxyPortEditText.getText()
+                            .toString()));
                 } catch (Exception e) {
-                    prefs.proxyPort = 8080;
-                    proxyPortEditText.setText(String.valueOf(prefs.proxyPort));
+                    prefs.setProxyPort(8080);
+                    proxyPortEditText.setText(String.valueOf(prefs.getProxyPort()));
                 }
 
                 //Jsonを記録するか
-                prefs.logsJson = logsJsonCheck.isChecked();
+                prefs.setLogsJson(logsJsonCheck.isChecked());
 
                 //リクエストボディを記録するか
-                prefs.logsRequest = logsRequsetCheck.isChecked();
+                prefs.setLogsRequest(logsRequsetCheck.isChecked());
 
-                prefs.usesMissionNotification = usesMissionNotificationCheck.isChecked();
-                prefs.usesDockNotification = usesDockNotificationCheck.isChecked();
-                prefs.makesSoundWhenNotify = makesSoundWhenNotifyCheck.isChecked();
-                prefs.vibratesWhenNOtify = vibratesWhenNotifyCheck.isChecked();
-                prefs.forcesLandscape = forceLandscapeCheck.isChecked();
-
-                GeneralPrefsSpotRepository.putEntity(getContext(), prefs);
+                prefs.setUsesMissionNotification(usesMissionNotificationCheck.isChecked());
+                prefs.setUsesDockNotification(usesDockNotificationCheck.isChecked());
+                prefs.setMakesSoundWhenNotify(makesSoundWhenNotifyCheck.isChecked());
+                prefs.setVibratesWhenNOtify(vibratesWhenNotifyCheck.isChecked());
+                prefs.setForcesLandscape(forceLandscapeCheck.isChecked());
 
                 //稼働中のサービスを一度停止させてから再び起動させる
                 getActivity().stopService(new Intent(getActivity().getApplicationContext(), LittleProxyServerService.class));

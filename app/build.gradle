@@ -59,6 +59,8 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.0.1'
     annotationProcessor 'com.github.kobakei.spot:compiler:1.0.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile 'jp.takuji31.koreference:koreference:1.4.0'
+    compile 'jp.takuji31.koreference:koreference-gson:1.4.0'
 }
 
 // Package the preprocessed Annotations (ClassIndex) into the APK

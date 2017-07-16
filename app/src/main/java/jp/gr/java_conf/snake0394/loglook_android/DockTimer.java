@@ -6,7 +6,7 @@ import android.content.Context;
 import java.util.concurrent.TimeUnit;
 
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
-import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository;
+import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
 
 
 /**
@@ -54,7 +54,7 @@ public enum DockTimer {
             if (this == Timer.NULL) {
                 return;
             }
-            if (!GeneralPrefsSpotRepository.getEntity(context).usesDockNotification) {
+            if (!new GeneralPrefs(context).getUsesDockNotification()) {
                 return;
             }
 

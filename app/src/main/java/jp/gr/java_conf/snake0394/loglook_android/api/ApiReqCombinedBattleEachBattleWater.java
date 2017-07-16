@@ -30,7 +30,8 @@ public class ApiReqCombinedBattleEachBattleWater implements APIListenerSpi {
 
         try {
             JsonObject data = json.getAsJsonObject("api_data");
-            CombinedBattleEachBattleWater hou = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            CombinedBattleEachBattleWater hou = new GsonBuilder()
+                    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                     .setPrettyPrinting()
                     .registerTypeAdapter(ApiHougeki.class, new ApiHougekiDeserializer())
                     .registerTypeAdapter(ApiOpeningTaisen.class, new ApiOpeningTaisenDeserializer())

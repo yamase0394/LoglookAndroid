@@ -30,8 +30,8 @@ import java.util.*
 class BattleLogger : APIListenerSpi {
 
     private var isFirstBattle = false
-    private var eventId: Int = 0
     private var cell: Int = 0
+    private var isBoss = false
 
     override fun accept(json: JsonObject, req: RequestMetaData, res: ResponseMetaData) {
         val data = json.getAsJsonObject("api_data")
@@ -39,11 +39,11 @@ class BattleLogger : APIListenerSpi {
             "/kcsapi/api_req_map/start" -> {
                 isFirstBattle = true
                 this.cell = data.get("api_no").asInt
-                this.eventId = data.get("api_event_id").asInt
+                this.isBoss = data.get("api_event_id").asInt == 5
             }
             "/kcsapi/api_req_map/next" -> {
                 this.cell = data.get("api_no").asInt
-                this.eventId = data.get("api_event_id").asInt
+                this.isBoss = data.get("api_event_id").asInt == 5
             }
             "/kcsapi/api_req_sortie/battleresult", "/kcsapi/api_req_combined_battle/battleresult" -> {
                 val result = GsonBuilder()
@@ -76,9 +76,9 @@ class BattleLogger : APIListenerSpi {
             val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             sb.append("${sdf.format(Calendar.getInstance().time)},${result.apiQuestName},${cell},")
             sb.append("${when {
-                isFirstBattle && eventId == 5 -> "出撃&ボス"
+                isFirstBattle && isBoss -> "出撃&ボス"
                 isFirstBattle -> "出撃"
-                eventId == 5 -> "ボス"
+                isBoss -> "ボス"
                 else -> ""
             }},${result.apiWinRank},")
             (battle as IFormation).run {
@@ -135,7 +135,6 @@ class BattleLogger : APIListenerSpi {
             }
 
             Log.d("battlelog", sb.toString())
-            isFirstBattle = false
             sb.append("\r\n")
             pw.write(sb.toString())
             pw.flush()
@@ -143,6 +142,8 @@ class BattleLogger : APIListenerSpi {
         } catch (e: Exception) {
             e.printStackTrace()
             ErrorLogger.writeLog(e)
+        } finally {
+            isFirstBattle = false
         }
 
     }

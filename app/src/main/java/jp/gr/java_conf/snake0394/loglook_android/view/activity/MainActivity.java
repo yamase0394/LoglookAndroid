@@ -31,7 +31,6 @@ import java.util.Map;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
-import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.ConfigFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DamagedShipFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DeckCaptureListFragment;
@@ -150,8 +149,8 @@ public class MainActivity extends AppCompatActivity {
 
         Logger.d("MainActivity", "onCreate");
 
-        GeneralPrefs prefs = GeneralPrefsSpotRepository.getEntity(getApplicationContext());
-        this.forcesLandscape = prefs.forcesLandscape;
+        GeneralPrefs prefs = new GeneralPrefs(getApplicationContext());
+        this.forcesLandscape = prefs.getForcesLandscape();
 
         if (this.forcesLandscape) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);

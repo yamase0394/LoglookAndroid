@@ -10,7 +10,6 @@ import android.view.WindowManager
 import android.widget.TextView
 import jp.gr.java_conf.snake0394.loglook_android.bean.battle.TacticalSituation
 import jp.gr.java_conf.snake0394.loglook_android.logger.Logger
-import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository
 
 /**
  * 戦闘時に[TacticalSituation]で計算された勝利ランクをオーバーレイする
@@ -28,10 +27,6 @@ class WinRankOverlayService : Service() {
         super.onCreate()
 
         Logger.d(TAG, "onCreate")
-        if (!GeneralPrefsSpotRepository.getEntity(applicationContext).showsWinRankOverlay) {
-            stopSelf()
-            return
-        }
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -52,11 +47,11 @@ class WinRankOverlayService : Service() {
                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                     PixelFormat.TRANSLUCENT
             )
-            (overlayView!!.findViewById(R.id.text_rank) as TextView).apply { text = TacticalSituation.winRank }
+            (overlayView!!.findViewById(R.id.text_rank) as TextView).apply { text = if (TacticalSituation.isBoss) "ボス " else "" + TacticalSituation.winRank }
             overlayView!!.setOnClickListener { stopSelf() }
             OverlayService.addOverlayView(overlayView!!, params)
         } else {
-            (overlayView!!.findViewById(R.id.text_rank) as TextView).apply { text = TacticalSituation.winRank }
+            (overlayView!!.findViewById(R.id.text_rank) as TextView).apply { text = if (TacticalSituation.isBoss) "ボス " else "" + TacticalSituation.winRank }
         }
 
         return Service.START_STICKY

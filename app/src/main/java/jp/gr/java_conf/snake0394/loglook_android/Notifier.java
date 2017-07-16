@@ -11,7 +11,6 @@ import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
-import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository;
 
 /**
  * Created by snake0394 on 2016/08/09.
@@ -36,15 +35,15 @@ public class Notifier extends BroadcastReceiver {
             .setAutoCancel(true)
             .setContentIntent(sender);
 
-        GeneralPrefs prefs = GeneralPrefsSpotRepository.getEntity(context);
-        if(prefs.makesSoundWhenNotify){
-            if (prefs.vibratesWhenNOtify) {
+        GeneralPrefs prefs = new GeneralPrefs(context);
+        if(prefs.getMakesSoundWhenNotify()){
+            if (prefs.getVibratesWhenNOtify()) {
                 builder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE |  Notification.DEFAULT_LIGHTS);
             } else {
                 builder.setDefaults(Notification.DEFAULT_SOUND |  Notification.DEFAULT_LIGHTS);
             }
         } else {
-            if (prefs.vibratesWhenNOtify) {
+            if (prefs.getVibratesWhenNOtify()) {
                 builder.setDefaults(Notification.DEFAULT_VIBRATE |  Notification.DEFAULT_LIGHTS);
             } else {
                 builder.setDefaults(Notification.DEFAULT_LIGHTS);

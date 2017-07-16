@@ -57,7 +57,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
 import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
-import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity;
 
 public class LittleProxyServerService extends Service implements Runnable {
@@ -123,14 +122,14 @@ public class LittleProxyServerService extends Service implements Runnable {
     @Override
     public void run() {
 
-        final GeneralPrefs prefs = GeneralPrefsSpotRepository.getEntity(getApplicationContext());
+        final GeneralPrefs prefs = new GeneralPrefs(getApplicationContext());
 
         ThreadPoolConfiguration conf = new ThreadPoolConfiguration().withAcceptorThreads(1)
                                                                     .withClientToProxyWorkerThreads(2)
                                                                     .withProxyToServerWorkerThreads(2);
 
         HttpProxyServerBootstrap serverBuilder = DefaultHttpProxyServer.bootstrap()
-                                                                       .withPort(prefs.port)
+                                                                       .withPort(prefs.getPort())
                                                                        .withConnectTimeout(30000)
                                                                        .withAllowLocalOnly(true)
                                                                        .withThreadPoolConfiguration(conf)
@@ -138,7 +137,7 @@ public class LittleProxyServerService extends Service implements Runnable {
                                                                        .withProxyAlias("doro-proxy");
 
         //上流プロキシの設定
-        if (prefs.usesProxy) {
+        if (prefs.getUsesProxy()) {
             serverBuilder.withChainProxyManager(new ChainedProxyManager() {
                 @Override
                 public void lookupChainedProxies(HttpRequest req, Queue<ChainedProxy> proxies) {
@@ -146,8 +145,8 @@ public class LittleProxyServerService extends Service implements Runnable {
                         ChainedProxy proxy = new ChainedProxyAdapter() {
                             @Override
                             public InetSocketAddress getChainedProxyAddress() {
-                                String host = prefs.proxyHost;
-                                int port = prefs.proxyPort;
+                                String host = prefs.getProxyHost();
+                                int port = prefs.getProxyPort();
                                 return new InetSocketAddress(host, port);
                             }
                         };
@@ -163,7 +162,7 @@ public class LittleProxyServerService extends Service implements Runnable {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(getApplicationContext(), "プロキシ起動 port:" + String.valueOf(prefs.port), Toast.LENGTH_SHORT)
+                    Toast.makeText(getApplicationContext(), "プロキシ起動 port:" + String.valueOf(prefs.getPort()), Toast.LENGTH_SHORT)
                          .show();
                 }
             });

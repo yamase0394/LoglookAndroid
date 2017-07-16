@@ -11,7 +11,7 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstMission;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstMissionManager;
-import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository;
+import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
 
 /**
  * 遠征タイマー
@@ -44,7 +44,7 @@ public enum MissionTimer {
                 return;
             }
 
-            if (!GeneralPrefsSpotRepository.getEntity(context).usesMissionNotification) {
+            if (!new GeneralPrefs(context).getUsesMissionNotification()) {
                 return;
             }
 

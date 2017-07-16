@@ -9,11 +9,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
-import android.hardware.display.DisplayManager;
-import android.hardware.display.VirtualDisplay;
-import android.media.Image;
-import android.media.ImageReader;
-import android.media.projection.MediaProjection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -35,7 +30,6 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,7 +38,6 @@ import java.util.List;
 import butterknife.ButterKnife;
 import jp.gr.java_conf.snake0394.loglook_android.logger.ErrorLogger;
 import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
-import jp.gr.java_conf.snake0394.loglook_android.view.activity.ScreenCaptureActivity;
 
 
 /**
@@ -53,11 +46,9 @@ import jp.gr.java_conf.snake0394.loglook_android.view.activity.ScreenCaptureActi
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class DeckListCaptureService extends Service {
 
-    private final Handler handler = new Handler();
+    private static final String TAG = "DeckListCaptureService";
 
-    private MediaProjection mediaProjection;
-    private ImageReader mImageReader;
-    private VirtualDisplay mVirtualDisplay;
+    private final Handler handler = new Handler();
 
     private WindowManager.LayoutParams params;
 
@@ -93,30 +84,11 @@ public class DeckListCaptureService extends Service {
 
         setTheme(R.style.AppTheme);
 
-        mediaProjection = ScreenCaptureActivity.getMediaProjection();
-        if (mediaProjection == null) {
-            stopSelf();
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(getApplicationContext(), "起動失敗", Toast.LENGTH_SHORT)
-                            .show();
-                }
-            });
-            Logger.d("DeckListCaptureService", "mediaProjection = null");
-            return;
-        }
-
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         OverlayService.getDefaultDisplay()
                 .getMetrics(metrics);
         displayWidth = metrics.widthPixels;
         displayHeight = metrics.heightPixels;
-        int density = metrics.densityDpi;
-
-        mImageReader = ImageReader.newInstance(displayWidth, displayHeight, PixelFormat.RGBA_8888, 2);
-
-        mVirtualDisplay = mediaProjection.createVirtualDisplay("Capturing Display", displayWidth, displayHeight, density, DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR, mImageReader.getSurface(), null, null);
 
         bitmapList = new ArrayList<>();
         listNameList = new ArrayList<>();
@@ -124,6 +96,11 @@ public class DeckListCaptureService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, final int flags, int startId) {
+        if (startId > 1) {
+            Logger.d(TAG, "flags=" + flags + ", startId=" + startId);
+            Logger.d(TAG, "multi running is not permitted");
+            return START_NOT_STICKY;
+        }
 
         //タッチイベントを取得するためのviewを作る
         LayoutInflater layoutInflater = LayoutInflater.from(this);
@@ -141,7 +118,7 @@ public class DeckListCaptureService extends Service {
                 try {
                     OverlayService.hideAllOverlayView();
 
-                    Bitmap bitmap = getScreenshot();
+                    Bitmap bitmap = ScreenCaptureService.getScreenshot();
 
                     OverlayService.showAllOverlayView();
 
@@ -377,25 +354,7 @@ public class DeckListCaptureService extends Service {
     public void onDestroy() {
         super.onDestroy();
         OverlayService.removeOverlayView(linearLayout);
-        mVirtualDisplay.release();
-        mediaProjection.stop();
         Logger.d("ScrennCaptureService", "onDestroy");
-    }
-
-    private Bitmap getScreenshot() {
-        Image image = mImageReader.acquireLatestImage();
-        Image.Plane[] planes = image.getPlanes();
-        ByteBuffer buffer = planes[0].getBuffer();
-
-        int pixelStride = planes[0].getPixelStride();
-        int rowStride = planes[0].getRowStride();
-        int rowPadding = rowStride - pixelStride * displayWidth;
-
-        Bitmap bitmap = Bitmap.createBitmap(displayWidth + rowPadding / pixelStride, displayHeight, Bitmap.Config.ARGB_8888);
-        bitmap.copyPixelsFromBuffer(buffer);
-        image.close();
-
-        return bitmap;
     }
 
     private Bitmap removeBlank(Bitmap bitmap) {

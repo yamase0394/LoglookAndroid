@@ -34,7 +34,6 @@ import java.util.List;
 import butterknife.ButterKnife;
 import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
-import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.DialogActivity;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.MainActivity;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.ScreenCaptureActivity;
@@ -82,21 +81,21 @@ public class SlantLauncher extends Service implements SensorEventListener {
         final Sensor mag = sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         sm.registerListener(this, mag, SensorManager.SENSOR_DELAY_NORMAL);
 
-        this.prefs = GeneralPrefsSpotRepository.getEntity(getApplicationContext());
+        this.prefs = new GeneralPrefs(getApplicationContext());
 
         v = new View(this);
         //検出領域の透明度を設定
         int transparent;
-        if (prefs.showsView) {
+        if (prefs.getShowsView()) {
             //不透明
             transparent = PixelFormat.OPAQUE;
-            v.setBackgroundColor(prefs.viewColor);
+            v.setBackgroundColor(prefs.getViewColor());
         } else {
             //透明
             transparent = PixelFormat.TRANSPARENT;
         }
 
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams(prefs.viewWidth, prefs.viewHeight, prefs.viewY, prefs.viewX, WindowManager.LayoutParams.TYPE_SYSTEM_ERROR, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, transparent);
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams(prefs.getViewWidth(), prefs.getViewHeight(), prefs.getViewY(), prefs.getViewX(), WindowManager.LayoutParams.TYPE_SYSTEM_ERROR, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, transparent);
         v.setOnTouchListener(new FlickTouchListener(getApplicationContext()));
         OverlayService.addOverlayView(v,params);
 
@@ -261,7 +260,7 @@ public class SlantLauncher extends Service implements SensorEventListener {
                     isTouching = true;
 
                     //振動させる
-                    if (prefs.vibratesWhenViewTouched) {
+                    if (prefs.getVibratesWhenViewTouched()) {
                         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
                         vibrator.vibrate(30);
                     }

@@ -18,7 +18,6 @@ import jp.gr.java_conf.snake0394.loglook_android.api.APIListenerSpi;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.RequestMetaData;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;
 import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
-import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefsSpotRepository;
 
 /**
  * Created by snake0394 on 2017/02/21.
@@ -31,8 +30,8 @@ public class ApiLogger implements APIListenerSpi {
         Log.d("reqest", req.getParameterMap().toString());
         //Log.d("response", json.toString());
 
-        GeneralPrefs prefs = GeneralPrefsSpotRepository.getEntity(App.getInstance());
-        if(prefs.logsJson) {
+        GeneralPrefs prefs = new GeneralPrefs(App.getInstance().getApplicationContext());
+        if(prefs.getLogsJson()) {
             //SDカードのディレクトリパス
             File sdcard_path = new File(Environment.getExternalStorageDirectory()
                                                    .getPath() + "/泥提督支援アプリ/json/");

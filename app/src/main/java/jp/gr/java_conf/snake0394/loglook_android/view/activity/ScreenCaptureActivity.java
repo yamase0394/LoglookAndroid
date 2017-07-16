@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.WindowManager;
 
 import jp.gr.java_conf.snake0394.loglook_android.DeckListCaptureService;
+import jp.gr.java_conf.snake0394.loglook_android.ScreenCaptureService;
 import jp.gr.java_conf.snake0394.loglook_android.ScreenShotService;
 import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 
@@ -37,6 +38,27 @@ public class ScreenCaptureActivity extends AppCompatActivity {
             return;
         }
 
+        if(ScreenCaptureService.isRunning()){
+            Intent serviceIntent;
+            if (getIntent().getStringExtra("class").equals(ScreenShotService.class.getSimpleName())){
+                serviceIntent = new Intent(getApplicationContext(), ScreenShotService.class);
+            } else if(getIntent().getStringExtra("class").equals(DeckListCaptureService.class.getSimpleName())){
+                serviceIntent = new Intent(getApplicationContext(), DeckListCaptureService.class);
+            } else {
+                finish();
+                return;
+            }
+            startService(serviceIntent);
+
+            String packageName = "com.dmm.dmmlabo.kancolle";
+            PackageManager pm = getPackageManager();
+            Intent sendIntent = pm.getLaunchIntentForPackage(packageName);
+            startActivity(sendIntent);
+            //overridePendingTransition(R.animator.keep_opaque, R.animator.keep_transparent);
+            finish();
+            return;
+        }
+
         mMediaProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
 
         // MediaProjectionの利用にはパーミッションが必要。
@@ -50,8 +72,7 @@ public class ScreenCaptureActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        View decor = this.getWindow()
-                         .getDecorView();
+        View decor = this.getWindow().getDecorView();
         decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
@@ -76,8 +97,9 @@ public class ScreenCaptureActivity extends AppCompatActivity {
                 return;
             }
 
-            mediaProjection =
-                mMediaProjectionManager.getMediaProjection(resultCode, intent);
+            mediaProjection = mMediaProjectionManager.getMediaProjection(resultCode, intent);
+
+            startService(new Intent(getApplicationContext(), ScreenCaptureService.class));
 
             Intent serviceIntent;
             if (getIntent().getStringExtra("class").equals(ScreenShotService.class.getSimpleName())){
