@@ -99,7 +99,7 @@ public class DeckListCaptureService extends Service {
         if (startId > 1) {
             Logger.d(TAG, "flags=" + flags + ", startId=" + startId);
             Logger.d(TAG, "multi running is not permitted");
-            return START_NOT_STICKY;
+            return START_STICKY;
         }
 
         //タッチイベントを取得するためのviewを作る

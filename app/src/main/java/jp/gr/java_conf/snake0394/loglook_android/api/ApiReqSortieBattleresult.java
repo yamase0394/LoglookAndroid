@@ -23,15 +23,13 @@ import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
 public class ApiReqSortieBattleresult implements APIListenerSpi {
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
-        JsonObject data = json.getAsJsonObject("api_data");
-        TacticalSituation.INSTANCE.setBoss(data.get("api_event_id").getAsInt() == 5);
+
+        App.getInstance().stopService(new Intent(App.getInstance().getApplicationContext(), WinRankOverlayService.class));
 
         GeneralPrefs prefs = new GeneralPrefs(App.getInstance().getApplicationContext());
         if (!prefs.getShowsHeavilyDamagedOverlay()) {
             return;
         }
-
-        App.getInstance().stopService(new Intent(App.getInstance().getApplicationContext(), WinRankOverlayService.class));
 
         List<PhaseState> phaseStates = TacticalSituation.INSTANCE.getPhaseList();
         IBattle battle = TacticalSituation.INSTANCE.getBattle();

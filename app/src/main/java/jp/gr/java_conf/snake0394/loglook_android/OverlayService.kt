@@ -26,9 +26,10 @@ class OverlayService : Service() {
     }
 
     companion object {
-        private val TAG = "HeavilyDamagedWarningService"
+        private val TAG = "OverlayService"
         private lateinit var wm: WindowManager
         private val viewMap by lazy { mutableMapOf<View, WindowManager.LayoutParams>() }
+        private var winRankOverlayView:View? = null
 
         @JvmStatic fun addOverlayView(view: View, params: WindowManager.LayoutParams) {
             wm.addView(view, params)

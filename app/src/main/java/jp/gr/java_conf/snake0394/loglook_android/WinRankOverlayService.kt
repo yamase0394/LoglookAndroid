@@ -13,7 +13,9 @@ import jp.gr.java_conf.snake0394.loglook_android.logger.Logger
 
 /**
  * 戦闘時に[TacticalSituation]で計算された勝利ランクをオーバーレイする
- * リザルト(api_req_sortie/battleresult, api_req_combined_battle/battleresult)で停止される
+ * リザルト[jp.gr.java_conf.snake0394.loglook_android.api.ApiReqPracticeBattleResult],
+ * [jp.gr.java_conf.snake0394.loglook_android.api.ApiReqSortieBattleresult],
+ * [jp.gr.java_conf.snake0394.loglook_android.api.ApiReqCombinedBattleBattleresult]で停止される
  */
 class WinRankOverlayService : Service() {
 
@@ -23,43 +25,47 @@ class WinRankOverlayService : Service() {
         return null
     }
 
-    override fun onCreate() {
-        super.onCreate()
-
-        Logger.d(TAG, "onCreate")
-    }
-
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+
         Logger.d(TAG, "onStartCommand")
+
+        if (startId > 1) {
+            Logger.d(TAG, "$TAG is already running")
+            (overlayView!!.findViewById(R.id.text_rank) as TextView).apply { text = "${if (TacticalSituation.isBoss) "ボス " else ""}${TacticalSituation.winRank}" }
+            return START_STICKY
+        }
+
         val metrics = resources.displayMetrics
         OverlayService.getDefaultDisplay().getMetrics(metrics)
         val displayWidth = metrics.widthPixels
         val displayHeight = metrics.heightPixels
 
-        if (overlayView == null) {
-            overlayView = View.inflate(applicationContext, R.layout.overlay_win_rank, null)
-            val params = WindowManager.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    displayWidth / 2,
-                    -(displayHeight / 2),
-                    WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
-                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                    PixelFormat.TRANSLUCENT
-            )
-            (overlayView!!.findViewById(R.id.text_rank) as TextView).apply { text = if (TacticalSituation.isBoss) "ボス " else "" + TacticalSituation.winRank }
-            overlayView!!.setOnClickListener { stopSelf() }
-            OverlayService.addOverlayView(overlayView!!, params)
-        } else {
-            (overlayView!!.findViewById(R.id.text_rank) as TextView).apply { text = if (TacticalSituation.isBoss) "ボス " else "" + TacticalSituation.winRank }
+        overlayView = View.inflate(applicationContext, R.layout.overlay_win_rank, null)
+        val params = WindowManager.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                displayWidth / 2,
+                -(displayHeight / 2),
+                WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSLUCENT
+        )
+        (overlayView!!.findViewById(R.id.text_rank) as TextView).apply { text = "${if (TacticalSituation.isBoss) "ボス " else ""}${TacticalSituation.winRank}" }
+        overlayView!!.setOnClickListener {
+            Logger.d(TAG, "$TAG was touched")
+            OverlayService.removeOverlayView((overlayView ?: return@setOnClickListener))
+            stopSelf()
         }
+        OverlayService.addOverlayView(overlayView!!, params)
+        Logger.d(TAG, "show overlay")
 
-        return Service.START_STICKY
+        return START_STICKY
     }
 
     override fun onDestroy() {
         super.onDestroy()
         OverlayService.removeOverlayView((overlayView ?: return))
+        Logger.d(TAG, "onDestroy")
     }
 
     companion object {

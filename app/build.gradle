@@ -57,7 +57,7 @@ dependencies {
     compile 'com.github.PhilJay:MPAndroidChart:v2.1.5'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.0.1'
-    annotationProcessor 'com.github.kobakei.spot:compiler:1.0.0'
+    annotationProcessor 'com.github.kobakei.spot:compiler:2.0.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile 'jp.takuji31.koreference:koreference:1.4.0'
     compile 'jp.takuji31.koreference:koreference-gson:1.4.0'

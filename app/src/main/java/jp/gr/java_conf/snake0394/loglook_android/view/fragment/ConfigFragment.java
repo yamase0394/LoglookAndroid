@@ -79,6 +79,12 @@ public class ConfigFragment extends Fragment {
     CheckBox vibratesWhenNotifyCheck;
     @BindView(R.id.forceLandscapeCheck)
     CheckBox forceLandscapeCheck;
+    @BindView(R.id.showsWinRankOverlayCheck)
+    CheckBox showsWinRankOverlayCheck;
+    @BindView(R.id.showsHeavilyDamagedOverlayCheck)
+    CheckBox showsHeavilyDamagedOverlayCheck;
+    @BindView(R.id.showsHeavilyDamagedWarningWindowCheck)
+    CheckBox showsHeavilyDamagedWarningWindowCheck;
 
     public ConfigFragment() {
         // Required empty public constructor
@@ -172,6 +178,9 @@ public class ConfigFragment extends Fragment {
         makesSoundWhenNotifyCheck.setChecked(prefs.getMakesSoundWhenNotify());
         vibratesWhenNotifyCheck.setChecked(prefs.getVibratesWhenNOtify());
         forceLandscapeCheck.setChecked(prefs.getForcesLandscape());
+        showsWinRankOverlayCheck.setChecked(prefs.getShowsWinRankOverlay());
+        showsHeavilyDamagedOverlayCheck.setChecked(prefs.getShowsHeavilyDamagedOverlay());
+        showsHeavilyDamagedWarningWindowCheck.setChecked(prefs.getShowsHeavilyDamagedWarningWindow());
 
         //設定を保存するボタン
         Button tb = (Button) getActivity().findViewById(R.id.saveBtn);
@@ -269,6 +278,9 @@ public class ConfigFragment extends Fragment {
                 prefs.setMakesSoundWhenNotify(makesSoundWhenNotifyCheck.isChecked());
                 prefs.setVibratesWhenNOtify(vibratesWhenNotifyCheck.isChecked());
                 prefs.setForcesLandscape(forceLandscapeCheck.isChecked());
+                prefs.setShowsWinRankOverlay(showsWinRankOverlayCheck.isChecked());
+                prefs.setShowsHeavilyDamagedOverlay(showsHeavilyDamagedOverlayCheck.isChecked());
+                prefs.setShowsHeavilyDamagedWarningWindow(showsHeavilyDamagedWarningWindowCheck.isChecked());
 
                 //稼働中のサービスを一度停止させてから再び起動させる
                 getActivity().stopService(new Intent(getActivity().getApplicationContext(), LittleProxyServerService.class));

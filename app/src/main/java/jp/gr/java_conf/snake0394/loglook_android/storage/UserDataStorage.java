@@ -16,10 +16,10 @@ import jp.gr.java_conf.snake0394.loglook_android.storage.converter.MySlotitemSpa
 public class UserDataStorage {
 
     @PrefField(name = "myShipSparseArray", converter = MyShipSparseArrayTypeConverter.class)
-    public SparseArray<MyShip> myShipSparseArray;
+    public SparseArray<MyShip> myShipSparseArray = new SparseArray<>();
 
     @PrefField(name = "mySlotitemSparseArray", converter = MySlotitemSparseArrayTypeConverter.class)
-    public SparseArray<MySlotItem> mySlotitemSparseArray;
+    public SparseArray<MySlotItem> mySlotitemSparseArray = new SparseArray<>();
 
     public UserDataStorage() {
         //Empty constructor is needed

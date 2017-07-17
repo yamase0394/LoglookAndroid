@@ -2,6 +2,7 @@ package jp.gr.java_conf.snake0394.loglook_android.storage;
 
 import android.util.SparseArray;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import io.github.kobakei.spot.annotation.Pref;
@@ -20,19 +21,19 @@ import jp.gr.java_conf.snake0394.loglook_android.storage.converter.MstUseitemSpa
 public class MstDataStorage {
 
     @PrefField(name = "mstShipSparseArray", converter = MstShipSparseArrayTypeConverter.class)
-    public SparseArray<MstShip> mstShipSparseArray;
+    public SparseArray<MstShip> mstShipSparseArray = new SparseArray<>();
 
     @PrefField(name = "mstMissionIdSparseArray", converter = MstMissionIdSparseArrayTypeConverter.class)
-    public SparseArray<MstMission> mstMissionIdSparseArray;
+    public SparseArray<MstMission> mstMissionIdSparseArray = new SparseArray<>();
 
     @PrefField(name = "mstMissionNameMap", converter = MstMissionNameMapTypeConverter.class)
-    public Map<String , MstMission> mstMissionNameMap;
+    public Map<String, MstMission> mstMissionNameMap = new HashMap<>();
 
     @PrefField(name = "mstSlotitemSparseArray", converter = MstSlotitemSparseArrayTypeConverter.class)
-    public SparseArray<MstSlotitem> mstSlotitemSparseArray;
+    public SparseArray<MstSlotitem> mstSlotitemSparseArray = new SparseArray<>();
 
     @PrefField(name = "mstUseitemSparseArray", converter = MstUseitemSparseArrayTypeConverter.class)
-    public SparseArray<MstUseitem> mstUseitemSparseArray;
+    public SparseArray<MstUseitem> mstUseitemSparseArray = new SparseArray<>();
 
     public MstDataStorage() {
         //Empty constructor is needed

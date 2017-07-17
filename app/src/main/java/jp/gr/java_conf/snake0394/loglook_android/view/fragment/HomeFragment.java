@@ -84,7 +84,7 @@ public class HomeFragment extends Fragment {
                         isMyServiceRunnning = true;
                     }
                 }
-                if(isProxyServerRunnning && isMyServiceRunnning){
+                if (isProxyServerRunnning && isMyServiceRunnning) {
                     return;
                 }
 

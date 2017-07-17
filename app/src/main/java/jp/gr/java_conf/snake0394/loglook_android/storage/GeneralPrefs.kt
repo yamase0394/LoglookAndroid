@@ -1,6 +1,8 @@
 package jp.gr.java_conf.snake0394.loglook_android.storage
 
 import android.content.Context
+import android.support.v4.content.ContextCompat
+import jp.gr.java_conf.snake0394.loglook_android.R
 import jp.takuji31.koreference.KoreferenceModel
 import jp.takuji31.koreference.booleanPreference
 import jp.takuji31.koreference.intPreference
@@ -44,7 +46,7 @@ class GeneralPrefs(context: Context) : KoreferenceModel(context = context, name 
     /**
      * 検出領域の色
      */
-    var viewColor by intPreference(0xffff00)
+    var viewColor by intPreference(ContextCompat.getColor(context, R.color.slant_launcher_default))
 
     /**
      * 検出領域がタッチされたとき振動させるか。
@@ -102,7 +104,9 @@ class GeneralPrefs(context: Context) : KoreferenceModel(context = context, name 
      */
     var forcesLandscape by booleanPreference(false)
 
-    var showsWinRankOverlay by booleanPreference(false)
+    var showsWinRankOverlay by booleanPreference(true)
 
-    var showsHeavilyDamagedOverlay by booleanPreference(false)
+    var showsHeavilyDamagedOverlay by booleanPreference(true)
+
+    var showsHeavilyDamagedWarningWindow by booleanPreference(true)
 }

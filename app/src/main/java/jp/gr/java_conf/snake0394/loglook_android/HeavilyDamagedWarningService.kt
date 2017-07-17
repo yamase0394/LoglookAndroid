@@ -22,13 +22,10 @@ class HeavilyDamagedWarningService : Service() {
         return null
     }
 
-    override fun onCreate() {
-        super.onCreate()
-
-        Logger.d(TAG, "onCreate")
-    }
-
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+
+        Logger.d(TAG, "onStartCommand")
+
         val metrics = resources.displayMetrics
         OverlayService.getDefaultDisplay().getMetrics(metrics)
         val displayWidth = metrics.widthPixels
@@ -36,7 +33,15 @@ class HeavilyDamagedWarningService : Service() {
 
         if (overlayView == null) {
             overlayView = View.inflate(applicationContext, R.layout.overlay_heavily_damaged_warning, null)
-            val params = WindowManager.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, displayWidth / 2, -(displayHeight / 2), WindowManager.LayoutParams.TYPE_SYSTEM_ERROR, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.OPAQUE)
+            val params = WindowManager.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    displayWidth / 2,
+                    -(displayHeight / 2),
+                    WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                    PixelFormat.OPAQUE
+            )
             overlayView!!.setOnClickListener { stopSelf() }
             OverlayService.addOverlayView(overlayView!!, params)
         }

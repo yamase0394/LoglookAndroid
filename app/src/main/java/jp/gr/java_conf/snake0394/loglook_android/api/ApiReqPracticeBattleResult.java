@@ -12,7 +12,7 @@ import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;
 /**
  * Created by snake0394 on 2017/07/12.
  */
-
+@API("kcsapi/api_req_practice/battle_result")
 public class ApiReqPracticeBattleResult implements APIListenerSpi {
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {

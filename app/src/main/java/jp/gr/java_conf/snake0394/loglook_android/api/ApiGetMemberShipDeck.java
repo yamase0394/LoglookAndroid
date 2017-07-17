@@ -14,6 +14,7 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.RequestMetaData;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;
+import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.HeavilyDamagedWarningActivity;
 
 /**
@@ -50,12 +51,14 @@ public class ApiGetMemberShipDeck implements APIListenerSpi {
             }
         }
         if (!heavyDamaged.isEmpty()) {
-            //大破進撃警告画面を表示
-            Intent intent = new Intent(App.getInstance(), HeavilyDamagedWarningActivity.class);
-            intent.putIntegerArrayListExtra("shipId", heavyDamaged);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-            App.getInstance().startActivity(intent);
+            if(new GeneralPrefs(App.getInstance()).getShowsHeavilyDamagedWarningWindow()) {
+                //大破進撃警告画面を表示
+                Intent intent = new Intent(App.getInstance(), HeavilyDamagedWarningActivity.class);
+                intent.putIntegerArrayListExtra("shipId", heavyDamaged);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                App.getInstance().startActivity(intent);
+            }
         }
     }
 }

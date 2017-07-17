@@ -30,8 +30,6 @@ public class ApiReqCombinedBattleBattleresult implements APIListenerSpi {
 
         JsonObject data = json.getAsJsonObject("api_data");
 
-        TacticalSituation.INSTANCE.setBoss(data.get("api_event_id").getAsInt() == 5);
-
         if (!data.get("api_escape")
                 .isJsonNull()) {
             JsonObject apiEscape = data.getAsJsonObject("api_escape");
@@ -62,16 +60,16 @@ public class ApiReqCombinedBattleBattleresult implements APIListenerSpi {
             Escape.INSTANCE.ready(damaged, towing);
         }
 
-        GeneralPrefs prefs = new GeneralPrefs(App.getInstance().getApplicationContext());
-        if (!prefs.getShowsHeavilyDamagedOverlay()) {
-            return;
-        }
-
 
         //勝利ランクオーバーレイを消す
         App.getInstance()
                 .stopService(new Intent(App.getInstance()
                         .getApplicationContext(), WinRankOverlayService.class));
+
+        GeneralPrefs prefs = new GeneralPrefs(App.getInstance().getApplicationContext());
+        if (!prefs.getShowsHeavilyDamagedOverlay()) {
+            return;
+        }
 
         //大破警告オーバーレイ
         List<PhaseState> phaseStates = TacticalSituation.INSTANCE.getPhaseList();

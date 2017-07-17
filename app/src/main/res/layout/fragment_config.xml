@@ -295,16 +295,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="戦闘開始時勝利ランクを右上に表示する"
+                android:text="戦闘中勝利ランクを右上に表示する"
                 android:textSize="15dp" />
 
             <CheckBox
-                android:id="@+id/showsHeavilyDamagedOverlay"
+                android:id="@+id/showsHeavilyDamagedOverlayCheck"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="右上に大破警告を表示する"
                 android:textSize="15dp" />
+
+            <CheckBox
+                android:id="@+id/showsHeavilyDamagedWarningWindowCheck"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="大破警告画面を表示する"
+                android:textSize="15dp" />
+
 
             <Button
                 android:id="@+id/saveBtn"
