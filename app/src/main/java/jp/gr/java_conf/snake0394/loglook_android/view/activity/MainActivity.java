@@ -306,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
                 fragment = DockFragment.newInstance();
                 break;
             case CONFIG:
-                fragment = ConfigFragment.newInstance();
+                fragment = ConfigFragment.Companion.newInstance();
                 break;
             case TACTICAL_SITUATION:
                 fragment = TacticalSituationFragment.newInstance();

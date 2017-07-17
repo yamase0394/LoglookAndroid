@@ -33,7 +33,7 @@
                     android:textSize="15dp" />
 
                 <EditText
-                    android:id="@+id/port"
+                    android:id="@+id/portEdit"
                     android:layout_width="70dp"
                     android:layout_height="40dp"
                     android:layout_marginLeft="5dp"
@@ -43,7 +43,7 @@
             </LinearLayout>
 
             <CheckBox
-                android:id="@+id/showViewCheck"
+                android:id="@+id/showsViewCheck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -64,7 +64,7 @@
                     android:textSize="15dp" />
 
                 <EditText
-                    android:id="@+id/viewX"
+                    android:id="@+id/viewXEdit"
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:ems="10"
@@ -85,7 +85,7 @@
                     android:textSize="15dp" />
 
                 <EditText
-                    android:id="@+id/viewY"
+                    android:id="@+id/viewYEdit"
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:ems="10"
@@ -106,7 +106,7 @@
                     android:textSize="15dp" />
 
                 <EditText
-                    android:id="@+id/viewWidth"
+                    android:id="@+id/viewWidthEdit"
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:ems="10"
@@ -127,7 +127,7 @@
                     android:textSize="15dp" />
 
                 <EditText
-                    android:id="@+id/viewHeight"
+                    android:id="@+id/viewHeightEdit"
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:ems="10"
@@ -150,7 +150,7 @@
                     android:textSize="15dp" />
 
                 <View
-                    android:id="@+id/view_color"
+                    android:id="@+id/launcherColorView"
                     android:layout_width="80dp"
                     android:layout_height="30dp"
                     android:background="@color/slant_launcher_default" />
@@ -158,7 +158,7 @@
             </LinearLayout>
 
             <CheckBox
-                android:id="@+id/touchVibrationCheck"
+                android:id="@+id/vibratesWhenViewTouchedCheck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -167,7 +167,7 @@
                 android:textSize="15dp" />
 
             <CheckBox
-                android:id="@+id/useProxyCheck"
+                android:id="@+id/usesProxyCheck"
                 android:layout_width="291dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -197,7 +197,7 @@
                     android:textSize="15dp" />
 
                 <EditText
-                    android:id="@+id/proxyHost"
+                    android:id="@+id/proxyHostEdit"
                     android:layout_width="200dp"
                     android:layout_height="40dp"
                     android:inputType="text" />
@@ -220,7 +220,7 @@
                     android:textSize="15dp" />
 
                 <EditText
-                    android:id="@+id/proxyPort"
+                    android:id="@+id/proxyPortEdit"
                     android:layout_width="70dp"
                     android:layout_height="40dp"
                     android:layout_marginLeft="5dp"
@@ -230,7 +230,7 @@
             </LinearLayout>
 
             <CheckBox
-                android:id="@+id/saveJsoncheck"
+                android:id="@+id/savesJsonCheck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
@@ -240,7 +240,7 @@
                 android:textSize="15dp" />
 
             <CheckBox
-                android:id="@+id/saveRequesstCheck"
+                android:id="@+id/savesRequestCheck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -249,7 +249,7 @@
                 android:textSize="15dp" />
 
             <CheckBox
-                android:id="@+id/usesMissionNotification"
+                android:id="@+id/usesMissionNotificationCheck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
@@ -258,7 +258,7 @@
                 android:textSize="15dp" />
 
             <CheckBox
-                android:id="@+id/usesDockNotification"
+                android:id="@+id/usesDockNotificationCheck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -266,7 +266,7 @@
                 android:textSize="15dp" />
 
             <CheckBox
-                android:id="@+id/makesSoundWhenNotify"
+                android:id="@+id/makesSoundWhenNotifyCheck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
@@ -275,7 +275,7 @@
                 android:textSize="15dp" />
 
             <CheckBox
-                android:id="@+id/vibratesWhenNotify"
+                android:id="@+id/vibratesWhenNotifyCheck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -283,7 +283,7 @@
                 android:textSize="15dp" />
 
             <CheckBox
-                android:id="@+id/forceLandscapeCheck"
+                android:id="@+id/forcesLandscapeCheck"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
