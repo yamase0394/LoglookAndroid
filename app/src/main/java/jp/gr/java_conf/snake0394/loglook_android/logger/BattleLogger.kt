@@ -6,6 +6,7 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import jp.gr.java_conf.snake0394.loglook_android.BattleUtility
+import jp.gr.java_conf.snake0394.loglook_android.TacticalSituation
 import jp.gr.java_conf.snake0394.loglook_android.api.API
 import jp.gr.java_conf.snake0394.loglook_android.api.APIListenerSpi
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager

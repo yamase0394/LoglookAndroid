@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import jp.gr.java_conf.snake0394.loglook_android.bean.battle.ApiHougeki;
 import jp.gr.java_conf.snake0394.loglook_android.bean.battle.ApiHougekiDeserializer;
 import jp.gr.java_conf.snake0394.loglook_android.bean.battle.CombinedBattleSpMidnight;
-import jp.gr.java_conf.snake0394.loglook_android.bean.battle.TacticalSituation;
+import jp.gr.java_conf.snake0394.loglook_android.TacticalSituation;
 import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.RequestMetaData;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;
@@ -19,24 +19,14 @@ import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;
 public class ApiReqCombinedBattleSpMidnight implements APIListenerSpi {
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
-
-        /*
-        CombinedSpMidnight combinedSpMidnight = new CombinedSpMidnight();
-        combinedSpMidnight.set(json.toString());
-        //TacticalSituation.INSTANCE.set(combinedSpMidnight);
-        */
-
-        try {
-            JsonObject data = json.getAsJsonObject("api_data");
-            CombinedBattleSpMidnight hou = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                    .registerTypeAdapter(ApiHougeki.class, new ApiHougekiDeserializer())
-                    .create()
-                    .fromJson(data, CombinedBattleSpMidnight.class);
-            Logger.d("CombinedBattleSpMidnight", hou.toString());
-            TacticalSituation.INSTANCE.applyBattle(hou);
-            Logger.d("CombinedBattleSpMidnight", TacticalSituation.INSTANCE.getPhaseList().toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        JsonObject data = json.getAsJsonObject("api_data");
+        CombinedBattleSpMidnight hou = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .registerTypeAdapter(ApiHougeki.class, new ApiHougekiDeserializer())
+                .create()
+                .fromJson(data, CombinedBattleSpMidnight.class);
+        Logger.d("CombinedBattleSpMidnight", hou.toString());
+        TacticalSituation.INSTANCE.applyBattle(hou);
+        Logger.d("CombinedBattleSpMidnight", TacticalSituation.INSTANCE.getPhaseList()
+                .toString());
     }
 }

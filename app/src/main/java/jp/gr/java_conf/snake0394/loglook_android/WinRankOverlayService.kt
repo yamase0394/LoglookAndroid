@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.TextView
-import jp.gr.java_conf.snake0394.loglook_android.bean.battle.TacticalSituation
 import jp.gr.java_conf.snake0394.loglook_android.logger.Logger
 
 /**

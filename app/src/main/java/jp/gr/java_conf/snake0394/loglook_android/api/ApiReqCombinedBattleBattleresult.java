@@ -15,7 +15,7 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.battle.IBattle;
 import jp.gr.java_conf.snake0394.loglook_android.bean.battle.ICombinedBattle;
 import jp.gr.java_conf.snake0394.loglook_android.bean.battle.IEachCombinedBattle;
 import jp.gr.java_conf.snake0394.loglook_android.bean.battle.PhaseState;
-import jp.gr.java_conf.snake0394.loglook_android.bean.battle.TacticalSituation;
+import jp.gr.java_conf.snake0394.loglook_android.TacticalSituation;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.RequestMetaData;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;
 import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
@@ -30,8 +30,7 @@ public class ApiReqCombinedBattleBattleresult implements APIListenerSpi {
 
         JsonObject data = json.getAsJsonObject("api_data");
 
-        if (!data.get("api_escape")
-                .isJsonNull()) {
+        if (!data.get("api_escape").isJsonNull()) {
             JsonObject apiEscape = data.getAsJsonObject("api_escape");
             int damaged = apiEscape.getAsJsonArray("api_escape_idx")
                     .get(0)
@@ -60,11 +59,8 @@ public class ApiReqCombinedBattleBattleresult implements APIListenerSpi {
             Escape.INSTANCE.ready(damaged, towing);
         }
 
-
         //勝利ランクオーバーレイを消す
-        App.getInstance()
-                .stopService(new Intent(App.getInstance()
-                        .getApplicationContext(), WinRankOverlayService.class));
+        App.getInstance().stopService(new Intent(App.getInstance().getApplicationContext(), WinRankOverlayService.class));
 
         GeneralPrefs prefs = new GeneralPrefs(App.getInstance().getApplicationContext());
         if (!prefs.getShowsHeavilyDamagedOverlay()) {

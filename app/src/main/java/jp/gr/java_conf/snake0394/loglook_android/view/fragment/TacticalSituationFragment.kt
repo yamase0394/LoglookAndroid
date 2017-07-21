@@ -7,10 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import jp.gr.java_conf.snake0394.loglook_android.BattleUtility
-import jp.gr.java_conf.snake0394.loglook_android.DeckUtility
-import jp.gr.java_conf.snake0394.loglook_android.Escape
-import jp.gr.java_conf.snake0394.loglook_android.R
+import jp.gr.java_conf.snake0394.loglook_android.*
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstShipManager
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitemManager

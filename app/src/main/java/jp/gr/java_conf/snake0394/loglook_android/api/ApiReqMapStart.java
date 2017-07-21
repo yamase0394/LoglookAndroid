@@ -13,7 +13,7 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
-import jp.gr.java_conf.snake0394.loglook_android.bean.battle.TacticalSituation;
+import jp.gr.java_conf.snake0394.loglook_android.TacticalSituation;
 import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.RequestMetaData;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;

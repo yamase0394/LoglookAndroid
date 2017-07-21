@@ -1,8 +1,7 @@
-package jp.gr.java_conf.snake0394.loglook_android.bean.battle
+package jp.gr.java_conf.snake0394.loglook_android
 
 import android.content.Intent
-import jp.gr.java_conf.snake0394.loglook_android.App
-import jp.gr.java_conf.snake0394.loglook_android.WinRankOverlayService
+import jp.gr.java_conf.snake0394.loglook_android.bean.battle.*
 import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs
 import java.math.BigDecimal
 
@@ -17,8 +16,8 @@ object TacticalSituation {
     var isBoss = false
 
     fun applyBattle(battle: IBattle) {
-        this.phaseList = mutableListOf<PhaseState>()
-        this.battle = battle
+        phaseList = mutableListOf<PhaseState>()
+        TacticalSituation.battle = battle
 
         val fHp = battle.apiNowhps.slice(1..6).filterNot { it == -1 }.toMutableList()
         val eHp = battle.apiNowhps.slice(7..12).filterNot { it == -1 }.toMutableList()
@@ -113,7 +112,7 @@ object TacticalSituation {
     }
 
     fun applyMidnightBattle(battle: IMidnightBattle) {
-        this.midnightBattle = battle
+        midnightBattle = battle
         phaseList.add(BattleCalculator.applyHougekiMidnight(battle, phaseList.last().deepCopy(PhaseState.Type.MIDNIGHT)))
 
         calcWinRank()

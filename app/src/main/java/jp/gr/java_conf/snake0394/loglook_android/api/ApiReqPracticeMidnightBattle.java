@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import jp.gr.java_conf.snake0394.loglook_android.bean.battle.ApiHougeki;
 import jp.gr.java_conf.snake0394.loglook_android.bean.battle.ApiHougekiDeserializer;
 import jp.gr.java_conf.snake0394.loglook_android.bean.battle.PracticeMidnightBattle;
-import jp.gr.java_conf.snake0394.loglook_android.bean.battle.TacticalSituation;
+import jp.gr.java_conf.snake0394.loglook_android.TacticalSituation;
 import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.RequestMetaData;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;
@@ -19,17 +19,14 @@ import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;
 public class ApiReqPracticeMidnightBattle implements APIListenerSpi {
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
-        try {
-            JsonObject data = json.getAsJsonObject("api_data");
-            PracticeMidnightBattle hou = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                    .registerTypeAdapter(ApiHougeki.class, new ApiHougekiDeserializer())
-                    .create()
-                    .fromJson(data, PracticeMidnightBattle.class);
-            Logger.d("PracticeMidnightBattle", hou.toString());
-            TacticalSituation.INSTANCE.applyMidnightBattle(hou);
-            Logger.d("PracticeMidnightBattle", TacticalSituation.INSTANCE.getPhaseList().toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        JsonObject data = json.getAsJsonObject("api_data");
+        PracticeMidnightBattle hou = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .registerTypeAdapter(ApiHougeki.class, new ApiHougekiDeserializer())
+                .create()
+                .fromJson(data, PracticeMidnightBattle.class);
+        Logger.d("PracticeMidnightBattle", hou.toString());
+        TacticalSituation.INSTANCE.applyMidnightBattle(hou);
+        Logger.d("PracticeMidnightBattle", TacticalSituation.INSTANCE.getPhaseList()
+                .toString());
     }
 }

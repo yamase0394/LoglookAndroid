@@ -18,11 +18,9 @@ import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;
  */
 @API("/kcsapi/api_get_member/require_info")
 public class ApiGetMemberRequireInfo implements APIListenerSpi {
-    private Gson gson;
 
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
-        this.gson = new Gson();
 
         JsonObject data = json.getAsJsonObject("api_data");
 
@@ -30,9 +28,10 @@ public class ApiGetMemberRequireInfo implements APIListenerSpi {
     }
 
     private void apiSlotItem(JsonArray array) {
+        Gson gson = new Gson();
         List<Integer> idList = new ArrayList<>();
         for (JsonElement e : array) {
-            MySlotItem temp = this.gson.fromJson(e, MySlotItem.class);
+            MySlotItem temp = gson.fromJson(e, MySlotItem.class);
             MySlotItemManager.INSTANCE.put(temp);
             idList.add(temp.getId());
         }

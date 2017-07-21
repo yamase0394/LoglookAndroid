@@ -3,6 +3,7 @@ package jp.gr.java_conf.snake0394.loglook_android;
 import java.util.Objects;
 
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitem;
+import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 import jp.gr.java_conf.snake0394.loglook_android.view.EquipType3;
 
 /**
@@ -24,7 +25,7 @@ public class SlotItemUtility {
         }
 
         switch (EquipType2.toEquipType2(mstSlotitem.getType()
-                                                   .get(2))) {
+                .get(2))) {
             case 小口径主砲:
             case 中口径主砲:
             case 副砲:
@@ -60,7 +61,7 @@ public class SlotItemUtility {
         }
 
         switch (EquipType2.toEquipType2(mstSlotitem.getType()
-                                                   .get(2))) {
+                .get(2))) {
             case 魚雷:
             case 潜水艦魚雷:
             case 対空機銃:
@@ -83,7 +84,7 @@ public class SlotItemUtility {
         }
 
         switch (EquipType2.toEquipType2(mstSlotitem.getType()
-                                                   .get(2))) {
+                .get(2))) {
             case 小口径主砲:
             case 中口径主砲:
             case 大口径主砲:
@@ -116,7 +117,7 @@ public class SlotItemUtility {
         }
 
         switch (EquipType2.toEquipType2(mstSlotitem.getType()
-                                                   .get(2))) {
+                .get(2))) {
             case 爆雷:
             case ソナー:
                 return (float) (1 * Math.sqrt(improvementLevel));
@@ -166,14 +167,17 @@ public class SlotItemUtility {
         }
 
         switch (EquipType2.toEquipType2(mstSlotitem.getType()
-                                                   .get(2))) {
+                .get(2))) {
             case 小型電探:
                 return (float) (1.25 * Math.sqrt(improvementLevel));
             case 大型電探:
                 return (float) (1.4 * Math.sqrt(improvementLevel));
+            case 艦上偵察機:
             case 艦上偵察機Ⅱ:
             case 水上偵察機:
                 return (float) (1.2 * Math.sqrt(improvementLevel));
+            case 水上爆撃機:
+                return (float) (1.15 * Math.sqrt(improvementLevel));
             default:
                 return 0;
         }
@@ -181,6 +185,7 @@ public class SlotItemUtility {
 
     /**
      * 改修によって上昇した分の対空を返します
+     * 制空値計算時のみ有効
      *
      * @param mstSlotitem
      * @param improvementLevel 改修度
@@ -193,8 +198,9 @@ public class SlotItemUtility {
         }
 
         switch (EquipType2.toEquipType2(mstSlotitem.getType()
-                                                   .get(2))) {
+                .get(2))) {
             case 艦上戦闘機:
+            case 水上戦闘機:
                 return 0.2f * improvementLevel;
             case 艦上爆撃機:
                 if (mstSlotitem.getTyku() > 0) {
@@ -209,13 +215,20 @@ public class SlotItemUtility {
 
     /**
      * 改修によって上昇した分の爆装を返します
+     * 航空戦のみ有効
      *
      * @param mstSlotitem
      * @param improvementLevel 改修度
      * @return 改修で上昇する爆装
      */
     public static float getImprovementDivebomb(MstSlotitem mstSlotitem, int improvementLevel) {
-        return 0;
+        switch (EquipType2.toEquipType2(mstSlotitem.getType()
+                .get(2))) {
+            case 水上爆撃機:
+                return 0.2f * improvementLevel;
+            default:
+                return 0;
+        }
     }
 
     /**
@@ -250,7 +263,7 @@ public class SlotItemUtility {
 
         //装備倍率
         switch (EquipType3.toEquipType3(mstSlotitem.getType()
-                                                   .get(3))) {
+                .get(3))) {
             case 高角砲:
             case 高射装置:
                 return slotitemBasicAA * 4;
@@ -274,7 +287,8 @@ public class SlotItemUtility {
             return 0;
         }
 
-        switch (EquipType3.toEquipType3(mstSlotitem.getType().get(3))) {
+        switch (EquipType3.toEquipType3(mstSlotitem.getType()
+                .get(3))) {
             case 高角砲:
                 return (float) (Math.sqrt(improvementLevel) * 3);
             case 対空機銃:
@@ -293,7 +307,8 @@ public class SlotItemUtility {
         int slotitemBasicAA = mstSlotitem.getTyku();
 
         //装備倍率
-        switch (EquipType3.toEquipType3(mstSlotitem.getType().get(3))) {
+        switch (EquipType3.toEquipType3(mstSlotitem.getType()
+                .get(3))) {
             case 小口径主砲:
             case 中口径主砲:
             case 大口径主砲:
@@ -328,7 +343,11 @@ public class SlotItemUtility {
 
         switch (EquipType3.toEquipType3(mstSlotitem.getType().get(3))) {
             case 高角砲:
-                return (float) (Math.sqrt(improvementLevel) * 3);
+                if (hasAADirector(mstSlotitem)) {
+                    return (float) (Math.sqrt(improvementLevel) * 3);
+                } else {
+                    return (float) (Math.sqrt(improvementLevel) * 2);
+                }
             case 高射装置:
                 return (float) (Math.sqrt(improvementLevel) * 2);
             case 電探:
@@ -349,7 +368,8 @@ public class SlotItemUtility {
      */
     public static int getFighterPower(MstSlotitem mstSlotitem, int slotNum, int improvementLevel, int alv) {
 
-        switch (EquipType2.toEquipType2(mstSlotitem.getType().get(2))) {
+        switch (EquipType2.toEquipType2(mstSlotitem.getType()
+                .get(2))) {
             case 艦上戦闘機:
             case 水上戦闘機:
             case 艦上攻撃機:
@@ -363,7 +383,7 @@ public class SlotItemUtility {
 
     /**
      * @param mstSlotItem
-     * @param alv 熟練度
+     * @param alv         熟練度
      * @return 熟練度によって上昇した制空値
      */
     public static int getjukurenSeiku(MstSlotitem mstSlotItem, int alv) {
@@ -372,7 +392,8 @@ public class SlotItemUtility {
             return 0;
         }
 
-        switch (EquipType2.toEquipType2(mstSlotItem.getType().get(2))) {
+        switch (EquipType2.toEquipType2(mstSlotItem.getType()
+                .get(2))) {
             case 艦上戦闘機:
             case 水上戦闘機:
                 switch (alv) {
@@ -429,6 +450,20 @@ public class SlotItemUtility {
                 }
             default:
                 return 0;
+        }
+    }
+
+    //TODO:他に判定方法があるかどうか
+    private static boolean hasAADirector(MstSlotitem slotitem) {
+        switch (slotitem.getName()) {
+            case "12.7cm高角砲＋高射装置":
+            case "90mm単装高角砲":
+            case "5inch連装砲 Mk.28 mod.2":
+                Logger.d("SlotitemUtility", "has AA Director:" + slotitem.getName());
+                return true;
+            default:
+                Logger.d("SlotitemUtility", "not has AADirector:" + slotitem.getName());
+                return false;
         }
     }
 }

@@ -11,7 +11,7 @@ import jp.gr.java_conf.snake0394.loglook_android.HeavilyDamagedWarningService;
 import jp.gr.java_conf.snake0394.loglook_android.WinRankOverlayService;
 import jp.gr.java_conf.snake0394.loglook_android.bean.battle.IBattle;
 import jp.gr.java_conf.snake0394.loglook_android.bean.battle.PhaseState;
-import jp.gr.java_conf.snake0394.loglook_android.bean.battle.TacticalSituation;
+import jp.gr.java_conf.snake0394.loglook_android.TacticalSituation;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.RequestMetaData;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;
 import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;

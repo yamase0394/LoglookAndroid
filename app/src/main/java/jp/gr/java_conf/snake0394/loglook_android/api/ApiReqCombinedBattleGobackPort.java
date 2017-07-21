@@ -13,7 +13,6 @@ import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;
 public class ApiReqCombinedBattleGobackPort implements APIListenerSpi {
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
-
         Escape.INSTANCE.escape();
     }
 }
