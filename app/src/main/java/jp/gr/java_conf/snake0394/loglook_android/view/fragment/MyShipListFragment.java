@@ -22,20 +22,14 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnTouch;
 import butterknife.Unbinder;
-import jp.gr.java_conf.snake0394.loglook_android.App;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.ShipType;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip;
@@ -43,14 +37,12 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MstShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.storage.MyShipListFragmentPrefs;
-import jp.gr.java_conf.snake0394.loglook_android.storage.MyShipListFragmentPrefsSpotRepository;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.MyShipListRecyclerViewAdapter.Label;
 
 /**
  * 艦娘一覧画面
  */
-public class MyShipListFragment extends Fragment implements MyShipListRecyclerViewAdapter.OnRecyclerViewItemClickListener,
-                                                            MyShipListAddLabelDialog.OnFinishedListener {
+public class MyShipListFragment extends Fragment implements MyShipListRecyclerViewAdapter.OnRecyclerViewItemClickListener, MyShipListAddLabelDialog.OnFinishedListener {
 
     private static final List<String> SORT_TYPE_LIST = Arrays.asList("ID", "Lv", "cond", "砲撃戦火力", "雷撃戦火力", "夜戦火力", "対潜");
 
@@ -76,27 +68,7 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.prefs = MyShipListFragmentPrefsSpotRepository.getEntity(App.getInstance());
-
-        //保存方法変更のため暫く以前の保存場所から取り出せるようにする
-        if (prefs.toLabelMap.size() == 0) {
-            prefs.toLabelMap = new Gson().fromJson(App.getInstance()
-                                                      .getSharedPreferences()
-                                                      .getString("toLabelMap", null), new TypeToken<Map<Integer, List<Label>>>() {
-            }.getType());
-            if (prefs.toLabelMap == null) {
-                prefs.toLabelMap = new HashMap<>();
-            }
-        }
-        if (prefs.labelList.size() == 0) {
-            prefs.labelList = new Gson().fromJson(App.getInstance()
-                                                     .getSharedPreferences()
-                                                     .getString("labelList", null), new TypeToken<List<Label>>() {
-            }.getType());
-            if (prefs.labelList == null) {
-                prefs.labelList = new ArrayList<>();
-            }
-        }
+        this.prefs = new MyShipListFragmentPrefs(getContext());
     }
 
     @Override
@@ -109,8 +81,8 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
         Toolbar toolbar = ButterKnife.findById(getActivity(), R.id.toolbar);
         toolbar.inflateMenu(R.menu.menu_my_ship_list_fragment);
         this.searchView = (SearchView) toolbar.getMenu()
-                                              .findItem(R.id.menu_search)
-                                              .getActionView();
+                .findItem(R.id.menu_search)
+                .getActionView();
         this.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -151,7 +123,7 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
 
         this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         if (recyclerView.getAdapter() == null) {
-            MyShipListRecyclerViewAdapter adapter = new MyShipListRecyclerViewAdapter(getFragmentManager(), prefs.sortType, prefs.order, this, prefs.toLabelMap, prefs.labelList);
+            MyShipListRecyclerViewAdapter adapter = new MyShipListRecyclerViewAdapter(getFragmentManager(), prefs.getSortType(), prefs.getOrder(), this, prefs.getToLabelMap(), prefs.getLabelList());
             recyclerView.setAdapter(adapter);
         }
 
@@ -166,9 +138,9 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
                     return;
                 }
 
-                prefs.sortType = (String) type.getSelectedItem();
+                prefs.setSortType((String) type.getSelectedItem());
 
-                MyShipListRecyclerViewAdapter adapter = new MyShipListRecyclerViewAdapter(getFragmentManager(), prefs.sortType, prefs.order, MyShipListFragment.this, prefs.toLabelMap, prefs.labelList);
+                MyShipListRecyclerViewAdapter adapter = new MyShipListRecyclerViewAdapter(getFragmentManager(), prefs.getSortType(), prefs.getOrder(), MyShipListFragment.this, prefs.getToLabelMap(), prefs.getLabelList());
                 recyclerView.swapAdapter(adapter, false);
                 initDataList();
                 recyclerView.scrollToPosition(0);
@@ -185,7 +157,7 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
         spinner.setFocusable(false);
-        spinner.setSelection(SORT_TYPE_LIST.indexOf(prefs.sortType));
+        spinner.setSelection(SORT_TYPE_LIST.indexOf(prefs.getSortType()));
 
         Button orderButton = (Button) rootView.findViewById(R.id.button_order);
         orderButton.setOnClickListener(new View.OnClickListener() {
@@ -201,10 +173,10 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
                         break;
                 }
 
-                prefs.order = orderButton.getText()
-                                         .toString();
+                prefs.setOrder(orderButton.getText()
+                        .toString());
 
-                MyShipListRecyclerViewAdapter adapter = new MyShipListRecyclerViewAdapter(getFragmentManager(), prefs.sortType, prefs.order, MyShipListFragment.this, prefs.toLabelMap, prefs.labelList);
+                MyShipListRecyclerViewAdapter adapter = new MyShipListRecyclerViewAdapter(getFragmentManager(), prefs.getSortType(), prefs.getOrder(), MyShipListFragment.this, prefs.getToLabelMap(), prefs.getLabelList());
                 recyclerView.swapAdapter(adapter, false);
                 initDataList();
                 recyclerView.scrollToPosition(0);
@@ -212,7 +184,7 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
                 searchView.clearFocus();
             }
         });
-        orderButton.setText(prefs.order);
+        orderButton.setText(prefs.getOrder());
 
         spinner = (Spinner) rootView.findViewById(R.id.shipTypeFilterSpinner);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -225,7 +197,7 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
                 }
 
 
-                prefs.shipTypeFilter = (String) shipTypeFilterSpinner.getSelectedItem();
+                prefs.setShipTypeFilter((String) shipTypeFilterSpinner.getSelectedItem());
 
                 filterDataList();
                 recyclerView.scrollToPosition(0);
@@ -247,7 +219,7 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
         spinner.setFocusable(false);
         if (dataList == null) {
             try {
-                ShipType displayShipType = ShipType.valueOf(prefs.shipTypeFilter);
+                ShipType displayShipType = ShipType.valueOf(prefs.getShipTypeFilter());
                 //"すべて"の分ずらす
                 spinner.setSelection(displayShipType.ordinal() + 1);
             } catch (IllegalArgumentException e) {
@@ -263,7 +235,7 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
                     return;
                 }
 
-                prefs.labelFilter = (String) labelFilterSpinner.getSelectedItem();
+                prefs.setLabelFilter((String) labelFilterSpinner.getSelectedItem());
 
                 filterDataList();
 
@@ -296,16 +268,15 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
         super.onPause();
 
         MyShipListRecyclerViewAdapter recyclerViewAdapter = (MyShipListRecyclerViewAdapter) recyclerView.getAdapter();
-        prefs.toLabelMap = recyclerViewAdapter.getToLabelMap();
-        prefs.labelList = recyclerViewAdapter.getLabelList();
-        MyShipListFragmentPrefsSpotRepository.putEntity(App.getInstance(), prefs);
+        prefs.setToLabelMap(recyclerViewAdapter.getToLabelMap());
+        prefs.setLabelList(recyclerViewAdapter.getLabelList());
     }
 
     private void initDataList() {
         if (searchView.getQuery()
-                      .length() > 0) {
+                .length() > 0) {
             searchDataList(searchView.getQuery()
-                                     .toString());
+                    .toString());
             return;
         }
 
@@ -318,16 +289,16 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
         List<MyShip> filteredList = new ArrayList<>();
         for (MyShip myShip : dataList) {
             if (myShip.getName()
-                      .toLowerCase()
-                      .contains(searchWord)) {
+                    .toLowerCase()
+                    .contains(searchWord)) {
                 filteredList.add(myShip);
                 continue;
             }
 
             MstShip mstShip = MstShipManager.INSTANCE.getMstShip(myShip.getShipId());
             if (mstShip.getYomi()
-                       .toLowerCase()
-                       .contains(searchWord)) {
+                    .toLowerCase()
+                    .contains(searchWord)) {
                 filteredList.add(myShip);
             }
         }
@@ -338,7 +309,7 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
     private void filterDataList() {
         try {
             dataList = new ArrayList<>();
-            ShipType shipType = ShipType.valueOf(prefs.shipTypeFilter);
+            ShipType shipType = ShipType.valueOf(prefs.getShipTypeFilter());
             for (MyShip myShip : MyShipManager.INSTANCE.getMyShips()) {
                 if (myShip == null) {
                     continue;
@@ -357,11 +328,11 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
         initDataList();
 
         if (((MyShipListRecyclerViewAdapter) recyclerView.getAdapter()).getLabelList()
-                                                                       .contains(new Label(prefs.labelFilter, 0))) {
+                .contains(new Label(prefs.getLabelFilter(), 0))) {
             dataList = new ArrayList<>();
             for (MyShipListRecyclerViewAdapter.MyShipListItem item : ((MyShipListRecyclerViewAdapter) recyclerView.getAdapter()).getItemList()) {
                 if (item.getLabelList()
-                        .contains(new Label(prefs.labelFilter, 0))) {
+                        .contains(new Label(prefs.getLabelFilter(), 0))) {
                     dataList.add(item.getMyShip());
                 }
             }
@@ -377,7 +348,8 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
         //検索ボックスを削除
         Toolbar toolbar = ButterKnife.findById(getActivity(), R.id.toolbar);
 
-        toolbar.getMenu().removeGroup(R.id.search_group);
+        toolbar.getMenu()
+                .removeGroup(R.id.search_group);
 
         unbinder.unbind();
 
@@ -395,7 +367,7 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
         String[] items;
         final MyShipListRecyclerViewAdapter.MyShipListItem myShipListItem = ((MyShipListRecyclerViewAdapter) recyclerView.getAdapter()).getItem(position);
         if (myShipListItem.getLabelList()
-                          .size() > 0) {
+                .size() > 0) {
             items = new String[]{"ラベルを追加", "ラベルを削除"};
         } else {
             items = new String[]{"ラベルを追加"};
@@ -413,25 +385,25 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
                     case 1:
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         String[] items = new String[myShipListItem.getLabelList()
-                                                                  .size()];
+                                .size()];
                         for (int i = 0; i < myShipListItem.getLabelList()
-                                                          .size(); i++) {
+                                .size(); i++) {
                             items[i] = myShipListItem.getLabelList()
-                                                     .get(i)
-                                                     .getName();
+                                    .get(i)
+                                    .getName();
                         }
                         builder.setTitle("ラベルを削除")
-                               .setItems(items, new DialogInterface.OnClickListener() {
-                                   @Override
-                                   public void onClick(DialogInterface dialog, int which) {
-                                       MyShipListRecyclerViewAdapter adapter = (MyShipListRecyclerViewAdapter) recyclerView.getAdapter();
-                                       adapter.removeLabel(position, myShipListItem.getLabelList()
-                                                                                   .get(which));
-                                       initLabelFilterSpinnerAdapter();
-                                       filterDataList();
-                                   }
-                               })
-                               .setNegativeButton("キャンセル", null);
+                                .setItems(items, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        MyShipListRecyclerViewAdapter adapter = (MyShipListRecyclerViewAdapter) recyclerView.getAdapter();
+                                        adapter.removeLabel(position, myShipListItem.getLabelList()
+                                                .get(which));
+                                        initLabelFilterSpinnerAdapter();
+                                        filterDataList();
+                                    }
+                                })
+                                .setNegativeButton("キャンセル", null);
                         builder.show();
                         break;
                 }
@@ -453,7 +425,7 @@ public class MyShipListFragment extends Fragment implements MyShipListRecyclerVi
         labelFilterSpinner.setAdapter(arrayAdapter);
         labelFilterSpinner.setFocusable(false);
 
-        Label comparisionLabel = new Label(prefs.labelFilter, 0);
+        Label comparisionLabel = new Label(prefs.getLabelFilter(), 0);
         if (labelList.contains(comparisionLabel)) {
             labelFilterSpinner.setSelection(labelList.indexOf(comparisionLabel) + 1);
         } else {
