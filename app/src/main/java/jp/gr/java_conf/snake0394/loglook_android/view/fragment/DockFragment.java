@@ -17,12 +17,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import io.realm.Realm;
 import jp.gr.java_conf.snake0394.loglook_android.DockTimer;
 import jp.gr.java_conf.snake0394.loglook_android.R;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
+import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip;
+import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 
 
 public class DockFragment extends Fragment {
+
+    private Realm realm;
 
     public DockFragment() {
         // Required empty public constructor
@@ -36,6 +40,7 @@ public class DockFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        realm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -78,9 +83,14 @@ public class DockFragment extends Fragment {
                 String name = "name" + i;
                 int strId = getResources().getIdentifier(name, "id", getActivity().getPackageName());
                 TextView text = (TextView) getActivity().findViewById(strId);
-                text.setText(MyShipManager.INSTANCE.getMyShip(DockTimer.INSTANCE.getShipId(i))
-                                                   .getName());
-                text.setBackgroundColor(0x00000000);
+                try(Realm realm = Realm.getDefaultInstance()) {
+                    MyShip myShip = realm.where(MyShip.class)
+                            .equalTo("id", DockTimer.INSTANCE.getShipId(i))
+                            .findFirst();
+                    MstShip mstShip = realm.where(MstShip.class).equalTo("id", myShip.getShipId()).findFirst();
+                    text.setText(mstShip.getName());
+                    text.setBackgroundColor(0x00000000);
+                }
 
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
                 name = "time" + i;
@@ -128,6 +138,13 @@ public class DockFragment extends Fragment {
             transaction.show(fragment);
             transaction.commit();
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        realm.close();
     }
 
     private class CountDown extends CountDownTimer {

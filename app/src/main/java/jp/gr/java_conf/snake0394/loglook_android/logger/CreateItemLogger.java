@@ -10,13 +10,14 @@ import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import io.realm.Realm;
 import jp.gr.java_conf.snake0394.loglook_android.EquipType2;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Basic;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager;
+import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitem;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 
 /**
  * Created by snake0394 on 2016/11/16.
@@ -110,15 +111,18 @@ public enum CreateItemLogger {
 
             //秘書艦
             Deck deck1 = DeckManager.INSTANCE.getDeck(1);
-            MyShip secretaryShip = MyShipManager.INSTANCE.getMyShip(deck1.getShipId()
-                                                                         .get(0));
-            sb.append(secretaryShip.getName() + "(Lv" + secretaryShip.getLv() + ")");
-            sb.append(",");
+            try(Realm realm = Realm.getDefaultInstance()) {
+                MyShip secretaryShip = realm.where(MyShip.class).equalTo("id", deck1.getShipId().get(0)).findFirst();
+                MstShip mstShip = realm.where(MstShip.class).equalTo("id", secretaryShip.getShipId()).findFirst();
+                sb.append(mstShip.getName())
+                        .append("(Lv")
+                        .append(secretaryShip.getLv())
+                        .append("),");
+            }
 
             //司令部Lv
-            sb.append(Basic.INSTANCE.getLevel());
-
-            sb.append("\r\n");
+            sb.append(Basic.INSTANCE.getLevel())
+                    .append("\r\n");
 
             pw.write(sb.toString());
             pw.flush();

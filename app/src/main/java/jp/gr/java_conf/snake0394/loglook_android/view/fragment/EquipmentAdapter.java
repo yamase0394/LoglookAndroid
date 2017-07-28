@@ -23,14 +23,15 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmResults;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.SlotItemUtility;
+import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitem;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitemManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
+import jp.gr.java_conf.snake0394.loglook_android.storage.RealmInt;
 import jp.gr.java_conf.snake0394.loglook_android.view.EquipType3;
 
 /**
@@ -41,19 +42,23 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Equi
 
     private SortedList<ListItem> itemList;
     private SparseIntArray mountedEquip;
+    private static Realm realm;
 
     public EquipmentAdapter(String sortType, String order) {
+        realm = Realm.getDefaultInstance();
         itemList = new SortedList<>(ListItem.class, new SortedListCallcack(this, sortType, order));
 
         mountedEquip = new SparseIntArray();
 
-        for (MyShip myShip : MyShipManager.INSTANCE.getMyShips()) {
-            for (int id : myShip.getSlot()) {
-                if (MySlotItemManager.INSTANCE.contains(id)) {
-                    mountedEquip.put(id, myShip.getId());
+        for (MyShip myShip : realm.where(MyShip.class)
+                .findAll()) {
+            for (RealmInt id : myShip.getSlot()) {
+                if (id.getValue() > 0) {
+                    mountedEquip.put(id.getValue(), myShip.getId());
                 }
             }
-            if (MySlotItemManager.INSTANCE.contains(myShip.getSlotEx())) {
+
+            if (myShip.getSlotEx() > 0) {
                 mountedEquip.put(myShip.getSlotEx(), myShip.getId());
             }
         }
@@ -62,7 +67,7 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Equi
     @Override
     public EquipmentViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View itemView = LayoutInflater.from(viewGroup.getContext())
-                                      .inflate(R.layout.layout_equipment_cardview, viewGroup, false);
+                .inflate(R.layout.layout_equipment_cardview, viewGroup, false);
         return new EquipmentViewHolder(itemView);
     }
 
@@ -75,6 +80,11 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Equi
     @Override
     public int getItemCount() {
         return itemList.size();
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
     }
 
     public void setItems(List<MySlotItem> newItemList) {
@@ -147,8 +157,15 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Equi
                 this.equipShipSet = TreeMultiset.create(new Comparator<Integer>() {
                     @Override
                     public int compare(Integer data1, Integer data2) {
-                        MyShip myShip1 = MyShipManager.INSTANCE.getMyShip(data1);
-                        MyShip myShip2 = MyShipManager.INSTANCE.getMyShip(data2);
+                        RealmResults<MyShip> results = realm.where(MyShip.class)
+                                .in("id", new Integer[]{data1, data2})
+                                .findAll();
+                        MyShip myShip1 = results.where()
+                                .equalTo("id", data1)
+                                .findFirst();
+                        MyShip myShip2 = results.where()
+                                .equalTo("id", data2)
+                                .findFirst();
                         //レベルの降順
                         int result = myShip2.getLv() - myShip1.getLv();
                         if (result == 0) {
@@ -183,15 +200,15 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Equi
         public int compare(ListItem item1, ListItem item2) {
             MySlotItem data1 = item1.mySlotItem;
             MySlotItem data2 = item2.mySlotItem;
-            MstSlotitem mst1 = MstSlotitemManager.INSTANCE.getMstSlotitem(data1.getMstId());
-            MstSlotitem mst2 = MstSlotitemManager.INSTANCE.getMstSlotitem(data2.getMstId());
+            MstSlotitem mst1 = realm.where(MstSlotitem.class).equalTo("id", data1.getMstId()).findFirst();
+            MstSlotitem mst2 = realm.where(MstSlotitem.class).equalTo("id", data2.getMstId()).findFirst();
 
             float result = 0;
 
             switch (this.sortType) {
                 case "名前":
                     result = mst1.getName()
-                                 .compareTo(mst2.getName());
+                            .compareTo(mst2.getName());
                     break;
                 case "改修度":
                     result = data1.getLevel() - data2.getLevel();
@@ -383,13 +400,16 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Equi
 
         public void bind(@NonNull final ListItem listItem) {
             MySlotItem mySlotItem = listItem.mySlotItem;
-            MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
+            MstSlotitem mstSlotitem = realm.where(MstSlotitem.class)
+                    .equalTo("id", mySlotItem.getMstId())
+                    .findFirst();
 
             equipment.setText(mstSlotitem.getName());
 
             equipIcon.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType()
-                                                                          .get(3))
-                                                 .getImageId());
+                    .get(3)
+                    .getValue())
+                    .getImageId());
 
             alv.setVisibility(View.VISIBLE);
             switch (mySlotItem.getAlv()) {
@@ -762,11 +782,16 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Equi
                 shipsLayout.setVisibility(View.VISIBLE);
 
                 for (Multiset.Entry<Integer> entry : listItem.equipShipSet.entrySet()) {
-                    MyShip myShip = MyShipManager.INSTANCE.getMyShip(entry.getElement());
+                    MyShip myShip = realm.where(MyShip.class)
+                            .equalTo("id", entry.getElement())
+                            .findFirst();
                     LinearLayout equippedShipLayout = (LinearLayout) View.inflate(shipsLayout.getContext(), R.layout.view_equipped_ship, null);
 
                     TextView name = ButterKnife.findById(equippedShipLayout, R.id.name);
-                    name.setText(myShip.getName());
+                    MstShip mstShip = realm.where(MstShip.class)
+                            .equalTo("id", myShip.getShipId())
+                            .findFirst();
+                    name.setText(mstShip.getName());
 
                     TextView lv = ButterKnife.findById(equippedShipLayout, R.id.lv);
                     lv.setText("Lv" + myShip.getLv());

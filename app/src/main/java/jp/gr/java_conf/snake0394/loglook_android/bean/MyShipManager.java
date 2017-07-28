@@ -10,7 +10,6 @@ import java.util.List;
 
 import jp.gr.java_conf.snake0394.loglook_android.App;
 import jp.gr.java_conf.snake0394.loglook_android.storage.UserDataStorage;
-import jp.gr.java_conf.snake0394.loglook_android.storage.UserDataStorageSpotRepository;
 
 /**
  * 所有する全艦娘のデータを管理します
@@ -21,8 +20,8 @@ public enum MyShipManager {
     private SparseArray<MyShip> sparseArray;
 
     private MyShipManager() {
-        UserDataStorage storage = UserDataStorageSpotRepository.getEntity(App.getInstance());
-        this.sparseArray = storage.myShipSparseArray;
+        UserDataStorage storage = new UserDataStorage(App.getInstance());
+        this.sparseArray = storage.getMyShipSparseArray();
     }
 
     public void put(int id, MyShip myShip) {
@@ -64,8 +63,7 @@ public enum MyShipManager {
     }
 
     public void serialize() {
-        UserDataStorage storage = UserDataStorageSpotRepository.getEntity(App.getInstance());
-        storage.myShipSparseArray = this.sparseArray;
-        UserDataStorageSpotRepository.putEntity(App.getInstance(), storage);
+        UserDataStorage storage = new UserDataStorage(App.getInstance());
+        storage.setMyShipSparseArray(this.sparseArray);
     }
 }

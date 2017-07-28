@@ -9,9 +9,10 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import io.realm.Realm;
 import jp.gr.java_conf.snake0394.loglook_android.R;
+import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 
 /**
  * 大破進撃を警告する画面です。
@@ -27,13 +28,18 @@ public class HeavilyDamagedWarningActivity extends AppCompatActivity {
 
         StringBuffer sb = new StringBuffer();
         List<Integer> shipId = intent.getIntegerArrayListExtra("shipId");
-        for (int i = 0; i < shipId.size(); i++) {
-            MyShip ms = MyShipManager.INSTANCE.getMyShip(shipId.get(i));
-            sb.append(ms.getName());
-            if (i == shipId.size() - 1) {
-                break;
+        try(Realm realm = Realm.getDefaultInstance()) {
+            for (int i = 0; i < shipId.size(); i++) {
+                MyShip ms = realm.where(MyShip.class)
+                        .equalTo("id", shipId.get(i))
+                        .findFirst();
+                MstShip mstShip = realm.where(MstShip.class).equalTo("id", ms.getShipId()).findFirst();
+                sb.append(mstShip.getName());
+                if (i == shipId.size() - 1) {
+                    break;
+                }
+                sb.append(", ");
             }
-            sb.append(", ");
         }
 
         TextView text = (TextView) findViewById(R.id.textView2);

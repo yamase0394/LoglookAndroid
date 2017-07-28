@@ -50,11 +50,7 @@ class WinRankOverlayService : Service() {
                 PixelFormat.TRANSLUCENT
         )
         (overlayView!!.findViewById(R.id.text_rank) as TextView).apply { text = "${if (TacticalSituation.isBoss) "ボス " else ""}${TacticalSituation.winRank}" }
-        overlayView!!.setOnClickListener {
-            Logger.d(TAG, "$TAG was touched")
-            OverlayService.removeOverlayView((overlayView ?: return@setOnClickListener))
-            stopSelf()
-        }
+        overlayView!!.setOnClickListener { stopSelf() }
         OverlayService.addOverlayView(overlayView!!, params)
         Logger.d(TAG, "show overlay")
 
@@ -63,8 +59,8 @@ class WinRankOverlayService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        OverlayService.removeOverlayView((overlayView ?: return))
         Logger.d(TAG, "onDestroy")
+        OverlayService.removeOverlayView((overlayView ?: return))
     }
 
     companion object {

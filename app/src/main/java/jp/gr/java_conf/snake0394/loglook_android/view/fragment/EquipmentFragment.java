@@ -20,14 +20,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.realm.Realm;
 import jp.gr.java_conf.snake0394.loglook_android.EquipType2;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitem;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitemManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
 import jp.gr.java_conf.snake0394.loglook_android.storage.EquipmentFragmentPrefs;
-import jp.gr.java_conf.snake0394.loglook_android.storage.EquipmentFragmentPrefsSpotRepository;
 import jp.gr.java_conf.snake0394.loglook_android.view.EquipType3;
 
 public class EquipmentFragment extends Fragment implements EquipmentDrawerRecyclerAdapter.OnItemClickListener {
@@ -50,6 +48,7 @@ public class EquipmentFragment extends Fragment implements EquipmentDrawerRecycl
     private EquipmentFragmentPrefs prefs;
     private List<MySlotItem> dataList;
     private Unbinder unbinder;
+    private Realm realm;
 
     public EquipmentFragment() {
         // Required empty public constructor
@@ -64,7 +63,8 @@ public class EquipmentFragment extends Fragment implements EquipmentDrawerRecycl
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.prefs = EquipmentFragmentPrefsSpotRepository.getEntity(getContext());
+        this.realm = Realm.getDefaultInstance();
+        this.prefs = new EquipmentFragmentPrefs(getContext());
         this.dataList = new ArrayList<>();
     }
 
@@ -82,7 +82,7 @@ public class EquipmentFragment extends Fragment implements EquipmentDrawerRecycl
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         if (recyclerView.getAdapter() == null) {
-            EquipmentAdapter adapter = new EquipmentAdapter(prefs.sortType, prefs.order);
+            EquipmentAdapter adapter = new EquipmentAdapter(prefs.getSortType(), prefs.getOrder());
             recyclerView.setAdapter(adapter);
         }
 
@@ -94,7 +94,7 @@ public class EquipmentFragment extends Fragment implements EquipmentDrawerRecycl
                     equipTypeFilterSpinner.setFocusable(true);
                     return;
                 }
-                EquipmentAdapter adapter = new EquipmentAdapter(prefs.sortType, prefs.order);
+                EquipmentAdapter adapter = new EquipmentAdapter(prefs.getSortType(), prefs.getOrder());
                 recyclerView.swapAdapter(adapter, false);
                 filterDataList();
                 setDataList();
@@ -118,8 +118,8 @@ public class EquipmentFragment extends Fragment implements EquipmentDrawerRecycl
                     sortTypeSpinner.setFocusable(true);
                     return;
                 }
-                prefs.sortType = (String) sortTypeSpinner.getSelectedItem();
-                EquipmentAdapter recyclerAdapter = new EquipmentAdapter(prefs.sortType, prefs.order);
+                prefs.setSortType((String) sortTypeSpinner.getSelectedItem());
+                EquipmentAdapter recyclerAdapter = new EquipmentAdapter(prefs.getSortType(), prefs.getOrder());
                 recyclerView.swapAdapter(recyclerAdapter, false);
                 setDataList();
             }
@@ -133,7 +133,7 @@ public class EquipmentFragment extends Fragment implements EquipmentDrawerRecycl
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sortTypeSpinner.setAdapter(adapter);
         sortTypeSpinner.setFocusable(false);
-        sortTypeSpinner.setSelection(adapter.getPosition(prefs.sortType));
+        sortTypeSpinner.setSelection(adapter.getPosition(prefs.getSortType()));
 
         orderButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,20 +141,20 @@ public class EquipmentFragment extends Fragment implements EquipmentDrawerRecycl
                 String buttonText = String.valueOf(orderButton.getText());
                 switch (buttonText) {
                     case "降順":
-                        prefs.order = "昇順";
+                        prefs.setOrder("昇順");
                         break;
                     case "昇順":
-                        prefs.order = "降順";
+                        prefs.setOrder("降順");
                         break;
                 }
-                orderButton.setText(prefs.order);
+                orderButton.setText(prefs.getOrder());
 
-                EquipmentAdapter recyclerAdapter = new EquipmentAdapter(prefs.sortType, prefs.order);
+                EquipmentAdapter recyclerAdapter = new EquipmentAdapter(prefs.getSortType(), prefs.getOrder());
                 recyclerView.swapAdapter(recyclerAdapter, false);
                 setDataList();
             }
         });
-        orderButton.setText(prefs.order);
+        orderButton.setText(prefs.getOrder());
 
         filterDataList();
         setDataList();
@@ -169,12 +169,12 @@ public class EquipmentFragment extends Fragment implements EquipmentDrawerRecycl
         ArrayList<MySlotItem> newDataList = new ArrayList<>();
         String showEquipType = String.valueOf(equipTypeFilterSpinner.getSelectedItem());
 
-        for (MySlotItem mySlotItem : MySlotItemManager.INSTANCE.getMySlotItems()) {
+        for (MySlotItem mySlotItem : realm.where(MySlotItem.class).findAll()) {
             try {
-                MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
+                MstSlotitem mstSlotitem = realm.where(MstSlotitem.class).equalTo("id", mySlotItem.getMstId()).findFirst();
 
                 EquipType3 type3 = EquipType3.toEquipType3(mstSlotitem.getType()
-                                                                      .get(3));
+                                                                      .get(3).getValue());
                 if (type3.toString()
                          .equals(showEquipType)) {
                     newDataList.add(mySlotItem);
@@ -182,13 +182,13 @@ public class EquipmentFragment extends Fragment implements EquipmentDrawerRecycl
                     switch (showEquipType) {
                         case "小口径主砲":
                             if (type3 == EquipType3.高角砲 && EquipType2.toEquipType2(mstSlotitem.getType()
-                                                                                              .get(2)) == EquipType2.小口径主砲) {
+                                                                                              .get(2).getValue()) == EquipType2.小口径主砲) {
                                 newDataList.add(mySlotItem);
                             }
                             break;
                         case "副砲":
                             if (type3 == EquipType3.高角砲 && EquipType2.toEquipType2(mstSlotitem.getType()
-                                                                                              .get(2)) == EquipType2.副砲) {
+                                                                                              .get(2).getValue()) == EquipType2.副砲) {
                                 newDataList.add(mySlotItem);
                             }
                             break;
@@ -297,8 +297,8 @@ public class EquipmentFragment extends Fragment implements EquipmentDrawerRecycl
     public void onDestroyView() {
         super.onDestroyView();
 
+        this.realm.close();
         this.unbinder.unbind();
-        EquipmentFragmentPrefsSpotRepository.putEntity(getContext(), this.prefs);
     }
 
     @Override

@@ -20,12 +20,13 @@ import android.widget.TextView;
 
 import java.math.BigDecimal;
 
+import io.realm.Realm;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.ShipUtility;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager;
+import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 
 /**
  * Created by snake0394 on 2016/12/07.
@@ -34,6 +35,8 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 public class ShipParamDialogFragment extends android.support.v4.app.DialogFragment {
     private static final String ARG_SHIP_ID = "shipId";
     private static final String ARG_DECK_ID = "deckId";
+
+    private Realm realm;
 
     private int shipId;
     private int deckId;
@@ -54,6 +57,7 @@ public class ShipParamDialogFragment extends android.support.v4.app.DialogFragme
             shipId = getArguments().getInt(ARG_SHIP_ID);
             deckId = getArguments().getInt(ARG_DECK_ID);
         }
+        realm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -61,7 +65,7 @@ public class ShipParamDialogFragment extends android.support.v4.app.DialogFragme
         final Activity activity = getActivity();
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         final View rootView = LayoutInflater.from(activity).inflate(R.layout.dialog_fragment_ship_param, null);
-        final MyShip myShip = MyShipManager.INSTANCE.getMyShip(shipId);
+        final MyShip myShip = realm.where(MyShip.class).equalTo("id", shipId).findFirst();
         final Deck deck = DeckManager.INSTANCE.getDeck(deckId);
 
         TextView text = (TextView) rootView.findViewById(R.id.shellingBasicAttackPower);
@@ -145,7 +149,8 @@ public class ShipParamDialogFragment extends android.support.v4.app.DialogFragme
         text = (TextView) rootView.findViewById(R.id.fixedAirDefence);
         text.setText(ShipUtility.getFixedAirDefense(myShip, deck, "単縦陣", 1) + "機");
 
-        builder.setView(rootView).setTitle(myShip.getName() + "(Lv" + myShip.getLv() + ")");
+        MstShip mstShip = realm.where(MstShip.class).equalTo("id", myShip.getShipId()).findFirst();
+        builder.setView(rootView).setTitle(mstShip.getName() + "(Lv" + myShip.getLv() + ")").setNegativeButton("閉じる", null);
         return builder.create();
     }
 
@@ -153,5 +158,11 @@ public class ShipParamDialogFragment extends android.support.v4.app.DialogFragme
     public void onPause() {
         super.onPause();
         dismiss();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        realm.close();
     }
 }

@@ -4,7 +4,6 @@ import android.util.SparseArray;
 
 import jp.gr.java_conf.snake0394.loglook_android.App;
 import jp.gr.java_conf.snake0394.loglook_android.storage.MstDataStorage;
-import jp.gr.java_conf.snake0394.loglook_android.storage.MstDataStorageSpotRepository;
 
 /**
  * 装備品idと装備品データを対応させます
@@ -15,8 +14,8 @@ public enum MstSlotitemManager {
     private SparseArray<MstSlotitem> idToMstSlotitemSparseArray;
 
      MstSlotitemManager() {
-         MstDataStorage storage = MstDataStorageSpotRepository.getEntity(App.getInstance());
-         this.idToMstSlotitemSparseArray = storage.mstSlotitemSparseArray;
+         MstDataStorage storage = new MstDataStorage(App.getInstance());
+         this.idToMstSlotitemSparseArray = storage.getMstSlotitemSparseArray();
     }
 
     public void put(MstSlotitem mstSlotitem) {
@@ -28,9 +27,8 @@ public enum MstSlotitemManager {
     }
 
     public void serialize() {
-        MstDataStorage storage = MstDataStorageSpotRepository.getEntity(App.getInstance());
-        storage.mstSlotitemSparseArray = this.idToMstSlotitemSparseArray;
-        MstDataStorageSpotRepository.putEntity(App.getInstance(), storage);
+        MstDataStorage storage = new MstDataStorage(App.getInstance());
+        storage.setMstSlotitemSparseArray(this.idToMstSlotitemSparseArray);
     }
 }
 

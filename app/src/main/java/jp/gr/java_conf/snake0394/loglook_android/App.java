@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.multidex.MultiDex;
 
+import io.realm.Realm;
+
 /**
  * Created by snake0394 on 2016/10/27.
  */
@@ -24,6 +26,12 @@ public class App extends Application {
 
     public SharedPreferences getSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Realm.init(this);
     }
 
     @Override

@@ -18,7 +18,6 @@ import java.util.regex.Pattern;
 
 import jp.gr.java_conf.snake0394.loglook_android.api.API;
 import jp.gr.java_conf.snake0394.loglook_android.api.APIListenerSpi;
-import jp.gr.java_conf.snake0394.loglook_android.logger.BattleLogger;
 
 /**
  * Created by snake0394 on 2017/02/16.
@@ -57,11 +56,13 @@ public class APIListener implements ContentListenerSpi {
             }
         }
 
+        /*
         BattleLogger battleLogger = new BattleLogger();
         API api = battleLogger.getClass().getAnnotation(API.class);
         for(String uri: api.value()){
             listenerMap.put(uri, battleLogger);
         }
+        */
     }
 
     @Override
@@ -72,8 +73,7 @@ public class APIListener implements ContentListenerSpi {
     @Override
     public void accept(RequestMetaData reqMetaData, ResponseMetaData resMetaData) {
         try {
-            String serverResBody = IOUtils.toString(resMetaData.getResponseBody()
-                                                               .get(), "UTF-8");
+            String serverResBody = IOUtils.toString(resMetaData.getResponseBody().get(), "UTF-8");
 
             //svdata=を削除
             String jsonStr;

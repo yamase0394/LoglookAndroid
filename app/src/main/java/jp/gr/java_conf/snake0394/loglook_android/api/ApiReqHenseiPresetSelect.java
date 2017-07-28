@@ -30,7 +30,7 @@ public class ApiReqHenseiPresetSelect implements APIListenerSpi{
         List<Integer> shipIdList = new Gson().fromJson(data.get("api_ship"), listType);
 
         deck.setShipId(shipIdList);
-        deck.setLevelSum(DeckUtility.getLevelSum(deck));
-        deck.setCondRecoveryTime(DeckUtility.getCondRecoveryTime(deck));
+        deck.setLevelSum(DeckUtility.INSTANCE.getLevelSum(deck));
+        deck.setCondRecoveryTime(DeckUtility.INSTANCE.getCondRecoveryTime(deck));
     }
 }

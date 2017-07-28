@@ -5,7 +5,9 @@ import android.content.Context;
 
 import java.util.concurrent.TimeUnit;
 
-import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
+import io.realm.Realm;
+import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip;
+import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
 
 
@@ -63,8 +65,11 @@ public enum DockTimer {
             completeTime -= TimeUnit.MINUTES.toMillis(1);
             this.completeTime = completeTime;
 
+            Realm realm = Realm.getDefaultInstance();
+            MyShip myShip = realm.where(MyShip.class).equalTo("id", shipId).findFirst();
+            MstShip mstShip = realm.where(MstShip.class).equalTo("id", myShip.getShipId()).findFirst();
             //通知を登録する。通知IDは dockId + 10
-            NotificationUtility.setNotification(context, "入渠完了", "入渠完了", MyShipManager.INSTANCE.getMyShip(shipId).getName(), dockId + 10, completeTime);
+            NotificationUtility.setNotification(context, "入渠完了", "入渠完了", mstShip.getName(), dockId + 10, completeTime);
             isRunning = true;
         }
 

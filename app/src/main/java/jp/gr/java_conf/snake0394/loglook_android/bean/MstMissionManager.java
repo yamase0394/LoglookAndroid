@@ -6,7 +6,6 @@ import java.util.Map;
 
 import jp.gr.java_conf.snake0394.loglook_android.App;
 import jp.gr.java_conf.snake0394.loglook_android.storage.MstDataStorage;
-import jp.gr.java_conf.snake0394.loglook_android.storage.MstDataStorageSpotRepository;
 
 /**
  * Created by snake0394 on 2016/08/08.
@@ -18,9 +17,9 @@ public enum MstMissionManager {
     private Map<String, MstMission> mstMissionNameMap;
 
     MstMissionManager() {
-        MstDataStorage storage = MstDataStorageSpotRepository.getEntity(App.getInstance());
-        this.idToMstMissionSparseArray = storage.mstMissionIdSparseArray;
-        this.mstMissionNameMap = storage.mstMissionNameMap;
+        MstDataStorage storage = new MstDataStorage(App.getInstance());
+        this.idToMstMissionSparseArray = storage.getMstMissionIdSparseArray();
+        this.mstMissionNameMap = storage.getMstMissionNameMap();
     }
 
     public void put(MstMission mstMission) {
@@ -37,9 +36,8 @@ public enum MstMissionManager {
     }
 
     public void serialize() {
-        MstDataStorage storage = MstDataStorageSpotRepository.getEntity(App.getInstance());
-        storage.mstMissionIdSparseArray = this.idToMstMissionSparseArray;
-        storage.mstMissionNameMap = this.mstMissionNameMap;
-        MstDataStorageSpotRepository.putEntity(App.getInstance(), storage);
+        MstDataStorage storage = new MstDataStorage(App.getInstance());
+        storage.setMstMissionIdSparseArray(this.idToMstMissionSparseArray);
+        storage.setMstMissionNameMap(this.mstMissionNameMap);
     }
 }

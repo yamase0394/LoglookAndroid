@@ -3,14 +3,13 @@ package jp.gr.java_conf.snake0394.loglook_android;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MstShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitem;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitemManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
+import jp.gr.java_conf.snake0394.loglook_android.storage.RealmInt;
 
 /**
  * Created by snake0394 on 2016/10/29.
@@ -22,37 +21,46 @@ public class ShipUtility {
      * @return 砲撃戦の基本攻撃力
      */
     public static float getShellingBasicAttackPower(MyShip myShip) {
-        MstShip mstShip = MstShipManager.INSTANCE.getMstShip(myShip.getShipId());
-
-        switch (ShipType.toShipType(mstShip.getStype())) {
-            case 軽空母:
-            case 正規空母:
-            case 装甲空母:
-                return getShellingBasicAttackPowerCV(myShip);
-        }
-
-        float result = 0;
-        result += myShip.getKaryoku().get(0) + 5;
-
-        List<Integer> slotItemIdList = new ArrayList<>();
-        slotItemIdList.addAll(myShip.getSlot());
-        slotItemIdList.add(myShip.getSlotEx());
-        for (int id : slotItemIdList) {
-            if (!MySlotItemManager.INSTANCE.contains(id) || id == 0 || id == -1) {
-                continue;
-            }
-            MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(id);
-
-            //速吸は艦攻を装備しているとき空母の計算式になる
-            MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-            if (EquipType2.toEquipType2(mstSlotitem.getType().get(2)) == EquipType2.艦上攻撃機) {
-                return getShellingBasicAttackPowerCV(myShip);
+        try (Realm realm = Realm.getDefaultInstance()) {
+            MstShip mstShip = realm.where(MstShip.class)
+                    .equalTo("id", myShip.getShipId())
+                    .findFirst();
+            switch (ShipType.toShipType(mstShip.getStype())) {
+                case 軽空母:
+                case 正規空母:
+                case 装甲空母:
+                    return getShellingBasicAttackPowerCV(myShip);
             }
 
-            result += SlotItemUtility.getShellingImprovementFirepower(mstSlotitem, mySlotItem.getLevel());
-        }
+            float result = 0;
+            result += myShip.getKaryoku()
+                    .get(0)
+                    .getValue() + 5;
 
-        return result;
+            List<Integer> slotItemIdList = new ArrayList<>();
+            for (RealmInt value : myShip.getSlot()) {
+                slotItemIdList.add(value.getValue());
+            }
+            slotItemIdList.add(myShip.getSlotEx());
+
+            for (int id : slotItemIdList) {
+                MySlotItem mySlotItem = realm.where(MySlotItem.class)
+                        .equalTo("id", id)
+                        .findFirst();
+                if (mySlotItem == null || id == 0 || id == -1) {
+                    continue;
+                }
+
+                //速吸は艦攻を装備しているとき空母の計算式になる
+                MstSlotitem mstSlotitem = realm.where(MstSlotitem.class).equalTo("id", mySlotItem.getMstId()).findFirst();
+                if (EquipType2.toEquipType2(mstSlotitem.getType().get(2).getValue()) == EquipType2.艦上攻撃機) {
+                    return getShellingBasicAttackPowerCV(myShip);
+                }
+
+                result += SlotItemUtility.getShellingImprovementFirepower(mstSlotitem, mySlotItem.getLevel());
+            }
+            return result;
+        }
     }
 
     /**
@@ -64,22 +72,31 @@ public class ShipUtility {
         float improvementFirePower = 0;
 
         List<Integer> slotItemIdList = new ArrayList<>();
-        slotItemIdList.addAll(myShip.getSlot());
+        for (RealmInt realmInt : myShip.getSlot()) {
+            slotItemIdList.add(realmInt.getValue());
+        }
         slotItemIdList.add(myShip.getSlotEx());
-        for (int id : slotItemIdList) {
-            if (!MySlotItemManager.INSTANCE.contains(id) || id == 0 || id == -1) {
-                continue;
+
+        try(Realm realm = Realm.getDefaultInstance()) {
+            for (int id : slotItemIdList) {
+                MySlotItem mySlotItem = realm.where(MySlotItem.class).equalTo("id", id).findFirst();
+                if (mySlotItem == null) {
+                    continue;
+                }
+
+                MstSlotitem mstSlotitem = realm.where(MstSlotitem.class).equalTo("id", mySlotItem.getMstId()).findFirst();
+
+                improvementFirePower += SlotItemUtility.getShellingImprovementFirepower(mstSlotitem, mySlotItem.getLevel());
+
+                bomb += mstSlotitem.getBaku();
             }
-
-            MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(id);
-            MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-
-            improvementFirePower += SlotItemUtility.getShellingImprovementFirepower(mstSlotitem, mySlotItem.getLevel());
-
-            bomb += mstSlotitem.getBaku();
         }
 
-        return (float) (Math.floor((myShip.getKaryoku().get(0) + myShip.getRaisou().get(0) + Math.floor(bomb * 1.3) + improvementFirePower) * 1.5) + 55);
+        return (float) (Math.floor((myShip.getKaryoku()
+                .get(0)
+                .getValue() + myShip.getRaisou()
+                .get(0)
+                .getValue() + Math.floor(bomb * 1.3) + improvementFirePower) * 1.5) + 55);
     }
 
     /**
@@ -88,20 +105,26 @@ public class ShipUtility {
      */
     public static float getTorpedoSalvoBasicAttackPower(MyShip myShip) {
         float result = 0;
-        result += myShip.getRaisou().get(0);
+        result += myShip.getRaisou()
+                .get(0)
+                .getValue();
 
         List<Integer> slotItemIdList = new ArrayList<>();
-        slotItemIdList.addAll(myShip.getSlot());
+        for (RealmInt realmInt : myShip.getSlot()) {
+            slotItemIdList.add(realmInt.getValue());
+        }
         slotItemIdList.add(myShip.getSlotEx());
-        for (int id : slotItemIdList) {
-            if (!MySlotItemManager.INSTANCE.contains(id) || id == 0 || id == -1) {
-                continue;
+        try(Realm realm = Realm.getDefaultInstance()) {
+            for (int id : slotItemIdList) {
+                MySlotItem mySlotItem = realm.where(MySlotItem.class).equalTo("id", id).findFirst();
+                if (mySlotItem == null) {
+                    continue;
+                }
+
+                MstSlotitem mstSlotitem = realm.where(MstSlotitem.class).equalTo("id", mySlotItem.getMstId()).findFirst();
+
+                result += SlotItemUtility.getTorpedoSalvoImprovementPower(mstSlotitem, mySlotItem.getLevel());
             }
-
-            MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(id);
-            MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-
-            result += SlotItemUtility.getTorpedoSalvoImprovementPower(mstSlotitem, mySlotItem.getLevel());
         }
 
         return result;
@@ -113,17 +136,25 @@ public class ShipUtility {
      */
     public static float getNightBattleBasicAttackPower(MyShip myShip) {
         float result = 0;
-        result += myShip.getKaryoku().get(0) + myShip.getRaisou().get(0);
+        result += myShip.getKaryoku()
+                .get(0)
+                .getValue() + myShip.getRaisou()
+                .get(0)
+                .getValue();
 
-        for (int id : myShip.getSlot()) {
-            if (!MySlotItemManager.INSTANCE.contains(id)) {
-                break;
+        try (Realm realm = Realm.getDefaultInstance()) {
+            for (RealmInt id : myShip.getSlot()) {
+                MySlotItem mySlotItem = realm.where(MySlotItem.class)
+                        .equalTo("id", id.getValue())
+                        .findFirst();
+                if (mySlotItem == null) {
+                    break;
+                }
+
+                MstSlotitem mstSlotitem = realm.where(MstSlotitem.class).equalTo("id", mySlotItem.getMstId()).findFirst();
+
+                result += SlotItemUtility.getNightBattleImprovementFirepower(mstSlotitem, mySlotItem.getLevel());
             }
-
-            MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(id);
-            MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-
-            result += SlotItemUtility.getNightBattleImprovementFirepower(mstSlotitem, mySlotItem.getLevel());
         }
 
         return result;
@@ -138,26 +169,36 @@ public class ShipUtility {
         float modifiedEquipmentAASum = 0;
 
         List<Integer> slotItemIdList = new ArrayList<>();
-        slotItemIdList.addAll(myShip.getSlot());
+        for (RealmInt realmInt : myShip.getSlot()) {
+            slotItemIdList.add(realmInt.getValue());
+        }
         slotItemIdList.add(myShip.getSlotEx());
-        for (int id : slotItemIdList) {
-            if (!MySlotItemManager.INSTANCE.contains(id) || id == 0 || id == -1) {
-                continue;
+        try (Realm realm = Realm.getDefaultInstance()) {
+            for (int id : slotItemIdList) {
+                MySlotItem mySlotItem = realm.where(MySlotItem.class)
+                        .equalTo("id", id)
+                        .findFirst();
+                if (mySlotItem == null || id == 0 || id == -1) {
+                    continue;
+                }
+
+                MstSlotitem mstSlotitem = realm.where(MstSlotitem.class).equalTo("id", mySlotItem.getMstId()).findFirst();
+
+                equipmentBasicAASum += mstSlotitem.getTyku();
+
+                modifiedEquipmentAASum += SlotItemUtility.getAdjustedAA(mstSlotitem);
+                modifiedEquipmentAASum += SlotItemUtility.getImprovementAdjustedAA(mstSlotitem, mySlotItem.getLevel());
             }
-
-            MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(id);
-            MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-
-            equipmentBasicAASum += mstSlotitem.getTyku();
-
-            modifiedEquipmentAASum += SlotItemUtility.getAdjustedAA(mstSlotitem);
-            modifiedEquipmentAASum += SlotItemUtility.getImprovementAdjustedAA(mstSlotitem, mySlotItem.getLevel());
         }
 
-        float x = myShip.getTaiku().get(0) - equipmentBasicAASum + modifiedEquipmentAASum;
+        float x = myShip.getTaiku()
+                .get(0)
+                .getValue() - equipmentBasicAASum + modifiedEquipmentAASum;
 
         int a = 1;
-        if (myShip.getSlot().get(0) != -1) {
+        if (myShip.getSlot()
+                .get(0)
+                .getValue() != -1) {
             a = 2;
         }
 
@@ -171,17 +212,23 @@ public class ShipUtility {
     public static double getAdjustedFleetAA(MyShip myShip) {
         float modifiedEquipmentAA = 0;
         List<Integer> slotItemIdList = new ArrayList<>();
-        slotItemIdList.addAll(myShip.getSlot());
+        for (RealmInt realmInt : myShip.getSlot()) {
+            slotItemIdList.add(realmInt.getValue());
+        }
         slotItemIdList.add(myShip.getSlotEx());
-        for (int slotitemId : slotItemIdList) {
-            if (!MySlotItemManager.INSTANCE.contains(slotitemId) || slotitemId == -1 || slotitemId == 0) {
-                continue;
-            }
-            MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(slotitemId);
-            MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
+        try (Realm realm = Realm.getDefaultInstance()) {
+            for (int slotitemId : slotItemIdList) {
+                MySlotItem mySlotItem = realm.where(MySlotItem.class)
+                        .equalTo("id", slotitemId)
+                        .findFirst();
+                if (mySlotItem != null || slotitemId == -1 || slotitemId == 0) {
+                    continue;
+                }
+                MstSlotitem mstSlotitem = realm.where(MstSlotitem.class).equalTo("id", mySlotItem.getMstId()).findFirst();
 
-            modifiedEquipmentAA += SlotItemUtility.getAdjustedFleetAA(mstSlotitem);
-            modifiedEquipmentAA += SlotItemUtility.getImprovementAdjustedFleetAA(mstSlotitem, mySlotItem.getLevel());
+                modifiedEquipmentAA += SlotItemUtility.getAdjustedFleetAA(mstSlotitem);
+                modifiedEquipmentAA += SlotItemUtility.getImprovementAdjustedFleetAA(mstSlotitem, mySlotItem.getLevel());
+            }
         }
         return Math.floor(modifiedEquipmentAA);
     }
@@ -203,7 +250,7 @@ public class ShipUtility {
      * @return 固定撃墜機数
      */
     public static int getFixedAirDefense(MyShip myShip, Deck deck, String formation, float AACIModifier) {
-        return (int) Math.floor(((getAdjustedAA(myShip) + DeckUtility.getAdjustedFleetAA(deck, formation)) * AACIModifier) / 10);
+        return (int) Math.floor(((getAdjustedAA(myShip) + DeckUtility.INSTANCE.getAdjustedFleetAA(deck, formation)) * AACIModifier) / 10);
     }
 
 

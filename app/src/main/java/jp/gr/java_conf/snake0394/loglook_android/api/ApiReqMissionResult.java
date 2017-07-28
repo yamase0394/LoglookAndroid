@@ -10,9 +10,10 @@ import com.google.gson.reflect.TypeToken;
 import java.util.Arrays;
 import java.util.List;
 
+import io.realm.Realm;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MissionResult;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MstMissionManager;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MstUseitemManager;
+import jp.gr.java_conf.snake0394.loglook_android.bean.MstMission;
+import jp.gr.java_conf.snake0394.loglook_android.bean.MstUseitem;
 import jp.gr.java_conf.snake0394.loglook_android.logger.MissionLogger;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.RequestMetaData;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;
@@ -28,25 +29,18 @@ public class ApiReqMissionResult implements APIListenerSpi {
         JsonObject data = json.getAsJsonObject("api_data");
 
         MissionResult mr;
-        try {
+        try(Realm realm = Realm.getDefaultInstance()) {
             mr = new Gson().fromJson(data, MissionResult.class);
-            if (mr.getUseitemFlag()
-                  .get(0) != 0 && mr.getUseitemFlag()
-                                    .get(0) != 4) {
-                mr.setUseitemId1(MstMissionManager.INSTANCE.getMstMission(mr.getQuestName())
-                                                           .getWinItem1()
-                                                           .get(0));
-                mr.setUseitemName1(MstUseitemManager.INSTANCE.getMstUseitem(mr.getUseitemId1())
-                                                             .getName());
+            MstMission mstMission = realm.where(MstMission.class).equalTo("name", mr.getQuestName()).findFirst();
+            if (mr.getUseitemFlag().get(0) != 0 && mr.getUseitemFlag().get(0) != 4) {
+                mr.setUseitemId1(mstMission.getWinItem1().get(0).getValue());
+                MstUseitem mstUseitem = realm.where(MstUseitem.class).equalTo("id", mr.getUseitemId1()).findFirst();
+                mr.setUseitemName1(mstUseitem.getName());
             }
-            if (mr.getUseitemFlag()
-                  .get(1) != 0 && mr.getUseitemFlag()
-                                    .get(1) != 4) {
-                mr.setUseitemId2(MstMissionManager.INSTANCE.getMstMission(mr.getQuestName())
-                                                           .getWinItem2()
-                                                           .get(0));
-                mr.setUseitemName2(MstUseitemManager.INSTANCE.getMstUseitem(mr.getUseitemId2())
-                                                             .getName());
+            if (mr.getUseitemFlag().get(1) != 0 && mr.getUseitemFlag().get(1) != 4) {
+                mr.setUseitemId2(mstMission.getWinItem2().get(0).getValue());
+                MstUseitem mstUseitem = realm.where(MstUseitem.class).equalTo("id", mr.getUseitemId2()).findFirst();
+                mr.setUseitemName2(mstUseitem.getName());
             }
         } catch (JsonSyntaxException e) {
             //api_get_materialが配列でない場合

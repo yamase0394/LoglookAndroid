@@ -21,16 +21,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.realm.Realm;
 import jp.gr.java_conf.snake0394.loglook_android.DockTimer;
 import jp.gr.java_conf.snake0394.loglook_android.Escape;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager;
+import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitem;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitemManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
 import jp.gr.java_conf.snake0394.loglook_android.view.EquipType3;
 
 /**
@@ -41,8 +41,10 @@ public class DamagedShipAdapter extends RecyclerView.Adapter<DamagedShipAdapter.
 
     private SortedList<MyShip> sortedList;
     private final FragmentManager fragmentManager;
+    private Realm realm;
 
     public DamagedShipAdapter(FragmentManager fragmentManager, String sortType, String order) {
+        realm = Realm.getDefaultInstance();
         sortedList = new SortedList<>(MyShip.class, new DamagedShipCallback(this, sortType, order));
         this.fragmentManager = fragmentManager;
     }
@@ -76,6 +78,12 @@ public class DamagedShipAdapter extends RecyclerView.Adapter<DamagedShipAdapter.
             sortedList.remove(data);
         }
         sortedList.endBatchedUpdates();
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        realm.close();
     }
 
     public void clearData() {
@@ -124,7 +132,8 @@ public class DamagedShipAdapter extends RecyclerView.Adapter<DamagedShipAdapter.
         }
 
         public void bind(@NonNull final MyShip myShip) {
-            name.setText(myShip.getName());
+            MstShip mstShip = realm.where(MstShip.class).equalTo("id", myShip.getShipId()).findFirst();
+            name.setText(mstShip.getName());
 
             lv.setText("Lv:" + String.valueOf(myShip.getLv()));
 
@@ -170,16 +179,15 @@ public class DamagedShipAdapter extends RecyclerView.Adapter<DamagedShipAdapter.
             if (1 > myShip.getSlotnum()) {
                 slot1.setImageResource(EquipType3.NOT_AVAILABLE.getImageId());
             } else if (myShip.getSlot()
-                             .get(0) == -1) {
+                             .get(0).getValue() == -1) {
                 slot1.setImageResource(EquipType3.EMPTY.getImageId());
             } else {
                 //装備取得前に開くとmySlotItemがnullになる
-                mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlot()
-                                                                            .get(0));
+                mySlotItem = realm.where(MySlotItem.class).equalTo("id", myShip.getSlot().get(0).getValue()).findFirst();
                 if (mySlotItem != null) {
-                    mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
+                    mstSlotitem = realm.where(MstSlotitem.class).equalTo("id", mySlotItem.getMstId()).findFirst();
                     slot1.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType()
-                                                                              .get(3))
+                                                                              .get(3).getValue())
                                                      .getImageId());
                 } else {
                     slot1.setImageResource(EquipType3.UNKNOWN.getImageId());
@@ -189,15 +197,14 @@ public class DamagedShipAdapter extends RecyclerView.Adapter<DamagedShipAdapter.
             if (2 > myShip.getSlotnum()) {
                 slot2.setImageResource(EquipType3.NOT_AVAILABLE.getImageId());
             } else if (myShip.getSlot()
-                             .get(1) == -1) {
+                             .get(1).getValue() == -1) {
                 slot2.setImageResource(EquipType3.EMPTY.getImageId());
             } else {
-                mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlot()
-                                                                            .get(1));
+                mySlotItem = realm.where(MySlotItem.class).equalTo("id", myShip.getSlot().get(1).getValue()).findFirst();
                 if (mySlotItem != null) {
-                    mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
+                    mstSlotitem = realm.where(MstSlotitem.class).equalTo("id", mySlotItem.getMstId()).findFirst();
                     slot2.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType()
-                                                                              .get(3))
+                                                                              .get(3).getValue())
                                                      .getImageId());
                 } else {
                     slot2.setImageResource(EquipType3.UNKNOWN.getImageId());
@@ -207,15 +214,15 @@ public class DamagedShipAdapter extends RecyclerView.Adapter<DamagedShipAdapter.
             if (3 > myShip.getSlotnum()) {
                 slot3.setImageResource(EquipType3.NOT_AVAILABLE.getImageId());
             } else if (myShip.getSlot()
-                             .get(2) == -1) {
+                             .get(2).getValue() == -1) {
                 slot3.setImageResource(EquipType3.EMPTY.getImageId());
             } else {
-                mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlot()
-                                                                            .get(2));
+                mySlotItem = realm.where(MySlotItem.class).equalTo("id", myShip.getSlot().get(2).getValue()).findFirst();
+
                 if (mySlotItem != null) {
-                    mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
+                    mstSlotitem = realm.where(MstSlotitem.class).equalTo("id", mySlotItem.getMstId()).findFirst();
                     slot3.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType()
-                                                                              .get(3))
+                                                                              .get(3).getValue())
                                                      .getImageId());
                 } else {
                     slot3.setImageResource(EquipType3.UNKNOWN.getImageId());
@@ -224,26 +231,25 @@ public class DamagedShipAdapter extends RecyclerView.Adapter<DamagedShipAdapter.
 
             if (4 > myShip.getSlotnum()) {
                 slot4.setImageResource(EquipType3.NOT_AVAILABLE.getImageId());
-            } else if (myShip.getSlot()
-                             .get(3) == -1) {
+            } else if (myShip.getSlot().get(3).getValue() == -1) {
                 slot4.setImageResource(EquipType3.EMPTY.getImageId());
             } else {
-                mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlot()
-                                                                            .get(3));
+                mySlotItem = realm.where(MySlotItem.class).equalTo("id", myShip.getSlot().get(3).getValue()).findFirst();
+
                 if (mySlotItem != null) {
-                    mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
+                    mstSlotitem = realm.where(MstSlotitem.class).equalTo("id", mySlotItem.getMstId()).findFirst();
                     slot4.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType()
-                                                                              .get(3))
+                                                                              .get(3).getValue())
                                                      .getImageId());
                 } else {
                     slot4.setImageResource(EquipType3.UNKNOWN.getImageId());
                 }
             }
 
-            if (MySlotItemManager.INSTANCE.contains(myShip.getSlotEx())) {
-                mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlotEx());
-                mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId());
-                slotEx.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType().get(3)).getImageId());
+            mySlotItem = realm.where(MySlotItem.class).equalTo("id", myShip.getSlotEx()).findFirst();
+            if (mySlotItem != null) {
+                mstSlotitem = realm.where(MstSlotitem.class).equalTo("id", mySlotItem.getMstId()).findFirst();
+                slotEx.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType().get(3).getValue()).getImageId());
             } else {
                 if (myShip.getSlotEx() == 0) {
                     slotEx.setImageResource(EquipType3.NOT_AVAILABLE.getImageId());

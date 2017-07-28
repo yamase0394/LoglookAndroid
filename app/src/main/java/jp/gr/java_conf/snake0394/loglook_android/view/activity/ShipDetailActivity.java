@@ -25,27 +25,30 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
 import jp.gr.java_conf.snake0394.loglook_android.DockTimer;
 import jp.gr.java_conf.snake0394.loglook_android.Escape;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.ShipUtility;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MstShipManager;
+import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitem;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitemManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
+import jp.gr.java_conf.snake0394.loglook_android.storage.RealmInt;
 import jp.gr.java_conf.snake0394.loglook_android.view.EquipType3;
 
 public class ShipDetailActivity extends AppCompatActivity {
+
+    private Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ship_detail);
+
+        realm = Realm.getDefaultInstance();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
@@ -55,7 +58,7 @@ public class ShipDetailActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("艦娘詳細情報");
 
         Intent intent = getIntent();
-        final MyShip myShip = MyShipManager.INSTANCE.getMyShip(intent.getIntExtra("shipId", 0));
+        final MyShip myShip = realm.where(MyShip.class).equalTo("id", intent.getIntExtra("shipId", 0)).findFirst();
         final Deck deck = DeckManager.INSTANCE.getDeck(intent.getIntExtra("deckId", 0));
 
         //画面の向き
@@ -66,13 +69,16 @@ public class ShipDetailActivity extends AppCompatActivity {
         }
 
         TextView text = (TextView) findViewById(R.id.shipName);
-        text.setText(myShip.getName());
+        MstShip mstShip = realm.where(MstShip.class).equalTo("id", myShip.getShipId()).findFirst();
+        text.setText(mstShip.getName());
 
         text = (TextView) findViewById(R.id.lv);
         text.setText("Lv:" + String.valueOf(myShip.getLv()));
 
         text = (TextView) findViewById(R.id.state);
-        if (deck.getMission().get(0) == 1 || deck.getMission().get(0) == 3) {
+        if (deck.getMission()
+                .get(0) == 1 || deck.getMission()
+                .get(0) == 3) {
             text.setText("遠征");
             //インディゴ
             text.setBackgroundColor(Color.parseColor("#4e5a92"));
@@ -112,7 +118,7 @@ public class ShipDetailActivity extends AppCompatActivity {
         text.setText(Integer.toString(myShip.getNowhp()) + "/" + Integer.toString(myShip.getMaxhp()));
 
         text = (TextView) findViewById(R.id.fuel);
-        int fuelMax = MstShipManager.INSTANCE.getMstShip(myShip.getShipId()).getFuelMax();
+        int fuelMax = mstShip.getFuelMax();
         int fuelNow = myShip.getFuel();
         if (fuelNow == fuelMax) {
             text.setText("||||||||||");
@@ -158,7 +164,7 @@ public class ShipDetailActivity extends AppCompatActivity {
         }
 
         text = (TextView) findViewById(R.id.bull);
-        int bullMax = MstShipManager.INSTANCE.getMstShip(myShip.getShipId()).getBullMax();
+        int bullMax = mstShip.getBullMax();
         int bullNow = myShip.getBull();
         if (bullNow == bullMax) {
             text.setText("||||||||||");
@@ -223,14 +229,16 @@ public class ShipDetailActivity extends AppCompatActivity {
         }
 
         List<MySlotItem> slotItemList = new ArrayList<>();
-        for (int slotItemId : myShip.getSlot()) {
-            if (slotItemId != -1) {
-                slotItemList.add(MySlotItemManager.INSTANCE.getMySlotItem(slotItemId));
+        for (RealmInt slotItemId : myShip.getSlot()) {
+            if (slotItemId.getValue() != -1) {
+                MySlotItem mySlotItem = realm.where(MySlotItem.class).equalTo("id", slotItemId.getValue()).findFirst();
+                slotItemList.add(mySlotItem);
             }
         }
 
         for (int i = 1; i <= 4; i++) {
-            int slotItemId = myShip.getSlot().get(i - 1);
+            int slotItemId = myShip.getSlot()
+                    .get(i - 1).getValue();
 
             if (slotItemId == -1) {
                 String name = "space" + i;
@@ -266,28 +274,32 @@ public class ShipDetailActivity extends AppCompatActivity {
                 continue;
             }
 
-            MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(slotItemId);
+            MySlotItem mySlotItem = realm.where(MySlotItem.class).equalTo("id", slotItemId).findFirst();
 
             String name = "space" + i;
             int strId = getResources().getIdentifier(name, "id", getPackageName());
             text = (TextView) findViewById(strId);
             text.setVisibility(View.VISIBLE);
-            if (myShip.getOnslot().get(i - 1) == 0) {
+            if (myShip.getOnslot()
+                    .get(i - 1).getValue() == 0) {
                 text.setText("");
             } else {
-                text.setText(String.valueOf(myShip.getOnslot().get(i - 1)));
+                text.setText(String.valueOf(myShip.getOnslot()
+                        .get(i - 1)));
             }
 
             name = "equipIcon" + i;
             strId = getResources().getIdentifier(name, "id", getPackageName());
             ImageView image = (ImageView) findViewById(strId);
-            image.setImageResource(EquipType3.toEquipType3(MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId()).getType().get(3)).getImageId());
+            MstSlotitem mstSlotitem = realm.where(MstSlotitem.class).equalTo("id", mySlotItem.getMstId()).findFirst();
+            image.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType().get(3).getValue()).getImageId());
 
             name = "equipment" + i;
             strId = getResources().getIdentifier(name, "id", getPackageName());
             text = (TextView) findViewById(strId);
             text.setVisibility(View.VISIBLE);
-            text.setText(MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId()).getName());
+            mstSlotitem = realm.where(MstSlotitem.class).equalTo("id", mySlotItem.getMstId()).findFirst();
+            text.setText(mstSlotitem.getName());
 
             name = "alv" + i;
             strId = getResources().getIdentifier(name, "id", getPackageName());
@@ -341,9 +353,12 @@ public class ShipDetailActivity extends AppCompatActivity {
         ImageView image = (ImageView) findViewById(R.id.extraSlotIcon);
         text = (TextView) findViewById(R.id.extraSlot);
 
-        if (MySlotItemManager.INSTANCE.contains(myShip.getSlotEx())) {
-            MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlotEx()).getMstId());
-            image.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType().get(3)).getImageId());
+        MySlotItem mySlotItem = realm.where(MySlotItem.class).equalTo("id", myShip.getSlotEx()).findFirst();
+        if (mySlotItem != null) {
+            MstSlotitem mstSlotitem = realm.where(MstSlotitem.class).equalTo("id", mySlotItem.getMstId()).findFirst();
+            image.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType()
+                    .get(3).getValue())
+                    .getImageId());
             text.setText(mstSlotitem.getName());
         } else {
             if (myShip.getSlotEx() == 0) {
@@ -386,7 +401,7 @@ public class ShipDetailActivity extends AppCompatActivity {
                 float AACIModefier = 1f;
                 try {
                     AACIModefier = Float.parseFloat(getText.toString());
-                }catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
                     editText.setText("1.0");
                 }
                 TextView text = (TextView) findViewById(R.id.fixedAirDefence);
@@ -421,8 +436,8 @@ public class ShipDetailActivity extends AppCompatActivity {
                     Editable getText = editText.getText();
                     float AACIModefier = 1f;
                     try {
-                         AACIModefier = Float.parseFloat(getText.toString());
-                    }catch (NumberFormatException e){
+                        AACIModefier = Float.parseFloat(getText.toString());
+                    } catch (NumberFormatException e) {
                         editText.setText("1.0");
                     }
                     TextView text = (TextView) findViewById(R.id.fixedAirDefence);
@@ -454,4 +469,9 @@ public class ShipDetailActivity extends AppCompatActivity {
         return result;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realm.close();
+    }
 }

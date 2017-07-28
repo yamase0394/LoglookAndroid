@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import io.realm.Realm;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstMission;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MstMissionManager;
 import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
 
 /**
@@ -58,10 +58,11 @@ public enum MissionTimer {
             //遠征は一分前に完了する
             completeTime -= TimeUnit.MINUTES.toMillis(1);
 
-            MstMission mstMission = MstMissionManager.INSTANCE.getMstMission(missionId);
-
-            //通知をセット。通知IDはdeckId
-            NotificationUtility.setNotification(context, "遠征完了", "遠征完了", mstMission.getName(), deckId, completeTime);
+            try(Realm realm = Realm.getDefaultInstance()) {
+                MstMission mstMission = realm.where(MstMission.class).equalTo("id", missionId).findFirst();
+                //通知をセット。通知IDはdeckId
+                NotificationUtility.setNotification(context, "遠征完了", "遠征完了", mstMission.getName(), deckId, completeTime);
+            }
             MissionTimer.INSTANCE.setReadeyDeck(Timer.NULL);
             isRunning = true;
         }

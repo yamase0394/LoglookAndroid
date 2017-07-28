@@ -38,10 +38,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
+import java.util.Set;
 import java.util.zip.GZIPInputStream;
 
 import io.netty.buffer.ByteBuf;
@@ -63,6 +65,7 @@ public class LittleProxyServerService extends Service implements Runnable {
 
     private HttpProxyServer server;
     private final Handler handler = new Handler();
+    private Set<String> kcsServerSet;
 
     public LittleProxyServerService() {
     }
@@ -76,6 +79,28 @@ public class LittleProxyServerService extends Service implements Runnable {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        kcsServerSet = new HashSet<>();
+        kcsServerSet.add("203.104.209.71");//横須賀
+        kcsServerSet.add("203.104.209.87");//呉
+        kcsServerSet.add("125.6.184.16");//佐世保
+        kcsServerSet.add("125.6.187.205");//舞鶴
+        kcsServerSet.add("125.6.187.229");//大湊
+        kcsServerSet.add("125.6.187.253");//トラック
+        kcsServerSet.add("125.6.188.25");//リンガ泊地
+        kcsServerSet.add("203.104.248.135");//ラバウル基地
+        kcsServerSet.add("125.6.189.7");//ショートランド泊地
+        kcsServerSet.add("125.6.189.39");//ブイン基地
+        kcsServerSet.add("125.6.189.71");//タウイタウイ泊地
+        kcsServerSet.add("125.6.189.103");//パラオ泊地
+        kcsServerSet.add("125.6.189.135");//ブルネイ泊地
+        kcsServerSet.add("125.6.189.167");//単冠湾泊地
+        kcsServerSet.add("125.6.189.215");//幌筵
+        kcsServerSet.add("125.6.189.247");//宿毛湾
+        kcsServerSet.add("203.104.209.23");//鹿屋基地
+        kcsServerSet.add("203.104.209.39");//岩川基地
+        kcsServerSet.add("203.104.209.55");//佐伯湾
+        kcsServerSet.add("203.104.209.102");//柱島
     }
 
     @Override
@@ -85,13 +110,13 @@ public class LittleProxyServerService extends Service implements Runnable {
         intent = new Intent(this, MainActivity.class);
         PendingIntent pending = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         Notification builder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_stat_transparent)
-                                                                   .setTicker("start")
-                                                                   .setContentTitle("泥提督支援アプリ")
-                                                                   .setContentText("")
-                                                                   .setWhen(System.currentTimeMillis())
-                                                                   .setContentIntent(pending)
-                                                                   .setPriority(Notification.PRIORITY_MIN)
-                                                                   .build();
+                .setTicker("start")
+                .setContentTitle("泥提督支援アプリ")
+                .setContentText("")
+                .setWhen(System.currentTimeMillis())
+                .setContentIntent(pending)
+                .setPriority(Notification.PRIORITY_MIN)
+                .build();
         builder.flags = Notification.FLAG_ONGOING_EVENT;
         startForeground(R.string.app_name, builder);
 
@@ -101,7 +126,6 @@ public class LittleProxyServerService extends Service implements Runnable {
 
         return START_STICKY;
     }
-
 
     @Override
     public void onDestroy() {
@@ -114,7 +138,7 @@ public class LittleProxyServerService extends Service implements Runnable {
             @Override
             public void run() {
                 Toast.makeText(getApplicationContext(), "プロキシ停止", Toast.LENGTH_SHORT)
-                     .show();
+                        .show();
             }
         });
     }
@@ -125,23 +149,23 @@ public class LittleProxyServerService extends Service implements Runnable {
         final GeneralPrefs prefs = new GeneralPrefs(getApplicationContext());
 
         ThreadPoolConfiguration conf = new ThreadPoolConfiguration().withAcceptorThreads(1)
-                                                                    .withClientToProxyWorkerThreads(2)
-                                                                    .withProxyToServerWorkerThreads(2);
+                .withClientToProxyWorkerThreads(2)
+                .withProxyToServerWorkerThreads(2);
 
         HttpProxyServerBootstrap serverBuilder = DefaultHttpProxyServer.bootstrap()
-                                                                       .withPort(prefs.getPort())
-                                                                       .withConnectTimeout(30000)
-                                                                       .withAllowLocalOnly(true)
-                                                                       .withThreadPoolConfiguration(conf)
-                                                                       .withFiltersSource(new CaptureAdapter())
-                                                                       .withProxyAlias("doro-proxy");
+                .withPort(prefs.getPort())
+                .withConnectTimeout(30000)
+                .withAllowLocalOnly(true)
+                .withThreadPoolConfiguration(conf)
+                .withFiltersSource(new CaptureAdapter())
+                .withProxyAlias("doro-proxy");
 
         //上流プロキシの設定
         if (prefs.getUsesProxy()) {
             serverBuilder.withChainProxyManager(new ChainedProxyManager() {
                 @Override
                 public void lookupChainedProxies(HttpRequest req, Queue<ChainedProxy> proxies) {
-                    if (!KancolleServerSet.INSTANCE.contains(HttpHeaders.getHost(req))) {
+                    if (!kcsServerSet.contains(HttpHeaders.getHost(req))) {
                         ChainedProxy proxy = new ChainedProxyAdapter() {
                             @Override
                             public InetSocketAddress getChainedProxyAddress() {
@@ -163,7 +187,7 @@ public class LittleProxyServerService extends Service implements Runnable {
                 @Override
                 public void run() {
                     Toast.makeText(getApplicationContext(), "プロキシ起動 port:" + String.valueOf(prefs.getPort()), Toast.LENGTH_SHORT)
-                         .show();
+                            .show();
                 }
             });
         } catch (final Exception e) {
@@ -171,7 +195,7 @@ public class LittleProxyServerService extends Service implements Runnable {
                 handler.post(new Runnable() {
                     public void run() {
                         Toast.makeText(getApplicationContext(), "既に使用されているポートです。ポート番号を変更してください。", Toast.LENGTH_LONG)
-                             .show();
+                                .show();
                     }
                 });
             } else {
@@ -230,10 +254,10 @@ public class LittleProxyServerService extends Service implements Runnable {
         public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
 
             if (originalRequest.getUri()
-                               .contains("/kcsapi/")) {
+                    .contains("/kcsapi/")) {
                 return new CaptureFilters(originalRequest, ctx, this.interceptor);
             } else if (originalRequest.getUri()
-                                      .contains("/kcs/")) {
+                    .contains("/kcs/")) {
                 return new RewriteHeaderFilters(originalRequest, ctx);
             }
 
@@ -248,10 +272,10 @@ public class LittleProxyServerService extends Service implements Runnable {
         private boolean released;
 
         private CompositeByteBuf requestBuf = this.ctx.alloc()
-                                                      .compositeBuffer();
+                .compositeBuffer();
 
         private CompositeByteBuf responseBuf = this.ctx.alloc()
-                                                       .compositeBuffer();
+                .compositeBuffer();
 
         //private StringBuilder sb = new StringBuilder();
 
@@ -556,7 +580,7 @@ public class LittleProxyServerService extends Service implements Runnable {
 
             meta.setContentType(header.get(HttpHeaders.Names.CONTENT_TYPE));
             meta.setMethod(req.getMethod()
-                              .toString());
+                    .toString());
 
             String bodyStr = URLDecoder.decode(new String(body, "UTF-8"), "UTF-8");
             String[] params = bodyStr.split("&");
@@ -575,7 +599,7 @@ public class LittleProxyServerService extends Service implements Runnable {
                 }
                 if (parameterMap.containsKey(key)) {
                     parameterMap.get(key)
-                                .add(value);
+                            .add(value);
                 } else {
                     parameterMap.put(key, new ArrayList<>(Arrays.asList(value)));
                 }
@@ -636,7 +660,7 @@ public class LittleProxyServerService extends Service implements Runnable {
             ResponseMetaDataWrapper meta = new ResponseMetaDataWrapper();
 
             meta.setStatus(res.getStatus()
-                              .code());
+                    .code());
             meta.setContentType(header.get(HttpHeaders.Names.CONTENT_TYPE));
             meta.setResponseBody(Optional.of((InputStream) new ByteArrayInputStream(body)));
 

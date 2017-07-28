@@ -4,7 +4,6 @@ import android.util.SparseArray;
 
 import jp.gr.java_conf.snake0394.loglook_android.App;
 import jp.gr.java_conf.snake0394.loglook_android.storage.MstDataStorage;
-import jp.gr.java_conf.snake0394.loglook_android.storage.MstDataStorageSpotRepository;
 
 /**
  * Created by snake0394 on 2016/08/04.
@@ -15,8 +14,8 @@ public enum MstShipManager {
     private SparseArray<MstShip> idToMstShipSparseArray;
 
     MstShipManager() {
-        MstDataStorage storage = MstDataStorageSpotRepository.getEntity(App.getInstance());
-        this.idToMstShipSparseArray = storage.mstShipSparseArray;
+        MstDataStorage storage = new MstDataStorage(App.getInstance());
+        this.idToMstShipSparseArray = storage.getMstShipSparseArray();
     }
 
     public void put(MstShip mstShip) {
@@ -37,8 +36,7 @@ public enum MstShipManager {
     }
 
     public void serialize() {
-        MstDataStorage storage = MstDataStorageSpotRepository.getEntity(App.getInstance());
-        storage.mstShipSparseArray = this.idToMstShipSparseArray;
-        MstDataStorageSpotRepository.putEntity(App.getInstance(), storage);
+        MstDataStorage storage = new MstDataStorage(App.getInstance());
+        storage.setMstShipSparseArray(this.idToMstShipSparseArray);
     }
 }

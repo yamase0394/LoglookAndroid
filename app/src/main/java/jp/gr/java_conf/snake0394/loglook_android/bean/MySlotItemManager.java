@@ -8,7 +8,6 @@ import java.util.List;
 
 import jp.gr.java_conf.snake0394.loglook_android.App;
 import jp.gr.java_conf.snake0394.loglook_android.storage.UserDataStorage;
-import jp.gr.java_conf.snake0394.loglook_android.storage.UserDataStorageSpotRepository;
 
 /**
  * Created by snake0394 on 2016/08/22.
@@ -19,8 +18,8 @@ public enum MySlotItemManager {
     private SparseArray<MySlotItem> sparseArray;
 
     MySlotItemManager() {
-        UserDataStorage storage = UserDataStorageSpotRepository.getEntity(App.getInstance());
-        this.sparseArray = storage.mySlotitemSparseArray;
+        UserDataStorage storage = new UserDataStorage(App.getInstance());
+        this.sparseArray = storage.getMySlotitemSparseArray();
     }
 
     public void put(MySlotItem mySlotItem) {
@@ -56,9 +55,8 @@ public enum MySlotItemManager {
     }
 
     public void serialize() {
-        UserDataStorage storage = UserDataStorageSpotRepository.getEntity(App.getInstance());
-        storage.mySlotitemSparseArray = this.sparseArray;
-        UserDataStorageSpotRepository.putEntity(App.getInstance(), storage);
+        UserDataStorage storage = new UserDataStorage(App.getInstance());
+        storage.setMySlotitemSparseArray(this.sparseArray);
     }
 
     @Override

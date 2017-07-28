@@ -17,10 +17,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.realm.Realm;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MstMissionManager;
+import jp.gr.java_conf.snake0394.loglook_android.bean.MstMission;
 
 
 public class MissionFragment extends Fragment {
@@ -59,7 +60,7 @@ public class MissionFragment extends Fragment {
         transaction.hide(fragment);
         transaction.commit();
 
-        try {
+        try(Realm realm = Realm.getDefaultInstance()) {
             //第2～4艦隊の遠征状況を表示する
             for (int i = 2; i <= 4; i++) {
                 String name = "deck" + i;
@@ -96,9 +97,9 @@ public class MissionFragment extends Fragment {
                     strId = getResources().getIdentifier(name, "id", getActivity().getPackageName());
                     text = (TextView) getActivity().findViewById(strId);
                     int missionId = Integer.parseInt(mission.get(1).toString());
-                    text.setText(MstMissionManager.INSTANCE.getMstMission(missionId).getName());
+                    MstMission mstMission = realm.where(MstMission.class).equalTo("id", missionId).findFirst();
+                    text.setText(mstMission.getName());
                     text.setBackgroundColor(0x00000000);
-
 
                     name = "time" + i;
                     strId = getResources().getIdentifier(name, "id", getActivity().getPackageName());
@@ -177,7 +178,8 @@ public class MissionFragment extends Fragment {
                     strId = getResources().getIdentifier(name, "id", getActivity().getPackageName());
                     text = (TextView) getActivity().findViewById(strId);
                     int missionId = Integer.parseInt(mission.get(1).toString());
-                    text.setText(MstMissionManager.INSTANCE.getMstMission(missionId).getName());
+                    MstMission mstMission = realm.where(MstMission.class).equalTo("id", missionId).findFirst();
+                    text.setText(mstMission.getName());
                     text.setBackgroundColor(Color.rgb(237, 185, 24));
 
                     name = "time" + i;

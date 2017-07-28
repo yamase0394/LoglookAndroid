@@ -26,12 +26,12 @@ class GeneralPrefs(context: Context) : KoreferenceModel(context = context, name 
     /**
      * 検出領域のx座標。
      */
-    var viewX by intPreference(Short.MAX_VALUE.toInt())
+    var viewX by intPreference(-Short.MAX_VALUE.toInt())
 
     /**
      * 検出領域のy座標。
      */
-    var viewY by intPreference(Short.MAX_VALUE.toInt())
+    var viewY by intPreference(-Short.MAX_VALUE.toInt())
 
     /*
      * 検出領域の幅。

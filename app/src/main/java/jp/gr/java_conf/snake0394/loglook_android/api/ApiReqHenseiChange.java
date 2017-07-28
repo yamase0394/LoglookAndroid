@@ -99,7 +99,7 @@ public class ApiReqHenseiChange implements APIListenerSpi {
             }
         }
 
-        targetDeck.setLevelSum(DeckUtility.getLevelSum(targetDeck));
-        targetDeck.setCondRecoveryTime(DeckUtility.getCondRecoveryTime(targetDeck));
+        targetDeck.setLevelSum(DeckUtility.INSTANCE.getLevelSum(targetDeck));
+        targetDeck.setCondRecoveryTime(DeckUtility.INSTANCE.getCondRecoveryTime(targetDeck));
     }
 }
