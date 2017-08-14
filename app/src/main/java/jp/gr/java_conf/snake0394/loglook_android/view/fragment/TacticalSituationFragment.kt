@@ -396,12 +396,14 @@ class TacticalSituationFragment : Fragment() {
                     name = "ecBeforeHp" + i
                     strId = resources.getIdentifier(name, "id", activity.packageName)
                     (activity.findViewById(strId) as TextView).apply {
+                        visibility = View.VISIBLE
                         text = "${phaseList.first().eHpCombined!![i - 1]}/$maxHp→"
                     }
 
                     name = "ecHp" + i
                     strId = resources.getIdentifier(name, "id", activity.packageName)
                     (activity.findViewById(strId) as TextView).apply {
+                        visibility = View.VISIBLE
                         text = "$lastHp/$maxHp"
                     }
 
@@ -409,6 +411,8 @@ class TacticalSituationFragment : Fragment() {
                     strId = resources.getIdentifier(name, "id", activity.packageName)
                     (activity.findViewById(strId) as TextView).apply {
                         val damage = lastHp - phaseList.first().eHpCombined!![i - 1]
+                        text = damage.toString()
+                        visibility = View.VISIBLE
                         if (damage == 0) {
                             setTextColor(ContextCompat.getColor(context, R.color.undamaged))
                         } else {

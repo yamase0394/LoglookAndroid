@@ -11,6 +11,7 @@ import io.realm.Realm;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstMission;
+import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
 
 /**
@@ -18,6 +19,8 @@ import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
  */
 public enum MissionTimer {
     INSTANCE;
+
+    private static final String TAG = "MissionTimer";
 
     /**
      * 艦隊毎のタイマー
@@ -60,6 +63,7 @@ public enum MissionTimer {
 
             try(Realm realm = Realm.getDefaultInstance()) {
                 MstMission mstMission = realm.where(MstMission.class).equalTo("id", missionId).findFirst();
+                Logger.d(TAG, "missionId=" + missionId);
                 //通知をセット。通知IDはdeckId
                 NotificationUtility.setNotification(context, "遠征完了", "遠征完了", mstMission.getName(), deckId, completeTime);
             }
