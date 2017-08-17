@@ -4,7 +4,7 @@ data class ApiInjectionKouku(
         val apiStage1: ApiStage1?,
         val apiStage2: ApiStage2?,
         val apiStage3: ApiKouku.ApiStage3?,
-        val apiStage3Combined:ApiKouku.ApiStage3?
+        val apiStage3Combined:ApiKouku.ApiStage3Combined?
 ) {
     /**
      * 航空戦1 空対空戦闘

@@ -11,8 +11,8 @@ object BattleCalculator {
             }
         } ?: return null
 
-        battle.apiAirBaseInjection?.apiStage3Combined?.run {
-            apiEdam.slice(1..phase.eHpCombined!!.size).withIndex().forEach {
+        battle.apiAirBaseInjection?.apiStage3Combined?.apiEdam?.run {
+            slice(1..phase.eHpCombined!!.size).withIndex().forEach {
                 phase.eHpCombined[it.index] = Math.max(phase.eHpCombined[it.index] - it.value, 0)
             }
         }
@@ -28,8 +28,8 @@ object BattleCalculator {
             }
         } ?: return null
 
-        battle.apiInjectionKouku?.apiStage3Combined?.run {
-            apiEdam.slice(1..phase.eHpCombined!!.size).withIndex().forEach {
+        battle.apiInjectionKouku?.apiStage3Combined?.apiEdam?.run {
+            slice(1..phase.eHpCombined!!.size).withIndex().forEach {
                 phase.eHpCombined[it.index] = Math.max(phase.eHpCombined[it.index] - it.value, 0)
             }
         }
@@ -47,8 +47,8 @@ object BattleCalculator {
                 }
             } ?: return null
 
-            apiAirBaseAttack.apiStage3Combined?.run {
-                apiEdam.slice(1..phase.eHpCombined!!.size).withIndex().forEach {
+            apiAirBaseAttack.apiStage3Combined?.apiEdam?.run {
+                slice(1..phase.eHpCombined!!.size).withIndex().forEach {
                     phase.eHpCombined[it.index] = Math.max(phase.eHpCombined[it.index] - it.value, 0)
                 }
             }
@@ -74,13 +74,14 @@ object BattleCalculator {
         } ?: return null
 
         apiKouku.apiStage3Combined?.run {
-            apiFdam.slice(1..(phase.fHpCombined?.size ?: return@run)).withIndex().forEach {
-                phase.fHpCombined[it.index] = Math.max(phase.fHpCombined[it.index] - it.value, 0)
+            if(phase.fHpCombined != null) {
+                apiFdam.slice(1..(phase.fHpCombined.size)).withIndex().forEach {
+                    phase.fHpCombined[it.index] = Math.max(phase.fHpCombined[it.index] - it.value, 0)
+                }
             }
 
-            //TODO:return@runが適切か
             apiEdam?.run {
-                slice(1..(phase.eHpCombined?.size ?: return@run)).withIndex().forEach {
+                slice(1..(phase.eHpCombined!!.size)).withIndex().forEach {
                     phase.eHpCombined[it.index] = Math.max(phase.eHpCombined[it.index] - it.value, 0)
                 }
             }

@@ -10,7 +10,7 @@ data class ApiAirBaseAttack(
         val apiStage1: ApiStage1?,
         val apiStage2: ApiStage2?,
         val apiStage3: ApiStage3?,
-        val apiStage3Combined: ApiStage3?
+        val apiStage3Combined: ApiStage3Combined?
 ) {
     data class ApiStage1(
             /**
@@ -71,5 +71,12 @@ data class ApiAirBaseAttack(
              * 敵被ダメージ [0]=-1
              */
             val apiEdam: List<Int>
+    )
+
+    data class ApiStage3Combined(
+            /**
+             * 敵被ダメージ [0]=-1
+             */
+            val apiEdam: List<Int>?
     )
 }

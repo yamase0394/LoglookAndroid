@@ -14,10 +14,7 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitem
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip
-import jp.gr.java_conf.snake0394.loglook_android.bean.battle.IFormation
-import jp.gr.java_conf.snake0394.loglook_android.bean.battle.IKouku
-import jp.gr.java_conf.snake0394.loglook_android.bean.battle.IMidnightBattle
-import jp.gr.java_conf.snake0394.loglook_android.bean.battle.SortieBattleresult
+import jp.gr.java_conf.snake0394.loglook_android.bean.battle.*
 import jp.gr.java_conf.snake0394.loglook_android.proxy.RequestMetaData
 import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData
 import java.io.BufferedWriter
@@ -142,6 +139,90 @@ class BattleLogger : APIListenerSpi {
                 }
 
                 sb.append(",")
+            }
+
+            sb.append(",")
+            when (battle) {
+                is ICombinedBattle -> {
+                    val deck = DeckManager.INSTANCE.getDeck(2)
+                    val shipId = deck.shipId
+                    val nowhps = battle.apiNowhpsCombined
+                    val maxhps = battle.apiMaxhpsCombined
+                    for (i in 1..6) {
+                        if (shipId[i - 1] == -1) {
+                            sb.append(",,")
+                            continue
+                        }
+                        val myShip = realm.where(MyShip::class.java).equalTo("id", shipId[i - 1]).findFirst()
+                        val mstShip = realm.where(MstShip::class.java).equalTo("id", myShip.shipId).findFirst()
+                        sb.append("${mstShip.name}(Lv${myShip.lv}),${nowhps[i]}/${maxhps[i]},")
+                    }
+
+                    sb.append(",,,,,,,,,,,")
+                }
+                is IEnemyCombinedBattle -> {
+                    sb.append(",,,,,,,,,,,,")
+
+                    val nowhps = battle.apiNowhpsCombined
+                    val maxhps = battle.apiMaxhpsCombined
+                    val eship = battle.apiShipKeCombined
+                    for (i in 1..6) {
+                        if (eship[i] == -1) {
+                            sb.append(",")
+                        } else {
+                            val mstShip = realm.where(MstShip::class.java).equalTo("id", eship[i]).findFirst()
+                            sb.append(mstShip.name)
+                            if (mstShip.yomi != "" && mstShip.yomi != "-") {
+                                sb.append("(${mstShip.yomi})")
+                            }
+                            sb.append(",${nowhps[i + 6]}/${maxhps[i + 6]}")
+                        }
+
+                        if (i == 6) {
+                            break
+                        }
+
+                        sb.append(",")
+                    }
+                }
+                is IEachCombinedBattle -> {
+                    val deck = DeckManager.INSTANCE.getDeck(2)
+                    val shipId = deck.shipId
+                    val nowhps = battle.apiNowhpsCombined
+                    val maxhps = battle.apiMaxhpsCombined
+                    for (i in 1..6) {
+                        if (shipId[i - 1] == -1) {
+                            sb.append(",,")
+                            continue
+                        }
+                        val myShip = realm.where(MyShip::class.java).equalTo("id", shipId[i - 1]).findFirst()
+                        val mstShip = realm.where(MstShip::class.java).equalTo("id", myShip.shipId).findFirst()
+                        sb.append("${mstShip.name}(Lv${myShip.lv}),${nowhps[i]}/${maxhps[i]},")
+                    }
+
+                    val eship = battle.apiShipKeCombined
+                    for (i in 1..6) {
+                        if (eship[i] == -1) {
+                            sb.append(",")
+                        } else {
+                            val mstShip = realm.where(MstShip::class.java).equalTo("id", eship[i]).findFirst()
+                            sb.append(mstShip.name)
+                            if (mstShip.yomi != "" && mstShip.yomi != "-") {
+                                sb.append("(${mstShip.yomi})")
+                            }
+                            sb.append(",${nowhps[i + 6]}/${maxhps[i + 6]}")
+                        }
+
+                        if (i == 6) {
+                            break
+                        }
+
+                        sb.append(",")
+                    }
+                }
+                else -> {
+                    sb.append(",,,,,,,,,,,,,,,,,,,,,,,")
+                }
             }
 
             Log.d("battlelog", sb.toString())

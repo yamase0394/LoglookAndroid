@@ -6,9 +6,7 @@ package jp.gr.java_conf.snake0394.loglook_android.bean.battle
 data class CombinedBattleBattle(
         override val apiDeckId: Int,
         override val apiShipKe: List<Int>,
-        override val apiShipKeCombined: List<Int>,
         override val apiShipLv: List<Int>,
-        override val apiShipLvCombined: List<Int>,
         override val apiNowhps: List<Int>,
         override val apiMaxhps: List<Int>,
         override val apiNowhpsCombined: List<Int>,
@@ -45,4 +43,4 @@ data class CombinedBattleBattle(
          * 雷撃 対全体
          */
         override val apiRaigeki: ApiRaigeki
-) : IEachCombinedBattle, IFormation, IAirBaseAttack, IInjectionKouku, IKouku, ISupport, IOpeningTaisen, IOpeningAttack, IHourai
+) : ICombinedBattle, IFormation, IAirBaseAttack, IInjectionKouku, IKouku, ISupport, IOpeningTaisen, IOpeningAttack, IHourai
