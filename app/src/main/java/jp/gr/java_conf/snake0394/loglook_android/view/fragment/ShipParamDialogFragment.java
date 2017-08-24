@@ -10,6 +10,7 @@ import android.text.Editable;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -64,8 +65,11 @@ public class ShipParamDialogFragment extends android.support.v4.app.DialogFragme
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Activity activity = getActivity();
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        final View rootView = LayoutInflater.from(activity).inflate(R.layout.dialog_fragment_ship_param, null);
-        final MyShip myShip = realm.where(MyShip.class).equalTo("id", shipId).findFirst();
+        final View rootView = LayoutInflater.from(activity)
+                .inflate(R.layout.dialog_fragment_ship_param, null);
+        final MyShip myShip = realm.where(MyShip.class)
+                .equalTo("id", shipId)
+                .findFirst();
         final Deck deck = DeckManager.INSTANCE.getDeck(deckId);
 
         TextView text = (TextView) rootView.findViewById(R.id.shellingBasicAttackPower);
@@ -149,9 +153,17 @@ public class ShipParamDialogFragment extends android.support.v4.app.DialogFragme
         text = (TextView) rootView.findViewById(R.id.fixedAirDefence);
         text.setText(ShipUtility.getFixedAirDefense(myShip, deck, "単縦陣", 1) + "機");
 
-        MstShip mstShip = realm.where(MstShip.class).equalTo("id", myShip.getShipId()).findFirst();
-        builder.setView(rootView).setTitle(mstShip.getName() + "(Lv" + myShip.getLv() + ")").setNegativeButton("閉じる", null);
-        return builder.create();
+        MstShip mstShip = realm.where(MstShip.class)
+                .equalTo("id", myShip.getShipId())
+                .findFirst();
+        builder.setView(rootView)
+                .setTitle(mstShip.getName() + "(Lv" + myShip.getLv() + ")")
+                .setNegativeButton("閉じる", null);
+
+        Dialog dialog = builder.create();
+        dialog.getWindow()
+                .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        return dialog;
     }
 
     @Override

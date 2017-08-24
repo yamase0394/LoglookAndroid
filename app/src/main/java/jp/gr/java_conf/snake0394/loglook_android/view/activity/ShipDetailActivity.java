@@ -237,8 +237,7 @@ public class ShipDetailActivity extends AppCompatActivity {
         }
 
         for (int i = 1; i <= 4; i++) {
-            int slotItemId = myShip.getSlot()
-                    .get(i - 1).getValue();
+            int slotItemId = myShip.getSlot().get(i - 1).getValue();
 
             if (slotItemId == -1) {
                 String name = "space" + i;
@@ -280,12 +279,10 @@ public class ShipDetailActivity extends AppCompatActivity {
             int strId = getResources().getIdentifier(name, "id", getPackageName());
             text = (TextView) findViewById(strId);
             text.setVisibility(View.VISIBLE);
-            if (myShip.getOnslot()
-                    .get(i - 1).getValue() == 0) {
+            if (myShip.getOnslot().get(i - 1).getValue() == 0) {
                 text.setText("");
             } else {
-                text.setText(String.valueOf(myShip.getOnslot()
-                        .get(i - 1)));
+                text.setText(String.valueOf(myShip.getOnslot().get(i - 1).getValue()));
             }
 
             name = "equipIcon" + i;

@@ -51,9 +51,7 @@ class ApiReqCombinedBattleBattleresult : APIListenerSpi {
             val lastHp = phaseStates[phaseStates.size - 1].fHp[i]
             val maxHp = battle.apiMaxhps[i + 1]
             if (lastHp <= maxHp / 4) {
-                App.getInstance()
-                        .startService(Intent(App.getInstance()
-                                .applicationContext, HeavilyDamagedWarningService::class.java))
+                App.getInstance().startService(Intent(App.getInstance().applicationContext, HeavilyDamagedWarningService::class.java))
                 return
             }
         }
