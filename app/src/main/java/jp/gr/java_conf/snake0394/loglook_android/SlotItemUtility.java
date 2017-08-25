@@ -456,6 +456,7 @@ public class SlotItemUtility {
     //TODO:他に判定方法があるかどうか
     private static boolean hasAADirector(MstSlotitem slotitem) {
         switch (slotitem.getName()) {
+            case "10cm高角砲＋高射装置":
             case "12.7cm高角砲＋高射装置":
             case "90mm単装高角砲":
             case "5inch連装砲 Mk.28 mod.2":

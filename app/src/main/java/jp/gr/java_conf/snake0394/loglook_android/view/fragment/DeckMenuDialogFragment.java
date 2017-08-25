@@ -9,6 +9,7 @@ import android.text.Editable;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -220,7 +221,10 @@ public class DeckMenuDialogFragment extends android.support.v4.app.DialogFragmen
         }
 
         builder.setView(rootView).setTitle("第" + getArguments().getInt("deckId") + "艦隊防空情報");
-        return builder.create();
+        
+        Dialog dialog = builder.create();
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        return dialog;
     }
 
     @Override
