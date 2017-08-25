@@ -9,18 +9,12 @@
         android:id="@+id/text_rank"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="false"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentRight="false"
         android:textColor="@android:color/white"/>
 
     <TextView
         android:id="@+id/text_heavily_damaged"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="false"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentRight="false"
         android:layout_marginLeft="5dp"
         android:background="@android:color/holo_red_dark"
         android:text="大破"
@@ -30,9 +24,7 @@
         android:id="@+id/text_heavily_damaged_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="false"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentRight="false"
         android:layout_marginLeft="5dp"
+        android:background="@color/transparent"
         android:textColor="@android:color/white"/>
 </LinearLayout>

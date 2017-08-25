@@ -4,6 +4,9 @@ import android.content.Intent
 import com.google.gson.JsonObject
 import io.realm.Realm
 import jp.gr.java_conf.snake0394.loglook_android.App
+import jp.gr.java_conf.snake0394.loglook_android.HeavilyDamagedWarningService
+import jp.gr.java_conf.snake0394.loglook_android.WinRankOverlayService
+import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip
 import jp.gr.java_conf.snake0394.loglook_android.proxy.RequestMetaData
 import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData
@@ -18,11 +21,14 @@ import java.util.*
 @API("/kcsapi/api_get_member/ship_deck")
 class ApiGetMemberShipDeck : APIListenerSpi {
     override fun accept(json: JsonObject, req: RequestMetaData, res: ResponseMetaData) {
+        //WinRankOverlayを消す
+        App.getInstance().stopService(Intent(App.getInstance().getApplicationContext(), WinRankOverlayService::class.java))
 
         val data = json.getAsJsonObject("api_data")
         val apiShipData = data.getAsJsonArray("api_ship_data")
         val gson = RealmUtils.getGsonInstance()
         val heavyDamaged = ArrayList<Int>()
+        val heavyDamagedName = arrayListOf<String>()
 
         Realm.getDefaultInstance().use { realm ->
             realm.executeTransaction { realm ->
@@ -39,19 +45,27 @@ class ApiGetMemberShipDeck : APIListenerSpi {
                         }
                         */
                         heavyDamaged.add(myShip.id)
+                        heavyDamagedName.add(realm.where(MstShip::class.java).equalTo("id", myShip.shipId).findFirst().name)
                     }
                 }
             }
         }
 
         if (!heavyDamaged.isEmpty()) {
-            if (GeneralPrefs(App.getInstance()).showsHeavilyDamagedWarningWindow) {
+            val prefs = GeneralPrefs(App.getInstance())
+            if (prefs.showsHeavilyDamagedWarningWindow) {
                 //大破進撃警告画面を表示
                 val intent = Intent(App.getInstance(), HeavilyDamagedWarningActivity::class.java)
                 intent.putIntegerArrayListExtra("shipId", heavyDamaged)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
                 App.getInstance().startActivity(intent)
+            }
+
+            if(prefs.showsHeavilyDamagedOverlay){
+                val intent = Intent(App.getInstance().getApplicationContext(), HeavilyDamagedWarningService::class.java)
+                intent.putStringArrayListExtra("nameList", heavyDamagedName)
+                App.getInstance().startService(intent)
             }
         }
     }

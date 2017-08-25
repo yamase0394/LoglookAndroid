@@ -7,6 +7,7 @@ import android.os.IBinder
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.TextView
 import jp.gr.java_conf.snake0394.loglook_android.logger.Logger
 
 
@@ -40,10 +41,22 @@ class HeavilyDamagedWarningService : Service() {
                     -(displayHeight / 2),
                     WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                    PixelFormat.OPAQUE
+                    PixelFormat.TRANSPARENT
             )
             overlayView!!.setOnClickListener { stopSelf() }
             OverlayService.addOverlayView(overlayView!!, params)
+        }
+
+        (overlayView!!.findViewById(R.id.text_heavily_damaged_list) as TextView).apply {
+            val heavilyDamagedNames = intent.getStringArrayListExtra("nameList")
+            var damagedShipNames = ""
+            (0 until heavilyDamagedNames.size).forEach { idx ->
+                damagedShipNames += heavilyDamagedNames[idx]
+                if (idx != heavilyDamagedNames.size - 1) {
+                    damagedShipNames += ", "
+                }
+            }
+            text = damagedShipNames
         }
 
         return Service.START_STICKY

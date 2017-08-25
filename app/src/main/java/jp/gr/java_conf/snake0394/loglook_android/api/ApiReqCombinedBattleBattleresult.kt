@@ -1,14 +1,10 @@
 package jp.gr.java_conf.snake0394.loglook_android.api
 
-import android.content.Intent
 import com.google.gson.JsonObject
-import jp.gr.java_conf.snake0394.loglook_android.*
+import jp.gr.java_conf.snake0394.loglook_android.Escape
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager
-import jp.gr.java_conf.snake0394.loglook_android.bean.battle.ICombinedBattle
-import jp.gr.java_conf.snake0394.loglook_android.bean.battle.IEachCombinedBattle
 import jp.gr.java_conf.snake0394.loglook_android.proxy.RequestMetaData
 import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData
-import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs
 
 /**
  * Created by snake0394 on 2017/02/17.
@@ -36,6 +32,7 @@ class ApiReqCombinedBattleBattleresult : APIListenerSpi {
             Escape.INSTANCE.ready(damaged, towing)
         }
 
+        /*
         //勝利ランクオーバーレイを消す
         App.getInstance().stopService(Intent(App.getInstance().applicationContext, WinRankOverlayService::class.java))
 
@@ -77,5 +74,6 @@ class ApiReqCombinedBattleBattleresult : APIListenerSpi {
         }
 
         App.getInstance().stopService(Intent(App.getInstance().applicationContext, HeavilyDamagedWarningService::class.java))
+        */
     }
 }

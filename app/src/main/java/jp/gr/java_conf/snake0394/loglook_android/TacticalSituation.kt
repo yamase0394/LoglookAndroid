@@ -112,6 +112,7 @@ object TacticalSituation {
         if (!GeneralPrefs(App.getInstance().applicationContext).showsWinRankOverlay) {
             return
         }
+        App.getInstance().stopService(Intent(App.getInstance().applicationContext, HeavilyDamagedWarningService::class.java))
         App.getInstance().startService(Intent(App.getInstance().applicationContext, WinRankOverlayService::class.java))
     }
 

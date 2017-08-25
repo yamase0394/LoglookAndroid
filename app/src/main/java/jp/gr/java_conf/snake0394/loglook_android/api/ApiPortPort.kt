@@ -21,6 +21,8 @@ class ApiPortPort : APIListenerSpi {
     private var gson: Gson? = null
 
     override fun accept(json: JsonObject, req: RequestMetaData, res: ResponseMetaData) {
+        //WinRankOverlayを消す
+        App.getInstance().stopService(Intent(App.getInstance().getApplicationContext(), WinRankOverlayService::class.java))
         App.getInstance().stopService(Intent(App.getInstance().applicationContext, HeavilyDamagedWarningService::class.java))
 
         gson = RealmUtils.getGsonInstance()

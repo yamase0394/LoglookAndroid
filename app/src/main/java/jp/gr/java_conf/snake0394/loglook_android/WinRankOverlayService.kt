@@ -19,9 +19,8 @@ import jp.gr.java_conf.snake0394.loglook_android.logger.Logger
 
 /**
  * 戦闘時に[TacticalSituation]で計算された勝利ランクをオーバーレイする
- * リザルト[jp.gr.java_conf.snake0394.loglook_android.api.ApiReqPracticeBattleResult],
- * [jp.gr.java_conf.snake0394.loglook_android.api.ApiReqSortieBattleresult],
- * [jp.gr.java_conf.snake0394.loglook_android.api.ApiReqCombinedBattleBattleresult]で停止される
+ * api_port/port,
+ * api_get_member/ship_deckで消える
  */
 class WinRankOverlayService : Service() {
 
@@ -35,6 +34,7 @@ class WinRankOverlayService : Service() {
 
         Logger.d(TAG, "onStartCommand")
 
+        //初回起動時のみOverlayServiceに登録する
         if (startId <= 1) {
             val metrics = resources.displayMetrics
             OverlayService.getDefaultDisplay().getMetrics(metrics)
@@ -55,7 +55,9 @@ class WinRankOverlayService : Service() {
             OverlayService.addOverlayView(overlayView!!, params)
         }
 
-        (overlayView!!.findViewById(R.id.text_rank) as TextView).apply { text = "${if (TacticalSituation.isBoss && TacticalSituation.battle !is PracticeBattle) "ボス " else ""}${TacticalSituation.winRank}" }
+        (overlayView!!.findViewById(R.id.text_rank) as TextView).apply {
+            text = "${if (TacticalSituation.isBoss && TacticalSituation.battle !is PracticeBattle) "ボス " else ""}${TacticalSituation.winRank}"
+        }
 
         val heavilyDamagedShipIdList = mutableListOf<Int>()
         TacticalSituation.phaseList.last().run {
@@ -96,7 +98,7 @@ class WinRankOverlayService : Service() {
 
                 (overlayView!!.findViewById(R.id.text_heavily_damaged_list) as TextView).apply {
                     var damagedShipNames = ""
-                    (0..shipStrList.size - 1).forEach { idx ->
+                    (0 until shipStrList.size).forEach { idx ->
                         damagedShipNames += shipStrList[idx]
                         if (idx != shipStrList.size - 1) {
                             damagedShipNames += ", "
