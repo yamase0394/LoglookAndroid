@@ -81,6 +81,7 @@ public class EquipmentFragment extends Fragment implements EquipmentDrawerRecycl
         this.rightDrawerRecycler.addItemDecoration(new EquipmentDrawerRecyclerAdapter.MyItemDecoration(getContext()));
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setHasFixedSize(true);
         if (recyclerView.getAdapter() == null) {
             EquipmentAdapter adapter = new EquipmentAdapter(prefs.getSortType(), prefs.getOrder());
             recyclerView.setAdapter(adapter);
@@ -119,9 +120,13 @@ public class EquipmentFragment extends Fragment implements EquipmentDrawerRecycl
                     return;
                 }
                 prefs.setSortType((String) sortTypeSpinner.getSelectedItem());
+                /*
                 EquipmentAdapter recyclerAdapter = new EquipmentAdapter(prefs.getSortType(), prefs.getOrder());
                 recyclerView.swapAdapter(recyclerAdapter, false);
                 setDataList();
+                */
+                ((EquipmentAdapter) recyclerView.getAdapter()).sortData(prefs.getSortType());
+                recyclerView.scrollToPosition(0);
             }
 
             @Override
@@ -149,9 +154,13 @@ public class EquipmentFragment extends Fragment implements EquipmentDrawerRecycl
                 }
                 orderButton.setText(prefs.getOrder());
 
+                /*
                 EquipmentAdapter recyclerAdapter = new EquipmentAdapter(prefs.getSortType(), prefs.getOrder());
                 recyclerView.swapAdapter(recyclerAdapter, false);
                 setDataList();
+                */
+                ((EquipmentAdapter) recyclerView.getAdapter()).sortData(prefs.getSortType());
+                recyclerView.scrollToPosition(0);
             }
         });
         orderButton.setText(prefs.getOrder());
@@ -276,7 +285,8 @@ public class EquipmentFragment extends Fragment implements EquipmentDrawerRecycl
                     }
                 }
             } catch (Exception e) {
-                //instantrunのせいかmySlotItem.getIdとmySlotItem.getMstIdが0を返す
+                //mySlotItem.getIdとmySlotItem.getMstIdが0を返す
+                e.printStackTrace();
             }
         }
 
