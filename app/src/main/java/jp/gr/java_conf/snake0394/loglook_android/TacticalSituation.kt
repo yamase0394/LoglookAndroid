@@ -131,7 +131,7 @@ object TacticalSituation {
         val friendHpBeforeSum = (phaseList.first().fHp.sum() + (phaseList.first().fHpCombined?.sum() ?: 0)).toFloat()
         val friendHpAfterSum = (phaseList.last().fHp.sum() + (phaseList.last().fHpCombined?.sum() ?: 0)).toFloat()
         val friendDamageSum = friendHpBeforeSum - friendHpAfterSum
-        val friendSink = (phaseList.last().fHp.filter { it <= 0 }.size + (phaseList.last().fHpCombined?.filter { it <= 0 }?.size ?: 0)).toFloat()
+        val friendSink = phaseList.last().fHp.filter { it <= 0 }.size + (phaseList.last().fHpCombined?.filter { it <= 0 }?.size ?: 0)
         Logger.d(TAG, "friendHpBeforeSum=$friendHpBeforeSum")
         Logger.d(TAG, "friendHpAfterSum=$friendHpAfterSum")
         Logger.d(TAG, "friendDamageSum=$friendDamageSum")
@@ -149,10 +149,10 @@ object TacticalSituation {
                 else -> "E敗北"
             }
         } else {
-            val friendNum = (phaseList.first().fHp.size + (phaseList.first().fHpCombined?.size ?: 0)).toFloat()
-            val enemyNum = (phaseList.first().eHp.size + (phaseList.first().eHpCombined?.size ?: 0)).toFloat()
+            val friendNum = phaseList.first().fHp.size + (phaseList.first().fHpCombined?.size ?: 0)
+            val enemyNum = phaseList.first().eHp.size + (phaseList.first().eHpCombined?.size ?: 0)
 
-            val enemySink = (phaseList.last().eHp.filter { it <= 0 }.size + (phaseList.last().eHpCombined?.filter { it <= 0 }?.size ?: 0)).toFloat()
+            val enemySink = phaseList.last().eHp.filter { it <= 0 }.size + (phaseList.last().eHpCombined?.filter { it <= 0 }?.size ?: 0)
 
             val enemyHpBeforeSum = (phaseList.first().eHp.sum() + (phaseList.first().eHpCombined?.sum() ?: 0)).toFloat()
             val enemyHpAfterSum = (phaseList.last().eHp.sum() + (phaseList.last().eHpCombined?.sum() ?: 0)).toFloat()
@@ -179,22 +179,29 @@ object TacticalSituation {
             Logger.d(TAG, "enemyAchievements=$enemyAchievements")
             Logger.d(TAG, "achievementsRatio=$achievementsRatio")
 
+            /*
+             * 轟沈艦ありと書いていない場合は原則轟沈なし状態となります。
+             * なお轟沈艦ありの場合最高でもB勝利止まりになります。
+             * 一方轟沈なしでは現状はD敗北が最低となります。
+             */
             winRank = when {
-                friendSink == 0f && enemyNum == enemySink && (friendDamageSum == 0f || enemyAchievements == 0.0f) -> "完全勝利S"
-                friendSink == 0f && enemyNum == enemySink -> "S勝利"
-                friendSink == 0f && enemySink >= Math.floor((enemyNum * 2 / 3).toDouble()) -> "A勝利"
-                friendSink == 0f && isEnemyFlagShipSank -> "B勝利"
-                friendSink == 0f && friendAchievements < 0.05 -> "D敗北"
-                friendSink == 0f && !isEnemyFlagShipSank && achievementsRatio > 2.5 -> "B勝利"
-                friendSink > 0f && !isEnemyFlagShipSank && achievementsRatio >= 2.5 -> "B勝利"
-                friendSink > 0f && isEnemyFlagShipSank && friendSink < enemySink -> "B勝利"
-                friendSink == 0f && !isEnemyFlagShipSank && 1 <= achievementsRatio && achievementsRatio < 2.5 -> "C敗北"
-                friendSink == 0f && !isEnemyFlagShipSank && friendAchievements >= 50 && achievementsRatio < 2.5 -> "C敗北"
-                friendSink > 0f && !isEnemyFlagShipSank && 1 <= achievementsRatio && achievementsRatio < 2.5 -> "C敗北"
-                friendSink > 0f && isEnemyFlagShipSank && friendSink >= enemySink -> "C敗北"
-                friendSink == 0f && !isEnemyFlagShipSank && friendAchievements < 50 && friendAchievements < enemyAchievements -> "D敗北"
-                !isEnemyFlagShipSank && friendSink >= Math.floor((friendNum * 2 / 3).toDouble()) -> "E敗北"
-                friendSink > 0f && !isEnemyFlagShipSank && friendAchievements < enemyAchievements -> "D敗北"
+                //自艦隊の被ダメージ0、且つ敵艦隊全隻撃沈。もしくは敵戦果ゲージ0%かつ敵艦隊全隻撃沈。
+                //後者は女神等で大破から完全回復した時等に発生する。
+                friendSink == 0 && enemyNum == enemySink && (friendDamageSum == 0f || enemyAchievements == 0f) -> "完全勝利S"
+                friendSink == 0 && enemyNum == enemySink -> "S勝利"
+                friendSink == 0 && enemySink != 0 && enemySink >= Math.floor(enemyNum.toDouble() * 2 / 3) -> "A勝利"
+                friendSink == 0 && isEnemyFlagShipSank -> "B勝利"
+                friendSink == 0 && friendAchievements < 0.05 -> "D敗北"
+                friendSink == 0 && !isEnemyFlagShipSank && achievementsRatio > 2.5 -> "B勝利"
+                friendSink > 0 && !isEnemyFlagShipSank && achievementsRatio >= 2.5 -> "B勝利"
+                friendSink > 0 && isEnemyFlagShipSank && friendSink < enemySink -> "B勝利"
+                friendSink == 0 && !isEnemyFlagShipSank && 1 <= achievementsRatio && achievementsRatio < 2.5 -> "C敗北"
+                friendSink == 0 && !isEnemyFlagShipSank && friendAchievements >= 50 && achievementsRatio < 2.5 -> "C敗北"
+                friendSink > 0 && !isEnemyFlagShipSank && 1 <= achievementsRatio && achievementsRatio < 2.5 -> "C敗北"
+                friendSink > 0 && isEnemyFlagShipSank && friendSink >= enemySink -> "C敗北"
+                friendSink == 0 && !isEnemyFlagShipSank && friendAchievements < 50 && friendAchievements < enemyAchievements -> "D敗北"
+                !isEnemyFlagShipSank && friendSink >= Math.floor(friendNum.toDouble() * 2 / 3) -> "E敗北"
+                friendSink > 0 && !isEnemyFlagShipSank && friendAchievements < enemyAchievements -> "D敗北"
                 else -> "不明"
             }
         }
