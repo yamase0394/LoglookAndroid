@@ -141,8 +141,7 @@ public class ScreenShotService extends Service {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(), "スクリーンショット失敗。エラーログを記録しました。", Toast.LENGTH_LONG)
-                                    .show();
+                            Toast.makeText(getApplicationContext(), "スクリーンショット失敗。エラーログを記録しました。", Toast.LENGTH_LONG).show();
                         }
                     });
                     ErrorLogger.writeLog(e);
@@ -280,12 +279,11 @@ public class ScreenShotService extends Service {
         } else if (kcsWidth == displayWidth) {
             return bitmap;
         } else {
-            //TODO MediaPad T2 9.0 Proでスクショのピクセル数とDisplayMetricsの幅のピクセル数が合わない
-            Logger.d("kcsWidth", String.valueOf(kcsWidth));
+            //Logger.d("kcsWidth", String.valueOf(kcsWidth));
             int kcsHeight = displayWidth * 3 / 5;
-            Logger.d("kcsHeight", String.valueOf(kcsHeight));
+            //Logger.d("kcsHeight", String.valueOf(kcsHeight));
             int blackHeight = (displayHeight - kcsHeight) / 2;
-            Logger.d("blankHeight", String.valueOf(blackHeight));
+            //Logger.d("blankHeight", String.valueOf(blackHeight));
             int[] newPixcels = new int[displayWidth * kcsHeight];
             for (int y = blackHeight; y < kcsHeight + blackHeight; y++) {
                 for (int x = 0; x < displayWidth; x++) {

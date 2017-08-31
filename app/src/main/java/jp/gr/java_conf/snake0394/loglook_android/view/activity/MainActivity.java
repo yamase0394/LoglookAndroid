@@ -317,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case EQUIPMENT:
                 ((AppBarLayout.LayoutParams) findViewById(toolbar).getLayoutParams()).setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-                fragment = EquipmentFragment.newInstance();
+                fragment = EquipmentFragment.Companion.newInstance();
                 break;
             case MY_SHIP_LIST:
                 ((AppBarLayout.LayoutParams) findViewById(toolbar).getLayoutParams()).setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);

@@ -3,7 +3,6 @@ package jp.gr.java_conf.snake0394.loglook_android;
 import java.util.Objects;
 
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitem;
-import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 import jp.gr.java_conf.snake0394.loglook_android.view.EquipType3;
 
 /**
@@ -452,18 +451,15 @@ public class SlotItemUtility {
                 return 0;
         }
     }
-
-    //TODO:他に判定方法があるかどうか
+    
     private static boolean hasAADirector(MstSlotitem slotitem) {
         switch (slotitem.getName()) {
             case "10cm連装高角砲+高射装置":
             case "12.7cm高角砲+高射装置":
             case "90mm単装高角砲":
             case "5inch連装砲 Mk.28 mod.2":
-                Logger.d("SlotitemUtility", "has AA Director:" + slotitem.getName());
                 return true;
             default:
-                Logger.d("SlotitemUtility", "not has AADirector:" + slotitem.getName());
                 return false;
         }
     }

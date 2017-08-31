@@ -1,7 +1,6 @@
 package jp.gr.java_conf.snake0394.loglook_android.view.fragment
 
 import android.graphics.Color
-import android.support.v7.util.SortedList
 import android.support.v7.widget.RecyclerView
 import android.util.SparseIntArray
 import android.view.LayoutInflater
@@ -24,14 +23,12 @@ import jp.gr.java_conf.snake0394.loglook_android.view.EquipType3
 import kotlinx.android.synthetic.main.layout_equipment_cardview.view.*
 import java.math.BigDecimal
 import java.util.*
-import java.util.concurrent.Executors
-import kotlin.concurrent.thread
 
 /**
  * Created by snake0394 on 2016/12/08.
  */
 
-class EquipmentAdapter(private var sortType: String, private var order: String) : RecyclerView.Adapter<EquipmentAdapter.EquipmentViewHolder>() {
+class EquipmentAdapter : RecyclerView.Adapter<EquipmentAdapter.EquipmentViewHolder>() {
 
 
     companion object {
@@ -43,24 +40,17 @@ class EquipmentAdapter(private var sortType: String, private var order: String) 
         private val mountedEquip: SparseIntArray = SparseIntArray()
     }
 
-    private val sortedList = SortedList(ListItem::class.java, SortedListCallback(this, sortType, order))
     private val dataList = arrayListOf<ListItem>()
 
     init {
         Logger.d(TAG, "init started")
-        thread {
-            synchronized(mountedEquip) {
-                Realm.getDefaultInstance().use { realm ->
-                    for (myShip in realm.where(MyShip::class.java).findAll()) {
-                        myShip.slot
-                                .filter { it.value > 0 }
-                                .forEach { mountedEquip.put(it.value, myShip.id) }
+        for (myShip in realm.where(MyShip::class.java).findAll()) {
+            myShip.slot
+                    .filter { it.value > 0 }
+                    .forEach { mountedEquip.put(it.value, myShip.id) }
 
-                        if (myShip.slotEx > 0) {
-                            mountedEquip.put(myShip.slotEx, myShip.id)
-                        }
-                    }
-                }
+            if (myShip.slotEx > 0) {
+                mountedEquip.put(myShip.slotEx, myShip.id)
             }
         }
         Logger.d(TAG, "init ended")
@@ -82,23 +72,26 @@ class EquipmentAdapter(private var sortType: String, private var order: String) 
 
     override fun getItemCount(): Int = dataList.size
 
-    fun setItems(newItemList: List<MySlotItem>) {
+    fun setItems(newItemList: List<MySlotItem>, sortType: String, order: String) {
         Logger.d(TAG, "setItems started")
 
-        val alreadyAddedMap = hashMapOf<Int, Int>()
+        dataList.clear()
+        //key=すでに追加されている装備のmstId value=dataListにおけるインデックス
+        val alreadyAddedMstIdMap = SparseIntArray()
 
-        for(newItem in newItemList) {
+        for (newItem in newItemList) {
             val id = newItem.id
             val mstId = newItem.mstId
 
-            if(alreadyAddedMap.contains(mstId)){
-                val idx = alreadyAddedMap[mstId]
-                val exist = dataList[idx!!]
-                if(newItem.level == exist.level && newItem.alv == exist.alv) {
-                    exist.count++
+            val idx = alreadyAddedMstIdMap.get(mstId, -1)
+            if (idx != -1) {
+                val existing = dataList[idx]
+                //mstId, level, alvが等しい場合同一と判定
+                if (newItem.level == existing.level && newItem.alv == existing.alv) {
+                    existing.count++
                     val shipId = mountedEquip.get(id, -1)
                     if (shipId != -1) {
-                        exist.putShipId(shipId)
+                        existing.putShipId(shipId)
                     }
                     continue
                 }
@@ -109,17 +102,16 @@ class EquipmentAdapter(private var sortType: String, private var order: String) 
             if (shipId != -1) {
                 listItem.putShipId(shipId)
             }
-            alreadyAddedMap.put(listItem.mstId, dataList.size)
+            alreadyAddedMstIdMap.put(listItem.mstId, dataList.size)
             dataList.add(listItem)
         }
 
-        sortData(sortType)
+        sortData(sortType, order)
 
         Logger.d(TAG, "setItems ended")
     }
 
-    fun sortData (sortType: String){
-        this.sortType = sortType
+    fun sortData(sortType: String, order: String) {
         Collections.sort(dataList, kotlin.Comparator { item1: ListItem, item2: ListItem ->
             var result = when (sortType) {
                 "名前" -> item1.name.compareTo(item2.name).toFloat()
@@ -136,13 +128,14 @@ class EquipmentAdapter(private var sortType: String, private var order: String) 
                 "装甲" -> item1.souk + item1.soukImproved - item2.souk - item2.soukImproved
                 "加重対空" -> item1.adjustedAA + item1.adjustedAAImproved - item2.adjustedAA - item2.adjustedAAImproved
                 "艦隊対空" -> item1.adjustedFleetAA + item1.adjustedFleetAAImproved - item2.adjustedFleetAA - item2.adjustedFleetAAImproved
-                else -> throw IllegalArgumentException("${this.sortType} does not exist")
+                else -> throw IllegalArgumentException("${sortType} does not exist")
             }
 
             when (order) {
                 "降順" -> result *= -1f
             }
 
+            //並び替えが矛盾するとエラーが出るのでコメントアウト
             /*
             //同じだった場合はマスターID→熟練度の順番でソートする
             if (result == 0f) {
@@ -155,7 +148,6 @@ class EquipmentAdapter(private var sortType: String, private var order: String) 
             }
             */
 
-            //resultをintに変換し返す
             return@Comparator when {
                 result > 0 -> 1
                 result == 0f -> 0
@@ -163,15 +155,13 @@ class EquipmentAdapter(private var sortType: String, private var order: String) 
                 else -> throw IllegalArgumentException("result=$result")
             }
         })
+
         notifyDataSetChanged()
     }
 
-    class ListItem internal constructor(internal var mySlotItemId: Int) {
+    class ListItem internal constructor(mySlotItemId: Int) {
         var count: Int = 0
         var equipShipSet: Multiset<Int>? = null
-
-        val mySlotItem: MySlotItem
-        val mstSlotItem: MstSlotitem
 
         val slotType3: Int
         val mstId: Int
@@ -204,9 +194,8 @@ class EquipmentAdapter(private var sortType: String, private var order: String) 
 
         init {
             this.count = 1
-            val realm = Realm.getDefaultInstance()
-            mySlotItem = realm.where(MySlotItem::class.java).equalTo("id", mySlotItemId).findFirst()
-            mstSlotItem = realm.where(MstSlotitem::class.java).equalTo("id", mySlotItem.mstId).findFirst()
+            val mySlotItem = realm.where(MySlotItem::class.java).equalTo("id", mySlotItemId).findFirst()
+            val mstSlotItem = realm.where(MstSlotitem::class.java).equalTo("id", mySlotItem.mstId).findFirst()
 
             slotType3 = mstSlotItem.type[3].value
             mstId = mySlotItem.mstId
@@ -236,22 +225,14 @@ class EquipmentAdapter(private var sortType: String, private var order: String) 
             adjustedAAImproved = SlotItemUtility.getImprovementAdjustedAA(mstSlotItem, mySlotItem.level)
             adjustedFleetAA = SlotItemUtility.getAdjustedFleetAA(mstSlotItem)
             adjustedFleetAAImproved = SlotItemUtility.getImprovementAdjustedFleetAA(mstSlotItem, mySlotItem.level)
-            realm.close()
         }
 
         internal fun putShipId(myShipId: Int) {
             if (this.equipShipSet == null) {
                 this.equipShipSet = TreeMultiset.create { data1, data2 ->
-                    val realm = Realm.getDefaultInstance()
-                    val results = realm.where(MyShip::class.java)
-                            .`in`("id", arrayOf(data1, data2))
-                            .findAll()
-                    val myShip1 = results.where()
-                            .equalTo("id", data1)
-                            .findFirst()
-                    val myShip2 = results.where()
-                            .equalTo("id", data2)
-                            .findFirst()
+                    val results = realm.where(MyShip::class.java).`in`("id", arrayOf(data1, data2)).findAll()
+                    val myShip1 = results.where().equalTo("id", data1).findFirst()
+                    val myShip2 = results.where().equalTo("id", data2).findFirst()
                     //レベルの降順
                     var result = myShip2.lv - myShip1.lv
                     if (result == 0) {
@@ -262,97 +243,10 @@ class EquipmentAdapter(private var sortType: String, private var order: String) 
                             result = myShip1.id - myShip2.id
                         }
                     }
-                    realm.close()
-                    result
+                    return@create result
                 }
             }
             this.equipShipSet!!.add(myShipId)
-        }
-    }
-
-    private class SortedListCallback constructor(private val adapter: RecyclerView.Adapter<*>, private val sortType: String, private val order: String) : SortedList.Callback<ListItem>() {
-
-        val executor = Executors.newSingleThreadExecutor()
-
-        override fun compare(item1: ListItem, item2: ListItem): Int {
-            val future = executor.submit<Int> {
-                var result = when (this.sortType) {
-                    "名前" -> item1.name.compareTo(item2.name).toFloat()
-                    "改修度" -> (item1.level - item2.level).toFloat()
-                    "ID" -> (item1.mstId - item2.mstId).toFloat()
-                    "火力" -> item1.houg + item1.hougImproved - item2.houg - item2.hougImproved
-                    "雷装" -> item1.raig + item1.raigImproved - item2.raig - item2.raigImproved
-                    "爆装" -> item1.baku + item1.bakuImproved - item2.baku - item2.bakuImproved
-                    "対空" -> item1.tyku + item1.tykuImproved - item2.tyku - item2.tykuImproved
-                    "対潜" -> item1.tais + item1.taisImproved - item2.tais - item2.taisImproved
-                    "索敵" -> item1.saku + item1.sakuImproved - item2.saku - item2.sakuImproved
-                    "命中" -> item1.houm + item1.houmImproved - item2.houm - item2.houmImproved
-                    "回避" -> item1.houk + item1.houkImproved - item2.houk - item2.houkImproved
-                    "装甲" -> item1.souk + item1.soukImproved - item2.souk - item2.soukImproved
-                    "加重対空" -> item1.adjustedAA + item1.adjustedAAImproved - item2.adjustedAA - item2.adjustedAAImproved
-                    "艦隊対空" -> item1.adjustedFleetAA + item1.adjustedFleetAAImproved - item2.adjustedFleetAA - item2.adjustedFleetAAImproved
-                    else -> throw IllegalArgumentException("${this.sortType} does not exist")
-                }
-
-                when (order) {
-                    "降順" -> result *= -1f
-                }
-
-                //同じだった場合はマスターID→熟練度の順番でソートする
-                if (result == 0f) {
-                    if (item1.mstId - item2.mstId == 0) {
-                        result = (item2.level - item1.level).toFloat()
-                        if (result == 0f) {
-                            result = (item2.alv - item1.alv).toFloat()
-                        }
-                    }
-                }
-
-                //resultをintに変換し返す
-                return@submit when {
-                    result > 0 -> 1
-                    result == 0f -> 0
-                    result < 0 -> -1
-                    else -> throw IllegalArgumentException("result=$result")
-                }
-            }
-            val result = future.get()
-            return result
-        }
-
-        override fun onInserted(position: Int, count: Int) {
-            adapter.notifyItemRangeInserted(position, count)
-        }
-
-        override fun onRemoved(position: Int, count: Int) {
-            adapter.notifyItemRangeRemoved(position, count)
-        }
-
-        override fun onMoved(fromPosition: Int, toPosition: Int) {
-            adapter.notifyItemMoved(fromPosition, toPosition)
-        }
-
-        override fun onChanged(position: Int, count: Int) {
-            adapter.notifyItemRangeChanged(position, count)
-        }
-
-        override fun areContentsTheSame(oldData: ListItem, newData: ListItem): Boolean {
-            return oldData.equipShipSet?.size == newData.equipShipSet?.size
-        }
-
-        override fun areItemsTheSame(item1: ListItem, item2: ListItem): Boolean {
-            val result = item1.mstId == item2.mstId
-                    && item1.level == item2.level
-                    && item1.alv == item2.alv
-            if (result) {
-                item2.count = item1.count++
-                val shipId = mountedEquip.get(item2.mySlotItemId, -1)
-                if (shipId != -1) {
-                    item2.putShipId(shipId)
-                    item1.equipShipSet?.forEach { item2.putShipId(it) }
-                }
-            }
-            return result
         }
     }
 
