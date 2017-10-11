@@ -1,7 +1,5 @@
 package jp.gr.java_conf.snake0394.loglook_android.bean;
 
-import com.rits.cloning.Cloner;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +33,6 @@ public enum DeckManager {
         for (int i = 1; i <= deckMap.size(); i++) {
             deckList.add(deckMap.get(i));
         }
-        Cloner cloner = new Cloner();
-        return cloner.deepClone(deckList);
+        return deckList;
     }
 }

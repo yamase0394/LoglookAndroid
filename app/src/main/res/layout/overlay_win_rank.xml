@@ -1,18 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:background="@color/transparent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_margin="5dp"
+              android:background="@color/transparent">
 
     <TextView
         android:id="@+id/text_rank"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="false"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentRight="false"
-        android:text="TextView"
         android:textColor="@android:color/white"/>
-</RelativeLayout>
+
+    <TextView
+        android:id="@+id/text_heavily_damaged"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:background="@android:color/holo_red_dark"
+        android:text="大破"
+        android:textColor="@android:color/white"/>
+
+    <TextView
+        android:id="@+id/text_heavily_damaged_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:background="@color/transparent"
+        android:textColor="@android:color/white"/>
+</LinearLayout>

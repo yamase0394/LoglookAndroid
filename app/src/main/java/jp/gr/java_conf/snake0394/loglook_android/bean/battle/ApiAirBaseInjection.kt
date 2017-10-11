@@ -4,7 +4,7 @@ data class ApiAirBaseInjection(
         val apiStage1: ApiStage1?,
         val apiStage2: ApiAirBaseAttack.ApiStage2?,
         val apiStage3: ApiAirBaseAttack.ApiStage3?,
-        val apiStage3Combined: ApiAirBaseAttack.ApiStage3?
+        val apiStage3Combined: ApiAirBaseAttack.ApiStage3Combined?
 ) {
     data class ApiStage1(
             /**

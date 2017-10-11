@@ -7,18 +7,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import io.realm.Realm
 import jp.gr.java_conf.snake0394.loglook_android.*
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager
-import jp.gr.java_conf.snake0394.loglook_android.bean.MstShipManager
-import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitemManager
-import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager
+import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip
+import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitem
+import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip
 import jp.gr.java_conf.snake0394.loglook_android.bean.battle.*
 
 class TacticalSituationFragment : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    val realm by lazy { Realm.getDefaultInstance() }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -35,7 +34,6 @@ class TacticalSituationFragment : Fragment() {
         transaction.commit()
 
         try {
-            val ts = TacticalSituation
             val battle = TacticalSituation.battle
 
             val formation = TacticalSituation.battle as IFormation
@@ -55,20 +53,24 @@ class TacticalSituationFragment : Fragment() {
                     textView.text = "${DeckUtility.getSeiku(mainDeck)}(${BattleUtility.getDispSeiku(battle.apiKouku.apiStage1!!.apiDispSeiku)})"
 
                     textView = activity.findViewById(R.id.touchPlane) as TextView
-                    textView.text = MstSlotitemManager.INSTANCE.getMstSlotitem(battle.apiKouku.apiStage1!!.apiTouchPlane[0]).name.takeUnless { it.isEmpty() } ?: "なし"
+                    val touchPlane = realm.where(MstSlotitem::class.java).equalTo("id", battle.apiKouku.apiStage1!!.apiTouchPlane[0]).findFirst()?.name ?: "なし"
+                    textView.text = touchPlane
 
                     textView = activity.findViewById(R.id.enemyTouchPlane) as TextView
-                    textView.text = MstSlotitemManager.INSTANCE.getMstSlotitem(battle.apiKouku.apiStage1!!.apiTouchPlane[1]).name.takeUnless { it.isEmpty() } ?: "なし"
+                    val enemyTouchPlane = realm.where(MstSlotitem::class.java).equalTo("id", battle.apiKouku.apiStage1!!.apiTouchPlane[1]).findFirst()?.name ?: "なし"
+                    textView.text = enemyTouchPlane
                 }
                 is IMidnightBattle -> {
                     textView = activity.findViewById(R.id.seiku) as TextView
                     textView.text = "${DeckUtility.getSeiku(mainDeck)}()"
 
                     textView = activity.findViewById(R.id.touchPlane) as TextView
-                    textView.text = MstSlotitemManager.INSTANCE.getMstSlotitem(battle.apiTouchPlane[0]).name.takeUnless { it.isEmpty() } ?: "なし"
+                    val touchPlane = realm.where(MstSlotitem::class.java).equalTo("id", battle.apiTouchPlane[0]).findFirst()?.name ?: "なし"
+                    textView.text = touchPlane
 
                     textView = activity.findViewById(R.id.enemyTouchPlane) as TextView
-                    textView.text = MstSlotitemManager.INSTANCE.getMstSlotitem(battle.apiTouchPlane[1]).name.takeUnless { it.isEmpty() } ?: "なし"
+                    val enemyTouchPlane = realm.where(MstSlotitem::class.java).equalTo("id", battle.apiTouchPlane[1]).findFirst()?.name ?: "なし"
+                    textView.text = enemyTouchPlane
                 }
             }
 
@@ -107,12 +109,12 @@ class TacticalSituationFragment : Fragment() {
                     textView.text = ""
                 } else {
                     val id = mainDeck.shipId[i - 1]
-                    val myShip = MyShipManager.INSTANCE.getMyShip(id)
+                    val myShip = realm.where(MyShip::class.java).equalTo("id", id).findFirst()
 
                     var name = "name" + i
                     var strId = resources.getIdentifier(name, "id", activity.packageName)
                     textView = activity.findViewById(strId) as TextView
-                    textView.text = myShip.name
+                    textView.text = realm.where(MstShip::class.java).equalTo("id", myShip.shipId).findFirst().name
 
                     name = "lv" + i
                     strId = resources.getIdentifier(name, "id", activity.packageName)
@@ -184,7 +186,7 @@ class TacticalSituationFragment : Fragment() {
                     textView.text = ""
                 } else {
                     val id = battle.apiShipKe[i]
-                    val eShip = MstShipManager.INSTANCE.getMstShip(id)
+                    val eShip = realm.where(MstShip::class.java).equalTo("id", id).findFirst()
 
                     var name = "eName" + i
                     var strId = resources.getIdentifier(name, "id", activity.packageName)
@@ -267,13 +269,13 @@ class TacticalSituationFragment : Fragment() {
                 } else {
 
                     val id = deck2.shipId[i - 1]
-                    val myShip = MyShipManager.INSTANCE.getMyShip(id)
+                    val myShip = realm.where(MyShip::class.java).equalTo("id", id).findFirst()
 
                     var name = "cName" + i
                     var strId = resources.getIdentifier(name, "id", activity.packageName)
                     (activity.findViewById(strId) as TextView).apply {
                         visibility = View.VISIBLE
-                        text = myShip.name
+                        text = realm.where(MstShip::class.java).equalTo("id", myShip.shipId).findFirst().name
                     }
 
                     name = "cLv" + i
@@ -357,7 +359,7 @@ class TacticalSituationFragment : Fragment() {
                         is IEachCombinedBattle -> battle.apiShipKeCombined[i]
                         else -> throw IllegalArgumentException("${battle.javaClass.name}")
                     }
-                    val eShip = MstShipManager.INSTANCE.getMstShip(id)
+                    val eShip = realm.where(MstShip::class.java).equalTo("id", id).findFirst()
 
                     var name = "ecName" + i
                     var strId = resources.getIdentifier(name, "id", activity.packageName)
@@ -394,12 +396,14 @@ class TacticalSituationFragment : Fragment() {
                     name = "ecBeforeHp" + i
                     strId = resources.getIdentifier(name, "id", activity.packageName)
                     (activity.findViewById(strId) as TextView).apply {
+                        visibility = View.VISIBLE
                         text = "${phaseList.first().eHpCombined!![i - 1]}/$maxHp→"
                     }
 
                     name = "ecHp" + i
                     strId = resources.getIdentifier(name, "id", activity.packageName)
                     (activity.findViewById(strId) as TextView).apply {
+                        visibility = View.VISIBLE
                         text = "$lastHp/$maxHp"
                     }
 
@@ -407,6 +411,8 @@ class TacticalSituationFragment : Fragment() {
                     strId = resources.getIdentifier(name, "id", activity.packageName)
                     (activity.findViewById(strId) as TextView).apply {
                         val damage = lastHp - phaseList.first().eHpCombined!![i - 1]
+                        text = damage.toString()
+                        visibility = View.VISIBLE
                         if (damage == 0) {
                             setTextColor(ContextCompat.getColor(context, R.color.undamaged))
                         } else {
@@ -462,6 +468,12 @@ class TacticalSituationFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        realm.close()
     }
 
     companion object {

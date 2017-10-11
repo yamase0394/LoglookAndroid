@@ -14,13 +14,13 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
 import jp.gr.java_conf.snake0394.loglook_android.R;
+import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitem;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitemManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItemManager;
+import jp.gr.java_conf.snake0394.loglook_android.storage.RealmInt;
 import jp.gr.java_conf.snake0394.loglook_android.view.EquipType3;
 
 /**
@@ -28,6 +28,8 @@ import jp.gr.java_conf.snake0394.loglook_android.view.EquipType3;
  */
 
 public class EquipmentDialogFragment extends android.support.v4.app.DialogFragment {
+
+    private Realm realm;
 
     public static EquipmentDialogFragment newInstance(int shipId) {
         EquipmentDialogFragment fragment = new EquipmentDialogFragment();
@@ -45,17 +47,19 @@ public class EquipmentDialogFragment extends android.support.v4.app.DialogFragme
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         final View rootView = LayoutInflater.from(activity).inflate(R.layout.dialog_fragment_equipment, null);
         Log.d("shipId", String.valueOf(getArguments().getInt("shipId")));
-        final MyShip myShip = MyShipManager.INSTANCE.getMyShip(getArguments().getInt("shipId"));
+        realm = Realm.getDefaultInstance();
+        final MyShip myShip = realm.where(MyShip.class).equalTo("id", getArguments().getInt("shipId")).findFirst();
         List<MySlotItem> slotItemList = new ArrayList<>();
-        for (int slotItemId : myShip.getSlot()) {
-            if (slotItemId != -1) {
-                slotItemList.add(MySlotItemManager.INSTANCE.getMySlotItem(slotItemId));
+        for (RealmInt slotItemId : myShip.getSlot()) {
+            if (slotItemId.getValue() > 0) {
+                MySlotItem mySlotItem = realm.where(MySlotItem.class).equalTo("id", slotItemId.getValue()).findFirst();
+                slotItemList.add(mySlotItem);
             }
         }
 
         TextView text;
         for (int i = 1; i <= 4; i++) {
-            int slotItemId = myShip.getSlot().get(i - 1);
+            int slotItemId = myShip.getSlot().get(i - 1).getValue();
 
             if (slotItemId == -1) {
                 String name = "space" + i;
@@ -90,28 +94,30 @@ public class EquipmentDialogFragment extends android.support.v4.app.DialogFragme
                 continue;
             }
 
-            MySlotItem mySlotItem = MySlotItemManager.INSTANCE.getMySlotItem(slotItemId);
+            MySlotItem mySlotItem = realm.where(MySlotItem.class).equalTo("id", slotItemId).findFirst();
 
             String name = "space" + i;
             int strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
             text = (TextView) rootView.findViewById(strId);
             text.setVisibility(View.VISIBLE);
-            if (myShip.getOnslot().get(i - 1) == 0) {
+            if (myShip.getOnslot().get(i - 1).getValue() == 0) {
                 text.setText("");
             } else {
-                text.setText(String.valueOf(myShip.getOnslot().get(i - 1)));
+                text.setText(String.valueOf(myShip.getOnslot().get(i - 1).getValue()));
             }
 
             name = "equipIcon" + i;
             strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
             ImageView image = (ImageView) rootView.findViewById(strId);
-            image.setImageResource(EquipType3.toEquipType3(MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId()).getType().get(3)).getImageId());
+            MstSlotitem mstSlotitem = realm.where(MstSlotitem.class).equalTo("id", mySlotItem.getMstId()).findFirst();
+            image.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType().get(3).getValue()).getImageId());
 
             name = "equipment" + i;
             strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
             text = (TextView) rootView.findViewById(strId);
             text.setVisibility(View.VISIBLE);
-            text.setText(MstSlotitemManager.INSTANCE.getMstSlotitem(mySlotItem.getMstId()).getName());
+            mstSlotitem = realm.where(MstSlotitem.class).equalTo("id", mySlotItem.getMstId()).findFirst();
+            text.setText(mstSlotitem.getName());
 
             name = "alv" + i;
             strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
@@ -165,9 +171,10 @@ public class EquipmentDialogFragment extends android.support.v4.app.DialogFragme
         ImageView image = (ImageView) rootView.findViewById(R.id.extraSlotIcon);
         text = (TextView) rootView.findViewById(R.id.extraSlot);
 
-        if (MySlotItemManager.INSTANCE.contains(myShip.getSlotEx())) {
-            MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(MySlotItemManager.INSTANCE.getMySlotItem(myShip.getSlotEx()).getMstId());
-            image.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType().get(3)).getImageId());
+        if (myShip.getSlotEx() > 0) {
+            MySlotItem mySlotItem = realm.where(MySlotItem.class).equalTo("id", myShip.getSlotEx()).findFirst();
+            MstSlotitem mstSlotitem = realm.where(MstSlotitem.class).equalTo("id", mySlotItem.getMstId()).findFirst();
+            image.setImageResource(EquipType3.toEquipType3(mstSlotitem.getType().get(3).getValue()).getImageId());
             text.setText(mstSlotitem.getName());
         } else {
             if (myShip.getSlotEx() == 0) {
@@ -179,7 +186,8 @@ public class EquipmentDialogFragment extends android.support.v4.app.DialogFragme
             text.setText("");
         }
 
-        builder.setView(rootView).setTitle(myShip.getName() + "(Lv" + myShip.getLv() + ")");
+        MstShip mstShip = realm.where(MstShip.class).equalTo("id", myShip.getShipId()).findFirst();
+        builder.setView(rootView).setTitle(mstShip.getName() + "(Lv" + myShip.getLv() + ")").setNegativeButton("閉じる", null);
         return builder.create();
     }
 
@@ -189,5 +197,11 @@ public class EquipmentDialogFragment extends android.support.v4.app.DialogFragme
 
         // onPause でダイアログを閉じる場合
         dismiss();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        realm.close();
     }
 }

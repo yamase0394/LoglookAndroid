@@ -45,12 +45,12 @@ class ConfigFragment : Fragment() {
 
         //検出領域のx,y座標
         val point = displaySize
-        if (prefs.viewX == java.lang.Short.MAX_VALUE.toInt()) {
+        if (prefs.viewX == -Short.MAX_VALUE.toInt()) {
             prefs.viewX = point.x / -2
         }
         viewXEdit.setText(prefs.viewX.toString())
 
-        if (prefs.viewY == java.lang.Short.MAX_VALUE.toInt()) {
+        if (prefs.viewY == -Short.MAX_VALUE.toInt()) {
             prefs.viewY = point.y / -2
         }
         viewYEdit.setText(prefs.viewY.toString())

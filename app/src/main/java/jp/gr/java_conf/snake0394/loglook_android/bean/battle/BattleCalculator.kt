@@ -1,5 +1,7 @@
 package jp.gr.java_conf.snake0394.loglook_android.bean.battle
 
+import jp.gr.java_conf.snake0394.loglook_android.logger.Logger
+
 
 object BattleCalculator {
 
@@ -11,8 +13,8 @@ object BattleCalculator {
             }
         } ?: return null
 
-        battle.apiAirBaseInjection?.apiStage3Combined?.run {
-            apiEdam.slice(1..phase.eHpCombined!!.size).withIndex().forEach {
+        battle.apiAirBaseInjection?.apiStage3Combined?.apiEdam?.run {
+            slice(1..phase.eHpCombined!!.size).withIndex().forEach {
                 phase.eHpCombined[it.index] = Math.max(phase.eHpCombined[it.index] - it.value, 0)
             }
         }
@@ -28,8 +30,8 @@ object BattleCalculator {
             }
         } ?: return null
 
-        battle.apiInjectionKouku?.apiStage3Combined?.run {
-            apiEdam.slice(1..phase.eHpCombined!!.size).withIndex().forEach {
+        battle.apiInjectionKouku?.apiStage3Combined?.apiEdam?.run {
+            slice(1..phase.eHpCombined!!.size).withIndex().forEach {
                 phase.eHpCombined[it.index] = Math.max(phase.eHpCombined[it.index] - it.value, 0)
             }
         }
@@ -47,8 +49,8 @@ object BattleCalculator {
                 }
             } ?: return null
 
-            apiAirBaseAttack.apiStage3Combined?.run {
-                apiEdam.slice(1..phase.eHpCombined!!.size).withIndex().forEach {
+            apiAirBaseAttack.apiStage3Combined?.apiEdam?.run {
+                slice(1..phase.eHpCombined!!.size).withIndex().forEach {
                     phase.eHpCombined[it.index] = Math.max(phase.eHpCombined[it.index] - it.value, 0)
                 }
             }
@@ -74,13 +76,14 @@ object BattleCalculator {
         } ?: return null
 
         apiKouku.apiStage3Combined?.run {
-            apiFdam.slice(1..(phase.fHpCombined?.size ?: return@run)).withIndex().forEach {
-                phase.fHpCombined[it.index] = Math.max(phase.fHpCombined[it.index] - it.value, 0)
+            if (phase.fHpCombined != null) {
+                apiFdam.slice(1..(phase.fHpCombined.size)).withIndex().forEach {
+                    phase.fHpCombined[it.index] = Math.max(phase.fHpCombined[it.index] - it.value, 0)
+                }
             }
 
-            //TODO:return@runが適切か
             apiEdam?.run {
-                slice(1..(phase.eHpCombined?.size ?: return@run)).withIndex().forEach {
+                slice(1..(phase.eHpCombined!!.size)).withIndex().forEach {
                     phase.eHpCombined[it.index] = Math.max(phase.eHpCombined[it.index] - it.value, 0)
                 }
             }
@@ -122,17 +125,42 @@ object BattleCalculator {
         }
 
         battle.apiOpeningTaisen!!.run {
-            apiDfList.map { it[0] - 1 }.withIndex().forEach {
-                val damage = apiDamage[it.index].sum()
-                if (it.value < 6) {
-                    when (battle) {
-                        is ICombinedBattle, is IEachCombinedBattle -> phase.fHpCombined!![it.value] = Math.max(phase.fHpCombined[it.value] - damage, 0)
-                        else -> phase.fHp[it.value] = Math.max(phase.fHp[it.value] - damage, 0)
+            //連合VS連合のときapi_at_eflagがある？
+            if (apiAtEflag != null) {
+                Logger.d("applyOpeningTaisen", "has apiAtEflag")
+                apiDfList.map { it[0] - 1 }.withIndex().forEach {
+                    val damage = apiDamage[it.index].sum()
+                    when (apiAtEflag[it.index]) {
+                        0 -> {
+                            if (it.value < 6) {
+                                phase.eHp[it.value] = Math.max(phase.eHp[it.value] - damage, 0)
+                            } else {
+                                phase.eHpCombined!![it.value - 6] = Math.max(phase.eHpCombined[it.value - 6] - damage, 0)
+                            }
+                        }
+                        1 -> {
+                            if (it.value < 6) {
+                                phase.fHp[it.value] = Math.max(phase.fHp[it.value] - damage, 0)
+                            } else {
+                                phase.fHpCombined!![it.value - 6] = Math.max(phase.fHpCombined[it.value - 6] - damage, 0)
+                            }
+                        }
+                        else -> throw IllegalArgumentException()
                     }
-                } else {
-                    when (battle) {
-                        is IEnemyCombinedBattle, is IEachCombinedBattle -> phase.eHpCombined!![it.value - 6] = Math.max(phase.eHpCombined[it.value - 6] - damage, 0)
-                        else -> phase.eHp[it.value - 6] = Math.max(phase.eHp[it.value - 6] - damage, 0)
+                }
+            } else {
+                Logger.d("applyOpeningTaisen", "does not has apiAtEflag")
+                apiDfList.map { it[0] - 1 }.withIndex().forEach {
+                    val damage = apiDamage[it.index].sum()
+                    if (it.value < 6) {
+                        //機動、輸送の場合の敵の攻撃対象は第2艦隊
+                        if (battle is CombinedBattleBattle) {
+                            phase.fHpCombined!![it.value] = Math.max(phase.fHpCombined[it.value] - damage, 0)
+                        } else {
+                            phase.fHp[it.value] = Math.max(phase.fHp[it.value] - damage, 0)
+                        }
+                    } else {
+                        phase.eHp[it.value - 6] = Math.max(phase.eHp[it.value - 6] - damage, 0)
                     }
                 }
             }
@@ -147,7 +175,10 @@ object BattleCalculator {
             return null
         }
 
-        applyRaigeki(battle.apiOpeningAtack!!, phase)
+        when (battle) {
+            is ICombinedBattle -> applyRaigeki(battle.apiOpeningAtack!!, phase.fHpCombined!!, phase.eHp)
+            else -> applyRaigeki(battle.apiOpeningAtack!!, phase)
+        }
 
         return phase
     }

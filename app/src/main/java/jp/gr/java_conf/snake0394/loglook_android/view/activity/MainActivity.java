@@ -313,15 +313,15 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case DAMAGED_SHIP:
                 ((AppBarLayout.LayoutParams) findViewById(toolbar).getLayoutParams()).setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-                fragment = DamagedShipFragment.newInstance();
+                fragment = DamagedShipFragment.Companion.newInstance();
                 break;
             case EQUIPMENT:
                 ((AppBarLayout.LayoutParams) findViewById(toolbar).getLayoutParams()).setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-                fragment = EquipmentFragment.newInstance();
+                fragment = EquipmentFragment.Companion.newInstance();
                 break;
             case MY_SHIP_LIST:
                 ((AppBarLayout.LayoutParams) findViewById(toolbar).getLayoutParams()).setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-                fragment = MyShipListFragment.newInstance();
+                fragment = MyShipListFragment.Companion.newInstance();
                 break;
             case DECK_CAPTURE_LIST:
                 fragment = DeckCaptureListFragment.newInstance();

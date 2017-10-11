@@ -295,7 +295,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="戦闘中勝利ランクを右上に表示する"
+                android:text="戦況オーバーレイを表示する"
                 android:textSize="15dp" />
 
             <CheckBox
@@ -303,7 +303,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="右上に大破警告を表示する"
+                android:text="大破警告オーバーレイを表示する"
                 android:textSize="15dp" />
 
             <CheckBox

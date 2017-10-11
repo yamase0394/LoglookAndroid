@@ -2,9 +2,9 @@ package jp.gr.java_conf.snake0394.loglook_android.api;
 
 import com.google.gson.JsonObject;
 
+import io.realm.Realm;
 import jp.gr.java_conf.snake0394.loglook_android.EquipType2;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitem;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitemManager;
 import jp.gr.java_conf.snake0394.loglook_android.logger.CreateItemLogger;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.RequestMetaData;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;
@@ -24,8 +24,6 @@ public class ApiReqKousyouCreateitem implements APIListenerSpi {
 
         CreateItemLogger.INSTANCE.ready(fuel, bullet, steel, bauxite);
 
-
-
         JsonObject data = json.getAsJsonObject("api_data");
         int createFlag = data.get("api_create_flag")
                              .getAsInt();
@@ -39,12 +37,12 @@ public class ApiReqKousyouCreateitem implements APIListenerSpi {
                               .getAsInt();
         EquipType2 equipType2 = EquipType2.toEquipType2(equipTypeId);
 
-        JsonObject apiSlotItem = data.get("api_slot_item")
-                                     .getAsJsonObject();
-        int mstSlotItemId = apiSlotItem.get("api_slotitem_id")
-                                       .getAsInt();
-        MstSlotitem mstSlotitem = MstSlotitemManager.INSTANCE.getMstSlotitem(mstSlotItemId);
+        JsonObject apiSlotItem = data.get("api_slot_item").getAsJsonObject();
+        int mstSlotItemId = apiSlotItem.get("api_slotitem_id").getAsInt();
 
-        CreateItemLogger.INSTANCE.write(createFlag, mstSlotitem, equipType2);
+        try(Realm realm = Realm.getDefaultInstance()) {
+            MstSlotitem mstSlotitem = realm.where(MstSlotitem.class).equalTo("id", mstSlotItemId).findFirst();
+            CreateItemLogger.INSTANCE.write(createFlag, mstSlotitem, equipType2);
+        }
     }
 }

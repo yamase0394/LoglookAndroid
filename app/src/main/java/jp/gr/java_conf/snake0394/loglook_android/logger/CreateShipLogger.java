@@ -10,15 +10,14 @@ import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import io.realm.Realm;
 import jp.gr.java_conf.snake0394.loglook_android.ShipType;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Basic;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Kdock;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MstShipManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 
 /**
  * Created by snake0394 on 2016/11/16.
@@ -60,7 +59,7 @@ public enum CreateShipLogger {
 
         //SDカードのディレクトリパス
         File sdcard_path = new File(Environment.getExternalStorageDirectory()
-                                               .getPath() + "/泥提督支援アプリ/");
+                .getPath() + "/泥提督支援アプリ/");
 
         //パス区切り用セパレータ
         String Fs = File.separator;
@@ -73,7 +72,7 @@ public enum CreateShipLogger {
             sdcard_path.mkdirs();
         }
 
-        try {
+        try (Realm realm = Realm.getDefaultInstance()) {
             StringBuffer sb = new StringBuffer();
 
             File file = new File(filePath);
@@ -86,7 +85,7 @@ public enum CreateShipLogger {
             //日付
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             sb.append(sdf.format(Calendar.getInstance()
-                                         .getTime()) + ",");
+                    .getTime()) + ",");
 
             //種類
             switch (largeFlag) {
@@ -101,7 +100,9 @@ public enum CreateShipLogger {
             }
 
             //名前
-            MstShip createdShip = MstShipManager.INSTANCE.getMstShip(kdock.getMstShipId());
+            MstShip createdShip = realm.where(MstShip.class)
+                    .equalTo("id", kdock.getMstShipId())
+                    .findFirst();
             sb.append(createdShip.getName());
             sb.append(",");
 
@@ -136,10 +137,19 @@ public enum CreateShipLogger {
 
             //秘書艦
             Deck deck1 = DeckManager.INSTANCE.getDeck(1);
-            MyShip secretaryShip = MyShipManager.INSTANCE.getMyShip(deck1.getShipId()
-                                                                         .get(0));
-            sb.append(secretaryShip.getName() + "(Lv" + secretaryShip.getLv() + ")");
-            sb.append(",");
+            MyShip secretaryShip = realm.where(MyShip.class)
+                    .equalTo("id", deck1.getShipId()
+                            .get(0))
+                    .findFirst();
+            String name = realm.where(MstShip.class)
+                    .equalTo("id", secretaryShip.getShipId())
+                    .findFirst()
+                    .getName();
+
+            sb.append(name)
+                    .append("(Lv")
+                    .append(secretaryShip.getLv())
+                    .append("),");
 
             //司令部Lv
             sb.append(Basic.INSTANCE.getLevel());

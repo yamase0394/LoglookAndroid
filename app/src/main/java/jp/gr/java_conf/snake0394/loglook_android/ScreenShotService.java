@@ -76,7 +76,7 @@ public class ScreenShotService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, final int flags, int startId) {
-        if(startId > 1) {
+        if (startId > 1) {
             Logger.d(TAG, "flags=" + flags + ", startId=" + startId);
             Logger.d(TAG, "multi run is not permitted");
             return START_STICKY;
@@ -141,8 +141,7 @@ public class ScreenShotService extends Service {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(), "スクリーンショット失敗。エラーログを記録しました。", Toast.LENGTH_LONG)
-                                    .show();
+                            Toast.makeText(getApplicationContext(), "スクリーンショット失敗。エラーログを記録しました。", Toast.LENGTH_LONG).show();
                         }
                     });
                     ErrorLogger.writeLog(e);
@@ -280,16 +279,16 @@ public class ScreenShotService extends Service {
         } else if (kcsWidth == displayWidth) {
             return bitmap;
         } else {
+            //Logger.d("kcsWidth", String.valueOf(kcsWidth));
             int kcsHeight = displayWidth * 3 / 5;
+            //Logger.d("kcsHeight", String.valueOf(kcsHeight));
             int blackHeight = (displayHeight - kcsHeight) / 2;
+            //Logger.d("blankHeight", String.valueOf(blackHeight));
             int[] newPixcels = new int[displayWidth * kcsHeight];
-            for (int y = 0; y < height; y++) {
-                if (y < blackHeight || y > kcsHeight + blackHeight - 1) {
-                    continue;
-                }
-                for (int x = 0; x < width; x++) {
+            for (int y = blackHeight; y < kcsHeight + blackHeight; y++) {
+                for (int x = 0; x < displayWidth; x++) {
                     int pixel = pixels[x + y * width];
-                    newPixcels[(y - blackHeight) + y * displayWidth] = pixel;
+                    newPixcels[x + (y - blackHeight) * displayWidth] = pixel;
                 }
             }
 

@@ -9,6 +9,7 @@ import android.text.Editable;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -19,18 +20,21 @@ import android.widget.TextView;
 
 import java.math.BigDecimal;
 
+import io.realm.Realm;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.ShipUtility;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager;
+import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
-import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager;
 
 /**
  * Created by snake0394 on 2016/12/07.
  */
 
 public class DeckMenuDialogFragment extends android.support.v4.app.DialogFragment {
+
+    private Realm realm;
 
     public static DeckMenuDialogFragment newInstance(int deckId) {
         DeckMenuDialogFragment fragment = new DeckMenuDialogFragment();
@@ -44,6 +48,8 @@ public class DeckMenuDialogFragment extends android.support.v4.app.DialogFragmen
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        realm = Realm.getDefaultInstance();
+
         final Activity activity = getActivity();
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         final View rootView = LayoutInflater.from(activity).inflate(R.layout.dialog_fragment_deck_menu, null);
@@ -73,11 +79,10 @@ public class DeckMenuDialogFragment extends android.support.v4.app.DialogFragmen
                 for (int i = 1; i <= deck.getShipId().size(); i++) {
                     int shipId = deck.getShipId().get(i - 1);
 
-                    if (!MyShipManager.INSTANCE.contains(shipId) || shipId == -1) {
+                    MyShip myShip = realm.where(MyShip.class).equalTo("id", shipId).findFirst();
+                    if (myShip == null || shipId == -1) {
                         break;
                     }
-
-                    MyShip myShip = MyShipManager.INSTANCE.getMyShip(shipId);
 
                     String name = "proportional" + i;
                     int strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
@@ -134,11 +139,10 @@ public class DeckMenuDialogFragment extends android.support.v4.app.DialogFragmen
                     for (int i = 1; i <= deck.getShipId().size(); i++) {
                         int shipId = deck.getShipId().get(i - 1);
 
-                        if (!MyShipManager.INSTANCE.contains(shipId) || shipId == -1) {
+                        MyShip myShip = realm.where(MyShip.class).equalTo("id", shipId).findFirst();
+                        if (myShip == null || shipId == -1) {
                             break;
                         }
-
-                        MyShip myShip = MyShipManager.INSTANCE.getMyShip(shipId);
 
                         String name = "proportional" + i;
                         int strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
@@ -172,7 +176,9 @@ public class DeckMenuDialogFragment extends android.support.v4.app.DialogFragmen
         for (int i = 1; i <= deck.getShipId().size(); i++) {
             int shipId = deck.getShipId().get(i - 1);
 
-            if (!MyShipManager.INSTANCE.contains(shipId) || shipId == -1) {
+            MyShip myShip = realm.where(MyShip.class).equalTo("id", shipId).findFirst();
+            if (myShip == null || shipId == -1) {
+
                 String name = "name" + i;
                 int strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
                 text = (TextView) rootView.findViewById(strId);
@@ -191,13 +197,12 @@ public class DeckMenuDialogFragment extends android.support.v4.app.DialogFragmen
                 continue;
             }
 
-            MyShip myShip = MyShipManager.INSTANCE.getMyShip(shipId);
-
             String name = "name" + i;
             int strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
             text = (TextView) rootView.findViewById(strId);
             //text.setVisibility(View.VISIBLE);
-            text.setText(myShip.getName());
+            MstShip mstShip = realm.where(MstShip.class).equalTo("id", myShip.getShipId()).findFirst();
+            text.setText(mstShip.getName());
 
             name = "proportional" + i;
             strId = getResources().getIdentifier(name, "id", getContext().getPackageName());
@@ -216,7 +221,16 @@ public class DeckMenuDialogFragment extends android.support.v4.app.DialogFragmen
         }
 
         builder.setView(rootView).setTitle("第" + getArguments().getInt("deckId") + "艦隊防空情報");
-        return builder.create();
+        
+        Dialog dialog = builder.create();
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        return dialog;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        realm.close();
     }
 
     @Override

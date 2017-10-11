@@ -6,16 +6,18 @@ import com.google.gson.JsonObject;
 
 import jp.gr.java_conf.snake0394.loglook_android.App;
 import jp.gr.java_conf.snake0394.loglook_android.WinRankOverlayService;
+import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.RequestMetaData;
 import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData;
 
 /**
  * Created by snake0394 on 2017/07/12.
  */
-@API("kcsapi/api_req_practice/battle_result")
+@API("/kcsapi/api_req_practice/battle_result")
 public class ApiReqPracticeBattleResult implements APIListenerSpi {
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
+        Logger.d(this.getClass().getName(), "accept");
         App.getInstance().stopService(new Intent(App.getInstance().getApplicationContext(), WinRankOverlayService.class));
     }
 }

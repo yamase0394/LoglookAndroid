@@ -5,14 +5,15 @@ import android.util.Log
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
+import io.realm.Realm
 import jp.gr.java_conf.snake0394.loglook_android.BattleUtility
 import jp.gr.java_conf.snake0394.loglook_android.TacticalSituation
 import jp.gr.java_conf.snake0394.loglook_android.api.API
 import jp.gr.java_conf.snake0394.loglook_android.api.APIListenerSpi
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager
-import jp.gr.java_conf.snake0394.loglook_android.bean.MstShipManager
-import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitemManager
-import jp.gr.java_conf.snake0394.loglook_android.bean.MyShipManager
+import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip
+import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitem
+import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip
 import jp.gr.java_conf.snake0394.loglook_android.bean.battle.*
 import jp.gr.java_conf.snake0394.loglook_android.proxy.RequestMetaData
 import jp.gr.java_conf.snake0394.loglook_android.proxy.ResponseMetaData
@@ -65,6 +66,7 @@ class BattleLogger : APIListenerSpi {
             sdcardPath.mkdir()
         }
 
+        val realm = Realm.getDefaultInstance()
         try {
             val battle = TacticalSituation.battle
             val sb = StringBuffer()
@@ -89,12 +91,16 @@ class BattleLogger : APIListenerSpi {
                 is IKouku -> {
                     (battle as IKouku).apiKouku.apiStage1!!.run {
                         sb.append("${BattleUtility.getDispSeiku(apiDispSeiku)},")
-                        sb.append("${MstSlotitemManager.INSTANCE.getMstSlotitem(apiTouchPlane[0])?.name ?: ""},${MstSlotitemManager.INSTANCE.getMstSlotitem(apiTouchPlane[1])?.name ?: ""},")
+                        val touchPlane = realm.where(MstSlotitem::class.java).equalTo("id", apiTouchPlane[0]).findFirst()?.name ?: ""
+                        val enemyTouchPlane = realm.where(MstSlotitem::class.java).equalTo("id", apiTouchPlane[1]).findFirst()?.name ?: ""
+                        sb.append("$touchPlane,$enemyTouchPlane,")
                     }
                 }
                 is IMidnightBattle -> {
                     (battle as IMidnightBattle).run {
-                        sb.append(",${MstSlotitemManager.INSTANCE.getMstSlotitem(apiTouchPlane[0])?.name ?: ""},${MstSlotitemManager.INSTANCE.getMstSlotitem(apiTouchPlane[1])?.name ?: ""},")
+                        val touchPlane = realm.where(MstSlotitem::class.java).equalTo("id", apiTouchPlane[0]).findFirst()?.name ?: ""
+                        val enemyTouchPlane = realm.where(MstSlotitem::class.java).equalTo("id", apiTouchPlane[1]).findFirst()?.name ?: ""
+                        sb.append(",$touchPlane,$enemyTouchPlane,")
                     }
                 }
                 else -> Logger.d("BattleLogger", "illegal battle:${battle.javaClass.name}")
@@ -110,8 +116,8 @@ class BattleLogger : APIListenerSpi {
                     sb.append(",,")
                     continue
                 }
-                val myShip = MyShipManager.INSTANCE.getMyShip(shipId[i - 1])
-                val mstShip = MstShipManager.INSTANCE.getMstShip(myShip.shipId)
+                val myShip = realm.where(MyShip::class.java).equalTo("id", shipId[i - 1]).findFirst()
+                val mstShip = realm.where(MstShip::class.java).equalTo("id", myShip.shipId).findFirst()
                 sb.append("${mstShip.name}(Lv${myShip.lv}),${nowhps[i]}/${maxhps[i]},")
             }
 
@@ -120,10 +126,10 @@ class BattleLogger : APIListenerSpi {
                 if (eship[i] == -1) {
                     sb.append(",")
                 } else {
-                    sb.append(MstShipManager.INSTANCE.getMstShip(eship[i]).name)
-                    val yomi = MstShipManager.INSTANCE.getMstShip(eship[i]).yomi
-                    if (yomi != "" && yomi != "-") {
-                        sb.append("($yomi)")
+                    val mstShip = realm.where(MstShip::class.java).equalTo("id", eship[i]).findFirst()
+                    sb.append(mstShip.name)
+                    if (mstShip.yomi != "" && mstShip.yomi != "-") {
+                        sb.append("(${mstShip.yomi})")
                     }
                     sb.append(",${nowhps[i + 6]}/${maxhps[i + 6]}")
                 }
@@ -133,6 +139,90 @@ class BattleLogger : APIListenerSpi {
                 }
 
                 sb.append(",")
+            }
+
+            sb.append(",")
+            when (battle) {
+                is ICombinedBattle -> {
+                    val deck = DeckManager.INSTANCE.getDeck(2)
+                    val shipId = deck.shipId
+                    val nowhps = battle.apiNowhpsCombined
+                    val maxhps = battle.apiMaxhpsCombined
+                    for (i in 1..6) {
+                        if (shipId[i - 1] == -1) {
+                            sb.append(",,")
+                            continue
+                        }
+                        val myShip = realm.where(MyShip::class.java).equalTo("id", shipId[i - 1]).findFirst()
+                        val mstShip = realm.where(MstShip::class.java).equalTo("id", myShip.shipId).findFirst()
+                        sb.append("${mstShip.name}(Lv${myShip.lv}),${nowhps[i]}/${maxhps[i]},")
+                    }
+
+                    sb.append(",,,,,,,,,,,")
+                }
+                is IEnemyCombinedBattle -> {
+                    sb.append(",,,,,,,,,,,,")
+
+                    val nowhps = battle.apiNowhpsCombined
+                    val maxhps = battle.apiMaxhpsCombined
+                    val eship = battle.apiShipKeCombined
+                    for (i in 1..6) {
+                        if (eship[i] == -1) {
+                            sb.append(",")
+                        } else {
+                            val mstShip = realm.where(MstShip::class.java).equalTo("id", eship[i]).findFirst()
+                            sb.append(mstShip.name)
+                            if (mstShip.yomi != "" && mstShip.yomi != "-") {
+                                sb.append("(${mstShip.yomi})")
+                            }
+                            sb.append(",${nowhps[i + 6]}/${maxhps[i + 6]}")
+                        }
+
+                        if (i == 6) {
+                            break
+                        }
+
+                        sb.append(",")
+                    }
+                }
+                is IEachCombinedBattle -> {
+                    val deck = DeckManager.INSTANCE.getDeck(2)
+                    val shipId = deck.shipId
+                    val nowhps = battle.apiNowhpsCombined
+                    val maxhps = battle.apiMaxhpsCombined
+                    for (i in 1..6) {
+                        if (shipId[i - 1] == -1) {
+                            sb.append(",,")
+                            continue
+                        }
+                        val myShip = realm.where(MyShip::class.java).equalTo("id", shipId[i - 1]).findFirst()
+                        val mstShip = realm.where(MstShip::class.java).equalTo("id", myShip.shipId).findFirst()
+                        sb.append("${mstShip.name}(Lv${myShip.lv}),${nowhps[i]}/${maxhps[i]},")
+                    }
+
+                    val eship = battle.apiShipKeCombined
+                    for (i in 1..6) {
+                        if (eship[i] == -1) {
+                            sb.append(",")
+                        } else {
+                            val mstShip = realm.where(MstShip::class.java).equalTo("id", eship[i]).findFirst()
+                            sb.append(mstShip.name)
+                            if (mstShip.yomi != "" && mstShip.yomi != "-") {
+                                sb.append("(${mstShip.yomi})")
+                            }
+                            sb.append(",${nowhps[i + 6]}/${maxhps[i + 6]}")
+                        }
+
+                        if (i == 6) {
+                            break
+                        }
+
+                        sb.append(",")
+                    }
+                }
+                else -> {
+                    sb.append(",,,,,,,,,,,,,,,,,,,,,,,")
+                }
             }
 
             Log.d("battlelog", sb.toString())
@@ -145,6 +235,7 @@ class BattleLogger : APIListenerSpi {
             ErrorLogger.writeLog(e)
         } finally {
             isFirstBattle = false
+            realm.close()
         }
 
     }
