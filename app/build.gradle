@@ -31,11 +31,6 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile files('D:/workspace/Android/LoglookAndroid/libs/json_simple-1.1.jar')
-    compile files('D:/workspace/Android/LoglookAndroid/libs/littleproxy-1.1.1.jar')
-    compile files('D:/workspace/Android/LoglookAndroid/libs/slf4j-api-1.7.22.jar')
-    compile files('D:/workspace/Android/LoglookAndroid/libs/slf4j-android-1.7.22.jar')
-    compile files('D:/workspace/Android/LoglookAndroid/libs/commons-io-2.5.jar')
     compile files('../libs/json_simple-1.1.jar')
     compile files('../libs/littleproxy-1.1.1.jar')
     compile files('../libs/slf4j-api-1.7.22.jar')
