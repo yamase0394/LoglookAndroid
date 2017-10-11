@@ -36,6 +36,11 @@ dependencies {
     compile files('D:/workspace/Android/LoglookAndroid/libs/slf4j-api-1.7.22.jar')
     compile files('D:/workspace/Android/LoglookAndroid/libs/slf4j-android-1.7.22.jar')
     compile files('D:/workspace/Android/LoglookAndroid/libs/commons-io-2.5.jar')
+    compile files('../libs/json_simple-1.1.jar')
+    compile files('../libs/littleproxy-1.1.1.jar')
+    compile files('../libs/slf4j-api-1.7.22.jar')
+    compile files('../libs/slf4j-android-1.7.22.jar')
+    compile files('../libs/commons-io-2.5.jar')
     compile group: 'org.atteo.classindex', name: 'classindex', version: '3.4'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
