@@ -58,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean forcesLandscape;
 
     /**
-     * このアクティビティが持つfragment
+     * ナビゲーションドロワーから遷移可能な画面
+     * positionがドロワーでの順番
      */
     public enum Screen {
         HOME(0, "ホーム"),
@@ -70,8 +71,8 @@ public class MainActivity extends AppCompatActivity {
         EQUIPMENT(6, "装備一覧"),
         TACTICAL_SITUATION(7, "戦況"),
         DECK_CAPTURE_LIST(8, "編成一覧"),
-        MATERIAL_CHART(9, "資材チャート"),
-        BATTLE_STATISTICS(10, "出撃統計"),
+        BATTLE_STATISTICS(9, "出撃統計"),
+        MATERIAL_CHART(10, "資材チャート"),
         CONFIG(11, "設定");
 
         private int position;
