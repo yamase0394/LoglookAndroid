@@ -61,4 +61,11 @@
     <color name="improvement_material">#303cc9</color>
 
     <color name="slant_launcher_default">#ffff00</color>
+
+    <color name="s_win">#fff716</color>
+    <color name="a_win">#c10000</color>
+    <color name="b_win">#e27100</color>
+    <color name="c_lose">#ffdf52</color>
+    <color name="d_lose">#048f06</color>
+    <color name="e_lose">#0054a2</color>
 </resources>

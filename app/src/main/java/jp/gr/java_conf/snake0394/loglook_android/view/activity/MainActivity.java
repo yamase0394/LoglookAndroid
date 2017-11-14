@@ -31,6 +31,7 @@ import java.util.Map;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 import jp.gr.java_conf.snake0394.loglook_android.storage.GeneralPrefs;
+import jp.gr.java_conf.snake0394.loglook_android.view.fragment.BattleStatisticsFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.ConfigFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DamagedShipFragment;
 import jp.gr.java_conf.snake0394.loglook_android.view.fragment.DeckCaptureListFragment;
@@ -57,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean forcesLandscape;
 
     /**
-     * このアクティビティが持つfragment
+     * ナビゲーションドロワーから遷移可能な画面
+     * positionがドロワーでの順番
      */
     public enum Screen {
         HOME(0, "ホーム"),
@@ -69,8 +71,9 @@ public class MainActivity extends AppCompatActivity {
         EQUIPMENT(6, "装備一覧"),
         TACTICAL_SITUATION(7, "戦況"),
         DECK_CAPTURE_LIST(8, "編成一覧"),
-        MATERIAL_CHART(9, "資材チャート"),
-        CONFIG(10, "設定");
+        BATTLE_STATISTICS(9, "出撃統計"),
+        MATERIAL_CHART(10, "資材チャート"),
+        CONFIG(11, "設定");
 
         private int position;
         private String name;
@@ -328,6 +331,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case MATERIAL_CHART:
                 fragment = MaterialChartFragment.newInstance();
+                break;
+            case BATTLE_STATISTICS:
+                fragment = BattleStatisticsFragment.newInstance();
                 break;
             default:
                 return;
