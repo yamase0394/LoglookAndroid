@@ -11,9 +11,7 @@ import jp.gr.java_conf.snake0394.loglook_android.logger.Logger
 
 class OverlayService : Service() {
 
-    override fun onBind(intent: Intent): IBinder? {
-        return null
-    }
+    override fun onBind(intent: Intent): IBinder? = null
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         Logger.d(TAG, "onStartCommand")
@@ -21,49 +19,68 @@ class OverlayService : Service() {
         return Service.START_STICKY
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
     companion object {
         private val TAG = "OverlayService"
-        private lateinit var wm: WindowManager
+        private var wm: WindowManager? = null
         private val viewMap by lazy { mutableMapOf<View, WindowManager.LayoutParams>() }
 
-        @JvmStatic fun addOverlayView(view: View, params: WindowManager.LayoutParams) {
-            wm.addView(view, params)
+        @JvmStatic
+        fun addOverlayView(view: View, params: WindowManager.LayoutParams) {
+            waitWindowManagerInit()
+            wm!!.addView(view, params)
             viewMap.put(view, params)
         }
 
-        @JvmStatic fun removeOverlayView(view: View) {
-            wm.removeView(view)
+        @JvmStatic
+        fun removeOverlayView(view: View) {
+            waitWindowManagerInit()
+            wm!!.removeView(view)
             viewMap.remove(view)
         }
 
-        @JvmStatic fun removeOverlayViewImmediate(view: View) {
-            wm.removeViewImmediate(view)
+        @JvmStatic
+        fun removeOverlayViewImmediate(view: View) {
+            waitWindowManagerInit()
+            wm!!.removeViewImmediate(view)
             viewMap.remove(view)
         }
 
-        @JvmStatic fun getDefaultDisplay(): Display {
-            return wm.defaultDisplay
+        @JvmStatic
+        fun getDefaultDisplay(): Display {
+            waitWindowManagerInit()
+            return wm!!.defaultDisplay
         }
 
-        @JvmStatic fun hideAllOverlayView() {
+        @JvmStatic
+        fun hideAllOverlayView() {
+            waitWindowManagerInit()
             for ((key) in viewMap) {
-                wm.removeViewImmediate(key)
+                wm!!.removeViewImmediate(key)
             }
+
+            //画面からViewが完全に消えるのを待つ
             Thread.sleep(50)
         }
 
-        @JvmStatic fun showAllOverlayView() {
+        @JvmStatic
+        fun showAllOverlayView() {
+            waitWindowManagerInit()
             for ((key, value) in viewMap) {
-                wm.addView(key, value)
+                wm!!.addView(key, value)
             }
         }
 
-        @JvmStatic fun updateOverlayViewLayout(view: View, params: WindowManager.LayoutParams) {
-            wm.updateViewLayout(view, params)
+        @JvmStatic
+        fun updateOverlayViewLayout(view: View, params: WindowManager.LayoutParams) {
+            waitWindowManagerInit()
+            wm!!.updateViewLayout(view, params)
+        }
+
+        private fun waitWindowManagerInit(){
+            while (wm == null) {
+                Logger.d(TAG, "waiting for initializing completion")
+                Thread.sleep(100)
+            }
         }
     }
 }
