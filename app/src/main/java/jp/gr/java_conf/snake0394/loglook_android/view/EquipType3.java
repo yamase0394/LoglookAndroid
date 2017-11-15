@@ -53,6 +53,8 @@ public enum EquipType3 {
     潜水艦装備(42, R.drawable.submarine_radar_icon),
     水上戦闘機(43, R.drawable.seaplane_fighter),
     陸軍戦闘機(44, R.drawable.interceptor_fighter2),
+    夜間戦闘機(45, R.drawable.icon_night_fighter_aircraft),
+    夜間攻撃機(46, R.drawable.icon_night_torpedo_bomber),
     UNKNOWN(300, R.drawable.unknown),
     EMPTY(301, R.drawable.empty),
     NOT_AVAILABLE(302, R.drawable.not_available);
