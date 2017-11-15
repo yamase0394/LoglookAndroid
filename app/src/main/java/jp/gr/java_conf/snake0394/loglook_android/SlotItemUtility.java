@@ -374,6 +374,7 @@ public class SlotItemUtility {
             case 艦上攻撃機:
             case 水上爆撃機:
             case 艦上爆撃機:
+            case 噴式戦闘爆撃機:
                 return (int) ((mstSlotitem.getTyku() + getImprovementAA(mstSlotitem, improvementLevel)) * Math.sqrt(slotNum) + getjukurenSeiku(mstSlotitem, alv));
             default:
                 return 0;
@@ -415,6 +416,7 @@ public class SlotItemUtility {
                 }
             case 艦上爆撃機:
             case 艦上攻撃機:
+            case 噴式戦闘爆撃機:
                 switch (alv) {
                     case 1:
                     case 2:
