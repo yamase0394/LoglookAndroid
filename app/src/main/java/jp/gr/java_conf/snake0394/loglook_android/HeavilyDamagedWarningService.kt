@@ -23,7 +23,7 @@ class HeavilyDamagedWarningService : Service() {
         return null
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         Logger.d(TAG, "onStartCommand")
 
@@ -48,7 +48,7 @@ class HeavilyDamagedWarningService : Service() {
         }
 
         (overlayView!!.findViewById(R.id.text_heavily_damaged_list) as TextView).apply {
-            val heavilyDamagedNames = intent.getStringArrayListExtra("nameList")
+            val heavilyDamagedNames = intent!!.getStringArrayListExtra("nameList")
             var damagedShipNames = ""
             (0 until heavilyDamagedNames.size).forEach { idx ->
                 damagedShipNames += heavilyDamagedNames[idx]
@@ -59,7 +59,7 @@ class HeavilyDamagedWarningService : Service() {
             text = damagedShipNames
         }
 
-        return Service.START_STICKY
+        return Service.START_REDELIVER_INTENT
     }
 
     override fun onDestroy() {

@@ -13,7 +13,7 @@ class OverlayService : Service() {
 
     override fun onBind(intent: Intent): IBinder? = null
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Logger.d(TAG, "onStartCommand")
         wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         return Service.START_STICKY

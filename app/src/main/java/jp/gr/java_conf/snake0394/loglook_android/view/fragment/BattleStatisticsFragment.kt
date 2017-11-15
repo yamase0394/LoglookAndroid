@@ -1,9 +1,11 @@
 package jp.gr.java_conf.snake0394.loglook_android.view.fragment
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Environment
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
@@ -40,6 +42,9 @@ class BattleStatisticsFragment : Fragment(),
 
     private val listAdapter by lazy { ListViewAdapter(context) }
     private var allLogList: ArrayList<BattleLog>? = null
+    private var presentDateFilter = BattleStatisticsFilterDialog.DATE_FILTER_THIS_MONTH
+    private var fromDate: Date? = null
+    private var toDate: Date? = null
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         listAdapter.getItem(position)
@@ -49,12 +54,11 @@ class BattleStatisticsFragment : Fragment(),
         val toolbar = activity.findViewById(R.id.toolbar) as Toolbar
         toolbar.inflateMenu(R.menu.menu_battle_statistics_fragment)
         toolbar.menu.findItem(R.id.menu_filter).setOnMenuItemClickListener {
-            val dialogFragment = BattleStatisticsFilterDialog.newInstance()
+            val dialogFragment = BattleStatisticsFilterDialog.newInstance(presentDateFilter, fromDate, toDate)
             dialogFragment.setTargetFragment(this, 0)
             dialogFragment.show(fragmentManager, "filtering dialog")
             return@setOnMenuItemClickListener false
         }
-        toolbar.title = "今月"
 
         return inflater!!.inflate(R.layout.fragment_battle_statistics, container, false)
     }
@@ -72,19 +76,34 @@ class BattleStatisticsFragment : Fragment(),
                 val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
                 var tempAllLogList = arrayListOf<BattleLog>()
-                ReversedLinesFileReader(File(filePath), 8096, "SJIS").use {
+                ReversedLinesFileReader(File(filePath), 8096*2, "SJIS").use {
                     var line = it.readLine()
-                    try {
-                        while (line != null) {
-                            val split = line.split(",")
-                            val battleLog = BattleLog(sdf.parse(split[0]), split[1], split[2].toInt(), split[3], split[4], split[5], split[6], split[7], split[8], split[9], split[10], split[11], split[12], split[13], null, arrayListOf(split[26], split[28], split[30], split[32], split[34], split[36]).filter { it.isNotEmpty() }.toMutableList(), null, null)
+                    var invalidCount = 0
+                    loop@ while (line != null) {
+                        val split = line.split(",")
+                        try {
+                            val battleLog = when (split.size) {
+                                38, 62 -> BattleLog(sdf.parse(split[0]), split[1], split[2].toInt(), split[3], split[4], split[5], split[6], split[7], split[8], split[9], split[10], split[11], split[12], split[13], null, arrayListOf(split[26], split[28], split[30], split[32], split[34], split[36]).filter { it.isNotEmpty() }.toMutableList(), null, null)
+                            //35は出撃がないのがまじってる
+                            //35 -> BattleLog(sdf.parse(split[0]), split[1], split[2].toInt(), split[3], split[4], split[5], split[6], split[7], null, null, null, split[8], split[9], split[10], null, arrayListOf(split[23], split[24], split[25], split[26], split[27], split[28]).filter { it.isNotEmpty() }.toMutableList(), null, null)
+                            //一番うしろにカンマがついててsplit.size=36のもある
+                                else -> {
+                                    Logger.d(TAG, "size = ${split.size}")
+                                    Logger.d(TAG, "invalid record = $line")
+                                    if (invalidCount++ > 5) {
+                                        break@loop
+                                    }
+                                    line = it.readLine()
+                                    continue@loop
+                                }
+                            }
                             channel.send(battleLog)
                             tempAllLogList.add(battleLog)
-                            line = it.readLine()
+                        } catch (e: ParseException) {
+                            //ヘッダ?
                         }
-                    } catch (e: ParseException) {
-                        //ヘッダ
-                        e.printStackTrace()
+
+                        line = it.readLine()
                     }
 
                     channel.close()
@@ -154,20 +173,23 @@ class BattleStatisticsFragment : Fragment(),
         super.onDestroyView()
     }
 
-    override fun onFilterChanged(dateFrom: Date, dateTo: Date, msg: String?) {
+    override fun onFilterChanged(dateFrom: Date, dateTo: Date, dateFilter: String) {
+        presentDateFilter = dateFilter
+        if (dateFilter == "期間を指定") {
+            this.toDate = dateTo
+            this.fromDate = dateFrom
+        }
+
         launch(UI) {
             progressBar.visibility = View.VISIBLE
 
             launch(CommonPool) {
                 //allLogListの初期化を待つ
                 while (allLogList == null) {
-                    delay(300)
+                    delay(1000)
                     Logger.d(javaClass.simpleName, "waiting for complete allLogList initialized")
                 }
             }.join()
-
-            //ListViewのデータをクリア
-            listAdapter.setDataList(arrayListOf())
 
             val dataList = arrayListOf<ListItem>()
             val battleLogMap = hashMapOf<String, ListItem>()
@@ -212,14 +234,6 @@ class BattleStatisticsFragment : Fragment(),
 
             dataList.sortWith(ListItemComparator())
 
-            val toolbar = activity.findViewById(R.id.toolbar) as Toolbar
-            toolbar.title = if (msg != null) {
-                msg
-            } else {
-                val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm")
-                "${sdf.format(dateFrom)} ~ ${sdf.format(dateTo)}"
-            }
-
             listAdapter.setDataList(dataList)
             progressBar.visibility = View.GONE
         }
@@ -234,6 +248,14 @@ class BattleStatisticsFragment : Fragment(),
                 view = View.inflate(context, R.layout.layout_sea_area_list, null)
             }
             view!!.apply {
+                layout_root.setBackgroundColor(
+                        if (position % 2 == 0) {
+                            ContextCompat.getColor(context, R.color.list_even_background)
+                        } else {
+                            Color.WHITE
+                        }
+                )
+
                 val listItem = battleLogList[position]
                 textview_sea_area_name.text = listItem.seaAreaName
                 text_map_number.text = listItem.mapNumber
@@ -279,9 +301,9 @@ class BattleStatisticsFragment : Fragment(),
             val tactic: String,
             val formation: String,
             val enemyFormation: String,
-            val airState: String,
-            val touchPlane: String,
-            val enemyTouchPlane: String,
+            val airState: String?,
+            val touchPlane: String?,
+            val enemyTouchPlane: String?,
             val enemyFleetName: String,
             val dropShipType: String,
             val dropShipName: String,
@@ -328,6 +350,15 @@ class BattleStatisticsFragment : Fragment(),
 
     private class ListItemComparator : Comparator<ListItem> {
         override fun compare(o1: ListItem, o2: ListItem): Int {
+            if (o1.mapNumber == "不明") {
+                if (o2.mapNumber == "不明") {
+                    return 0
+                }
+                return -1
+            } else if (o2.mapNumber == "不明") {
+                return 1
+            }
+
             //ex 1-5 16春E1
             val split1 = o1.mapNumber.split("-")
             val split2 = o2.mapNumber.split("-")
@@ -514,8 +545,13 @@ class BattleStatisticsFragment : Fragment(),
                     "水上打撃部隊",
                     "任務部隊 D群",
                     "任務部隊 C群",
+                        //wikiだと艦隊ではなく戦隊になっている
+                    "南東方面主力艦隊",
                     "南東方面主力戦隊" -> "14秋E3"
-                    else -> "不明"
+                    else -> {
+                        Logger.d(TAG, battleLog.toString())
+                        "不明"
+                    }
                 }
             }
             "パラオ諸島沖" -> "14秋E4"
@@ -628,6 +664,8 @@ class BattleStatisticsFragment : Fragment(),
             "西方海域戦線 ステビア海" -> "15秋E4"
             "バニラ湾沖" -> "15秋E5"
             "カンパン湾沖" -> "16冬E1"
+        //wikiだと"湾"が入ってるけどログにはない...
+            "オートロ島マーマレード沖",
             "オートロ島マーマレード湾沖" -> "16冬E2"
             "北海道北東沖" -> "16冬E3"
             "北太平洋前線海域" -> {
@@ -653,7 +691,7 @@ class BattleStatisticsFragment : Fragment(),
                     "深海第二水雷戦隊",
                     "群狼潜水戦隊 B群",
                     "深海第一水雷戦隊",
-                    "群狼潜水戦隊 A群",
+                    "群狼潜水艦隊 A群",
                     "深海基地航空隊 第1航空隊",
                     "魚雷艇突撃戦隊",
                     "深海駆逐隊旗艦" -> "16春E3"
@@ -667,7 +705,10 @@ class BattleStatisticsFragment : Fragment(),
                     "逆襲水上打撃部隊前衛部隊",
                     "逆襲水上打撃部隊本隊",
                     "逆襲部隊旗艦艦隊" -> "16春E4"
-                    else -> "不明"
+                    else -> {
+                        Logger.d(TAG, battleLog.toString())
+                        "不明"
+                    }
                 }
             }
             "南方ラバウル基地戦域" -> "16春E5"

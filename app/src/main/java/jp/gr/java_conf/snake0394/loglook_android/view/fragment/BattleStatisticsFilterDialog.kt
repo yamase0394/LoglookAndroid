@@ -4,11 +4,9 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import jp.gr.java_conf.snake0394.loglook_android.R
-import jp.gr.java_conf.snake0394.loglook_android.logger.Logger
 import kotlinx.android.synthetic.main.dialog_filter_battle_statistics.*
 import kotlinx.android.synthetic.main.dialog_filter_battle_statistics.view.*
 import java.text.SimpleDateFormat
@@ -21,6 +19,54 @@ class BattleStatisticsFilterDialog : android.support.v4.app.DialogFragment(),
         PickDateDialog.OnDateSetListener,
         PickTimeDialog.OnTimeSetListener {
 
+    companion object {
+        private val REQ_CODE_FROM_DATE = 1
+        private val REQ_CODE_FROM_TIME = 2
+        private val REQ_CODE_TO_DATE = 3
+        private val REQ_CODE_TO_TIME = 4
+
+        private val ARG_DEFAULT_DATE_FILTER = "defaultDateFilter"
+        private val ARG_DEFAULT_FROM_DATE = "defaultFromDate"
+        private val ARG_DEFAULT_FROM_TIME = "defaultFromTime"
+        private val ARG_DEFAULT_TO_DATE = "defaultToDate"
+        private val ARG_DEFAULT_TO_TIME = "defaultToTime"
+
+        val DATE_FILTER_THIS_MONTH = "今月"
+        val DATE_FILTER_LAST_MONTH = "先月"
+        val DATE_FILTER_ALL = "全期間"
+        val DATE_FILTER_SELECT = "期間を指定"
+
+        fun newInstance(defaultDateFilter: String, defaultFromDate: Date? = null, defaultToDate: Date? = null): BattleStatisticsFilterDialog {
+            val dialog = BattleStatisticsFilterDialog()
+            val args = Bundle()
+            args.putString(ARG_DEFAULT_DATE_FILTER, defaultDateFilter)
+
+            val sdfDate = SimpleDateFormat("yyyy-MM-dd")
+            val sdfTime = SimpleDateFormat("HH:mm")
+            if (defaultFromDate == null) {
+                args.putString(ARG_DEFAULT_FROM_DATE, sdfDate.format(Date()))
+                args.putString(ARG_DEFAULT_FROM_TIME, "00:00")
+            } else {
+                args.putString(ARG_DEFAULT_FROM_DATE, sdfDate.format(defaultFromDate))
+                args.putString(ARG_DEFAULT_FROM_TIME, sdfTime.format(defaultFromDate))
+            }
+            if (defaultToDate == null) {
+                args.putString(ARG_DEFAULT_TO_DATE, sdfDate.format(Date()))
+                args.putString(ARG_DEFAULT_TO_TIME, "23:59")
+            } else {
+                args.putString(ARG_DEFAULT_TO_DATE, sdfDate.format(defaultToDate))
+                args.putString(ARG_DEFAULT_TO_TIME, sdfTime.format(defaultToDate))
+            }
+
+            dialog.arguments = args
+            return dialog
+        }
+    }
+
+    interface OnFilterChangedListener {
+        fun onFilterChanged(dateFrom: Date, dateTo: Date, checked: String)
+    }
+
     private var listener: OnFilterChangedListener? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -29,17 +75,22 @@ class BattleStatisticsFilterDialog : android.support.v4.app.DialogFragment(),
         val rootView = LayoutInflater.from(context).inflate(R.layout.dialog_filter_battle_statistics, null)
 
         rootView.apply {
-            val sdf = SimpleDateFormat("yyy-MM-dd")
-            val date = Date()
-            text_from_date.text = sdf.format(date)
-            text_to_date.text = sdf.format(date)
-
-            //今月を初期範囲に指定
-            radio_group.check(R.id.radio_this_month)
+            text_from_date.text = arguments.getString(ARG_DEFAULT_FROM_DATE)
+            text_from_time.text = arguments.getString(ARG_DEFAULT_FROM_TIME)
+            text_to_date.text = arguments.getString(ARG_DEFAULT_TO_DATE)
+            text_to_time.text = arguments.getString(ARG_DEFAULT_TO_TIME)
 
             layout_select_from_to_date.visibility = View.GONE
             radio_select_span.setOnCheckedChangeListener { _, isChecked ->
                 layout_select_from_to_date.visibility = if (isChecked) View.VISIBLE else View.GONE
+            }
+
+            when (arguments.getString(ARG_DEFAULT_DATE_FILTER)) {
+                DATE_FILTER_THIS_MONTH -> radio_this_month.isChecked = true
+                DATE_FILTER_LAST_MONTH -> radio_last_month.isChecked = true
+                DATE_FILTER_ALL -> radio_all_span.isChecked = true
+                DATE_FILTER_SELECT -> radio_select_span.isChecked = true
+                else -> throw IllegalArgumentException("$ARG_DEFAULT_DATE_FILTER=${arguments.getString(ARG_DEFAULT_DATE_FILTER)}")
             }
 
             btn_select_from_date.setOnClickListener {
@@ -74,15 +125,14 @@ class BattleStatisticsFilterDialog : android.support.v4.app.DialogFragment(),
         return builder.setView(rootView)
                 .setTitle("フィルター")
                 .setPositiveButton("設定") { _, _ ->
-                    var toDate: Date? = null
-                    var fromDate: Date? = null
-                    var checkedText: String? = null
-
+                    val toDate: Date
+                    val fromDate: Date
+                    val dateFilter: String
                     when (rootView.radio_group.checkedRadioButtonId) {
                         R.id.radio_this_month -> {
                             toDate = Date()
                             fromDate = org.apache.commons.lang3.time.DateUtils.truncate(toDate, Calendar.MONTH)
-                            checkedText = "今月"
+                            dateFilter = DATE_FILTER_THIS_MONTH
                         }
                         R.id.radio_last_month -> {
                             val calendar = Calendar.getInstance()
@@ -91,21 +141,23 @@ class BattleStatisticsFilterDialog : android.support.v4.app.DialogFragment(),
 
                             toDate = calendar.time
                             fromDate = org.apache.commons.lang3.time.DateUtils.truncate(toDate, Calendar.MONTH)
-                            checkedText = "先月"
+                            dateFilter = DATE_FILTER_LAST_MONTH
                         }
                         R.id.radio_all_span -> {
                             fromDate = Date(Long.MIN_VALUE)
                             toDate = Date(Long.MAX_VALUE)
-                            checkedText = "全期間"
+                            dateFilter = DATE_FILTER_ALL
                         }
                         R.id.radio_select_span -> {
                             val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm")
                             fromDate = sdf.parse("${rootView.text_from_date.text} ${rootView.text_from_time.text}")
                             toDate = sdf.parse("${rootView.text_to_date.text} ${rootView.text_to_time.text}")
+                            dateFilter = DATE_FILTER_SELECT
                         }
+                        else -> throw IllegalStateException("unknown resource id = ${radio_group.checkedRadioButtonId}")
                     }
 
-                    listener!!.onFilterChanged(fromDate!!, toDate!!, checkedText)
+                    listener!!.onFilterChanged(fromDate, toDate, dateFilter)
                 }
                 .setNegativeButton("キャンセル", null)
                 .create()
@@ -138,18 +190,5 @@ class BattleStatisticsFilterDialog : android.support.v4.app.DialogFragment(),
             REQ_CODE_FROM_TIME -> dialog.text_from_time.text = String.format("%02d:%02d", hourOfDay, minute)
             REQ_CODE_TO_TIME -> dialog.text_to_time.text = String.format("%02d:%02d", hourOfDay, minute)
         }
-    }
-
-    companion object {
-        private val REQ_CODE_FROM_DATE = 1
-        private val REQ_CODE_FROM_TIME = 2
-        private val REQ_CODE_TO_DATE = 3
-        private val REQ_CODE_TO_TIME = 4
-
-        fun newInstance(): BattleStatisticsFilterDialog = BattleStatisticsFilterDialog()
-    }
-
-    interface OnFilterChangedListener {
-        fun onFilterChanged(dateFrom: Date, dateTo: Date, checked: String?)
     }
 }

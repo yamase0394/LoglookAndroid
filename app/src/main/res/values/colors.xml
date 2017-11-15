@@ -18,6 +18,7 @@
     <color name="drawer_header">#fff8eb</color>
     <color name="my_ship_list_header">#656565</color>
 
+    <!--艦隊画面-->
     <color name="sank">#0066cc</color>
     <color name="expedition">#4e5a92</color>
     <color name="escort">#ffcccccc</color>
@@ -33,6 +34,7 @@
     <color name="moderately_fatigued">#ff8c00</color>
     <color name="seriously_fatigued">#ffff0000</color>
 
+    <!--装備画面-->
     <color name="los">#8ECE9A</color>
     <color name="aa">#65CD74</color>
     <color name="firepower">#cf3c3c</color>
@@ -51,6 +53,7 @@
     <color name="overlay_background">#70000000</color>
     <color name="close_overlay_bar">#cf003a75</color>
 
+    <!--資材チャート-->
     <color name="fuel">#33c41c</color>
     <color name="bullet">#d7b752</color>
     <color name="steel">#9EA19F</color>
@@ -68,4 +71,7 @@
     <color name="c_lose">#ffdf52</color>
     <color name="d_lose">#048f06</color>
     <color name="e_lose">#0054a2</color>
+    
+    <!--戦闘統計-->
+    <color name="list_even_background">#fffdf9</color>
 </resources>

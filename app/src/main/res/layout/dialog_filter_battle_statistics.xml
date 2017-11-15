@@ -13,34 +13,34 @@
 
         <RadioGroup
             android:id="@+id/radio_group"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent">
 
             <RadioButton
                 android:id="@+id/radio_this_month"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="今月" />
 
             <RadioButton
                 android:id="@+id/radio_last_month"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="先月" />
 
             <RadioButton
                 android:id="@+id/radio_all_span"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="全期間" />
 
             <RadioButton
                 android:id="@+id/radio_select_span"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="期間を指定" />

@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/layout_root"
     android:paddingBottom="7dp"
-    android:paddingLeft="15dp"
-    android:paddingRight="15dp"
+    android:paddingLeft="11dp"
+    android:paddingRight="11dp"
     android:paddingTop="7dp">
 
     <!--一段目-->
     <LinearLayout
         android:id="@+id/layout_sea_area"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"
-        app:layout_constraintHorizontal_weight="0.4"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/textView60"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -26,106 +23,124 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:maxEms="10"
             android:maxLines="1"
-            android:text="鎮守府近海航海"
+            android:text="鎮守府近海航aaaaaaa"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textSize="18dp" />
+            android:textSize="16dp" />
 
         <TextView
             android:id="@+id/text_map_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginLeft="5dp"
             android:layout_weight="1"
-            android:text="1-4"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textSize="16dp" />
+            android:gravity="bottom"
+            android:text="17春E5"
+            android:textSize="14dp" />
     </LinearLayout>
 
-
-    <TextView
-        android:id="@+id/textView60"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="出撃 :"
-        android:textSize="14dp"
-        app:layout_constraintBottom_toBottomOf="@id/layout_sea_area"
-        app:layout_constraintLeft_toRightOf="@id/layout_sea_area"
-        app:layout_constraintRight_toLeftOf="@id/text_sortie_count" />
-
-    <TextView
-        android:id="@+id/text_sortie_count"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="1000"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="14dp"
-        app:layout_constraintBaseline_toBaselineOf="@id/textView60"
-        app:layout_constraintHorizontal_weight="0.1"
-        app:layout_constraintLeft_toRightOf="@+id/textView60"
-        app:layout_constraintRight_toLeftOf="@id/textView61"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView61"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ボス : "
-        android:textSize="14dp"
-        app:layout_constraintBaseline_toBaselineOf="@id/text_sortie_count"
-        app:layout_constraintHorizontal_weight="0.1"
-        app:layout_constraintLeft_toRightOf="@+id/text_sortie_count"
-        app:layout_constraintRight_toLeftOf="@id/textview_boss_count"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textview_boss_count"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="500"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="14dp"
-        app:layout_constraintBaseline_toBaselineOf="@id/textView61"
-        app:layout_constraintHorizontal_weight="0.1"
-        app:layout_constraintLeft_toRightOf="@+id/textView61"
-        app:layout_constraintRight_toLeftOf="@id/textView62"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView62"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="到達率 : "
-        android:textSize="14dp"
-        app:layout_constraintBaseline_toBaselineOf="@id/text_sortie_count"
-        app:layout_constraintLeft_toRightOf="@+id/textview_boss_count"
-        app:layout_constraintRight_toLeftOf="@id/textview_arrival_rate"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textview_arrival_rate"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="500"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="14dp"
-        app:layout_constraintBaseline_toBaselineOf="@id/textView61"
-        app:layout_constraintHorizontal_weight="0.1"
-        app:layout_constraintLeft_toRightOf="@+id/textView62"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <View
+        android:id="@+id/border"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:layout_constraintTop_toBottomOf="@id/layout_sea_area"
+        android:background="@color/colorAccent"/>
 
     <!--二段目-->
+    <LinearLayout
+        android:id="@+id/layout_sortie_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/layout_boss_count"
+        app:layout_constraintTop_toBottomOf="@id/border">
+
+        <TextView
+            android:id="@+id/textView60"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="出撃:"
+            android:textSize="11dp" />
+
+        <TextView
+            android:id="@+id/text_sortie_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1000"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textSize="14dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_boss_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="11dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@id/layout_sortie_count"
+        app:layout_constraintLeft_toRightOf="@id/layout_sortie_count"
+        app:layout_constraintRight_toLeftOf="@id/layout_arrival_rate">
+
+        <TextView
+            android:id="@+id/textView61"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="ボス:"
+            android:textSize="11dp" />
+
+        <TextView
+            android:id="@+id/textview_boss_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="500"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textSize="14dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_arrival_rate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="11dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@id/layout_boss_count"
+        app:layout_constraintLeft_toRightOf="@id/layout_boss_count"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <TextView
+            android:id="@+id/textView62"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="到達率:"
+            android:textSize="11dp" />
+
+        <TextView
+            android:id="@+id/textview_arrival_rate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="100%"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textSize="14dp" />
+
+    </LinearLayout>
+
+    <!--三段目-->
     <TextView
         android:id="@+id/textview70"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
         android:text="ボス戦"
-        android:textSize="14dp"
+        android:textSize="12dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_sea_area" />
+        app:layout_constraintTop_toBottomOf="@id/layout_sortie_count" />
 
     <LinearLayout
         android:id="@+id/layout_boss_s_count"
@@ -133,6 +148,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="@id/textview70"
+        app:layout_constraintTop_toTopOf="@id/textview70"
         app:layout_constraintLeft_toRightOf="@id/textview70"
         app:layout_constraintRight_toLeftOf="@id/layout_boss_a_count">
 
@@ -140,8 +156,9 @@
             android:id="@+id/textview71"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="S : "
-            android:textSize="14dp"/>
+            android:layout_gravity="center_vertical"
+            android:text="S:"
+            android:textSize="11dp" />
 
         <TextView
             android:id="@+id/text_s_count"
@@ -165,8 +182,9 @@
             android:id="@+id/textview72"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="A : "
-            android:textSize="14dp" />
+            android:layout_gravity="center_vertical"
+            android:text="A:"
+            android:textSize="11dp" />
 
         <TextView
             android:id="@+id/text_a_count"
@@ -191,8 +209,9 @@
             android:id="@+id/textview73"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="B : "
-            android:textSize="14dp" />
+            android:layout_gravity="center_vertical"
+            android:text="B:"
+            android:textSize="11dp" />
 
         <TextView
             android:id="@+id/text_b_count"
@@ -217,8 +236,9 @@
             android:id="@+id/textview74"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="C : "
-            android:textSize="14dp" />
+            android:layout_gravity="center_vertical"
+            android:text="C:"
+            android:textSize="11dp" />
 
         <TextView
             android:id="@+id/text_c_count"
@@ -243,8 +263,9 @@
             android:id="@+id/textview75"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="D : "
-            android:textSize="14dp" />
+            android:layout_gravity="center_vertical"
+            android:text="D:"
+            android:textSize="11dp" />
 
         <TextView
             android:id="@+id/text_d_count"
@@ -269,8 +290,9 @@
             android:id="@+id/textview76"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="E : "
-            android:textSize="14dp" />
+            android:layout_gravity="center_vertical"
+            android:text="E:"
+            android:textSize="11dp" />
 
         <TextView
             android:id="@+id/text_e_count"
@@ -295,8 +317,9 @@
             android:id="@+id/textview77"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="勝率 : "
-            android:textSize="14dp" />
+            android:layout_gravity="center_vertical"
+            android:text="勝率:"
+            android:textSize="11dp" />
 
         <TextView
             android:id="@+id/text_boss_win_rate"
