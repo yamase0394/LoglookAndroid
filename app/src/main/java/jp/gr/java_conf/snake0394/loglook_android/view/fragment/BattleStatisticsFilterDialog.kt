@@ -64,7 +64,7 @@ class BattleStatisticsFilterDialog : android.support.v4.app.DialogFragment(),
     }
 
     interface OnFilterChangedListener {
-        fun onFilterChanged(dateFrom: Date, dateTo: Date, checked: String)
+        fun onFilterChanged(dateFrom: Date, dateTo: Date, dateFilter: String)
     }
 
     private var listener: OnFilterChangedListener? = null

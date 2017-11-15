@@ -20,7 +20,7 @@ import java.util.*
 
 class EquipmentFragment : Fragment(), EquipmentDrawerRecyclerAdapter.OnItemClickListener {
 
-    private val equipTypeFilterList = Arrays.asList("全装備", "小口径主砲", "中口径主砲", "大口径主砲", "副砲", "魚雷", "艦戦", "艦爆/艦攻", "艦偵", "水上機/飛行艇", "電探", "機銃/高射装置", "高角砲", "対潜", "陸上機", "その他")
+    private val equipTypeFilterList = Arrays.asList("全装備", "小口径主砲", "中口径主砲", "大口径主砲", "副砲", "魚雷", "艦戦/夜戦", "艦爆/艦攻/噴式/夜攻", "艦偵", "水上機/飛行艇", "電探", "機銃/高射装置", "高角砲", "対潜", "陸上機", "その他")
 
     private val prefs by lazy { EquipmentFragmentPrefs(context) }
     private val realm by lazy { Realm.getDefaultInstance() }
@@ -142,13 +142,18 @@ class EquipmentFragment : Fragment(), EquipmentDrawerRecyclerAdapter.OnItemClick
                         newDataList.add(mySlotItem)
                     }
                 "全装備" -> newDataList.add(mySlotItem)
-                "艦戦" ->
+                "艦戦/夜戦" ->
                     when (type3) {
-                        EquipType3.艦上戦闘機 -> newDataList.add(mySlotItem)
+                        EquipType3.艦上戦闘機,
+                        EquipType3.夜間戦闘機-> newDataList.add(mySlotItem)
                     }
-                "艦爆/艦攻" ->
+                "艦爆/艦攻/噴式/夜攻" ->
                     when (type3) {
-                        EquipType3.艦上爆撃機, EquipType3.艦上攻撃機 -> newDataList.add(mySlotItem)
+                        EquipType3.艦上爆撃機,
+                        EquipType3.艦上攻撃機,
+                        EquipType3.噴式戦闘爆撃機_噴式景雲改,
+                        EquipType3.噴式戦闘爆撃機_橘花改,
+                        EquipType3.夜間攻撃機-> newDataList.add(mySlotItem)
                     }
                 "艦偵" ->
                     when (type3) {
@@ -189,8 +194,6 @@ class EquipmentFragment : Fragment(), EquipmentDrawerRecyclerAdapter.OnItemClick
                         EquipType3.応急修理要員,
                         EquipType3.対艦強化弾,
                         EquipType3.対空強化弾,
-                        EquipType3.噴式戦闘爆撃機_噴式景雲改,
-                        EquipType3.噴式戦闘爆撃機_橘花改,
                         EquipType3.輸送機材,
                         EquipType3.潜水艦装備,
                         EquipType3.UNKNOWN -> newDataList.add(mySlotItem)

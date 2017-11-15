@@ -250,9 +250,9 @@ class BattleStatisticsFragment : Fragment(),
             view!!.apply {
                 layout_root.setBackgroundColor(
                         if (position % 2 == 0) {
-                            ContextCompat.getColor(context, R.color.list_even_background)
-                        } else {
                             Color.WHITE
+                        } else {
+                            ContextCompat.getColor(context, R.color.list_even_background)
                         }
                 )
 
@@ -486,9 +486,6 @@ class BattleStatisticsFragment : Fragment(),
                     "任務部隊前衛艦隊",
                     "ソロモン方面守備艦隊後衛",
                     "深海任務部隊主隊",
-                    "任務部隊前衛艦隊",
-                    "ソロモン方面守備艦隊後衛",
-                    "深海任務部隊主隊",
                     "深海任務部隊支援群",
                     "深海飛行場基地" -> "15夏E4"
                     else -> {
@@ -635,7 +632,6 @@ class BattleStatisticsFragment : Fragment(),
                     "リランカ港湾基地", //IとHの2マスある
                     "深海東方緊急展開 前衛機動部隊",
                     "深海東方前方展開潜水艦隊 I群",
-                    "深海東方緊急展開 前衛機動部隊",
                     "深海東方緊急展開 主力機動部隊",
                     "深海東方雷巡戦隊",
                     "深海精鋭駆逐隊" -> "17夏E2"
@@ -745,7 +741,6 @@ class BattleStatisticsFragment : Fragment(),
                     "深海北方展開群 前衛巡洋戦隊",
                     "深海北方展開群 攻撃隊",
                     "深海北方展開群 襲撃部隊部隊",
-                    "深海北方展開群 攻撃隊",
                     "深海北方展開群 護衛空母部隊",
                     "深海北方展開群 泊地襲撃部隊",
                     "深海北方展開群 泊地襲撃隊旗艦" -> "17春E2"

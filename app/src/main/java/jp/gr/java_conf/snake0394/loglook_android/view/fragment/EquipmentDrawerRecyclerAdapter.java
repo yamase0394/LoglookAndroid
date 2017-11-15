@@ -28,6 +28,9 @@ import static jp.gr.java_conf.snake0394.loglook_android.view.EquipType3.オー�
 import static jp.gr.java_conf.snake0394.loglook_android.view.EquipType3.ソナー;
 import static jp.gr.java_conf.snake0394.loglook_android.view.EquipType3.中口径主砲;
 import static jp.gr.java_conf.snake0394.loglook_android.view.EquipType3.副砲;
+import static jp.gr.java_conf.snake0394.loglook_android.view.EquipType3.噴式戦闘爆撃機_噴式景雲改;
+import static jp.gr.java_conf.snake0394.loglook_android.view.EquipType3.夜間戦闘機;
+import static jp.gr.java_conf.snake0394.loglook_android.view.EquipType3.夜間攻撃機;
 import static jp.gr.java_conf.snake0394.loglook_android.view.EquipType3.大口径主砲;
 import static jp.gr.java_conf.snake0394.loglook_android.view.EquipType3.大型飛行艇;
 import static jp.gr.java_conf.snake0394.loglook_android.view.EquipType3.対潜哨戒機;
@@ -163,17 +166,26 @@ public class EquipmentDrawerRecyclerAdapter extends RecyclerView.Adapter<Equipme
                     icon.setImageResource(魚雷.getImageId());
                     iconLayout.addView(icon);
                     break;
-                case "艦戦":
+                case "艦戦/夜戦":
                     icon = new ImageView(iconLayout.getContext());
                     icon.setImageResource(艦上戦闘機.getImageId());
                     iconLayout.addView(icon);
+                    icon = new ImageView(iconLayout.getContext());
+                    icon.setImageResource(夜間戦闘機.getImageId());
+                    iconLayout.addView(icon);
                     break;
-                case "艦爆/艦攻":
+                case "艦爆/艦攻/噴式/夜攻":
                     icon = new ImageView(iconLayout.getContext());
                     icon.setImageResource(艦上爆撃機.getImageId());
                     iconLayout.addView(icon);
                     icon = new ImageView(iconLayout.getContext());
                     icon.setImageResource(艦上攻撃機.getImageId());
+                    iconLayout.addView(icon);
+                    icon = new ImageView(iconLayout.getContext());
+                    icon.setImageResource(噴式戦闘爆撃機_噴式景雲改.getImageId());
+                    iconLayout.addView(icon);
+                    icon = new ImageView(iconLayout.getContext());
+                    icon.setImageResource(夜間攻撃機.getImageId());
                     iconLayout.addView(icon);
                     break;
                 case "艦偵":
