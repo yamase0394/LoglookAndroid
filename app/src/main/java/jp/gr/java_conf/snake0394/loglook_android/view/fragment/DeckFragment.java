@@ -48,6 +48,7 @@ public class DeckFragment extends Fragment implements DeckTabsRecyclerViewAdapte
         unbinder = ButterKnife.bind(this, view);
 
         LoopRecyclerViewPager viewPager = findById(view, R.id.viewpager);
+        viewPager.setHasFixedSize(true);
 
         LinearLayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         viewPager.setLayoutManager(layout);
