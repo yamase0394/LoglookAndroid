@@ -5,6 +5,9 @@ import android.util.Log;
 
 import com.google.gson.JsonObject;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,7 +31,12 @@ public class ApiLogger implements APIListenerSpi {
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
         Log.d("uri", req.getRequestURI());
         Log.d("reqest", req.getParameterMap().toString());
-        //Log.d("response", json.toString());
+        try {
+            JSONObject jsonObject = new JSONObject(json.toString());
+            Log.d("response", jsonObject.toString(2));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         GeneralPrefs prefs = new GeneralPrefs(App.getInstance().getApplicationContext());
         if(prefs.getLogsJson()) {

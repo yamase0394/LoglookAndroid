@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:paddingBottom="3dp"
+    android:paddingLeft="10dp">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:clickable="true"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:maxWidth="130dp"
+            android:text="Netttttttttayyyyyyy"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/lv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:text="Lv:155"
+            android:textSize="13sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/name"
+            app:layout_constraintLeft_toRightOf="@id/name" />
+
+        <TextView
+            android:id="@+id/state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="5dp"
+            android:background="@color/colorPrimaryDark"
+            android:text="大破"
+            android:textColor="@android:color/background_light"
+            android:textSize="14sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/lv"
+            app:layout_constraintLeft_toRightOf="@id/lv" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:maxHeight="5dp"
+            android:minHeight="5dp"
+            android:minWidth="50dp"
+            android:progressDrawable="@drawable/progressbar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/name" />
+
+        <TextView
+            android:id="@+id/hp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:text="HP:111/111"
+            android:textSize="11dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/progressBar"
+            app:layout_constraintTop_toBottomOf="@id/name" />
+
+        <TextView
+            android:id="@+id/cond"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:text="cond:49"
+            android:textSize="11dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/hp"
+            app:layout_constraintTop_toBottomOf="@id/name" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/fuelText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="燃料:"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/layout_name"
+        app:layout_constraintTop_toTopOf="@id/layout_name"
+        app:layout_constraintVertical_bias="0.1" />
+
+    <TextView
+        android:id="@+id/fuel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="||||||||||"
+        android:textIsSelectable="false"
+        android:textSize="12sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/fuelText"
+        app:layout_constraintLeft_toRightOf="@id/fuelText" />
+
+    <TextView
+        android:id="@+id/bullText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="弾薬:"
+        android:textSize="13sp"
+        app:layout_constraintLeft_toLeftOf="@id/fuelText"
+        app:layout_constraintTop_toBottomOf="@id/fuelText" />
+
+    <TextView
+        android:id="@+id/bull"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="||||||||||"
+        android:textSize="12sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/bullText"
+        app:layout_constraintLeft_toRightOf="@id/bullText" />
+
+    <LinearLayout
+        android:id="@+id/equipments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:orientation="horizontal"
+        android:weightSum="1"
+        app:layout_constraintTop_toBottomOf="@id/layout_name">
+
+        <ImageView
+            android:id="@+id/slot1"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            app:srcCompat="@drawable/not_available" />
+
+        <ImageView
+            android:id="@+id/slot2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="1dp"
+            app:srcCompat="@drawable/not_available" />
+
+        <ImageView
+            android:id="@+id/slot3"
+            android:layout_width="28dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="1dp"
+            app:srcCompat="@drawable/not_available" />
+
+        <ImageView
+            android:id="@+id/slot4"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="1dp"
+            app:srcCompat="@drawable/not_available" />
+
+        <TextView
+            android:id="@+id/slotEx"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:gravity="center"
+            android:paddingBottom="2dp"
+            android:paddingTop="2dp"
+            android:text="増設" />
+
+        <ImageView
+            android:id="@+id/slotExIcon"
+            android:layout_width="27dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="1dp"
+            app:srcCompat="@drawable/not_available" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/detail"
+        android:layout_width="35dp"
+        android:layout_height="0dp"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>
