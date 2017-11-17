@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="jp.gr.java_conf.snake0394.loglook_android"
-          android:versionCode="2"
-          android:versionName="1.0.1">
+    package="jp.gr.java_conf.snake0394.loglook_android"
+    android:versionCode="2"
+    android:versionName="1.0.1">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
 
     <application
         android:name=".App"
@@ -20,77 +20,67 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".view.activity.MainActivity"
-            android:configChanges="orientation|screenSize"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <service android:name=".proxy.LittleProxyServerService"/>
+        <service android:name=".proxy.LittleProxyServerService" />
 
-        <receiver android:name=".Notifier"/>
+        <receiver android:name=".Notifier" />
 
         <activity
             android:name=".view.activity.HeavilyDamagedWarningActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="landscape">
-        </activity>
+            android:screenOrientation="landscape" />
 
         <activity
             android:name=".view.activity.ScreenCaptureActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
-            android:theme="@style/TransparencyTheme">
-        </activity>
+            android:theme="@style/TransparencyTheme" />
 
         <service
             android:name=".SlantLauncher"
             android:enabled="true"
-            android:exported="true">
-        </service>
+            android:exported="true" />
 
         <activity
             android:name=".view.activity.ShipDetailActivity"
             android:label="@string/title_activity_ship_detail"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:screenOrientation="unspecified"
-            android:theme="@style/AppTheme">
-        </activity>
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
             android:name=".view.activity.DialogActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
-            android:theme="@style/TransparencyTheme">
-        </activity>
+            android:theme="@style/TransparencyTheme" />
 
         <service
             android:name=".DeckListCaptureService"
-            android:exported="false">
-        </service>
+            android:exported="false" />
 
         <service
             android:name=".ScreenShotService"
-            android:exported="false">
-        </service>
+            android:exported="false" />
 
         <service
             android:name=".DeckListOverlayService"
-            android:exported="false">
-        </service>
+            android:exported="false" />
 
-        <service
-            android:name=".OverlayService">
-        </service>
+        <service android:name=".OverlayService" />
 
-        <service android:name=".WinRankOverlayService"/>
-        <service android:name=".HeavilyDamagedWarningService"/>
+        <service android:name=".WinRankOverlayService" />
+        <service android:name=".HeavilyDamagedWarningService" />
 
-        <service android:name=".ScreenCaptureService"/>
+        <service android:name=".ScreenCaptureService" />
 
     </application>
 

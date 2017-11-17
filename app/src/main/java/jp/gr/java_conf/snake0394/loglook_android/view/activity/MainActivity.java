@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
     private ListView leftDrawerListView;
     //画面回転時のfragmentの更新に使用
     private Screen present;
-    private boolean forcesLandscape;
 
     /**
      * ナビゲーションドロワーから遷移可能な画面
@@ -152,21 +151,6 @@ public class MainActivity extends AppCompatActivity {
 
         Logger.d("MainActivity", "onCreate");
 
-        GeneralPrefs prefs = new GeneralPrefs(getApplicationContext());
-        this.forcesLandscape = prefs.getForcesLandscape();
-
-        if (this.forcesLandscape) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        } else {
-            //画面の向き
-            boolean usesLandscape = intent.getBooleanExtra("usesLandscape", false);
-            if (usesLandscape) {
-                Logger.d("MainActivity", "横");
-                intent.putExtra("usesLandscape", false);
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            }
-        }
-
         //表示するfragment
         int position = intent.getIntExtra("position", -1);
         if (position != -1) {
@@ -180,12 +164,6 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             Logger.d("MainActivity:onCreate", "savedInstanceState == null");
 
-            if (this.forcesLandscape) {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            } else {
-                //画面回転を自動に設定
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-            }
             // デフォルトはHomeFragment
             if (present == null) {
                 Logger.d("MainActivity:onCreate", "present = null");
@@ -193,35 +171,6 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 Logger.d("MainActivity:onCreate", present.name + " was selected");
                 selectItem(present);
-            }
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Logger.d("MainActivity", "onStop");
-        /*
-        if (present != Fragment.TACTICAL_SITUATION) {
-            //画面回転を自動に設定
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-        }
-        */
-        //現在の画面の向きに応じて画面の向きを設定
-        Resources resources = getResources();
-        Configuration config = resources.getConfiguration();
-        if (this.forcesLandscape) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        } else {
-            switch (config.orientation) {
-                case Configuration.ORIENTATION_PORTRAIT:
-                    Logger.d("MainActivity", "縦");
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-                    break;
-                case Configuration.ORIENTATION_LANDSCAPE:
-                    Logger.d("MainActivity", "横");
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                    break;
             }
         }
     }
@@ -361,17 +310,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         Logger.d("MainActivity", "onNewIntent");
-        //画面の向き
-        if (this.forcesLandscape) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        } else {
-            boolean usesLandscape = intent.getBooleanExtra("usesLandscape", false);
-            if (usesLandscape) {
-                Logger.d("onNewIntent", "横");
-                intent.putExtra("usesLandscape", false);
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            }
-        }
 
         //表示するfragment
         int position = intent.getIntExtra("position", -1);

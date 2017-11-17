@@ -100,7 +100,6 @@ class ConfigFragment : Fragment() {
         usesDockNotificationCheck.isChecked = prefs.usesDockNotification
         makesSoundWhenNotifyCheck.isChecked = prefs.makesSoundWhenNotify
         vibratesWhenNotifyCheck.isChecked = prefs.vibratesWhenNOtify
-        forcesLandscapeCheck.isChecked = prefs.forcesLandscape
         showsWinRankOverlayCheck!!.isChecked = prefs.showsWinRankOverlay
         showsHeavilyDamagedOverlayCheck!!.isChecked = prefs.showsHeavilyDamagedOverlay
         showsHeavilyDamagedWarningWindowCheck!!.isChecked = prefs.showsHeavilyDamagedWarningWindow
@@ -191,7 +190,6 @@ class ConfigFragment : Fragment() {
             prefs.usesDockNotification = usesDockNotificationCheck.isChecked
             prefs.makesSoundWhenNotify = makesSoundWhenNotifyCheck.isChecked
             prefs.vibratesWhenNOtify = vibratesWhenNotifyCheck.isChecked
-            prefs.forcesLandscape = forcesLandscapeCheck.isChecked
             prefs.showsWinRankOverlay = showsWinRankOverlayCheck!!.isChecked
             prefs.showsHeavilyDamagedOverlay = showsHeavilyDamagedOverlayCheck!!.isChecked
             prefs.showsHeavilyDamagedWarningWindow = showsHeavilyDamagedWarningWindowCheck!!.isChecked
@@ -275,9 +273,6 @@ class ConfigFragment : Fragment() {
 
     companion object {
 
-        fun newInstance(): ConfigFragment {
-            val fragment = ConfigFragment()
-            return fragment
-        }
+        fun newInstance(): ConfigFragment = ConfigFragment()
     }
 }
