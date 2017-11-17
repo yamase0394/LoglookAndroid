@@ -4,8 +4,6 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
-import jp.gr.java_conf.snake0394.loglook_android.bean.battle.ApiHougeki;
-import jp.gr.java_conf.snake0394.loglook_android.bean.battle.ApiHougekiDeserializer;
 import jp.gr.java_conf.snake0394.loglook_android.bean.battle.ApiOpeningTaisen;
 import jp.gr.java_conf.snake0394.loglook_android.bean.battle.ApiOpeningTaisenDeserializer;
 import jp.gr.java_conf.snake0394.loglook_android.bean.battle.CombinedBattleBattleWater;
@@ -23,7 +21,6 @@ public class ApiReqCombinedBattleBattleWater implements APIListenerSpi {
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
         JsonObject data = json.getAsJsonObject("api_data");
         CombinedBattleBattleWater hou = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                .registerTypeAdapter(ApiHougeki.class, new ApiHougekiDeserializer())
                 .registerTypeAdapter(ApiOpeningTaisen.class, new ApiOpeningTaisenDeserializer())
                 .create()
                 .fromJson(data, CombinedBattleBattleWater.class);

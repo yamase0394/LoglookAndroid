@@ -3,12 +3,14 @@ package jp.gr.java_conf.snake0394.loglook_android.bean.battle
 import com.google.gson.annotations.SerializedName
 
 data class SortieAirbattle(
-        @SerializedName("api_dock_id")
+        @SerializedName(value = "api_dock_id", alternate = ["api_deck_id"])
         override val apiDeckId: Int,
         override val apiShipKe: List<Int>,
         override val apiShipLv: List<Int>,
-        override val apiNowhps: List<Int>,
-        override val apiMaxhps: List<Int>,
+        override val apiFNowhps: List<Int>,
+        override val apiFMaxhps: List<Int>,
+        override val apiENowhps: List<Int>,
+        override val apiEMaxhps: List<Int>,
         override val apiFormation: List<Int>,
         override val apiAirBaseInjection: ApiAirBaseInjection,
         override val apiInjectionKouku: ApiInjectionKouku,

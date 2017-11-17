@@ -64,7 +64,7 @@ class WinRankOverlayService : Service() {
             val battle = TacticalSituation.battle
             val mainDeck = DeckManager.INSTANCE.getDeck(TacticalSituation.battle.apiDeckId)
             fHp.withIndex().forEach {
-                if (it.value <= battle.apiMaxhps[it.index + 1] / 4) {
+                if (it.value <= battle.apiFMaxhps[it.index] / 4) {
                     heavilyDamagedShipIdList.add(mainDeck.shipId[it.index])
                 }
             }

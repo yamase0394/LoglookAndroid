@@ -29,32 +29,39 @@ public class ApiLogger implements APIListenerSpi {
 
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
-        Log.d("uri", req.getRequestURI());
-        Log.d("reqest", req.getParameterMap().toString());
+        Logger.d("uri", req.getRequestURI());
+        Logger.d("reqest", req.getParameterMap().toString());
         try {
             JSONObject jsonObject = new JSONObject(json.toString());
-            Log.d("response", jsonObject.toString(2));
+            String jsonStr = jsonObject.toString(2);
+            int maxLogSize = 1000;
+            for (int i = 0; i <= jsonStr.length() / maxLogSize; i++) {
+                int start = i * maxLogSize;
+                int end = (i + 1) * maxLogSize;
+                end = end > jsonStr.length() ? jsonStr.length() : end;
+                Logger.d("response", jsonStr.substring(start, end));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         GeneralPrefs prefs = new GeneralPrefs(App.getInstance().getApplicationContext());
-        if(prefs.getLogsJson()) {
+        if (prefs.getLogsJson()) {
             //SDカードのディレクトリパス
             File sdcard_path = new File(Environment.getExternalStorageDirectory()
-                                                   .getPath() + "/泥提督支援アプリ/json/");
+                    .getPath() + "/泥提督支援アプリ/json/");
 
             //パス区切り用セパレータ
             String Fs = File.separator;
 
             String uri = req.getRequestURI()
-                            .replaceAll("/", "=");
+                    .replaceAll("/", "=");
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
             //テキストファイル保存先のファイルパス
             String filePath = sdcard_path + Fs + sdf.format(Calendar.getInstance()
-                                                                    .getTime()) + "-" + uri + ".txt";
+                    .getTime()) + "-" + uri + ".txt";
 
             //フォルダがなければ作成
             if (!sdcard_path.exists()) {
@@ -66,7 +73,7 @@ public class ApiLogger implements APIListenerSpi {
                 StringBuilder sb = new StringBuilder();
                 sb.append("Request---------------------\r\n");
                 sb.append(req.getParameterMap()
-                             .toString());
+                        .toString());
                 sb.append("\r\n");
                 sb.append("Json------------------------\r\n");
                 sb.append(json.toString());

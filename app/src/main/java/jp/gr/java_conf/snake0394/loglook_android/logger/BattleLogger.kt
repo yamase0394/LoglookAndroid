@@ -109,8 +109,8 @@ class BattleLogger : APIListenerSpi {
 
             val deck = DeckManager.INSTANCE.getDeck(battle.apiDeckId)
             val shipId = deck.shipId
-            val nowhps = battle.apiNowhps
-            val maxhps = battle.apiMaxhps
+            val fNowhps = battle.apiFNowhps
+            val fMaxhps = battle.apiFMaxhps
             for (i in 1..6) {
                 if (shipId[i - 1] == -1) {
                     sb.append(",,")
@@ -118,20 +118,22 @@ class BattleLogger : APIListenerSpi {
                 }
                 val myShip = realm.where(MyShip::class.java).equalTo("id", shipId[i - 1]).findFirst()
                 val mstShip = realm.where(MstShip::class.java).equalTo("id", myShip.shipId).findFirst()
-                sb.append("${mstShip.name}(Lv${myShip.lv}),${nowhps[i]}/${maxhps[i]},")
+                sb.append("${mstShip.name}(Lv${myShip.lv}),${fNowhps[i - 1]}/${fMaxhps[i - 1]},")
             }
 
             val eship = battle.apiShipKe
+            val eNowhps = battle.apiENowhps
+            val eMaxhps = battle.apiEMaxhps
             for (i in 1..6) {
-                if (eship[i] == -1) {
+                if (i > eship.size) {
                     sb.append(",")
                 } else {
-                    val mstShip = realm.where(MstShip::class.java).equalTo("id", eship[i]).findFirst()
+                    val mstShip = realm.where(MstShip::class.java).equalTo("id", eship[i - 1]).findFirst()
                     sb.append(mstShip.name)
                     if (mstShip.yomi != "" && mstShip.yomi != "-") {
                         sb.append("(${mstShip.yomi})")
                     }
-                    sb.append(",${nowhps[i + 6]}/${maxhps[i + 6]}")
+                    sb.append(",${eNowhps[i - 1]}/${eMaxhps[i - 1]}")
                 }
 
                 if (i == 6) {
@@ -149,7 +151,7 @@ class BattleLogger : APIListenerSpi {
                     val nowhps = battle.apiNowhpsCombined
                     val maxhps = battle.apiMaxhpsCombined
                     for (i in 1..6) {
-                        if (shipId[i - 1] == -1) {
+                        if (i > shipId.size) {
                             sb.append(",,")
                             continue
                         }
@@ -167,10 +169,10 @@ class BattleLogger : APIListenerSpi {
                     val maxhps = battle.apiMaxhpsCombined
                     val eship = battle.apiShipKeCombined
                     for (i in 1..6) {
-                        if (eship[i] == -1) {
+                        if (i > eship.size) {
                             sb.append(",")
                         } else {
-                            val mstShip = realm.where(MstShip::class.java).equalTo("id", eship[i]).findFirst()
+                            val mstShip = realm.where(MstShip::class.java).equalTo("id", eship[i - 1]).findFirst()
                             sb.append(mstShip.name)
                             if (mstShip.yomi != "" && mstShip.yomi != "-") {
                                 sb.append("(${mstShip.yomi})")
@@ -191,7 +193,7 @@ class BattleLogger : APIListenerSpi {
                     val nowhps = battle.apiNowhpsCombined
                     val maxhps = battle.apiMaxhpsCombined
                     for (i in 1..6) {
-                        if (shipId[i - 1] == -1) {
+                        if (i > shipId.size) {
                             sb.append(",,")
                             continue
                         }
@@ -202,10 +204,10 @@ class BattleLogger : APIListenerSpi {
 
                     val eship = battle.apiShipKeCombined
                     for (i in 1..6) {
-                        if (eship[i] == -1) {
+                        if (i > eship.size) {
                             sb.append(",")
                         } else {
-                            val mstShip = realm.where(MstShip::class.java).equalTo("id", eship[i]).findFirst()
+                            val mstShip = realm.where(MstShip::class.java).equalTo("id", eship[i - 1]).findFirst()
                             sb.append(mstShip.name)
                             if (mstShip.yomi != "" && mstShip.yomi != "-") {
                                 sb.append("(${mstShip.yomi})")

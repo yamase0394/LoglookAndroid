@@ -10,22 +10,32 @@ interface IBattle {
     val apiDeckId: Int
 
     /**
-     * 敵艦船ID -1から 空きは-1
+     * 敵艦船ID -1からでない 空きはない
      */
     val apiShipKe: List<Int>
 
     /**
-     * 敵艦船Lv -1から
+     * 敵艦船Lv からでない
      */
     val apiShipLv: List<Int>
 
     /**
-     * 味方/敵艦船の現在HP -1から
+     * 味方現在HP
      */
-    val apiNowhps: List<Int>
-    /**
-     * 味方/敵艦船の現在HP -1から
-     */
+    val apiFNowhps: List<Int>
 
-    val apiMaxhps: List<Int>
+    /**
+     * 味方最大HP
+     */
+    val apiFMaxhps: List<Int>
+
+    /**
+     * 味方現在HP
+     */
+    val apiENowhps: List<Int>
+
+    /**
+     * 味方最大HP
+     */
+    val apiEMaxhps: List<Int>
 }

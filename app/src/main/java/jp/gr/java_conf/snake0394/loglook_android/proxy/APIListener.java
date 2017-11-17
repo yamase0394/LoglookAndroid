@@ -96,18 +96,22 @@ public class APIListener implements ContentListenerSpi {
 
     private synchronized void send(JsonObject json, RequestMetaData reqMetaData, ResponseMetaData resMetaData) {
 
-        if (listenerMap.containsKey(reqMetaData.getRequestURI())) {
-            for (APIListenerSpi listener : listenerMap.get(reqMetaData.getRequestURI())) {
+        if (!allListenerList.isEmpty()) {
+            for (APIListenerSpi listener : this.allListenerList) {
                 if (listener != null) {
                     listener.accept(json, reqMetaData, resMetaData);
                 }
             }
         }
 
-        if (!allListenerList.isEmpty()) {
-            for (APIListenerSpi listener : this.allListenerList) {
+        if (listenerMap.containsKey(reqMetaData.getRequestURI())) {
+            for (APIListenerSpi listener : listenerMap.get(reqMetaData.getRequestURI())) {
                 if (listener != null) {
-                    listener.accept(json, reqMetaData, resMetaData);
+                    try {
+                        listener.accept(json, reqMetaData, resMetaData);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

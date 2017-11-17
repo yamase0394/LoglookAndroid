@@ -21,8 +21,8 @@ object TacticalSituation {
         phaseList = mutableListOf<PhaseState>()
         TacticalSituation.battle = battle
 
-        val fHp = battle.apiNowhps.slice(1..6).filterNot { it == -1 }.toMutableList()
-        val eHp = battle.apiNowhps.slice(7..12).filterNot { it == -1 }.toMutableList()
+        val fHp = battle.apiFNowhps.toMutableList()
+        val eHp = battle.apiENowhps.toMutableList()
         var fHpCombined: MutableList<Int>? =
                 when (battle) {
                     is ICombinedBattle -> battle.apiNowhpsCombined.slice(1..6).filterNot { it == -1 }.toMutableList()

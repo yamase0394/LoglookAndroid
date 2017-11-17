@@ -185,7 +185,7 @@ class TacticalSituationFragment : Fragment() {
                     textView = activity.findViewById(strId) as TextView
                     textView.text = ""
                 } else {
-                    val id = battle.apiShipKe[i]
+                    val id = battle.apiShipKe[i - 1]
                     val eShip = realm.where(MstShip::class.java).equalTo("id", id).findFirst()
 
                     var name = "eName" + i
@@ -197,29 +197,29 @@ class TacticalSituationFragment : Fragment() {
                     strId = resources.getIdentifier(name, "id", activity.packageName)
                     (activity.findViewById(strId) as TextView).apply {
                         if (battle is PracticeBattle) {
-                            text = "(Lv${battle.apiShipLv[i]})"
+                            text = "(Lv${battle.apiShipLv[i - 1]})"
                         } else {
-                            text = "${eShip.yomi}(Lv${TacticalSituation.battle.apiShipLv[i]})"
+                            text = "${eShip.yomi}(Lv${TacticalSituation.battle.apiShipLv[i - 1]})"
                         }
                     }
 
                     var lastHp = phaseList.last().eHp[i - 1]
-                    var maxHp = battle.apiMaxhps[i + 6]
+                    var eMaxhp = battle.apiEMaxhps[i - 1]
                     name = "eState" + i
                     strId = resources.getIdentifier(name, "id", activity.packageName)
                     (activity.findViewById(strId) as TextView).apply {
-                        setStateText(this, lastHp, maxHp, true)
+                        setStateText(this, lastHp, eMaxhp, true)
                     }
 
                     name = "eBeforeHp" + i
                     strId = resources.getIdentifier(name, "id", activity.packageName)
                     textView = activity.findViewById(strId) as TextView
-                    textView.text = "${phaseList.first().eHp[i - 1]}/$maxHp→"
+                    textView.text = "${phaseList.first().eHp[i - 1]}/$eMaxhp→"
 
                     name = "eHp" + i
                     strId = resources.getIdentifier(name, "id", activity.packageName)
                     textView = activity.findViewById(strId) as TextView
-                    textView.text = "${lastHp}/$maxHp"
+                    textView.text = "${lastHp}/$eMaxhp"
 
                     name = "eDamage" + i
                     strId = resources.getIdentifier(name, "id", activity.packageName)

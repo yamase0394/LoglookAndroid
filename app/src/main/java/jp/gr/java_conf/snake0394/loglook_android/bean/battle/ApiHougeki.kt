@@ -5,8 +5,8 @@ package jp.gr.java_conf.snake0394.loglook_android.bean.battle
  */
 data class ApiHougeki(
         /**
-         * 攻撃フラグ 0=味方, 1=敵が攻撃する -1は消した
-         * CombinedEachBattle, CombinedEachBattleWater, CombinedEcBattle以外のときはnull
+         * 攻撃フラグ 0=味方, 1=敵が攻撃する -1は運営により消された！
+         * CombinedEachBattle, CombinedEachBattleWater, CombinedEcBattle以外のときはnullでないかも...
          */
         val apiAtEflag: List<Int>?,
 
