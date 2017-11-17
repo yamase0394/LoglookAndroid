@@ -15,9 +15,12 @@ import com.lsjwzh.widget.recyclerviewpager.LoopRecyclerViewPager;
 import com.lsjwzh.widget.recyclerviewpager.RecyclerViewPager;
 import com.lsjwzh.widget.recyclerviewpager.TabLayoutSupport;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import jp.gr.java_conf.snake0394.loglook_android.R;
+import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager;
 
 import static butterknife.ButterKnife.findById;
@@ -25,9 +28,10 @@ import static butterknife.ButterKnife.findById;
 /**
  * Deck1~4Fragmentを管理するFragmentです
  */
-public class DeckFragment extends Fragment implements DeckTabsRecyclerViewAdapter.OnRecyclerViewClickListener{
+public class DeckFragment extends Fragment implements DeckTabsRecyclerViewAdapter.OnRecyclerViewClickListener {
     private View view;
     private Unbinder unbinder;
+    private List<Deck> deckList;
 
     public DeckFragment() {
         // Required empty public constructor
@@ -52,9 +56,16 @@ public class DeckFragment extends Fragment implements DeckTabsRecyclerViewAdapte
 
         LinearLayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         viewPager.setLayoutManager(layout);
+        viewPager.getRecycledViewPool().setMaxRecycledViews(0, 1);
+        viewPager.getRecycledViewPool().setMaxRecycledViews(1, 1);
 
         DeckTabsRecyclerViewAdapter recyclerAdapter = new DeckTabsRecyclerViewAdapter(this);
-        recyclerAdapter.setItems(DeckManager.INSTANCE.getDeckList());
+        deckList = DeckManager.INSTANCE.getDeckList();
+        //二艦隊以上なら連合艦隊を編成できると判断
+        if (deckList.size() >= 2) {
+            deckList.add(null);
+        }
+        recyclerAdapter.setItems(deckList);
         viewPager.setAdapter(recyclerAdapter);
 
         TabLayout tabLayout = findById(view, R.id.tabs);
@@ -84,7 +95,7 @@ public class DeckFragment extends Fragment implements DeckTabsRecyclerViewAdapte
         }
     }
 
-    private static class TabLayoutAdapter implements TabLayoutSupport.ViewPagerTabLayoutAdapter {
+    private class TabLayoutAdapter implements TabLayoutSupport.ViewPagerTabLayoutAdapter {
 
         public TabLayoutAdapter() {
             super();
@@ -92,16 +103,19 @@ public class DeckFragment extends Fragment implements DeckTabsRecyclerViewAdapte
 
         @Override
         public String getPageTitle(int i) {
+            if (deckList.get(i) == null) {
+                return "連合";
+            }
             return String.valueOf(i + 1);
         }
 
         @Override
         public int getItemCount() {
-            return DeckManager.INSTANCE.getDeckNum();
+            return deckList.size();
         }
     }
 
-    private static class TabListener extends TabLayoutSupport.TabLayoutOnPageChangeListener implements TabLayout.OnTabSelectedListener {
+    private class TabListener extends TabLayoutSupport.TabLayoutOnPageChangeListener implements TabLayout.OnTabSelectedListener {
         private FragmentManager fragmentManager;
         private TabLayoutSupport.ViewPagerOnTabSelectedListener superListener;
         private boolean pageChanged;
@@ -125,8 +139,12 @@ public class DeckFragment extends Fragment implements DeckTabsRecyclerViewAdapte
 
         @Override
         public void onTabReselected(TabLayout.Tab tab) {
-            if(pageChanged){
-                android.support.v4.app.DialogFragment dialogFragment = DeckMenuDialogFragment.newInstance(tab.getPosition() + 1);
+            if (pageChanged) {
+                int deckId = tab.getPosition() + 1;
+                if (deckList.get(deckId - 1) == null) {
+                    deckId = 1;
+                }
+                android.support.v4.app.DialogFragment dialogFragment = DeckMenuDialogFragment.newInstance(deckId);
                 dialogFragment.show(this.fragmentManager, "fragment_dialog");
             }
         }

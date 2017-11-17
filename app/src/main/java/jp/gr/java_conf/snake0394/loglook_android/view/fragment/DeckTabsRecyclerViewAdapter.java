@@ -23,7 +23,10 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.realm.Realm;
@@ -33,10 +36,12 @@ import jp.gr.java_conf.snake0394.loglook_android.DockTimer;
 import jp.gr.java_conf.snake0394.loglook_android.Escape;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
+import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitem;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
+import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 import jp.gr.java_conf.snake0394.loglook_android.view.EquipType3;
 import jp.gr.java_conf.snake0394.loglook_android.view.activity.ShipDetailActivity;
 
@@ -47,49 +52,68 @@ import static butterknife.ButterKnife.findById;
  */
 
 public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRecyclerViewAdapter.DeckTabsRecyclerViewHolder> {
-    
+
+    private static final int VIEW_TYPE_NORMAL = 0;
+    private static final int VIEW_TYPE_COMBINED = 1;
+
     private List<Deck> deckList;
     private OnRecyclerViewClickListener listener;
     private Realm realm;
-    
+
     public DeckTabsRecyclerViewAdapter(OnRecyclerViewClickListener listener) {
         realm = Realm.getDefaultInstance();
         deckList = new ArrayList<>();
         this.listener = listener;
     }
-    
+
     @Override
-    public DeckTabsRecyclerViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View itemView = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.fragment_deck, viewGroup, false);
-        return new DeckTabsRecyclerViewHolder(itemView);
+    public DeckTabsRecyclerViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        View itemView;
+        if (viewType == VIEW_TYPE_NORMAL) {
+            itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fragment_deck, viewGroup, false);
+        } else if (viewType == VIEW_TYPE_COMBINED){
+            itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fragment_deck_combined, viewGroup, false);
+        } else {
+            throw new IllegalArgumentException("invalid view type:" + viewType);
+        }
+        return new DeckTabsRecyclerViewHolder(itemView, viewType);
     }
-    
+
     @Override
-    public void onBindViewHolder(DeckTabsRecyclerViewHolder viewHolder, int i) {
-        viewHolder.bind(deckList.get(i));
+    public void onBindViewHolder(DeckTabsRecyclerViewHolder viewHolder, int position) {
+        viewHolder.bind(deckList.get(position), viewHolder.getItemViewType());
     }
-    
+
+    @Override
+    public int getItemViewType(int position) {
+        if (deckList.get(position) == null) {
+            return VIEW_TYPE_COMBINED;
+        } else {
+            return VIEW_TYPE_NORMAL;
+        }
+    }
+
     @Override
     public int getItemCount() {
         return deckList.size();
     }
-    
+
     public void setItems(List<Deck> deckList) {
         this.deckList = deckList;
     }
-    
+
     public interface OnRecyclerViewClickListener {
         void onRecyclerViewClicked(DialogFragment dialogFragment, Intent intent);
     }
-    
+
     @Override
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         realm.close();
     }
-    
+
     class DeckTabsRecyclerViewHolder extends RecyclerView.ViewHolder {
+        //通常艦隊
         private TextView[] names;
         private TextView[] conds;
         private TextView[] lvs;
@@ -105,20 +129,38 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
         private TextView[] slotExDescriptions;
         private ImageView[] slotExIcons;
         private Button[] detailButtons;
-        
+
+        //第二艦隊
+        private TextView[] names2;
+        private TextView[] conds2;
+        private TextView[] lvs2;
+        private TextView[] states2;
+        private ProgressBar[] progressBars2;
+        private TextView[] hps2;
+        private TextView[] fuelDescriptions2;
+        private TextView[] fuels2;
+        private TextView[] bullDescriptions2;
+        private TextView[] bulls2;
+        private LinearLayout[] equipmentLayouts2;
+        private ImageView[][] slots2;
+        private TextView[] slotExDescriptions2;
+        private ImageView[] slotExIcons2;
+        private Button[] detailButtons2;
+
+        //共通
         private TextView seiku;
         private TextView touchStartRate;
         private TextView sakuteki33;
         private EditText junction;
         private TextView levelSum;
         private TextView condRecoveryTime;
-        
-        public DeckTabsRecyclerViewHolder(View rootView) {
+
+        private DeckTabsRecyclerViewHolder(View rootView, int viewType) {
             super(rootView);
-            
+
             final int maxShipNum = 6;
             final int maxSlotNum = 4;
-            
+
             names = new TextView[maxShipNum];
             conds = new TextView[maxShipNum];
             lvs = new TextView[maxShipNum];
@@ -134,86 +176,111 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
             slotExDescriptions = new TextView[maxShipNum];
             slotExIcons = new ImageView[maxShipNum];
             detailButtons = new Button[maxShipNum];
-            
+
             final Resources res = rootView.getResources();
-            final String packageName = App.getInstance()
-                    .getPackageName();
+            final String packageName = App.getInstance().getPackageName();
+
             for (int i = 1; i <= maxShipNum; i++) {
-                String name = "name" + i;
+                String name = "layout_ship" + i;
                 int strId = res.getIdentifier(name, "id", packageName);
-                names[i - 1] = findById(rootView, strId);
-                
-                name = "cond" + i;
-                strId = res.getIdentifier(name, "id", packageName);
-                conds[i - 1] = findById(rootView, strId);
-                
-                name = "lv" + i;
-                strId = res.getIdentifier(name, "id", packageName);
-                lvs[i - 1] = findById(rootView, strId);
-                
-                name = "state" + i;
-                strId = res.getIdentifier(name, "id", packageName);
-                states[i - 1] = findById(rootView, strId);
-                
-                name = "progressBar" + i;
-                strId = res.getIdentifier(name, "id", packageName);
-                progressBars[i - 1] = findById(rootView, strId);
-                
-                name = "hp" + i;
-                strId = res.getIdentifier(name, "id", packageName);
-                hps[i - 1] = findById(rootView, strId);
-                
-                name = "fuelText" + i;
-                strId = res.getIdentifier(name, "id", packageName);
-                fuelDescriptions[i - 1] = findById(rootView, strId);
-                
-                name = "fuel" + i;
-                strId = res.getIdentifier(name, "id", packageName);
-                fuels[i - 1] = findById(rootView, strId);
-                
-                name = "bullText" + i;
-                strId = res.getIdentifier(name, "id", packageName);
-                bullDescriptions[i - 1] = findById(rootView, strId);
-                
-                name = "bull" + i;
-                strId = res.getIdentifier(name, "id", packageName);
-                bulls[i - 1] = findById(rootView, strId);
-                
-                name = "equipments" + i;
-                strId = res.getIdentifier(name, "id", packageName);
-                equipmentLayouts[i - 1] = findById(rootView, strId);
-                
+                ViewGroup shipLayout = findById(rootView, strId);
+
+                names[i - 1] = findById(shipLayout, R.id.name);
+                conds[i - 1] = findById(shipLayout, R.id.cond);
+                lvs[i - 1] = findById(shipLayout, R.id.lv);
+                states[i - 1] = findById(shipLayout, R.id.state);
+                progressBars[i - 1] = findById(shipLayout, R.id.progressBar);
+                hps[i - 1] = findById(shipLayout, R.id.hp);
+                fuelDescriptions[i - 1] = findById(shipLayout, R.id.fuelText);
+                fuels[i - 1] = findById(shipLayout, R.id.fuel);
+                bullDescriptions[i - 1] = findById(shipLayout, R.id.bullText);
+                bulls[i - 1] = findById(shipLayout, R.id.bull);
+                equipmentLayouts[i - 1] = findById(shipLayout, R.id.equipments);
+
                 for (int j = 1; j <= 4; j++) {
-                    name = "slot" + i + j;
+                    name = "slot" + j;
                     strId = res.getIdentifier(name, "id", packageName);
-                    slots[i - 1][j - 1] = findById(rootView, strId);
+                    slots[i - 1][j - 1] = findById(shipLayout, strId);
                 }
-                
-                name = "slotEx" + i;
-                strId = res.getIdentifier(name, "id", packageName);
-                slotExDescriptions[i - 1] = findById(rootView, strId);
-                
-                name = "slotExIcon" + i;
-                strId = res.getIdentifier(name, "id", packageName);
-                slotExIcons[i - 1] = findById(rootView, strId);
-                
-                name = "detail" + i;
-                strId = res.getIdentifier(name, "id", packageName);
-                detailButtons[i - 1] = findById(rootView, strId);
+
+                slotExDescriptions[i - 1] = findById(shipLayout, R.id.slotEx);
+                slotExIcons[i - 1] = findById(shipLayout, R.id.slotExIcon);
+                detailButtons[i - 1] = findById(shipLayout, R.id.detail);
             }
-            
+
+            //共通
             seiku = findById(rootView, R.id.seiku);
             touchStartRate = findById(rootView, R.id.touchStartRate);
             sakuteki33 = findById(rootView, R.id.sakuteki33);
             junction = findById(rootView, R.id.junction);
             levelSum = findById(rootView, R.id.levelSum);
             condRecoveryTime = findById(rootView, R.id.condRecoveryTime);
+
+            if (viewType == VIEW_TYPE_NORMAL) {
+                return;
+            }
+
+            names2 = new TextView[maxShipNum];
+            conds2 = new TextView[maxShipNum];
+            lvs2 = new TextView[maxShipNum];
+            states2 = new TextView[maxShipNum];
+            progressBars2 = new ProgressBar[maxShipNum];
+            hps2 = new TextView[maxShipNum];
+            fuelDescriptions2 = new TextView[maxShipNum];
+            fuels2 = new TextView[maxShipNum];
+            bullDescriptions2 = new TextView[maxShipNum];
+            bulls2 = new TextView[maxShipNum];
+            equipmentLayouts2 = new LinearLayout[maxShipNum];
+            slots2 = new ImageView[maxShipNum][maxSlotNum];
+            slotExDescriptions2 = new TextView[maxShipNum];
+            slotExIcons2 = new ImageView[maxShipNum];
+            detailButtons2 = new Button[maxShipNum];
+
+            for (int i = 1; i <= maxShipNum; i++) {
+                String name = "layout_ship2" + i;
+                int strId = res.getIdentifier(name, "id", packageName);
+                ViewGroup shipLayout = findById(rootView, strId);
+
+                names2[i - 1] = findById(shipLayout, R.id.name);
+                conds2[i - 1] = findById(shipLayout, R.id.cond);
+                lvs2[i - 1] = findById(shipLayout, R.id.lv);
+                states2[i - 1] = findById(shipLayout, R.id.state);
+                progressBars2[i - 1] = findById(shipLayout, R.id.progressBar);
+                hps2[i - 1] = findById(shipLayout, R.id.hp);
+                fuelDescriptions2[i - 1] = findById(shipLayout, R.id.fuelText);
+                fuels2[i - 1] = findById(shipLayout, R.id.fuel);
+                bullDescriptions2[i - 1] = findById(shipLayout, R.id.bullText);
+                bulls2[i - 1] = findById(shipLayout, R.id.bull);
+                equipmentLayouts2[i - 1] = findById(shipLayout, R.id.equipments);
+
+                for (int j = 1; j <= 4; j++) {
+                    name = "slot" + j;
+                    strId = res.getIdentifier(name, "id", packageName);
+                    slots2[i - 1][j - 1] = findById(shipLayout, strId);
+                }
+
+                slotExDescriptions2[i - 1] = findById(shipLayout, R.id.slotEx);
+                slotExIcons2[i - 1] = findById(shipLayout, R.id.slotExIcon);
+                detailButtons2[i - 1] = findById(shipLayout, R.id.detail);
+            }
         }
-        
-        public void bind(@NonNull final Deck deck) {
-            final List<Integer> shipId = deck.getShipId();
-            
-            for (int i = 0; i < shipId.size(); i++) {
+
+        private void bind(Deck nullableDeck, int viewType) {
+            boolean isCombined = false;
+            if (viewType == 1) {
+                isCombined = true;
+            }
+
+            final Deck deck;
+            if (nullableDeck == null) {
+                deck = DeckManager.INSTANCE.getDeck(1);
+            } else {
+                deck = nullableDeck;
+            }
+
+            List<Integer> shipId = deck.getShipId();
+
+            for (int i = 0; i < 6; i++) {
                 //空きの場合
                 if (shipId.get(i) == -1) {
                     names[i].setVisibility(View.INVISIBLE);
@@ -234,12 +301,12 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                     detailButtons[i].setVisibility(View.GONE);
                     continue;
                 }
-                
+
                 final int id = shipId.get(i);
                 final MyShip myShip = realm.where(MyShip.class)
                         .equalTo("id", id)
                         .findFirst();
-                
+
                 names[i].setVisibility(View.VISIBLE);
                 MstShip mstShip = realm.where(MstShip.class)
                         .equalTo("id", myShip.getShipId())
@@ -252,10 +319,10 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                         listener.onRecyclerViewClicked(dialogFragment, null);
                     }
                 });
-                
+
                 lvs[i].setVisibility(View.VISIBLE);
                 lvs[i].setText("Lv:" + String.valueOf(myShip.getLv()));
-                
+
                 states[i].setVisibility(View.VISIBLE);
                 if (deck.getMission()
                         .get(0) == 1 || deck.getMission()
@@ -285,24 +352,24 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                     states[i].setText("無傷");
                     states[i].setBackgroundColor(ContextCompat.getColor(App.getInstance(), R.color.undamaged));
                 }
-                
+
                 MySlotItem mySlotItem;
                 MstSlotitem mstSlotitem;
                 for (int j = 0; j < 4; j++) {
                     slots[i][j].setVisibility(View.VISIBLE);
-                    
+
                     if (j >= myShip.getSlotnum()) {
                         slots[i][j].setImageResource(EquipType3.NOT_AVAILABLE.getImageId());
                         continue;
                     }
-                    
+
                     if (myShip.getSlot()
                             .get(j)
                             .getValue() == -1) {
                         slots[i][j].setImageResource(EquipType3.EMPTY.getImageId());
                         continue;
                     }
-                    
+
                     mySlotItem = realm.where(MySlotItem.class)
                             .equalTo("id", myShip.getSlot()
                                     .get(j)
@@ -311,15 +378,15 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                     mstSlotitem = realm.where(MstSlotitem.class)
                             .equalTo("id", mySlotItem.getMstId())
                             .findFirst();
-                    
+
                     slots[i][j].setImageResource(EquipType3.toEquipType3(mstSlotitem.getType()
                             .get(3)
                             .getValue())
                             .getImageId());
                 }
-                
+
                 slotExDescriptions[i].setVisibility(View.VISIBLE);
-                
+
                 slotExIcons[i].setVisibility(View.VISIBLE);
                 mySlotItem = realm.where(MySlotItem.class)
                         .equalTo("id", myShip.getSlotEx())
@@ -339,7 +406,7 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                         slotExIcons[i].setImageResource(EquipType3.EMPTY.getImageId());
                     }
                 }
-                
+
                 equipmentLayouts[i].setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -347,16 +414,16 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                         listener.onRecyclerViewClicked(dialogFragment, null);
                     }
                 });
-                
+
                 progressBars[i].setVisibility(View.VISIBLE);
                 progressBars[i].setMax(myShip.getMaxhp());
                 progressBars[i].setProgress(myShip.getNowhp());
-                
+
                 hps[i].setVisibility(View.VISIBLE);
                 hps[i].setText(Integer.toString(myShip.getNowhp()) + "/" + Integer.toString(myShip.getMaxhp()));
-                
+
                 fuelDescriptions[i].setVisibility(View.VISIBLE);
-                
+
                 fuels[i].setVisibility(View.VISIBLE);
                 int fuelMax = mstShip.getFuelMax();
                 int fuelNow = myShip.getFuel();
@@ -402,9 +469,9 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                     //グレー
                     fuels[i].setTextColor(Color.rgb(118, 118, 118));
                 }
-                
+
                 bullDescriptions[i].setVisibility(View.VISIBLE);
-                
+
                 bulls[i].setVisibility(View.VISIBLE);
                 int bullMax = mstShip.getBullMax();
                 int bullNow = myShip.getBull();
@@ -450,7 +517,7 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                     //グレー
                     bulls[i].setTextColor(Color.rgb(118, 118, 118));
                 }
-                
+
                 conds[i].setVisibility(View.VISIBLE);
                 conds[i].setText("cond:" + Integer.toString(myShip.getCond()));
                 //condの値で色分けする
@@ -465,7 +532,7 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                 } else {
                     conds[i].setTextColor(ContextCompat.getColor(App.getInstance(), R.color.seriously_fatigued));
                 }
-                
+
                 detailButtons[i].setVisibility(View.VISIBLE);
                 detailButtons[i].setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -473,7 +540,7 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                         Intent intent = new Intent(App.getInstance(), ShipDetailActivity.class);
                         intent.putExtra("shipId", id);
                         intent.putExtra("deckId", deck.getId());
-                        
+
                         Configuration config = App.getInstance()
                                 .getResources()
                                 .getConfiguration();
@@ -485,14 +552,336 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                                 intent.putExtra("usesLandscape", true);
                                 break;
                         }
-                        
+
                         listener.onRecyclerViewClicked(null, intent);
                     }
                 });
             }
-            
-            seiku.setText(String.valueOf(DeckUtility.INSTANCE.getSeiku(deck)));
-            touchStartRate.setText(String.valueOf(DeckUtility.INSTANCE.getTouchStartRate(deck)) + "%");
+
+            if (viewType == VIEW_TYPE_COMBINED) {
+                //空きの場合
+                final Deck deck2 = DeckManager.INSTANCE.getDeck(2);
+                List<Integer> shipId2 = deck2.getShipId();
+                Logger.d("shipIdSize", String.valueOf(shipId2.size()));
+
+                for (int i = 0; i < 6; i++) {
+                    if (shipId2.get(i) == -1) {
+                        names2[i].setVisibility(View.INVISIBLE);
+                        conds2[i].setVisibility(View.INVISIBLE);
+                        lvs2[i].setVisibility(View.INVISIBLE);
+                        states2[i].setVisibility(View.INVISIBLE);
+                        progressBars2[i].setVisibility(View.INVISIBLE);
+                        hps2[i].setVisibility(View.INVISIBLE);
+                        fuelDescriptions2[i].setVisibility(View.INVISIBLE);
+                        fuels2[i].setVisibility(View.INVISIBLE);
+                        bullDescriptions2[i].setVisibility(View.INVISIBLE);
+                        bulls2[i].setVisibility(View.INVISIBLE);
+                        for (int j = 0; j < 4; j++) {
+                            slots2[i][j].setVisibility(View.INVISIBLE);
+                        }
+                        slotExDescriptions2[i].setVisibility(View.INVISIBLE);
+                        slotExIcons2[i].setVisibility(View.INVISIBLE);
+                        detailButtons2[i].setVisibility(View.GONE);
+                        continue;
+                    }
+
+                    final int id = shipId2.get(i);
+                    final MyShip myShip = realm.where(MyShip.class)
+                            .equalTo("id", id)
+                            .findFirst();
+
+                    names2[i].setVisibility(View.VISIBLE);
+                    MstShip mstShip = realm.where(MstShip.class)
+                            .equalTo("id", myShip.getShipId())
+                            .findFirst();
+                    names2[i].setText(mstShip.getName());
+                    names2[i].setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            android.support.v4.app.DialogFragment dialogFragment = ShipParamDialogFragment.newInstance(id, deck2.getId());
+                            listener.onRecyclerViewClicked(dialogFragment, null);
+                        }
+                    });
+
+                    lvs2[i].setVisibility(View.VISIBLE);
+                    lvs2[i].setText("Lv:" + String.valueOf(myShip.getLv()));
+
+                    states2[i].setVisibility(View.VISIBLE);
+                    if (deck2.getMission()
+                            .get(0) == 1 || deck2.getMission()
+                            .get(0) == 3) {
+                        states2[i].setText("遠征");
+                        //インディゴ
+                        states2[i].setBackgroundColor(ContextCompat.getColor(App.getInstance(), R.color.expedition));
+                    } else if (Escape.INSTANCE.isEscaped(myShip.getId())) {
+                        states2[i].setText("退避");
+                        states2[i].setBackgroundColor(ContextCompat.getColor(App.getInstance(), R.color.escort));
+                    } else if (DockTimer.INSTANCE.getShipId(1) == myShip.getId() || DockTimer.INSTANCE.getShipId(2) == myShip.getId() || DockTimer.INSTANCE.getShipId(3) == myShip.getId() || DockTimer.INSTANCE.getShipId(4) == myShip.getId()) {
+                        states2[i].setText("入渠");
+                        states2[i].setBackgroundColor(ContextCompat.getColor(App.getInstance(), R.color.docking));
+                    } else if (myShip.getNowhp() <= myShip.getMaxhp() / 4) {
+                        states2[i].setText("大破");
+                        states2[i].setBackgroundColor(ContextCompat.getColor(App.getInstance(), R.color.heavy_damage));
+                    } else if (myShip.getNowhp() <= myShip.getMaxhp() / 2) {
+                        states2[i].setText("中破");
+                        states2[i].setBackgroundColor(ContextCompat.getColor(App.getInstance(), R.color.moderate_damage));
+                    } else if (myShip.getNowhp() <= myShip.getMaxhp() * 3 / 4) {
+                        states2[i].setText("小破");
+                        states2[i].setBackgroundColor(ContextCompat.getColor(App.getInstance(), R.color.minor_damage));
+                    } else if (myShip.getNowhp() < myShip.getMaxhp()) {
+                        states2[i].setText("健在");
+                        states2[i].setBackgroundColor(ContextCompat.getColor(App.getInstance(), R.color.good_health));
+                    } else {
+                        states2[i].setText("無傷");
+                        states2[i].setBackgroundColor(ContextCompat.getColor(App.getInstance(), R.color.undamaged));
+                    }
+
+                    MySlotItem mySlotItem;
+                    MstSlotitem mstSlotitem;
+                    for (int j = 0; j < 4; j++) {
+                        slots2[i][j].setVisibility(View.VISIBLE);
+
+                        if (j >= myShip.getSlotnum()) {
+                            slots2[i][j].setImageResource(EquipType3.NOT_AVAILABLE.getImageId());
+                            continue;
+                        }
+
+                        if (myShip.getSlot()
+                                .get(j)
+                                .getValue() == -1) {
+                            slots2[i][j].setImageResource(EquipType3.EMPTY.getImageId());
+                            continue;
+                        }
+
+                        mySlotItem = realm.where(MySlotItem.class)
+                                .equalTo("id", myShip.getSlot()
+                                        .get(j)
+                                        .getValue())
+                                .findFirst();
+                        mstSlotitem = realm.where(MstSlotitem.class)
+                                .equalTo("id", mySlotItem.getMstId())
+                                .findFirst();
+
+                        slots2[i][j].setImageResource(EquipType3.toEquipType3(mstSlotitem.getType()
+                                .get(3)
+                                .getValue())
+                                .getImageId());
+                    }
+
+                    slotExDescriptions2[i].setVisibility(View.VISIBLE);
+
+                    slotExIcons2[i].setVisibility(View.VISIBLE);
+                    mySlotItem = realm.where(MySlotItem.class)
+                            .equalTo("id", myShip.getSlotEx())
+                            .findFirst();
+                    if (mySlotItem != null) {
+                        mstSlotitem = realm.where(MstSlotitem.class)
+                                .equalTo("id", mySlotItem.getMstId())
+                                .findFirst();
+                        slotExIcons2[i].setImageResource(EquipType3.toEquipType3(mstSlotitem.getType()
+                                .get(3)
+                                .getValue())
+                                .getImageId());
+                    } else {
+                        if (myShip.getSlotEx() == 0) {
+                            slotExIcons2[i].setImageResource(EquipType3.NOT_AVAILABLE.getImageId());
+                        } else if (myShip.getSlotEx() == -1) {
+                            slotExIcons2[i].setImageResource(EquipType3.EMPTY.getImageId());
+                        }
+                    }
+
+                    equipmentLayouts2[i].setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            android.support.v4.app.DialogFragment dialogFragment = EquipmentDialogFragment.newInstance(id);
+                            listener.onRecyclerViewClicked(dialogFragment, null);
+                        }
+                    });
+
+                    progressBars2[i].setVisibility(View.VISIBLE);
+                    progressBars2[i].setMax(myShip.getMaxhp());
+                    progressBars2[i].setProgress(myShip.getNowhp());
+
+                    hps2[i].setVisibility(View.VISIBLE);
+                    hps2[i].setText(Integer.toString(myShip.getNowhp()) + "/" + Integer.toString(myShip.getMaxhp()));
+
+                    fuelDescriptions2[i].setVisibility(View.VISIBLE);
+
+                    fuels2[i].setVisibility(View.VISIBLE);
+                    int fuelMax = mstShip.getFuelMax();
+                    int fuelNow = myShip.getFuel();
+                    if (fuelNow == fuelMax) {
+                        fuels2[i].setText("||||||||||");
+                        //緑
+                        fuels2[i].setTextColor(Color.rgb(59, 175, 117));
+                    } else if (fuelNow >= fuelMax * 8 / 9) {
+                        fuels2[i].setText("|||||||||");
+                        //黄色
+                        fuels2[i].setTextColor(Color.rgb(237, 185, 24));
+                    } else if (fuelNow >= fuelMax * 7 / 9) {
+                        fuels2[i].setText("||||||||");
+                        //黄色
+                        fuels2[i].setTextColor(Color.rgb(237, 185, 24));
+                    } else if (fuelNow >= fuelMax * 6 / 9) {
+                        fuels2[i].setText("|||||||");
+                        //オレンジ
+                        fuels2[i].setTextColor(Color.rgb(255, 140, 0));
+                    } else if (fuelNow >= fuelMax * 5 / 9) {
+                        fuels2[i].setText("||||||");
+                        //オレンジ
+                        fuels2[i].setTextColor(Color.rgb(255, 140, 0));
+                    } else if (fuelNow >= fuelMax * 4 / 9) {
+                        fuels2[i].setText("|||||");
+                        //オレンジ
+                        fuels2[i].setTextColor(Color.rgb(255, 140, 0));
+                    } else if (fuelNow >= fuelMax * 3 / 9) {
+                        fuels2[i].setText("||||");
+                        //オレンジ
+                        fuels2[i].setTextColor(Color.rgb(255, 140, 0));
+                    } else if (fuelNow >= fuelMax * 2 / 9) {
+                        fuels2[i].setText("|||");
+                        fuels2[i].setTextColor(Color.RED);
+                    } else if (fuelNow >= fuelMax * 1 / 9) {
+                        fuels2[i].setText("||");
+                        fuels2[i].setTextColor(Color.RED);
+                    } else if (fuelNow > 0) {
+                        fuels2[i].setText("|");
+                        fuels2[i].setTextColor(Color.RED);
+                    } else {
+                        fuels2[i].setText("-");
+                        //グレー
+                        fuels2[i].setTextColor(Color.rgb(118, 118, 118));
+                    }
+
+                    bullDescriptions2[i].setVisibility(View.VISIBLE);
+
+                    bulls2[i].setVisibility(View.VISIBLE);
+                    int bullMax = mstShip.getBullMax();
+                    int bullNow = myShip.getBull();
+                    if (bullNow == bullMax) {
+                        bulls2[i].setText("||||||||||");
+                        //緑
+                        bulls2[i].setTextColor(Color.rgb(59, 175, 117));
+                    } else if (bullNow >= bullMax * 8 / 9) {
+                        bulls2[i].setText("|||||||||");
+                        //黄色
+                        bulls2[i].setTextColor(Color.rgb(237, 185, 24));
+                    } else if (bullNow >= bullMax * 7 / 9) {
+                        bulls2[i].setText("||||||||");
+                        //黄色
+                        bulls2[i].setTextColor(Color.rgb(237, 185, 24));
+                    } else if (bullNow >= bullMax * 6 / 9) {
+                        bulls2[i].setText("|||||||");
+                        //オレンジ
+                        bulls2[i].setTextColor(Color.rgb(255, 140, 0));
+                    } else if (bullNow >= bullMax * 5 / 9) {
+                        bulls2[i].setText("||||||");
+                        //オレンジ
+                        bulls2[i].setTextColor(Color.rgb(255, 140, 0));
+                    } else if (bullNow >= bullMax * 4 / 9) {
+                        bulls2[i].setText("|||||");
+                        //オレンジ
+                        bulls2[i].setTextColor(Color.rgb(255, 140, 0));
+                    } else if (bullNow >= bullMax * 3 / 9) {
+                        bulls2[i].setText("||||");
+                        //オレンジ
+                        bulls2[i].setTextColor(Color.rgb(255, 140, 0));
+                    } else if (bullNow >= bullMax * 2 / 9) {
+                        bulls2[i].setText("|||");
+                        bulls2[i].setTextColor(Color.RED);
+                    } else if (bullNow >= bullMax * 1 / 9) {
+                        bulls2[i].setText("||");
+                        bulls2[i].setTextColor(Color.RED);
+                    } else if (bullNow > 0) {
+                        bulls2[i].setText("|");
+                        bulls2[i].setTextColor(Color.RED);
+                    } else {
+                        bulls2[i].setText("-");
+                        //グレー
+                        bulls2[i].setTextColor(Color.rgb(118, 118, 118));
+                    }
+
+                    conds2[i].setVisibility(View.VISIBLE);
+                    conds2[i].setText("cond:" + Integer.toString(myShip.getCond()));
+                    //condの値で色分けする
+                    if (myShip.getCond() >= 50) {
+                        conds2[i].setTextColor(ContextCompat.getColor(App.getInstance(), R.color.high_morale));
+                    } else if (myShip.getCond() >= 40) {
+                        conds2[i].setTextColor(ContextCompat.getColor(App.getInstance(), R.color.normal_cond));
+                    } else if (myShip.getCond() >= 30) {
+                        conds2[i].setTextColor(ContextCompat.getColor(App.getInstance(), R.color.slightly_fatigued));
+                    } else if (myShip.getCond() >= 20) {
+                        conds2[i].setTextColor(ContextCompat.getColor(App.getInstance(), R.color.moderately_fatigued));
+                    } else {
+                        conds2[i].setTextColor(ContextCompat.getColor(App.getInstance(), R.color.seriously_fatigued));
+                    }
+
+                    detailButtons2[i].setVisibility(View.VISIBLE);
+                    detailButtons2[i].setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(App.getInstance(), ShipDetailActivity.class);
+                            intent.putExtra("shipId", id);
+                            intent.putExtra("deckId", deck2.getId());
+
+                            Configuration config = App.getInstance()
+                                    .getResources()
+                                    .getConfiguration();
+                            switch (config.orientation) {
+                                case Configuration.ORIENTATION_PORTRAIT:
+                                    intent.putExtra("usesLandscape", false);
+                                    break;
+                                case Configuration.ORIENTATION_LANDSCAPE:
+                                    intent.putExtra("usesLandscape", true);
+                                    break;
+                            }
+
+                            listener.onRecyclerViewClicked(null, intent);
+                        }
+                    });
+                }
+            }
+
+            Deck deck2 = null;
+            if (isCombined) {
+                deck2 = DeckManager.INSTANCE.getDeck(2);
+            }
+
+            int seikuValue = DeckUtility.INSTANCE.getSeiku(deck);
+            int touchStartRateVal = DeckUtility.INSTANCE.getTouchStartRate(deck);
+            int levelSumVal = deck.getLevelSum();
+            String condRecoveryTimeVal = deck.getCondRecoveryTime();
+            if (isCombined) {
+                seiku.setText(seikuValue + "(" + (seikuValue + DeckUtility.INSTANCE.getSeiku(deck2)) + ")");
+                touchStartRate.setText(touchStartRateVal + "(" + (touchStartRateVal + DeckUtility.INSTANCE.getTouchStartRate(deck2)) + ")" + "%");
+                levelSum.setText(String.valueOf(levelSumVal + deck2.getLevelSum()));
+                try {
+                    if(condRecoveryTimeVal.isEmpty()){
+                        if(deck2.getCondRecoveryTime().isEmpty()){
+                            condRecoveryTime.setText("");
+                        }else{
+                            condRecoveryTime.setText(deck2.getCondRecoveryTime());
+                        }
+                    }else {
+                        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                        Date date1 = sdf.parse(condRecoveryTimeVal);
+                        Date date2 = sdf.parse(deck2.getCondRecoveryTime());
+                        if (date1.before(date2)) {
+                            condRecoveryTime.setText(deck2.getCondRecoveryTime());
+                        } else {
+                            condRecoveryTime.setText(condRecoveryTimeVal);
+                        }
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                seiku.setText(String.valueOf(seikuValue));
+                touchStartRate.setText(touchStartRateVal + "%");
+                levelSum.setText(String.valueOf(levelSumVal));
+                condRecoveryTime.setText(condRecoveryTimeVal);
+            }
+
             sakuteki33.setText(String.valueOf(DeckUtility.INSTANCE.getSakuteki33(deck, 1)));
             junction.setText("1");
             junction.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -516,8 +905,6 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                     return true;
                 }
             });
-            levelSum.setText(String.valueOf(deck.getLevelSum()));
-            condRecoveryTime.setText(deck.getCondRecoveryTime());
         }
     }
 }

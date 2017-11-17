@@ -99,11 +99,6 @@ class GeneralPrefs(context: Context) : KoreferenceModel(context = context, name 
      */
     var vibratesWhenNOtify by booleanPreference(true)
 
-    /**
-     * 横画面固定。
-     */
-    var forcesLandscape by booleanPreference(false)
-
     var showsWinRankOverlay by booleanPreference(true)
 
     var showsHeavilyDamagedOverlay by booleanPreference(true)

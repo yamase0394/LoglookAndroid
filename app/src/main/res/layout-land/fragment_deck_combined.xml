@@ -1,0 +1,293 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/scrollView3"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!--区切り線の色-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="#e4e4e4"
+                app:layout_constraintBottom_toBottomOf="@id/layout_ship6"
+                app:layout_constraintTop_toTopOf="parent"></View>
+
+            <include
+                android:id="@+id/layout_ship1"
+                layout="@layout/view_ship_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="1dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/layout_ship21"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <include
+                android:id="@+id/layout_ship2"
+                layout="@layout/view_ship_info"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="1dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/layout_ship22"
+                app:layout_constraintTop_toBottomOf="@id/layout_ship1" />
+
+            <include
+                android:id="@+id/layout_ship3"
+                layout="@layout/view_ship_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="1dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/layout_ship23"
+                app:layout_constraintTop_toBottomOf="@id/layout_ship2" />
+
+            <include
+                android:id="@+id/layout_ship4"
+                layout="@layout/view_ship_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="1dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/layout_ship24"
+                app:layout_constraintTop_toBottomOf="@id/layout_ship3" />
+
+            <include
+                android:id="@+id/layout_ship5"
+                layout="@layout/view_ship_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="1dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/layout_ship25"
+                app:layout_constraintTop_toBottomOf="@id/layout_ship4" />
+
+            <include
+                android:id="@+id/layout_ship6"
+                layout="@layout/view_ship_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="1dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/layout_ship26"
+                app:layout_constraintTop_toBottomOf="@id/layout_ship5" />
+
+            <include
+                android:id="@+id/layout_ship21"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/layout_ship1"
+                layout="@layout/view_ship_info"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <include
+                android:id="@+id/layout_ship22"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:layout_constraintLeft_toRightOf="@id/layout_ship2"
+                layout="@layout/view_ship_info"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_ship21"/>
+
+            <include
+                layout="@layout/view_ship_info"
+                android:id="@+id/layout_ship23"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/layout_ship3"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_ship22"/>
+
+            <include
+                layout="@layout/view_ship_info"
+                android:id="@+id/layout_ship24"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/layout_ship4"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_ship23"/>
+
+            <include
+                layout="@layout/view_ship_info"
+                android:id="@+id/layout_ship25"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/layout_ship5"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_ship24"/>
+
+            <include
+                layout="@layout/view_ship_info"
+                android:id="@+id/layout_ship26"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:layout_constraintLeft_toRightOf="@id/layout_ship6"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_ship25"/>
+
+            <View
+                android:id="@+id/border_ships"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:background="@color/colorAccent"
+                app:layout_constraintTop_toBottomOf="@id/layout_ship6" />
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/border_ships">
+
+                <LinearLayout
+                    android:id="@+id/layout_seiku"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintHorizontal_chainStyle="spread"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/layout_sakuteki33">
+
+                    <TextView
+                        android:id="@+id/textView20"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="制空値:"
+                        android:textSize="15dp" />
+
+                    <TextView
+                        android:id="@+id/seiku"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="New Text"
+                        android:textSize="15dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_touch_start_rate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintLeft_toLeftOf="@id/layout_seiku"
+                    app:layout_constraintTop_toBottomOf="@id/layout_seiku">
+
+                    <TextView
+                        android:id="@+id/textView24"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="触接開始率:"
+                        android:textSize="15dp" />
+
+                    <TextView
+                        android:id="@+id/touchStartRate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="New Text"
+                        android:textSize="15dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_sakuteki33"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintLeft_toRightOf="@id/layout_seiku"
+                    app:layout_constraintRight_toLeftOf="@id/layout_level_sum">
+
+                    <TextView
+                        android:id="@+id/textView28"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="判定式(33) 分岐点"
+                        android:textSize="15dp" />
+
+                    <EditText
+                        android:id="@+id/junction"
+                        android:layout_width="15dp"
+                        android:layout_height="20dp"
+                        android:layout_margin="0dp"
+                        android:inputType="numberDecimal"
+                        android:padding="0dp"
+                        android:text="1"
+                        android:textSize="15sp"
+                        android:theme="@style/EditTextColorControl" />
+
+                    <TextView
+                        android:id="@+id/textView29"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=": "
+                        android:textSize="15dp" />
+
+                    <TextView
+                        android:id="@+id/sakuteki33"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="New Text"
+                        android:textSize="15dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_level_sum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintLeft_toRightOf="@id/layout_sakuteki33"
+                    app:layout_constraintRight_toRightOf="parent">
+
+                    <TextView
+                        android:id="@+id/textView43"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="レベル合計:"
+                        android:textSize="15dp" />
+
+                    <TextView
+                        android:id="@+id/levelSum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="New Text"
+                        android:textSize="15dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_cond_recovery_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintLeft_toLeftOf="@id/layout_level_sum"
+                    app:layout_constraintTop_toTopOf="@id/layout_touch_start_rate">
+
+                    <TextView
+                        android:id="@+id/textView46"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="疲労回復:"
+                        android:textSize="15dp" />
+
+                    <TextView
+                        android:id="@+id/condRecoveryTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="New Text"
+                        android:textSize="15dp" />
+
+                </LinearLayout>
+            </android.support.constraint.ConstraintLayout>
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+</android.support.constraint.ConstraintLayout>

@@ -1,1461 +1,113 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-    >
-
-    <!-- TODO: Update blank fragment layout -->
-
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ScrollView
         android:id="@+id/scrollView3"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:fillViewport="true">
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <!--区切り線の色-->
             <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorAccent"/>
-
-            <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="#e4e4e4"
+                app:layout_constraintBottom_toBottomOf="@id/layout_ship6"
+                app:layout_constraintTop_toTopOf="parent"></View>
+
+            <include
+                layout="@layout/view_ship_info"
+                android:id="@+id/layout_ship1"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="1dp"
                 android:layout_marginRight="1dp"
-                android:background="#ffffff"
-                android:orientation="horizontal">
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/layout_ship2"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="5dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:paddingLeft="5dp">
+            <include
+                layout="@layout/view_ship_info"
+                android:id="@+id/layout_ship2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:layout_constraintLeft_toRightOf="@id/layout_ship1"
+                app:layout_constraintRight_toRightOf="parent"/>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/name1"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:text="New Text"
-                                    android:textSize="20sp"
-                                    android:ellipsize="end"
-                                    android:maxWidth="150dp"
-                                    android:maxLines="1"
-                                    android:clickable="true"/>
-
-                                <TextView
-                                    android:id="@+id/lv1"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="3dp"
-                                    android:text="Lv:155"
-                                    android:textSize="13sp"
-                                    />
-
-                                <TextView
-                                    android:id="@+id/state1"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:text="大破"
-                                    android:textSize="14sp"
-                                    android:textColor="@android:color/background_light"
-                                    android:background="@color/colorPrimaryDark"/>
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginLeft="5dp"
-                                android:orientation="horizontal">
-
-                                <ProgressBar
-                                    android:id="@+id/progressBar1"
-                                    style="?android:attr/progressBarStyleHorizontal"
-                                    android:layout_width="80dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:maxHeight="5dp"
-                                    android:minHeight="5dp"
-                                    android:minWidth="50dp"
-                                    android:progressDrawable="@drawable/progressbar"/>
-
-                                <TextView
-                                    android:id="@+id/hp1"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="3dp"
-                                    android:gravity="center_vertical"
-                                    android:text="HP:111/111"
-                                    android:textSize="12sp"/>
-
-                                <TextView
-                                    android:id="@+id/cond1"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="7dp"
-                                    android:text="cond:49"
-                                    android:textSize="12sp"/>
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="10dp"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/fuelText1"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="燃料:"
-                                    android:textSize="13sp"/>
-
-                                <TextView
-                                    android:id="@+id/fuel1"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="New Text"
-                                    android:textIsSelectable="false"
-                                    android:textSize="12sp"
-                                    android:maxLines="1"/>
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/bullText1"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="弾薬:"
-                                    android:textSize="13sp"/>
-
-                                <TextView
-                                    android:id="@+id/bull1"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="New Text"
-                                    android:textSize="12sp"
-                                    android:maxLines="1"/>
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:orientation="horizontal"
-                        android:weightSum="1"
-                        android:id="@+id/equipments1"
-                        android:clickable="true">
-
-                        <ImageView
-                            android:id="@+id/slot11"
-                            android:layout_width="24dp"
-                            android:layout_height="match_parent"
-                            app:srcCompat="@drawable/not_available"
-                            />
-
-                        <ImageView
-                            android:id="@+id/slot12"
-                            android:layout_width="27dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            app:srcCompat="@drawable/not_available"/>
-
-                        <ImageView
-                            android:id="@+id/slot13"
-                            android:layout_width="28dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            app:srcCompat="@drawable/not_available"/>
-
-                        <ImageView
-                            android:id="@+id/slot14"
-                            android:layout_width="19dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            android:layout_weight="0.06"
-                            app:srcCompat="@drawable/not_available"/>
-
-                        <TextView
-                            android:id="@+id/slotEx1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:gravity="center"
-                            android:paddingBottom="2dp"
-                            android:paddingTop="2dp"
-                            android:text="増設"/>
-
-                        <ImageView
-                            android:id="@+id/slotExIcon1"
-                            android:layout_width="27dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            app:srcCompat="@drawable/not_available"/>
-
-                    </LinearLayout>
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/detail1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="13dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="7"
-                    android:maxHeight="28dp"
-                    android:minHeight="15dp"
-                    android:minWidth="15dp"
-                    android:textSize="14sp"/>
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="2dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:background="#e4e4e4"
-                />
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <include
+                layout="@layout/view_ship_info"
+                android:id="@+id/layout_ship3"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:orientation="horizontal">
+                android:layout_marginRight="1dp"
+                android:layout_marginTop="1dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/layout_ship4"
+                app:layout_constraintTop_toBottomOf="@id/layout_ship1"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="1dp"
-                    android:layout_marginRight="1dp"
-                    android:layout_weight="1"
-                    android:background="#ffffff"
-                    android:orientation="vertical"
-                    android:paddingLeft="5dp">
+            <include
+                layout="@layout/view_ship_info"
+                android:id="@+id/layout_ship4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="1dp"
+                app:layout_constraintLeft_toRightOf="@id/layout_ship3"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_ship2"/>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/name2"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:text="New Text"
-                                    android:textSize="20sp"
-                                    android:ellipsize="end"
-                                    android:maxWidth="150dp"
-                                    android:maxLines="1"
-                                    android:clickable="true"/>
-
-                                <TextView
-                                    android:id="@+id/lv2"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="3dp"
-                                    android:text="Lv:155"
-                                    android:textSize="13sp"
-                                    />
-
-                                <TextView
-                                    android:id="@+id/state2"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:text="大破"
-                                    android:textSize="14sp"
-                                    android:textColor="@android:color/background_light"
-                                    android:background="@color/colorPrimaryDark"/>
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginLeft="5dp"
-                                android:orientation="horizontal">
-
-                                <ProgressBar
-                                    android:id="@+id/progressBar2"
-                                    style="?android:attr/progressBarStyleHorizontal"
-                                    android:layout_width="80dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:maxHeight="5dp"
-                                    android:minHeight="5dp"
-                                    android:minWidth="50dp"
-                                    android:progressDrawable="@drawable/progressbar"/>
-
-                                <TextView
-                                    android:id="@+id/hp2"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="3dp"
-                                    android:gravity="center_vertical"
-                                    android:text="HP:111/111"
-                                    android:textSize="12sp"/>
-
-                                <TextView
-                                    android:id="@+id/cond2"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="7dp"
-                                    android:text="cond:49"
-                                    android:textSize="12sp"/>
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="10dp"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/fuelText2"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="燃料:"
-                                    android:textSize="13sp"/>
-
-                                <TextView
-                                    android:id="@+id/fuel2"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="New Text"
-                                    android:textIsSelectable="false"
-                                    android:textSize="12sp"
-                                    />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/bullText2"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="弾薬:"
-                                    android:textSize="13sp"/>
-
-                                <TextView
-                                    android:id="@+id/bull2"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="New Text"
-                                    android:textSize="12sp"
-                                    />
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:orientation="horizontal"
-                        android:weightSum="1"
-                        android:id="@+id/equipments2"
-                        android:clickable="true">
-
-                        <ImageView
-                            android:id="@+id/slot21"
-                            android:layout_width="24dp"
-                            android:layout_height="match_parent"
-                            app:srcCompat="@drawable/not_available"
-                            />
-
-                        <ImageView
-                            android:id="@+id/slot22"
-                            android:layout_width="27dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            app:srcCompat="@drawable/not_available"/>
-
-                        <ImageView
-                            android:id="@+id/slot23"
-                            android:layout_width="28dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            app:srcCompat="@drawable/not_available"/>
-
-                        <ImageView
-                            android:id="@+id/slot24"
-                            android:layout_width="19dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            android:layout_weight="0.06"
-                            app:srcCompat="@drawable/not_available"/>
-
-                        <TextView
-                            android:id="@+id/slotEx2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:gravity="center"
-                            android:paddingBottom="2dp"
-                            android:paddingTop="2dp"
-                            android:text="増設"/>
-
-                        <ImageView
-                            android:id="@+id/slotExIcon2"
-                            android:layout_width="27dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            app:srcCompat="@drawable/not_available"/>
-
-                    </LinearLayout>
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/detail2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="13dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="7"
-                    android:maxHeight="28dp"
-                    android:minHeight="15dp"
-                    android:minWidth="15dp"
-                    android:textSize="12sp"/>
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="2dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:background="#e4e4e4"
-                />
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <include
+                layout="@layout/view_ship_info"
+                android:id="@+id/layout_ship5"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:orientation="horizontal">
+                android:layout_marginRight="1dp"
+                android:layout_marginTop="1dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/layout_ship6"
+                app:layout_constraintTop_toBottomOf="@id/layout_ship3"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="1dp"
-                    android:layout_marginRight="1dp"
-                    android:layout_weight="1"
-                    android:background="#ffffff"
-                    android:orientation="vertical"
-                    android:paddingLeft="5dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/name3"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:text="New Text"
-                                    android:textSize="20sp"
-                                    android:ellipsize="end"
-                                    android:maxWidth="150dp"
-                                    android:maxLines="1"
-                                    android:clickable="true"/>
-
-                                <TextView
-                                    android:id="@+id/lv3"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="3dp"
-                                    android:text="Lv:155"
-                                    android:textSize="13sp"
-                                    />
-
-                                <TextView
-                                    android:id="@+id/state3"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:text="大破"
-                                    android:textSize="14sp"
-                                    android:textColor="@android:color/background_light"
-                                    android:background="@color/colorPrimaryDark"/>
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginLeft="5dp"
-                                android:orientation="horizontal">
-
-                                <ProgressBar
-                                    android:id="@+id/progressBar3"
-                                    style="?android:attr/progressBarStyleHorizontal"
-                                    android:layout_width="80dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:maxHeight="5dp"
-                                    android:minHeight="5dp"
-                                    android:minWidth="50dp"
-                                    android:progressDrawable="@drawable/progressbar"/>
-
-                                <TextView
-                                    android:id="@+id/hp3"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="3dp"
-                                    android:gravity="center_vertical"
-                                    android:text="HP:111/111"
-                                    android:textSize="12sp"/>
-
-                                <TextView
-                                    android:id="@+id/cond3"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="7dp"
-                                    android:text="cond:49"
-                                    android:textSize="12sp"/>
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="10dp"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/fuelText3"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="燃料:"
-                                    android:textSize="13sp"/>
-
-                                <TextView
-                                    android:id="@+id/fuel3"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="New Text"
-                                    android:textIsSelectable="false"
-                                    android:textSize="12sp"
-                                    />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/bullText3"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="弾薬:"
-                                    android:textSize="13sp"/>
-
-                                <TextView
-                                    android:id="@+id/bull3"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="New Text"
-                                    android:textSize="12sp"
-                                    />
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:orientation="horizontal"
-                        android:weightSum="1"
-                        android:id="@+id/equipments3"
-                        android:clickable="true">
-
-                        <ImageView
-                            android:id="@+id/slot31"
-                            android:layout_width="24dp"
-                            android:layout_height="match_parent"
-                            app:srcCompat="@drawable/not_available"
-                            />
-
-                        <ImageView
-                            android:id="@+id/slot32"
-                            android:layout_width="27dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            app:srcCompat="@drawable/not_available"/>
-
-                        <ImageView
-                            android:id="@+id/slot33"
-                            android:layout_width="28dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            app:srcCompat="@drawable/not_available"/>
-
-                        <ImageView
-                            android:id="@+id/slot34"
-                            android:layout_width="19dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            android:layout_weight="0.06"
-                            app:srcCompat="@drawable/not_available"/>
-
-                        <TextView
-                            android:id="@+id/slotEx3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:gravity="center"
-                            android:paddingBottom="2dp"
-                            android:paddingTop="2dp"
-                            android:text="増設"/>
-
-                        <ImageView
-                            android:id="@+id/slotExIcon3"
-                            android:layout_width="27dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            app:srcCompat="@drawable/not_available"/>
-
-                    </LinearLayout>
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/detail3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="13dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="7"
-                    android:maxHeight="28dp"
-                    android:minHeight="15dp"
-                    android:minWidth="15dp"
-                    android:textSize="12sp"/>
-
-            </LinearLayout>
+            <include
+                layout="@layout/view_ship_info"
+                android:id="@+id/layout_ship6"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="1dp"
+                app:layout_constraintLeft_toRightOf="@id/layout_ship5"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_ship4"/>
 
             <View
-                android:layout_width="fill_parent"
-                android:layout_height="2dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:background="#e4e4e4"
-                />
-
-
-            <LinearLayout
+                android:id="@+id/border_ships"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="1dp"
-                    android:layout_marginRight="1dp"
-                    android:layout_weight="1"
-                    android:background="#ffffff"
-                    android:orientation="vertical"
-                    android:paddingLeft="5dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/name4"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:text="New Text"
-                                    android:textSize="20sp"
-                                    android:ellipsize="end"
-                                    android:maxWidth="150dp"
-                                    android:maxLines="1"
-                                    android:clickable="true"/>
-
-                                <TextView
-                                    android:id="@+id/lv4"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="3dp"
-                                    android:text="Lv:155"
-                                    android:textSize="13sp"
-                                    />
-
-                                <TextView
-                                    android:id="@+id/state4"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:text="大破"
-                                    android:textSize="14sp"
-                                    android:textColor="@android:color/background_light"
-                                    android:background="@color/colorPrimaryDark"/>
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginLeft="5dp"
-                                android:orientation="horizontal">
-
-                                <ProgressBar
-                                    android:id="@+id/progressBar4"
-                                    style="?android:attr/progressBarStyleHorizontal"
-                                    android:layout_width="80dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:maxHeight="5dp"
-                                    android:minHeight="5dp"
-                                    android:minWidth="50dp"
-                                    android:progressDrawable="@drawable/progressbar"/>
-
-                                <TextView
-                                    android:id="@+id/hp4"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="3dp"
-                                    android:gravity="center_vertical"
-                                    android:text="HP:111/111"
-                                    android:textSize="12sp"/>
-
-                                <TextView
-                                    android:id="@+id/cond4"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="7dp"
-                                    android:text="cond:49"
-                                    android:textSize="12sp"/>
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="10dp"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/fuelText4"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="燃料:"
-                                    android:textSize="13sp"/>
-
-                                <TextView
-                                    android:id="@+id/fuel4"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="New Text"
-                                    android:textIsSelectable="false"
-                                    android:textSize="12sp"
-                                    />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/bullText4"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="弾薬:"
-                                    android:textSize="13sp"/>
-
-                                <TextView
-                                    android:id="@+id/bull4"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="New Text"
-                                    android:textSize="12sp"
-                                    />
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:orientation="horizontal"
-                        android:weightSum="1"
-                        android:id="@+id/equipments4"
-                        android:clickable="true">
-
-                        <ImageView
-                            android:id="@+id/slot41"
-                            android:layout_width="24dp"
-                            android:layout_height="match_parent"
-                            app:srcCompat="@drawable/not_available"
-                            />
-
-                        <ImageView
-                            android:id="@+id/slot42"
-                            android:layout_width="27dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            app:srcCompat="@drawable/not_available"/>
-
-                        <ImageView
-                            android:id="@+id/slot43"
-                            android:layout_width="28dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            app:srcCompat="@drawable/not_available"/>
-
-                        <ImageView
-                            android:id="@+id/slot44"
-                            android:layout_width="19dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            android:layout_weight="0.06"
-                            app:srcCompat="@drawable/not_available"/>
-
-                        <TextView
-                            android:id="@+id/slotEx4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:gravity="center"
-                            android:paddingBottom="2dp"
-                            android:paddingTop="2dp"
-                            android:text="増設"/>
-
-                        <ImageView
-                            android:id="@+id/slotExIcon4"
-                            android:layout_width="27dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            app:srcCompat="@drawable/not_available"/>
-
-                    </LinearLayout>
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/detail4"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="13dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="7"
-                    android:maxHeight="28dp"
-                    android:minHeight="15dp"
-                    android:minWidth="15dp"
-                    android:textSize="12sp"/>
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="2dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:background="#e4e4e4"
-                />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="1dp"
-                    android:layout_marginRight="1dp"
-                    android:layout_weight="1"
-                    android:background="#ffffff"
-                    android:orientation="vertical"
-                    android:paddingLeft="5dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/name5"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:text="New Text"
-                                    android:textSize="20sp"
-                                    android:ellipsize="end"
-                                    android:maxWidth="150dp"
-                                    android:maxLines="1"
-                                    android:clickable="true"/>
-
-                                <TextView
-                                    android:id="@+id/lv5"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="3dp"
-                                    android:text="Lv:155"
-                                    android:textSize="13sp"
-                                    />
-
-                                <TextView
-                                    android:id="@+id/state5"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:text="大破"
-                                    android:textSize="14sp"
-                                    android:textColor="@android:color/background_light"
-                                    android:background="@color/colorPrimaryDark"/>
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginLeft="5dp"
-                                android:orientation="horizontal">
-
-                                <ProgressBar
-                                    android:id="@+id/progressBar5"
-                                    style="?android:attr/progressBarStyleHorizontal"
-                                    android:layout_width="80dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:maxHeight="5dp"
-                                    android:minHeight="5dp"
-                                    android:minWidth="50dp"
-                                    android:progressDrawable="@drawable/progressbar"/>
-
-                                <TextView
-                                    android:id="@+id/hp5"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="3dp"
-                                    android:gravity="center_vertical"
-                                    android:text="HP:111/111"
-                                    android:textSize="12sp"/>
-
-                                <TextView
-                                    android:id="@+id/cond5"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="7dp"
-                                    android:text="cond:49"
-                                    android:textSize="12sp"/>
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="10dp"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/fuelText5"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="燃料:"
-                                    android:textSize="13sp"/>
-
-                                <TextView
-                                    android:id="@+id/fuel5"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="New Text"
-                                    android:textIsSelectable="false"
-                                    android:textSize="12sp"
-                                    />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/bullText5"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="弾薬:"
-                                    android:textSize="13sp"/>
-
-                                <TextView
-                                    android:id="@+id/bull5"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="New Text"
-                                    android:textSize="12sp"
-                                    />
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:orientation="horizontal"
-                        android:weightSum="1"
-                        android:id="@+id/equipments5"
-                        android:clickable="true">
-
-                        <ImageView
-                            android:id="@+id/slot51"
-                            android:layout_width="24dp"
-                            android:layout_height="match_parent"
-                            app:srcCompat="@drawable/not_available"
-                            />
-
-                        <ImageView
-                            android:id="@+id/slot52"
-                            android:layout_width="27dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            app:srcCompat="@drawable/not_available"/>
-
-                        <ImageView
-                            android:id="@+id/slot53"
-                            android:layout_width="28dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            app:srcCompat="@drawable/not_available"/>
-
-                        <ImageView
-                            android:id="@+id/slot54"
-                            android:layout_width="19dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            android:layout_weight="0.06"
-                            app:srcCompat="@drawable/not_available"/>
-
-                        <TextView
-                            android:id="@+id/slotEx5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:gravity="center"
-                            android:paddingBottom="2dp"
-                            android:paddingTop="2dp"
-                            android:text="増設"/>
-
-                        <ImageView
-                            android:id="@+id/slotExIcon5"
-                            android:layout_width="27dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            app:srcCompat="@drawable/not_available"/>
-
-                    </LinearLayout>
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/detail5"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="13dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="7"
-                    android:maxHeight="28dp"
-                    android:minHeight="15dp"
-                    android:minWidth="15dp"
-                    android:textSize="12sp"/>
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="2dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:background="#e4e4e4"
-                />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="1dp"
-                    android:layout_marginRight="1dp"
-                    android:layout_weight="1"
-                    android:background="#ffffff"
-                    android:orientation="vertical"
-                    android:paddingLeft="5dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/name6"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:text="New Text"
-                                    android:textSize="20sp"
-                                    android:ellipsize="end"
-                                    android:maxWidth="150dp"
-                                    android:maxLines="1"
-                                    android:clickable="true"/>
-
-                                <TextView
-                                    android:id="@+id/lv6"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="3dp"
-                                    android:text="Lv:155"
-                                    android:textSize="13sp"
-                                    />
-
-                                <TextView
-                                    android:id="@+id/state6"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:text="大破"
-                                    android:textSize="14sp"
-                                    android:textColor="@android:color/background_light"
-                                    android:background="@color/colorPrimaryDark"/>
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginLeft="5dp"
-                                android:orientation="horizontal">
-
-                                <ProgressBar
-                                    android:id="@+id/progressBar6"
-                                    style="?android:attr/progressBarStyleHorizontal"
-                                    android:layout_width="80dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:maxHeight="5dp"
-                                    android:minHeight="5dp"
-                                    android:minWidth="50dp"
-                                    android:progressDrawable="@drawable/progressbar"/>
-
-                                <TextView
-                                    android:id="@+id/hp6"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="3dp"
-                                    android:gravity="center_vertical"
-                                    android:text="HP:111/111"
-                                    android:textSize="12sp"/>
-
-                                <TextView
-                                    android:id="@+id/cond6"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="7dp"
-                                    android:text="cond:49"
-                                    android:textSize="12sp"/>
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="10dp"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/fuelText6"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="燃料:"
-                                    android:textSize="13sp"/>
-
-                                <TextView
-                                    android:id="@+id/fuel6"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="New Text"
-                                    android:textIsSelectable="false"
-                                    android:textSize="12sp"
-                                    />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/bullText6"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="弾薬:"
-                                    android:textSize="13sp"/>
-
-                                <TextView
-                                    android:id="@+id/bull6"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="New Text"
-                                    android:textSize="12sp"
-                                    />
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:orientation="horizontal"
-                        android:weightSum="1"
-                        android:id="@+id/equipments6"
-                        android:clickable="true">
-
-                        <ImageView
-                            android:id="@+id/slot61"
-                            android:layout_width="24dp"
-                            android:layout_height="match_parent"
-                            app:srcCompat="@drawable/not_available"
-                            />
-
-                        <ImageView
-                            android:id="@+id/slot62"
-                            android:layout_width="27dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            app:srcCompat="@drawable/not_available"/>
-
-                        <ImageView
-                            android:id="@+id/slot63"
-                            android:layout_width="28dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            app:srcCompat="@drawable/not_available"/>
-
-                        <ImageView
-                            android:id="@+id/slot64"
-                            android:layout_width="19dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            android:layout_weight="0.06"
-                            app:srcCompat="@drawable/not_available"/>
-
-                        <TextView
-                            android:id="@+id/slotEx6"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:gravity="center"
-                            android:paddingBottom="2dp"
-                            android:paddingTop="2dp"
-                            android:text="増設"/>
-
-                        <ImageView
-                            android:id="@+id/slotExIcon6"
-                            android:layout_width="27dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1dp"
-                            app:srcCompat="@drawable/not_available"/>
-
-                    </LinearLayout>
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/detail6"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="13dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="7"
-                    android:maxHeight="28dp"
-                    android:minHeight="15dp"
-                    android:minWidth="15dp"
-                    android:textSize="12sp"/>
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="fill_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/colorAccent"/>
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:background="@color/colorAccent"
+                app:layout_constraintTop_toBottomOf="@id/layout_ship5"/>
 
-
-            <LinearLayout
+            <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/border_ships">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:id="@+id/layout_seiku"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="2dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    app:layout_constraintHorizontal_chainStyle="spread"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/layout_sakuteki33">
 
                     <TextView
-                        android:id="@+id/textView18"
+                        android:id="@+id/textView20"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="制空値:"
@@ -1465,12 +117,21 @@
                         android:id="@+id/seiku"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:text="New Text"
                         android:textSize="15dp"/>
 
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_touch_start_rate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintLeft_toLeftOf="@id/layout_seiku"
+                    app:layout_constraintTop_toBottomOf="@id/layout_seiku">
+
                     <TextView
-                        android:id="@+id/textView22"
+                        android:id="@+id/textView24"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="触接開始率:"
@@ -1480,74 +141,62 @@
                         android:id="@+id/touchStartRate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:text="New Text"
                         android:textSize="15dp"/>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
+                    android:id="@+id/layout_sakuteki33"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    app:layout_constraintLeft_toRightOf="@id/layout_seiku"
+                    app:layout_constraintRight_toLeftOf="@id/layout_level_sum">
 
                     <TextView
-                        android:id="@+id/textView26"
+                        android:id="@+id/textView28"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="判定式(33) 分岐点"
                         android:textSize="15dp"/>
 
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp">
-
-                        <EditText
-                            android:id="@+id/junction"
-                            android:text="1"
-                            android:textSize="15sp"
-                            android:inputType="numberDecimal"
-                            android:padding="0dp"
-                            android:layout_width="15dp"
-                            android:layout_margin="0dp"
-                            android:layout_height="20dp"
-                            android:theme="@style/EditTextColorControl"/>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:background="@color/colorAccent"
-                            android:layout_height="1dp"/>
-                    </LinearLayout>
+                    <EditText
+                        android:id="@+id/junction"
+                        android:layout_width="15dp"
+                        android:layout_height="20dp"
+                        android:layout_margin="0dp"
+                        android:inputType="numberDecimal"
+                        android:padding="0dp"
+                        android:text="1"
+                        android:textSize="15sp"
+                        android:theme="@style/EditTextColorControl"/>
 
                     <TextView
+                        android:id="@+id/textView29"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=": "
                         android:textSize="15dp"/>
 
-
                     <TextView
                         android:id="@+id/sakuteki33"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:text="New Text"
                         android:textSize="15dp"/>
+
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:orientation="horizontal">
+                    android:id="@+id/layout_level_sum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintLeft_toRightOf="@id/layout_sakuteki33"
+                    app:layout_constraintRight_toRightOf="parent">
 
                     <TextView
-                        android:id="@+id/textView41"
+                        android:id="@+id/textView43"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="レベル合計:"
@@ -1557,12 +206,21 @@
                         android:id="@+id/levelSum"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:text="New Text"
                         android:textSize="15dp"/>
 
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_cond_recovery_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintLeft_toLeftOf="@id/layout_level_sum"
+                    app:layout_constraintTop_toTopOf="@id/layout_touch_start_rate">
+
                     <TextView
-                        android:id="@+id/textView44"
+                        android:id="@+id/textView46"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="疲労回復:"
@@ -1572,13 +230,11 @@
                         android:id="@+id/condRecoveryTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:text="New Text"
                         android:textSize="15dp"/>
+
                 </LinearLayout>
-            </LinearLayout>
-
-        </LinearLayout>
+            </android.support.constraint.ConstraintLayout>
+        </android.support.constraint.ConstraintLayout>
     </ScrollView>
-
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
