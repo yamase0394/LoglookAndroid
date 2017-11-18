@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.view.*
 import android.widget.Button
+import jp.gr.java_conf.snake0394.loglook_android.BuildConfig
 import jp.gr.java_conf.snake0394.loglook_android.OverlayService
 import jp.gr.java_conf.snake0394.loglook_android.R
 import jp.gr.java_conf.snake0394.loglook_android.SlantLauncher
@@ -103,6 +104,12 @@ class ConfigFragment : Fragment() {
         showsWinRankOverlayCheck!!.isChecked = prefs.showsWinRankOverlay
         showsHeavilyDamagedOverlayCheck!!.isChecked = prefs.showsHeavilyDamagedOverlay
         showsHeavilyDamagedWarningWindowCheck!!.isChecked = prefs.showsHeavilyDamagedWarningWindow
+
+        //デバッグ用
+        sendsJsonCheck.isChecked = prefs.sendsJson
+        if(!BuildConfig.DEBUG){
+            sendsJsonCheck.visibility = View.GONE
+        }
 
         //設定を保存するボタン
         val tb = activity.findViewById(R.id.saveBtn) as Button

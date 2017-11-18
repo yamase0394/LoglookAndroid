@@ -104,4 +104,6 @@ class GeneralPrefs(context: Context) : KoreferenceModel(context = context, name 
     var showsHeavilyDamagedOverlay by booleanPreference(true)
 
     var showsHeavilyDamagedWarningWindow by booleanPreference(true)
+
+    var sendsJson by booleanPreference(false)
 }

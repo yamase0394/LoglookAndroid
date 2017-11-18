@@ -53,8 +53,9 @@ import static butterknife.ButterKnife.findById;
 
 public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRecyclerViewAdapter.DeckTabsRecyclerViewHolder> {
 
-    private static final int VIEW_TYPE_NORMAL = 0;
-    private static final int VIEW_TYPE_COMBINED = 1;
+    static final int VIEW_TYPE_NORMAL = 0;
+    static final int VIEW_TYPE_COMBINED = 1;
+    static final int VIEW_TYPE_7_SHIP_FLEET = 2;
 
     private List<Deck> deckList;
     private OnRecyclerViewClickListener listener;
@@ -73,6 +74,8 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
             itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fragment_deck, viewGroup, false);
         } else if (viewType == VIEW_TYPE_COMBINED) {
             itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fragment_deck_combined, viewGroup, false);
+        } else if (viewType == VIEW_TYPE_7_SHIP_FLEET) {
+            itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fragment_deck_7ship_fleet, viewGroup, false);
         } else {
             throw new IllegalArgumentException("invalid view type:" + viewType);
         }
@@ -88,6 +91,8 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
     public int getItemViewType(int position) {
         if (deckList.get(position) == null) {
             return VIEW_TYPE_COMBINED;
+        } else if (position == 2 && deckList.get(position).getShipId().get(6) != -1) {
+            return VIEW_TYPE_7_SHIP_FLEET;
         } else {
             return VIEW_TYPE_NORMAL;
         }
@@ -113,6 +118,8 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
     }
 
     class DeckTabsRecyclerViewHolder extends RecyclerView.ViewHolder {
+        final int maxShipNum;
+
         //通常艦隊
         private TextView[] names;
         private TextView[] conds;
@@ -158,7 +165,11 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
         private DeckTabsRecyclerViewHolder(View rootView, int viewType) {
             super(rootView);
 
-            final int maxShipNum = 6;
+            if (viewType == VIEW_TYPE_7_SHIP_FLEET) {
+                maxShipNum = 7;
+            } else {
+                maxShipNum = 6;
+            }
             final int maxSlotNum = 4;
 
             names = new TextView[maxShipNum];
@@ -216,7 +227,7 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
             levelSum = findById(rootView, R.id.levelSum);
             condRecoveryTime = findById(rootView, R.id.condRecoveryTime);
 
-            if (viewType == VIEW_TYPE_NORMAL) {
+            if (viewType != VIEW_TYPE_COMBINED) {
                 return;
             }
 
@@ -265,22 +276,19 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
             }
         }
 
-        private void bind(Deck nullableDeck, int viewType) {
-            boolean isCombined = false;
-            if (viewType == 1) {
-                isCombined = true;
-            }
+        private void bind(Deck deck, int viewType) {
+            final boolean isCombined = (viewType == VIEW_TYPE_COMBINED);
 
-            final Deck deck;
-            if (nullableDeck == null) {
-                deck = DeckManager.INSTANCE.getDeck(1);
+            final Deck deck1;
+            if (isCombined) {
+                deck1 = DeckManager.INSTANCE.getDeck(1);
             } else {
-                deck = nullableDeck;
+                deck1 = deck;
             }
 
-            List<Integer> shipId = deck.getShipId();
+            List<Integer> shipId = deck1.getShipId();
 
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < maxShipNum; i++) {
                 //空きの場合
                 if (shipId.get(i) == -1) {
                     names[i].setVisibility(View.INVISIBLE);
@@ -315,7 +323,7 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                 names[i].setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        android.support.v4.app.DialogFragment dialogFragment = ShipParamDialogFragment.newInstance(id, deck.getId());
+                        android.support.v4.app.DialogFragment dialogFragment = ShipParamDialogFragment.newInstance(id, deck1.getId());
                         listener.onRecyclerViewClicked(dialogFragment, null);
                     }
                 });
@@ -324,8 +332,8 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                 lvs[i].setText("Lv:" + String.valueOf(myShip.getLv()));
 
                 states[i].setVisibility(View.VISIBLE);
-                if (deck.getMission()
-                        .get(0) == 1 || deck.getMission()
+                if (deck1.getMission()
+                        .get(0) == 1 || deck1.getMission()
                         .get(0) == 3) {
                     states[i].setText("遠征");
                     //インディゴ
@@ -539,7 +547,7 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                     public void onClick(View v) {
                         Intent intent = new Intent(App.getInstance(), ShipDetailActivity.class);
                         intent.putExtra("shipId", id);
-                        intent.putExtra("deckId", deck.getId());
+                        intent.putExtra("deckId", deck1.getId());
 
                         Configuration config = App.getInstance()
                                 .getResources()
@@ -558,9 +566,13 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                 });
             }
 
-            if (viewType == VIEW_TYPE_COMBINED) {
+
+            final Deck deck2;
+            if (viewType != VIEW_TYPE_COMBINED) {
+                deck2 = null;
+            } else {
                 //空きの場合
-                final Deck deck2 = DeckManager.INSTANCE.getDeck(2);
+                deck2 = DeckManager.INSTANCE.getDeck(2);
                 List<Integer> shipId2 = deck2.getShipId();
                 Logger.d("shipIdSize", String.valueOf(shipId2.size()));
 
@@ -842,33 +854,28 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                 }
             }
 
-            Deck deck2 = null;
-            if (isCombined) {
-                deck2 = DeckManager.INSTANCE.getDeck(2);
-            }
-
-            int seikuValue = DeckUtility.INSTANCE.getSeiku(deck);
-            int touchStartRateVal = DeckUtility.INSTANCE.getTouchStartRate(deck);
-            int levelSumVal = deck.getLevelSum();
+            int seikuValue = DeckUtility.INSTANCE.getSeiku(deck1);
+            int touchStartRateVal = DeckUtility.INSTANCE.getTouchStartRate(deck1);
+            int levelSumVal = deck1.getLevelSum();
             if (isCombined) {
                 seiku.setText(seikuValue + "(" + (seikuValue + DeckUtility.INSTANCE.getSeiku(deck2)) + ")");
                 touchStartRate.setText(touchStartRateVal + "(" + (touchStartRateVal + DeckUtility.INSTANCE.getTouchStartRate(deck2)) + ")" + "%");
                 levelSum.setText(String.valueOf(levelSumVal + deck2.getLevelSum()));
                 try {
-                    if (deck.getCondRecoveryTime().isEmpty()) {
+                    if (deck1.getCondRecoveryTime().isEmpty()) {
                         if (deck2.getCondRecoveryTime().isEmpty()) {
                             condRecoveryTime.setText("");
                         } else {
                             condRecoveryTime.setText(deck2.getCondRecoveryTime());
                         }
                     } else if (deck2.getCondRecoveryTime().isEmpty()) {
-                        condRecoveryTime.setText(deck.getCondRecoveryTime());
+                        condRecoveryTime.setText(deck1.getCondRecoveryTime());
                     } else {
                         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                        Date date1 = sdf.parse(deck.getCondRecoveryTime());
+                        Date date1 = sdf.parse(deck1.getCondRecoveryTime());
                         Date date2 = sdf.parse(deck2.getCondRecoveryTime());
                         if (date1.after(date2)) {
-                            condRecoveryTime.setText(deck.getCondRecoveryTime());
+                            condRecoveryTime.setText(deck1.getCondRecoveryTime());
                         } else {
                             condRecoveryTime.setText(deck2.getCondRecoveryTime());
                         }
@@ -880,10 +887,10 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                 seiku.setText(String.valueOf(seikuValue));
                 touchStartRate.setText(touchStartRateVal + "%");
                 levelSum.setText(String.valueOf(levelSumVal));
-                condRecoveryTime.setText(deck.getCondRecoveryTime());
+                condRecoveryTime.setText(deck1.getCondRecoveryTime());
             }
 
-            sakuteki33.setText(String.valueOf(DeckUtility.INSTANCE.getSakuteki33(deck, 1)));
+            sakuteki33.setText(String.valueOf(DeckUtility.INSTANCE.getSakuteki33(deck1, 1)));
             junction.setText("1");
             junction.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
@@ -901,7 +908,7 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                         } catch (NumberFormatException e) {
                             junction.setText("1");
                         }
-                        sakuteki33.setText(String.valueOf(DeckUtility.INSTANCE.getSakuteki33(deck, junctionFloat)));
+                        sakuteki33.setText(String.valueOf(DeckUtility.INSTANCE.getSakuteki33(deck1, junctionFloat)));
                     }
                     return true;
                 }

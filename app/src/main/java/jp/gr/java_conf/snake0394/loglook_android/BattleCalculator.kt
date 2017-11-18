@@ -293,36 +293,28 @@ object BattleCalculator {
         return phase
     }
 
-    @Deprecated("全apiがat_eflagを使うならもう必要ない")
-    private fun applyHougeki(apiHougeki: ApiHougeki, fHp: MutableList<Int>, eHp: MutableList<Int>) {
-        apiHougeki.apiDamage.indices.forEach {
-            val dfIdx = apiHougeki.apiDfList[it][0]
-            val damage = apiHougeki.apiDamage[it].sum()
-            if (dfIdx < 6) {
-                fHp[dfIdx] = Math.max(fHp[dfIdx] - damage, 0)
-            } else {
-                eHp[dfIdx - 6] = Math.max(eHp[dfIdx - 6] - damage, 0)
-            }
-        }
-    }
-
     private fun applyHougeki(apiHougeki: ApiHougeki, phase: PhaseState) {
+        Logger.d("apiHougeki", apiHougeki.toString())
         apiHougeki.apiAtEflag!!.indices.forEach {
             val dfIdx = apiHougeki.apiDfList[it][0]
             val damage = apiHougeki.apiDamage[it].sum()
             when (apiHougeki.apiAtEflag[it]) {
                 0 -> {
-                    if (dfIdx < 6) {
+                    if (dfIdx < phase.eHp.size) {
                         phase.eHp[dfIdx] = Math.max(phase.eHp[dfIdx] - damage, 0)
-                    } else {
+                    } else if(phase.eHpCombined != null && dfIdx - 6 < phase.eHpCombined.size){
                         phase.eHpCombined!![dfIdx - 6] = Math.max(phase.eHpCombined[dfIdx - 6] - damage, 0)
+                    } else {
+                        Logger.d("applyHougeki", "index=$it enemy dfIdx=$dfIdx")
                     }
                 }
                 1 -> {
-                    if (dfIdx < 6) {
+                    if (dfIdx < phase.fHp.size) {
                         phase.fHp[dfIdx] = Math.max(phase.fHp[dfIdx] - damage, 0)
-                    } else {
+                    } else if(phase.fHpCombined != null && dfIdx -6 < phase.fHpCombined.size){
                         phase.fHpCombined!![dfIdx - 6] = Math.max(phase.fHpCombined[dfIdx - 6] - damage, 0)
+                    } else {
+                        Logger.d("applyHougeki", "index=$it friend dfIdx=$dfIdx")
                     }
                 }
                 else -> throw IllegalArgumentException("illegal value : apiAtEflag[${it}]=${apiHougeki.apiAtEflag[it]}")
@@ -336,14 +328,14 @@ object BattleCalculator {
             val damage = apiHougeki.apiDamage[it].map { Math.max(it, 0) }.sum()
             when (apiHougeki.apiAtEflag[it]) {
                 0 -> {
-                    if (dfIdx < 6) {
+                    if (dfIdx < eHp.size) {
                         eHp[dfIdx] = Math.max(eHp[dfIdx] - damage, 0)
                     } else {
                         throw IndexOutOfBoundsException("dfIdx=$dfIdx")
                     }
                 }
                 1 -> {
-                    if (dfIdx < 6) {
+                    if (dfIdx < fHp.size) {
                         fHp[dfIdx] = Math.max(fHp[dfIdx] - damage, 0)
                     } else {
                         throw IndexOutOfBoundsException("dfIdx=$dfIdx")
@@ -386,18 +378,19 @@ object BattleCalculator {
     }
 
     private fun applyRaigeki(apiRaigeki: ApiRaigeki, phase: PhaseState) {
+        Logger.d("apiRaigeki", apiRaigeki.toString())
+        Logger.d("phaseState", phase.toString())
         apiRaigeki.apiFdam.withIndex().forEach {
             if (it.index < phase.fHp.size) {
                 phase.fHp[it.index] -= it.value
                 if (phase.fHp[it.index] < 0) {
                     phase.fHp[it.index] = 0
                 }
-            } else if (phase.fHpCombined != null && 6 <= it.index && it.index < 6 + phase.fHpCombined.size) {
-                phase.fHpCombined[it.index - 6] -= it.value
-                if (phase.fHpCombined[it.index - 6] < 0) {
+            } else if (phase.fHpCombined != null && it.index - 6 < phase.fHpCombined.size) {
+                phase.fHpCombined!![it.index - 6] -= it.value
+                if (phase.fHpCombined!![it.index - 6] < 0) {
                     phase.fHpCombined[it.index - 6] = 0
                 }
-
             }
         }
 
@@ -407,9 +400,9 @@ object BattleCalculator {
                 if (phase.eHp[it.index] < 0) {
                     phase.eHp[it.index] = 0
                 }
-            } else if (phase.eHpCombined != null && 6 <= it.index && it.index < 6 + phase.eHpCombined.size) {
-                phase.eHpCombined[it.index - 6] -= it.value
-                if (phase.eHpCombined[it.index - 6] < 0) {
+            } else if (phase.eHpCombined != null && it.index - 6 < phase.eHpCombined.size) {
+                phase.eHpCombined!![it.index - 6] -= it.value
+                if (phase.eHpCombined!![it.index - 6] < 0) {
                     phase.eHpCombined[it.index - 6] = 0
                 }
             }

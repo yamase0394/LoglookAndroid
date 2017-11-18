@@ -227,6 +227,14 @@ class BattleLogger : APIListenerSpi {
                 }
             }
 
+            if (shipId.size == 7 && shipId[6] != -1) {
+                val myShip = realm.where(MyShip::class.java).equalTo("id", shipId[6]).findFirst()
+                val mstShip = realm.where(MstShip::class.java).equalTo("id", myShip.shipId).findFirst()
+                sb.append(",${mstShip.name}(Lv${myShip.lv}),${fNowhps[6]}/${fMaxhps[6]}")
+            } else {
+                sb.append(",,")
+            }
+
             Log.d("battlelog", sb.toString())
             sb.append("\r\n")
             pw.write(sb.toString())

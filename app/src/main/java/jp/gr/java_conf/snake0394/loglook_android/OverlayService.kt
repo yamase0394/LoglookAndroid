@@ -10,6 +10,7 @@ import android.view.WindowManager
 import jp.gr.java_conf.snake0394.loglook_android.logger.Logger
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.runBlocking
 
 class OverlayService : Service() {
 
@@ -78,13 +79,13 @@ class OverlayService : Service() {
             wm!!.updateViewLayout(view, params)
         }
 
-        private fun waitWindowManagerInit() {
+        private fun waitWindowManagerInit() = runBlocking {
             launch {
                 while (wm == null) {
                     Logger.d(TAG, "waiting for initializing completion")
                     delay(300)
                 }
-            }
+            }.join()
         }
     }
 }

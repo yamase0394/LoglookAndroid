@@ -18,28 +18,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:background="#e4e4e4"
-                app:layout_constraintBottom_toBottomOf="@id/layout_ship6"
-                app:layout_constraintTop_toTopOf="parent"></View>
+                app:layout_constraintBottom_toBottomOf="@id/layout_ship7"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <include
                 android:id="@+id/layout_ship1"
                 layout="@layout/view_ship_info"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
                 android:layout_marginRight="1dp"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@id/layout_ship21"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintRight_toLeftOf="@id/layout_ship2" />
 
             <include
                 android:id="@+id/layout_ship2"
                 layout="@layout/view_ship_info"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginRight="1dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@id/layout_ship22"
-                app:layout_constraintTop_toBottomOf="@id/layout_ship1" />
+                app:layout_constraintLeft_toRightOf="@id/layout_ship1"
+                app:layout_constraintRight_toRightOf="parent" />
 
             <include
                 android:id="@+id/layout_ship3"
@@ -47,19 +45,20 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="1dp"
+                android:layout_marginTop="1dp"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@id/layout_ship23"
-                app:layout_constraintTop_toBottomOf="@id/layout_ship2" />
+                app:layout_constraintRight_toLeftOf="@id/layout_ship4"
+                app:layout_constraintTop_toBottomOf="@id/layout_ship1" />
 
             <include
                 android:id="@+id/layout_ship4"
                 layout="@layout/view_ship_info"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="1dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@id/layout_ship24"
-                app:layout_constraintTop_toBottomOf="@id/layout_ship3" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="1dp"
+                app:layout_constraintLeft_toRightOf="@id/layout_ship3"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_ship2" />
 
             <include
                 android:id="@+id/layout_ship5"
@@ -67,73 +66,41 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="1dp"
+                android:layout_marginTop="1dp"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@id/layout_ship25"
-                app:layout_constraintTop_toBottomOf="@id/layout_ship4" />
+                app:layout_constraintRight_toLeftOf="@id/layout_ship6"
+                app:layout_constraintTop_toBottomOf="@id/layout_ship3" />
 
             <include
                 android:id="@+id/layout_ship6"
                 layout="@layout/view_ship_info"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="1dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@id/layout_ship26"
-                app:layout_constraintTop_toBottomOf="@id/layout_ship5" />
-
-            <include
-                android:id="@+id/layout_ship21"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintLeft_toRightOf="@id/layout_ship1"
-                layout="@layout/view_ship_info"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-            <include
-                android:id="@+id/layout_ship22"
-                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                app:layout_constraintLeft_toRightOf="@id/layout_ship2"
-                layout="@layout/view_ship_info"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_ship21"/>
-
-            <include
-                layout="@layout/view_ship_info"
-                android:id="@+id/layout_ship23"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintLeft_toRightOf="@id/layout_ship3"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_ship22"/>
-
-            <include
-                layout="@layout/view_ship_info"
-                android:id="@+id/layout_ship24"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintLeft_toRightOf="@id/layout_ship4"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_ship23"/>
-
-            <include
-                layout="@layout/view_ship_info"
-                android:id="@+id/layout_ship25"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
                 app:layout_constraintLeft_toRightOf="@id/layout_ship5"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_ship24"/>
+                app:layout_constraintTop_toBottomOf="@id/layout_ship4" />
 
             <include
+                android:id="@+id/layout_ship7"
                 layout="@layout/view_ship_info"
-                android:id="@+id/layout_ship26"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                app:layout_constraintLeft_toRightOf="@id/layout_ship6"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="1dp"
+                android:layout_marginTop="1dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/layout_ship_dummy"
+                app:layout_constraintTop_toBottomOf="@id/layout_ship5" />
+
+            <View
+                android:id="@+id/layout_ship_dummy"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="1dp"
+                app:layout_constraintBottom_toBottomOf="@id/layout_ship7"
+                app:layout_constraintLeft_toRightOf="@id/layout_ship7"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_ship25"/>
+                app:layout_constraintTop_toBottomOf="@id/layout_ship6" />
 
             <View
                 android:id="@+id/border_ships"
@@ -141,7 +108,7 @@
                 android:layout_height="1dp"
                 android:layout_marginBottom="2dp"
                 android:background="@color/colorAccent"
-                app:layout_constraintTop_toBottomOf="@id/layout_ship6" />
+                app:layout_constraintTop_toBottomOf="@id/layout_ship7" />
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"

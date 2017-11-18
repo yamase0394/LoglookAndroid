@@ -314,6 +314,13 @@
                 android:text="大破警告画面を表示する"
                 android:textSize="15dp" />
 
+            <CheckBox
+                android:id="@+id/sendsJsonCheck"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Jsonを送信(デバッグ用)"
+                android:textSize="15dp" />
 
             <Button
                 android:id="@+id/saveBtn"

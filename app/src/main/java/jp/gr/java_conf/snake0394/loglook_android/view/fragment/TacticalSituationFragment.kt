@@ -75,7 +75,7 @@ class TacticalSituationFragment : Fragment() {
             }
 
             val phaseList = TacticalSituation.phaseList
-            for (i in 1..6) {
+            for (i in 1..7) {
                 //本隊
                 if (i > phaseList[0].fHp.size) {
                     var name = "name" + i
@@ -151,6 +151,10 @@ class TacticalSituationFragment : Fragment() {
                             setTextColor(ContextCompat.getColor(context, R.color.sank))
                         }
                     }
+                }
+
+                if (i == 7) {
+                    break
                 }
 
                 //敵艦隊

@@ -65,6 +65,7 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.19.3'
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.19.3"
+    compile "com.squareup.okhttp3:okhttp:3.7.0"
 }
 
 // Package the preprocessed Annotations (ClassIndex) into the APK

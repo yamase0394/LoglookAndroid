@@ -22,6 +22,7 @@ import butterknife.Unbinder;
 import jp.gr.java_conf.snake0394.loglook_android.R;
 import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager;
+import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 
 import static butterknife.ButterKnife.findById;
 
@@ -56,8 +57,6 @@ public class DeckFragment extends Fragment implements DeckTabsRecyclerViewAdapte
 
         LinearLayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         viewPager.setLayoutManager(layout);
-        viewPager.getRecycledViewPool().setMaxRecycledViews(0, 1);
-        viewPager.getRecycledViewPool().setMaxRecycledViews(1, 1);
 
         DeckTabsRecyclerViewAdapter recyclerAdapter = new DeckTabsRecyclerViewAdapter(this);
         deckList = DeckManager.INSTANCE.getDeckList();
@@ -67,6 +66,10 @@ public class DeckFragment extends Fragment implements DeckTabsRecyclerViewAdapte
         }
         recyclerAdapter.setItems(deckList);
         viewPager.setAdapter(recyclerAdapter);
+
+        viewPager.getRecycledViewPool().setMaxRecycledViews(DeckTabsRecyclerViewAdapter.VIEW_TYPE_NORMAL, 3);
+        viewPager.getRecycledViewPool().setMaxRecycledViews(DeckTabsRecyclerViewAdapter.VIEW_TYPE_COMBINED, 1);
+        viewPager.getRecycledViewPool().setMaxRecycledViews(DeckTabsRecyclerViewAdapter.VIEW_TYPE_7_SHIP_FLEET, 1);
 
         TabLayout tabLayout = findById(view, R.id.tabs);
         TabLayoutSupport.setupWithViewPager(tabLayout, viewPager, new TabLayoutAdapter());
@@ -105,6 +108,9 @@ public class DeckFragment extends Fragment implements DeckTabsRecyclerViewAdapte
         public String getPageTitle(int i) {
             if (deckList.get(i) == null) {
                 return "連合";
+            } else if (i == 2 && deckList.get(i).getShipId().get(6) != -1) {
+                //第三艦隊かつ7隻編成の場合は遊撃部隊として扱う
+                return "遊撃部隊";
             }
             return String.valueOf(i + 1);
         }

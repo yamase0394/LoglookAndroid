@@ -5,12 +5,12 @@ package jp.gr.java_conf.snake0394.loglook_android.bean.battle
  */
 data class ApiRaigeki(
         /**
-         * 味方被ダメージ -1から
+         * 味方被ダメージ
          */
         val apiFdam: List<Int>,
 
         /**
-         * 敵被ダメージ -1から
+         * 敵被ダメージ
          */
         val apiEdam: List<Int>
 )
