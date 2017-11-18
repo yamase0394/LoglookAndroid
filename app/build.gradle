@@ -13,8 +13,8 @@ android {
         applicationId "jp.gr.java_conf.snake0394.loglook_android"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 35
-        versionName "1.3.6"
+        versionCode 36
+        versionName "1.3.7"
         multiDexEnabled = true
     }
     buildTypes {
