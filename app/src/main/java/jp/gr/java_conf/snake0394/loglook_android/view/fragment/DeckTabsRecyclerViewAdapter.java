@@ -71,7 +71,7 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
         View itemView;
         if (viewType == VIEW_TYPE_NORMAL) {
             itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fragment_deck, viewGroup, false);
-        } else if (viewType == VIEW_TYPE_COMBINED){
+        } else if (viewType == VIEW_TYPE_COMBINED) {
             itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fragment_deck_combined, viewGroup, false);
         } else {
             throw new IllegalArgumentException("invalid view type:" + viewType);
@@ -850,26 +850,27 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
             int seikuValue = DeckUtility.INSTANCE.getSeiku(deck);
             int touchStartRateVal = DeckUtility.INSTANCE.getTouchStartRate(deck);
             int levelSumVal = deck.getLevelSum();
-            String condRecoveryTimeVal = deck.getCondRecoveryTime();
             if (isCombined) {
                 seiku.setText(seikuValue + "(" + (seikuValue + DeckUtility.INSTANCE.getSeiku(deck2)) + ")");
                 touchStartRate.setText(touchStartRateVal + "(" + (touchStartRateVal + DeckUtility.INSTANCE.getTouchStartRate(deck2)) + ")" + "%");
                 levelSum.setText(String.valueOf(levelSumVal + deck2.getLevelSum()));
                 try {
-                    if(condRecoveryTimeVal.isEmpty()){
-                        if(deck2.getCondRecoveryTime().isEmpty()){
+                    if (deck.getCondRecoveryTime().isEmpty()) {
+                        if (deck2.getCondRecoveryTime().isEmpty()) {
                             condRecoveryTime.setText("");
-                        }else{
+                        } else {
                             condRecoveryTime.setText(deck2.getCondRecoveryTime());
                         }
-                    }else {
+                    } else if (deck2.getCondRecoveryTime().isEmpty()) {
+                        condRecoveryTime.setText(deck.getCondRecoveryTime());
+                    } else {
                         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                        Date date1 = sdf.parse(condRecoveryTimeVal);
+                        Date date1 = sdf.parse(deck.getCondRecoveryTime());
                         Date date2 = sdf.parse(deck2.getCondRecoveryTime());
-                        if (date1.before(date2)) {
-                            condRecoveryTime.setText(deck2.getCondRecoveryTime());
+                        if (date1.after(date2)) {
+                            condRecoveryTime.setText(deck.getCondRecoveryTime());
                         } else {
-                            condRecoveryTime.setText(condRecoveryTimeVal);
+                            condRecoveryTime.setText(deck2.getCondRecoveryTime());
                         }
                     }
                 } catch (ParseException e) {
@@ -879,7 +880,7 @@ public class DeckTabsRecyclerViewAdapter extends RecyclerView.Adapter<DeckTabsRe
                 seiku.setText(String.valueOf(seikuValue));
                 touchStartRate.setText(touchStartRateVal + "%");
                 levelSum.setText(String.valueOf(levelSumVal));
-                condRecoveryTime.setText(condRecoveryTimeVal);
+                condRecoveryTime.setText(deck.getCondRecoveryTime());
             }
 
             sakuteki33.setText(String.valueOf(DeckUtility.INSTANCE.getSakuteki33(deck, 1)));
