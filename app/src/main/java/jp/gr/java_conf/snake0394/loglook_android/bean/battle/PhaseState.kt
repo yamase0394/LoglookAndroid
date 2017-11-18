@@ -21,6 +21,7 @@ data class PhaseState(
         OPENING_ANTI_SUBMARINE("開幕対潜"),
         OPENING_TORPEDO("開幕雷撃"),
         SUPPORT("支援攻撃"),
+        N_SUPPORT("夜戦支援"),
         SHELLING("砲雷撃戦"),
         KOUKU2("航空戦2"),
         MIDNIGHT("夜戦")

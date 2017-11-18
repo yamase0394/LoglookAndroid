@@ -13,5 +13,7 @@ data class CombinedBattleSpMidnight(
         override val apiFormation: List<Int>,
         override val apiTouchPlane: List<Int>,
         override val apiFlarePos: List<Int>,
+        override val apiNSupportFlag: Int,
+        override val apiNSupportInfo: ApiSupportInfo,
         override val apiHougeki: ApiHougeki
-) : IMidnightBattle, ICombinedBattle, IFormation
+) : IMidnightBattle, ICombinedBattle, IFormation, INSupport

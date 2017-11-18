@@ -38,6 +38,13 @@ object TacticalSituation {
         var phase = PhaseState(PhaseState.Type.BEFORE, fHp, fHpCombined, eHp, eHpCombined)
         phaseList.add(phase)
 
+        if (battle is INSupport) {
+            BattleCalculator.applyNSupport(battle, phase.deepCopy(PhaseState.Type.SUPPORT))?.let {
+                phase = it
+                phaseList.add(phase)
+            }
+        }
+
         if (battle is IMidnightBattle) {
             BattleCalculator.applyHougekiMidnight(battle, phase.deepCopy(PhaseState.Type.MIDNIGHT)).let {
                 phase = it
