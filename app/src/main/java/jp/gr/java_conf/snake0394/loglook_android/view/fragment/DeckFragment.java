@@ -107,7 +107,7 @@ public class DeckFragment extends Fragment implements DeckTabsRecyclerViewAdapte
         @Override
         public String getPageTitle(int i) {
             if (deckList.get(i) == null) {
-                return "連合";
+                return "連合艦隊";
             } else if (i == 2 && deckList.get(i).getShipId().get(6) != -1) {
                 //第三艦隊かつ7隻編成の場合は遊撃部隊として扱う
                 return "遊撃部隊";

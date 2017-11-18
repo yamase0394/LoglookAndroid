@@ -82,6 +82,7 @@ class OverlayService : Service() {
         private fun waitWindowManagerInit() = runBlocking {
             launch {
                 while (wm == null) {
+                    App.getInstance().startService(Intent(App.getInstance().applicationContext, OverlayService::class.java))
                     Logger.d(TAG, "waiting for initializing completion")
                     delay(300)
                 }

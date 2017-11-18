@@ -27,6 +27,7 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.Deck;
 import jp.gr.java_conf.snake0394.loglook_android.bean.DeckManager;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
+import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 
 /**
  * Created by snake0394 on 2016/12/07.
@@ -173,8 +174,13 @@ public class DeckMenuDialogFragment extends android.support.v4.app.DialogFragmen
         }
 
         TextView text;
-        for (int i = 1; i <= deck.getShipId().size(); i++) {
-            int shipId = deck.getShipId().get(i - 1);
+        for (int i = 1; i <= 7; i++) {
+            int shipId;
+            if(i > deck.getShipId().size()) {
+                shipId = -1;
+            } else {
+                shipId = deck.getShipId().get(i - 1 + 100);
+            }
 
             MyShip myShip = realm.where(MyShip.class).equalTo("id", shipId).findFirst();
             if (myShip == null || shipId == -1) {

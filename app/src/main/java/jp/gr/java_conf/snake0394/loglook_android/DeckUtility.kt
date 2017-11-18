@@ -3,6 +3,7 @@ package jp.gr.java_conf.snake0394.loglook_android
 import io.realm.Realm
 import jp.gr.java_conf.snake0394.loglook_android.SlotItemUtility.getImprovementLOS
 import jp.gr.java_conf.snake0394.loglook_android.bean.*
+import jp.gr.java_conf.snake0394.loglook_android.logger.Logger
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.*
@@ -249,28 +250,25 @@ object DeckUtility {
         }
 
         //艦隊防空値
-        var fleetAA = 0
-
+        var fleetAA = 0.0
         Realm.getDefaultInstance().use { realm ->
             deck.shipId
                     .filter { it != -1 }
                     .map { realm.where(MyShip::class.java).equalTo("id", it).findFirst() }
-                    .forEach { fleetAA += ShipUtility.getAdjustedFleetAA(it).toInt() }
+                    .forEach { fleetAA += ShipUtility.getAdjustedFleetAA(it) }
         }
 
         //陣形補正
-        var formationModifier = 1f
-        try {
-            when (formation) {
-                "単縦陣/梯形陣/単横陣", "単縦陣", "梯形陣", "単横陣" -> formationModifier = 1f
-                "複縦陣" -> formationModifier = 1.2f
-                "輪形陣" -> formationModifier = 1.6f
+        val formationModifier = when (formation) {
+            "単縦陣/梯形陣/単横陣", "単縦陣", "梯形陣", "単横陣" -> 1f
+            "複縦陣" -> 1.2f
+            "輪形陣" -> 1.6f
+            else -> {
+                Logger.d("getAdjustedAA", "unknown formation=$formation")
+                return 1f
             }
-        } catch (e: NullPointerException) {
-            //何もしない
-            e.printStackTrace()
         }
 
-        return (Math.floor((formationModifier * fleetAA).toDouble()) * 2 / 1.3).toFloat()
+        return (Math.floor(formationModifier * fleetAA) * 2 / 1.3).toFloat()
     }
 }

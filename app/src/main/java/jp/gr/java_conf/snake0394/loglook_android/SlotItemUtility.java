@@ -306,8 +306,7 @@ public class SlotItemUtility {
         int slotitemBasicAA = mstSlotitem.getTyku();
 
         //装備倍率
-        switch (EquipType3.toEquipType3(mstSlotitem.getType()
-                .get(3).getValue())) {
+        switch (EquipType3.toEquipType3(mstSlotitem.getType().get(3).getValue())) {
             case 小口径主砲:
             case 中口径主砲:
             case 大口径主砲:

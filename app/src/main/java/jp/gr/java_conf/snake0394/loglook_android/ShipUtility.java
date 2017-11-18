@@ -9,6 +9,7 @@ import jp.gr.java_conf.snake0394.loglook_android.bean.MstShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MstSlotitem;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MyShip;
 import jp.gr.java_conf.snake0394.loglook_android.bean.MySlotItem;
+import jp.gr.java_conf.snake0394.loglook_android.logger.Logger;
 import jp.gr.java_conf.snake0394.loglook_android.storage.RealmInt;
 
 /**
@@ -77,7 +78,7 @@ public class ShipUtility {
         }
         slotItemIdList.add(myShip.getSlotEx());
 
-        try(Realm realm = Realm.getDefaultInstance()) {
+        try (Realm realm = Realm.getDefaultInstance()) {
             for (int id : slotItemIdList) {
                 MySlotItem mySlotItem = realm.where(MySlotItem.class).equalTo("id", id).findFirst();
                 if (mySlotItem == null) {
@@ -114,7 +115,7 @@ public class ShipUtility {
             slotItemIdList.add(realmInt.getValue());
         }
         slotItemIdList.add(myShip.getSlotEx());
-        try(Realm realm = Realm.getDefaultInstance()) {
+        try (Realm realm = Realm.getDefaultInstance()) {
             for (int id : slotItemIdList) {
                 MySlotItem mySlotItem = realm.where(MySlotItem.class).equalTo("id", id).findFirst();
                 if (mySlotItem == null) {
@@ -207,7 +208,7 @@ public class ShipUtility {
 
     /**
      * @param myShip
-     * @return 艦隊対空ボーナス値
+     * @return 艦隊対空ボーナス値(小数点以下切り捨て)
      */
     public static double getAdjustedFleetAA(MyShip myShip) {
         float modifiedEquipmentAA = 0;
@@ -216,12 +217,13 @@ public class ShipUtility {
             slotItemIdList.add(realmInt.getValue());
         }
         slotItemIdList.add(myShip.getSlotEx());
+
         try (Realm realm = Realm.getDefaultInstance()) {
             for (int slotitemId : slotItemIdList) {
                 MySlotItem mySlotItem = realm.where(MySlotItem.class)
                         .equalTo("id", slotitemId)
                         .findFirst();
-                if (mySlotItem != null || slotitemId == -1 || slotitemId == 0) {
+                if (mySlotItem == null || slotitemId == -1 || slotitemId == 0) {
                     continue;
                 }
                 MstSlotitem mstSlotitem = realm.where(MstSlotitem.class).equalTo("id", mySlotItem.getMstId()).findFirst();
@@ -230,6 +232,7 @@ public class ShipUtility {
                 modifiedEquipmentAA += SlotItemUtility.getImprovementAdjustedFleetAA(mstSlotitem, mySlotItem.getLevel());
             }
         }
+
         return Math.floor(modifiedEquipmentAA);
     }
 

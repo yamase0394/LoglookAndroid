@@ -76,15 +76,19 @@ class BattleStatisticsFragment : Fragment(),
                 val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
                 var tempAllLogList = arrayListOf<BattleLog>()
-                ReversedLinesFileReader(File(filePath), 8096*2, "SJIS").use {
+                ReversedLinesFileReader(File(filePath), 8096 * 2, "SJIS").use {
                     var line = it.readLine()
                     var invalidCount = 0
                     loop@ while (line != null) {
                         val split = line.split(",")
                         try {
                             val battleLog = when (split.size) {
-                                38, 62 -> BattleLog(sdf.parse(split[0]), split[1], split[2].toInt(), split[3], split[4], split[5], split[6], split[7], split[8], split[9], split[10], split[11], split[12], split[13], null, arrayListOf(split[26], split[28], split[30], split[32], split[34], split[36]).filter { it.isNotEmpty() }.toMutableList(), null, null)
+                            //38 連合なし
+                            //62 連合あり
+                            //64 七隻編成
+                                38, 62, 64 -> BattleLog(sdf.parse(split[0]), split[1], split[2].toInt(), split[3], split[4], split[5], split[6], split[7], split[8], split[9], split[10], split[11], split[12], split[13], null, arrayListOf(split[26], split[28], split[30], split[32], split[34], split[36]).filter { it.isNotEmpty() }.toMutableList(), null, null)
                             //35は出撃がないのがまじってる
+                            //ボス到達しかわからない
                             //35 -> BattleLog(sdf.parse(split[0]), split[1], split[2].toInt(), split[3], split[4], split[5], split[6], split[7], null, null, null, split[8], split[9], split[10], null, arrayListOf(split[23], split[24], split[25], split[26], split[27], split[28]).filter { it.isNotEmpty() }.toMutableList(), null, null)
                             //一番うしろにカンマがついててsplit.size=36のもある
                                 else -> {

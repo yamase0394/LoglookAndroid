@@ -260,5 +260,36 @@
 
         </TableRow>
 
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:text="TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/name7"
+                android:textSize="19sp"
+                />
+
+            <TextView
+                android:text="TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/proportional7"
+                android:textSize="19sp"
+                android:gravity="center_horizontal"/>
+
+            <TextView
+                android:text="TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/fixed7"
+                android:textSize="19sp"
+                android:gravity="center_horizontal"/>
+
+        </TableRow>
+
     </TableLayout>
 </LinearLayout>
