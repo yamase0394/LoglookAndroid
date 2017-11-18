@@ -201,6 +201,9 @@ class ConfigFragment : Fragment() {
             prefs.showsHeavilyDamagedOverlay = showsHeavilyDamagedOverlayCheck!!.isChecked
             prefs.showsHeavilyDamagedWarningWindow = showsHeavilyDamagedWarningWindowCheck!!.isChecked
 
+            //デバッグ用
+            prefs.sendsJson = sendsJsonCheck.isChecked
+
             //稼働中のサービスを一度停止させてから再び起動させる
             activity.stopService(Intent(activity.applicationContext, LittleProxyServerService::class.java))
             activity.stopService(Intent(activity, SlantLauncher::class.java))
