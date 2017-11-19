@@ -41,11 +41,9 @@ public class ApiReqHenseiChange implements APIListenerSpi {
 
         } else if (deployedShipId == -2) {
             //旗艦以外全解除
-            shipIdList.set(1, -1);
-            shipIdList.set(2, -1);
-            shipIdList.set(3, -1);
-            shipIdList.set(4, -1);
-            shipIdList.set(5, -1);
+            for (int i = 1; i < shipIdList.size(); i++) {
+                shipIdList.set(i, -1);
+            }
 
         } else if (shipIdList.contains(deployedShipId)) {
             //配備艦娘が対象艦隊に所属している
