@@ -43,6 +43,7 @@ import static jp.gr.java_conf.snake0394.loglook_android.view.EquipType3.艦上�
 import static jp.gr.java_conf.snake0394.loglook_android.view.EquipType3.艦上戦闘機;
 import static jp.gr.java_conf.snake0394.loglook_android.view.EquipType3.艦上攻撃機;
 import static jp.gr.java_conf.snake0394.loglook_android.view.EquipType3.艦上爆撃機;
+import static jp.gr.java_conf.snake0394.loglook_android.view.EquipType3.陸上対潜哨戒機;
 import static jp.gr.java_conf.snake0394.loglook_android.view.EquipType3.陸上攻撃機;
 import static jp.gr.java_conf.snake0394.loglook_android.view.EquipType3.電探;
 import static jp.gr.java_conf.snake0394.loglook_android.view.EquipType3.高射装置;
@@ -239,6 +240,8 @@ public class EquipmentDrawerRecyclerAdapter extends RecyclerView.Adapter<Equipme
                     iconLayout.addView(icon);
                     icon = new ImageView(iconLayout.getContext());
                     icon.setImageResource(陸上攻撃機.getImageId());
+                    icon = new ImageView(iconLayout.getContext());
+                    icon.setImageResource(陸上対潜哨戒機.getImageId());
                     iconLayout.addView(icon);
                     break;
             }

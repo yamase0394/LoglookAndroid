@@ -145,7 +145,7 @@ class EquipmentFragment : Fragment(), EquipmentDrawerRecyclerAdapter.OnItemClick
                 "艦戦/夜戦" ->
                     when (type3) {
                         EquipType3.艦上戦闘機,
-                        EquipType3.夜間戦闘機-> newDataList.add(mySlotItem)
+                        EquipType3.夜間戦闘機 -> newDataList.add(mySlotItem)
                     }
                 "艦爆/艦攻/噴式/夜攻" ->
                     when (type3) {
@@ -153,7 +153,7 @@ class EquipmentFragment : Fragment(), EquipmentDrawerRecyclerAdapter.OnItemClick
                         EquipType3.艦上攻撃機,
                         EquipType3.噴式戦闘爆撃機_噴式景雲改,
                         EquipType3.噴式戦闘爆撃機_橘花改,
-                        EquipType3.夜間攻撃機-> newDataList.add(mySlotItem)
+                        EquipType3.夜間攻撃機 -> newDataList.add(mySlotItem)
                     }
                 "艦偵" ->
                     when (type3) {
@@ -173,7 +173,10 @@ class EquipmentFragment : Fragment(), EquipmentDrawerRecyclerAdapter.OnItemClick
                     }
                 "陸上機" ->
                     when (type3) {
-                        EquipType3.局地戦闘機, EquipType3.陸上攻撃機, EquipType3.陸軍戦闘機 -> newDataList.add(mySlotItem)
+                        EquipType3.局地戦闘機,
+                        EquipType3.陸上攻撃機,
+                        EquipType3.陸軍戦闘機,
+                        EquipType3.陸上対潜哨戒機 -> newDataList.add(mySlotItem)
                     }
                 "その他" ->
                     when (type3) {

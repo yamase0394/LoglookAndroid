@@ -55,6 +55,7 @@ public enum EquipType3 {
     陸軍戦闘機(44, R.drawable.interceptor_fighter2),
     夜間戦闘機(45, R.drawable.icon_night_fighter_aircraft),
     夜間攻撃機(46, R.drawable.icon_night_torpedo_bomber),
+    陸上対潜哨戒機(47, R.drawable.icon_land_based_patrol_aircraft),
     UNKNOWN(300, R.drawable.unknown),
     EMPTY(301, R.drawable.empty),
     NOT_AVAILABLE(302, R.drawable.not_available);
