@@ -200,10 +200,10 @@ class TacticalSituationFragment : Fragment() {
                     name = "eLv" + i
                     strId = resources.getIdentifier(name, "id", activity.packageName)
                     (activity.findViewById(strId) as TextView).apply {
-                        if (battle is PracticeBattle) {
-                            text = "(Lv${battle.apiShipLv[i - 1]})"
+                        text = if (battle is PracticeBattle) {
+                            "(Lv${battle.apiShipLv[i - 1]})"
                         } else {
-                            text = "${eShip.yomi}(Lv${TacticalSituation.battle.apiShipLv[i - 1]})"
+                            "${eShip.yomi}(Lv${TacticalSituation.battle.apiShipLv[i - 1]})"
                         }
                     }
 
@@ -359,8 +359,8 @@ class TacticalSituationFragment : Fragment() {
                 } else {
 
                     val id = when (battle) {
-                        is IEnemyCombinedBattle -> battle.apiShipKeCombined[i]
-                        is IEachCombinedBattle -> battle.apiShipKeCombined[i]
+                        is IEnemyCombinedBattle -> battle.apiShipKeCombined[i - 1]
+                        is IEachCombinedBattle -> battle.apiShipKeCombined[i - 1]
                         else -> throw IllegalArgumentException("${battle.javaClass.name}")
                     }
                     val eShip = realm.where(MstShip::class.java).equalTo("id", id).findFirst()
@@ -376,8 +376,8 @@ class TacticalSituationFragment : Fragment() {
                     strId = resources.getIdentifier(name, "id", activity.packageName)
                     (activity.findViewById(strId) as TextView).apply {
                         val lv = when (battle) {
-                            is IEnemyCombinedBattle -> battle.apiShipLvCombined[i]
-                            is IEachCombinedBattle -> battle.apiShipLvCombined[i]
+                            is IEnemyCombinedBattle -> battle.apiShipLvCombined[i - 1]
+                            is IEachCombinedBattle -> battle.apiShipLvCombined[i - 1]
                             else -> throw IllegalArgumentException("${battle.javaClass.name}")
                         }
                         visibility = View.VISIBLE
@@ -386,8 +386,8 @@ class TacticalSituationFragment : Fragment() {
 
                     val lastHp = phaseList.last().eHpCombined!![i - 1]
                     val maxHp = when (battle) {
-                        is IEnemyCombinedBattle -> battle.apiMaxhpsCombined[i + 6]
-                        is IEachCombinedBattle -> battle.apiMaxhpsCombined[i + 6]
+                        is IEnemyCombinedBattle -> battle.apiEMaxhpsCombined[i - 1]
+                        is IEachCombinedBattle -> battle.apiEMaxhpsCombined[i - 1]
                         else -> throw IllegalArgumentException("${battle.javaClass.name}")
                     }
                     name = "ecState" + i

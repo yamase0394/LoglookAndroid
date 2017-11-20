@@ -12,12 +12,9 @@ interface IEachCombinedBattle : IBattle {
      * 敵随伴艦隊Lv [7] -1から
      */
     val apiShipLvCombined: List<Int>
-    /**
-     * 味方/敵随伴艦隊現在HP [13] (-1から始まる)
-     */
-    val apiNowhpsCombined: List<Int>
-    /**
-     * 味方/敵随伴艦隊最大HP [13] (-1から始まる)
-     */
-    val apiMaxhpsCombined: List<Int>
+
+    val apiFNowhpsCombined: List<Int>
+    val apiFMaxhpsCombined: List<Int>
+    val apiENowhpsCombined: List<Int>
+    val apiEMaxhpsCombined: List<Int>
 }

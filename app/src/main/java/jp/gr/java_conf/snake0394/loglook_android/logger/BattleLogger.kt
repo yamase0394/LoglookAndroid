@@ -148,16 +148,16 @@ class BattleLogger : APIListenerSpi {
                 is ICombinedBattle -> {
                     val deck = DeckManager.INSTANCE.getDeck(2)
                     val shipId = deck.shipId
-                    val nowhps = battle.apiNowhpsCombined
-                    val maxhps = battle.apiMaxhpsCombined
+                    val fNowhps = battle.apiFNowhpsCombined
+                    val fMaxhps = battle.apiFMaxhpsCombined
                     for (i in 1..6) {
-                        if (i > shipId.size) {
+                        if (i > shipId.size || shipId[i - 1] == -1) {
                             sb.append(",,")
                             continue
                         }
                         val myShip = realm.where(MyShip::class.java).equalTo("id", shipId[i - 1]).findFirst()
                         val mstShip = realm.where(MstShip::class.java).equalTo("id", myShip.shipId).findFirst()
-                        sb.append("${mstShip.name}(Lv${myShip.lv}),${nowhps[i]}/${maxhps[i]},")
+                        sb.append("${mstShip.name}(Lv${myShip.lv}),${fNowhps[i - 1]}/${fMaxhps[i - 1]},")
                     }
 
                     sb.append(",,,,,,,,,,,")
@@ -165,8 +165,8 @@ class BattleLogger : APIListenerSpi {
                 is IEnemyCombinedBattle -> {
                     sb.append(",,,,,,,,,,,,")
 
-                    val nowhps = battle.apiNowhpsCombined
-                    val maxhps = battle.apiMaxhpsCombined
+                    val eNowhps = battle.apiENowhpsCombined
+                    val eMaxhps = battle.apiEMaxhpsCombined
                     val eship = battle.apiShipKeCombined
                     for (i in 1..6) {
                         if (i > eship.size) {
@@ -177,7 +177,7 @@ class BattleLogger : APIListenerSpi {
                             if (mstShip.yomi != "" && mstShip.yomi != "-") {
                                 sb.append("(${mstShip.yomi})")
                             }
-                            sb.append(",${nowhps[i + 6]}/${maxhps[i + 6]}")
+                            sb.append(",${eNowhps[i - 1]}/${eMaxhps[i - 1]}")
                         }
 
                         if (i == 6) {
@@ -190,18 +190,20 @@ class BattleLogger : APIListenerSpi {
                 is IEachCombinedBattle -> {
                     val deck = DeckManager.INSTANCE.getDeck(2)
                     val shipId = deck.shipId
-                    val nowhps = battle.apiNowhpsCombined
-                    val maxhps = battle.apiMaxhpsCombined
+                    val fNowhps = battle.apiFNowhpsCombined
+                    val fMaxhps = battle.apiFMaxhpsCombined
                     for (i in 1..6) {
-                        if (i > shipId.size) {
+                        if (i > shipId.size || shipId[i - 1] == -1) {
                             sb.append(",,")
                             continue
                         }
                         val myShip = realm.where(MyShip::class.java).equalTo("id", shipId[i - 1]).findFirst()
                         val mstShip = realm.where(MstShip::class.java).equalTo("id", myShip.shipId).findFirst()
-                        sb.append("${mstShip.name}(Lv${myShip.lv}),${nowhps[i]}/${maxhps[i]},")
+                        sb.append("${mstShip.name}(Lv${myShip.lv}),${fNowhps[i - 1]}/${fMaxhps[i - 1]},")
                     }
 
+                    val eNowhps = battle.apiENowhpsCombined
+                    val eMaxhps = battle.apiEMaxhpsCombined
                     val eship = battle.apiShipKeCombined
                     for (i in 1..6) {
                         if (i > eship.size) {
@@ -212,7 +214,7 @@ class BattleLogger : APIListenerSpi {
                             if (mstShip.yomi != "" && mstShip.yomi != "-") {
                                 sb.append("(${mstShip.yomi})")
                             }
-                            sb.append(",${nowhps[i + 6]}/${maxhps[i + 6]}")
+                            sb.append(",${eNowhps[i - 1]}/${eMaxhps[i - 1]}")
                         }
 
                         if (i == 6) {

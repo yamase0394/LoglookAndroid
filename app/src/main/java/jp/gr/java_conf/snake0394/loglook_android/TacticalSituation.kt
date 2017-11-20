@@ -25,14 +25,14 @@ object TacticalSituation {
         val eHp = battle.apiENowhps.toMutableList()
         var fHpCombined: MutableList<Int>? =
                 when (battle) {
-                    is ICombinedBattle -> battle.apiNowhpsCombined.slice(1..6).filterNot { it == -1 }.toMutableList()
-                    is IEachCombinedBattle -> battle.apiNowhpsCombined.slice(1..6).filterNot { it == -1 }.toMutableList()
+                    is ICombinedBattle -> battle.apiFNowhpsCombined.toMutableList()
+                    is IEachCombinedBattle -> battle.apiFNowhpsCombined.toMutableList()
                     else -> null
                 }
         var eHpCombined: MutableList<Int>? =
                 when (battle) {
-                    is IEnemyCombinedBattle -> battle.apiNowhpsCombined.slice(7..12).filterNot { it == -1 }.toMutableList()
-                    is IEachCombinedBattle -> battle.apiNowhpsCombined.slice(7..12).filterNot { it == -1 }.toMutableList()
+                    is IEnemyCombinedBattle -> battle.apiENowhpsCombined.toMutableList()
+                    is IEachCombinedBattle -> battle.apiENowhpsCombined.toMutableList()
                     else -> null
                 }
         var phase = PhaseState(PhaseState.Type.BEFORE, fHp, fHpCombined, eHp, eHpCombined)
@@ -173,6 +173,7 @@ object TacticalSituation {
                     } else if (enemyAchievements == 0.0f && friendAchievements == 0.0f) {
                         0f
                     } else {
+                        //enemyAchievementsが0のため割れない
                         3f
                     }
 

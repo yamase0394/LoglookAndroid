@@ -16,7 +16,7 @@ public class Logger {
         }
     }
 
-    public static final void e(String msg) {
+    public static final void e(String tag, String msg) {
         if (BuildConfig.DEBUG) {
             Log.e(TAG, msg);
         }

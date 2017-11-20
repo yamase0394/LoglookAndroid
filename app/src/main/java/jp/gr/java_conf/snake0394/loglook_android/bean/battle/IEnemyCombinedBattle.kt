@@ -5,19 +5,14 @@ package jp.gr.java_conf.snake0394.loglook_android.bean.battle
  */
 interface IEnemyCombinedBattle : IBattle {
     /**
-     * 敵随伴艦隊艦船ID [7] -1から
+     * 敵随伴艦隊艦船ID
      */
     val apiShipKeCombined: List<Int>
     /**
-     * 敵随伴艦隊Lv [7] -1から
+     * 敵随伴艦隊Lv
      */
     val apiShipLvCombined: List<Int>
-    /**
-     * 味方/敵随伴艦隊現在HP [13] (-1から始まる, 味方側は -1 で埋められる)
-     */
-    val apiNowhpsCombined: List<Int>
-    /**
-     * 味方/敵随伴艦隊最大HP [13] (-1から始まる, 味方側は -1 で埋められる)
-     */
-    val apiMaxhpsCombined: List<Int>
+
+    val apiENowhpsCombined: List<Int>
+    val apiEMaxhpsCombined: List<Int>
 }

@@ -72,13 +72,13 @@ class WinRankOverlayService : Service() {
             val secondDeck = DeckManager.INSTANCE.getDeck(2)
             val apiMaxhpsCombined =
                     when (battle) {
-                        is ICombinedBattle -> battle.apiMaxhpsCombined
-                        is IEachCombinedBattle -> battle.apiMaxhpsCombined
+                        is ICombinedBattle -> battle.apiFMaxhpsCombined
+                        is IEachCombinedBattle -> battle.apiFMaxhpsCombined
                         else -> return@run
                     }
 
             fHpCombined?.withIndex()?.forEach {
-                if (it.value <= apiMaxhpsCombined[it.index + 1] / 4) {
+                if (it.value <= apiMaxhpsCombined[it.index] / 4) {
                     heavilyDamagedShipIdList.add(secondDeck.shipId[it.index])
                 }
             }

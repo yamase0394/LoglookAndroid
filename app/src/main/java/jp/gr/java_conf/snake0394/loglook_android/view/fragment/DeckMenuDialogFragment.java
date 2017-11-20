@@ -179,7 +179,7 @@ public class DeckMenuDialogFragment extends android.support.v4.app.DialogFragmen
             if(i > deck.getShipId().size()) {
                 shipId = -1;
             } else {
-                shipId = deck.getShipId().get(i - 1 + 100);
+                shipId = deck.getShipId().get(i - 1);
             }
 
             MyShip myShip = realm.where(MyShip.class).equalTo("id", shipId).findFirst();

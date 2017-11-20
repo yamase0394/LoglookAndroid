@@ -11,8 +11,8 @@ data class CombinedBattleEcMidnightBattle(
         override val apiFMaxhps: List<Int>,
         override val apiENowhps: List<Int>,
         override val apiEMaxhps: List<Int>,
-        override val apiNowhpsCombined: List<Int>,
-        override val apiMaxhpsCombined: List<Int>,
+        override val apiENowhpsCombined: List<Int>,
+        override val apiEMaxhpsCombined: List<Int>,
         override val apiTouchPlane: List<Int>,
         override val apiFlarePos: List<Int>,
         override val apiHougeki: ApiHougeki
