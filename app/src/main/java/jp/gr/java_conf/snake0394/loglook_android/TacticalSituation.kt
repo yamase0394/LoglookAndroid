@@ -45,6 +45,13 @@ object TacticalSituation {
             }
         }
 
+        if (battle is INHougeki){
+            BattleCalculator.applyNHougeki(battle, phase.deepCopy(PhaseState.Type.MIDNIGHT)).let {
+                phase = it
+                phaseList.add(phase)
+            }
+        }
+
         if (battle is IMidnightBattle) {
             BattleCalculator.applyHougekiMidnight(battle, phase.deepCopy(PhaseState.Type.MIDNIGHT)).let {
                 phase = it

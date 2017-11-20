@@ -220,7 +220,7 @@ object BattleCalculator {
         }
 
         when (battle) {
-            is SortieBattle, is PracticeBattle -> {
+            is SortieBattle, is PracticeBattle , is INightToDay-> {
                 if (battle.apiHouraiFlag[0] == 1) {
                     applyHougeki(battle.apiHougeki1, phase)
                 }
@@ -319,7 +319,6 @@ object BattleCalculator {
     }
 
     private fun applyHougeki(apiHougeki: ApiHougeki, phase: PhaseState) {
-        Logger.d("apiHougeki", apiHougeki.toString())
         apiHougeki.apiAtEflag!!.indices.forEach {
             val dfIdx = apiHougeki.apiDfList[it][0]
             val damage = apiHougeki.apiDamage[it].sum()
@@ -347,7 +346,44 @@ object BattleCalculator {
         }
     }
 
-    fun applyHougekiMidnight(battle: IMidnightBattle, phase: PhaseState): PhaseState  {
+    fun applyNHougeki(battle: INHougeki, phase: PhaseState): PhaseState {
+        applyNHougeki(battle.apiNHougeki1, phase)
+        applyNHougeki(battle.apiNHougeki2, phase)
+        return phase
+    }
+
+    /**
+     * applyHougekiMidnight統一できるかも
+     */
+    private fun applyNHougeki(apiHougeki: ApiHougeki, phase: PhaseState){
+        apiHougeki.apiAtEflag!!.indices.forEach {
+            val dfIdx = apiHougeki.apiDfList[it][0]
+            val damage = apiHougeki.apiDamage[it].map { Math.max(it, 0) }.sum()
+            when (apiHougeki.apiAtEflag[it]) {
+                0 -> {
+                    if (dfIdx < phase.eHp.size) {
+                        phase.eHp[dfIdx] = Math.max(phase.eHp[dfIdx] - damage, 0)
+                    } else if (phase.eHpCombined != null && dfIdx - 6 < phase.eHpCombined.size) {
+                        phase.eHpCombined[dfIdx - 6] = Math.max(phase.eHpCombined[dfIdx - 6] - damage, 0)
+                    } else {
+                        Logger.e("applyHougeki", "index=$it friend dfIdx=$dfIdx")
+                    }
+                }
+                1 -> {
+                    if (dfIdx < phase.fHp.size) {
+                        phase.fHp[dfIdx] = Math.max(phase.fHp[dfIdx] - damage, 0)
+                    } else if (phase.fHpCombined != null && dfIdx - 6 < phase.fHpCombined.size) {
+                        phase.fHpCombined[dfIdx - 6] = Math.max(phase.fHpCombined[dfIdx - 6] - damage, 0)
+                    } else {
+                        Logger.e("applyHougeki", "index=$it friend dfIdx=$dfIdx")
+                    }
+                }
+                else -> throw IllegalArgumentException("illegal value : apiAtEflag[${it}]=${apiHougeki.apiAtEflag[it]}")
+            }
+        }
+    }
+
+    fun applyHougekiMidnight(battle: IMidnightBattle, phase: PhaseState): PhaseState {
         val apiHougeki = battle.apiHougeki
 
         apiHougeki.apiAtEflag!!.indices.forEach {
@@ -380,8 +416,6 @@ object BattleCalculator {
     }
 
     private fun applyRaigeki(apiRaigeki: ApiRaigeki, phase: PhaseState) {
-        Logger.d("apiRaigeki", apiRaigeki.toString())
-        Logger.d("phaseState", phase.toString())
         apiRaigeki.apiFdam.withIndex().forEach {
             if (it.index < phase.fHp.size) {
                 phase.fHp[it.index] -= it.value

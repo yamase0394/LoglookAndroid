@@ -70,12 +70,11 @@ class WinRankOverlayService : Service() {
             }
 
             val secondDeck = DeckManager.INSTANCE.getDeck(2)
-            val apiMaxhpsCombined =
-                    when (battle) {
-                        is ICombinedBattle -> battle.apiFMaxhpsCombined
-                        is IEachCombinedBattle -> battle.apiFMaxhpsCombined
-                        else -> return@run
-                    }
+            val apiMaxhpsCombined = when (battle) {
+                is ICombinedBattle -> battle.apiFMaxhpsCombined
+                is IEachCombinedBattle -> battle.apiFMaxhpsCombined
+                else -> return@run
+            }
 
             fHpCombined?.withIndex()?.forEach {
                 if (it.value <= apiMaxhpsCombined[it.index] / 4) {

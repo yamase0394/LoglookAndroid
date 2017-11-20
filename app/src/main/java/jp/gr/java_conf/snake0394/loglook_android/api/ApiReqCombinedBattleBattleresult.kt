@@ -31,49 +31,5 @@ class ApiReqCombinedBattleBattleresult : APIListenerSpi {
             }
             Escape.INSTANCE.ready(damaged, towing)
         }
-
-        /*
-        //勝利ランクオーバーレイを消す
-        App.getInstance().stopService(Intent(App.getInstance().applicationContext, WinRankOverlayService::class.java))
-
-        val prefs = GeneralPrefs(App.getInstance().applicationContext)
-        if (!prefs.showsHeavilyDamagedOverlay) {
-            return
-        }
-
-        //大破警告オーバーレイ
-        val phaseStates = TacticalSituation.phaseList
-        val battle = TacticalSituation.battle
-        for (i in 0..phaseStates[0].fHp.size - 1) {
-            val lastHp = phaseStates[phaseStates.size - 1].fHp[i]
-            val maxHp = battle.apiMaxhps[i + 1]
-            if (lastHp <= maxHp / 4) {
-                App.getInstance().startService(Intent(App.getInstance().applicationContext, HeavilyDamagedWarningService::class.java))
-                return
-            }
-        }
-
-        if(phaseStates[0].fHpCombined != null) {
-            for (i in 0..phaseStates[0].fHpCombined!!.size - 1) {
-                val lastHp = phaseStates[phaseStates.size - 1].fHpCombined!![i]
-                if (battle is ICombinedBattle) {
-                    val maxHp = battle.apiMaxhpsCombined[i + 1]
-                    if (lastHp <= maxHp / 4) {
-                        App.getInstance().startService(Intent(App.getInstance().applicationContext, HeavilyDamagedWarningService::class.java))
-                        return
-                    }
-                } else if (battle is IEachCombinedBattle) {
-                    val maxHp = battle.apiMaxhpsCombined[i + 1]
-                    if (lastHp <= maxHp / 4) {
-                        App.getInstance().startService(Intent(App.getInstance()
-                                .applicationContext, HeavilyDamagedWarningService::class.java))
-                        return
-                    }
-                }
-            }
-        }
-
-        App.getInstance().stopService(Intent(App.getInstance().applicationContext, HeavilyDamagedWarningService::class.java))
-        */
     }
 }
